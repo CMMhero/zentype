@@ -36,7 +36,7 @@ const TestPage: React.FC<TestPageProps> = ({ settings, setSettings, setHistory, 
 
   const [cursorPosition, setCursorPosition] = useState({ top: 0, left: 0 });
   const [activeKey, setActiveKey] = useState<string | null>(null);
-  const [isFocused, setIsFocused] = useState(true);
+  const [isFocused] = useState(true);
 
   const [timelineData, setTimelineData] = useState<{ time: number; wpm: number; raw: number }[]>([]);
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Keyboard, History, Settings, Github } from "lucide-react";
+import { Keyboard, History, Settings } from "lucide-react";
 import { GameSettings, HistoryItem } from "./types";
 import { THEMES, STORAGE_KEY_SETTINGS, STORAGE_KEY_HISTORY } from "./constants";
 import TestPage from "./pages/TestPage";
