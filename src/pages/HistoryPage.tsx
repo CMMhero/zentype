@@ -60,9 +60,10 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ history, theme }) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-2">
-          <div className="grid grid-cols-12 text-xs uppercase opacity-40 px-4 pb-2 font-bold tracking-wider">
+          <div className="grid grid-cols-14 text-xs uppercase opacity-40 px-4 pb-2 font-bold tracking-wider">
             <div className="col-span-2">Date</div>
             <div className="col-span-2 text-right">WPM</div>
+            <div className="col-span-2 text-right">Consistency</div>
             <div className="col-span-2 text-right">Raw</div>
             <div className="col-span-4 text-center">Accuracy</div>
             <div className="col-span-2 text-right">Mode</div>
@@ -71,7 +72,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ history, theme }) => {
             <div
               key={item.id}
               onClick={() => setSelectedItem(item)}
-              className="grid grid-cols-12 items-center p-4 rounded-lg bg-black/25 hover:bg-black/40 transition border-l-4 shadow-sm cursor-pointer active:scale-[0.99]"
+              className="grid grid-cols-14 items-center p-4 rounded-lg bg-black/25 hover:bg-black/40 transition border-l-4 shadow-sm cursor-pointer active:scale-[0.99]"
               style={{ borderLeftColor: theme.main }}
             >
               <div className="col-span-2 text-xs opacity-60 font-mono">
@@ -81,6 +82,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({ history, theme }) => {
                 </div>
               </div>
               <div className="col-span-2 text-right font-bold text-xl">{item.wpm}</div>
+              <div className="col-span-2 text-right font-bold text-xl">{item.consistency}%</div>
               <div className="col-span-2 text-right opacity-50 font-mono">{item.raw}</div>
               <div className="col-span-4 px-4">
                 <div className="flex items-center gap-2">
