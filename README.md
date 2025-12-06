@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
+# ZenType
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A minimalist, aesthetically pleasing typing speed tester designed for focus and self-improvement.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+ZenType is a project built to provide a clean, distraction-free environment for practicing typing. Unlike cluttered alternatives, it focuses on visual clarity and user customization, allowing you to tailor the experience to your preferences with various themes, fonts, and modes.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Multiple Modes**: Practice with timed tests (15s, 30s, 60s) or fixed word counts.
+- **Customization**:
+  - **Themes**: Choose from curated color palettes like Nord, Dracula, and more.
+  - **Typography**: Switch between Monospaced, Serif, and Sans-serif fonts.
+  - **Visuals**: Adjust caret style, font size, and interface density.
+- **Progress Tracking**: Automatically saves your test history to local storage so you can monitor your WPM trends over time.
+- **Blind Mode**: Key feedback is hidden to encourage raw accuracy and focus.
+- **Smooth Interaction**: Designed with a "restart on Tab" workflow for rapid-fire practice sessions.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend**: React 19, TypeScript
+- **Styling**: Tailwind CSS v4
+- **Icons**: Lucide React
+- **Build Tool**: Vite
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js (Latest LTS recommended)
+- npm or bun
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/CMMhero/zentype.git
+   ```
+
+2. Navigate to the project directory:
+   ```bash
+   cd zentype
+   ```
+
+3. Install dependencies:
+   ```bash
+   npm install
+   # or
+   bun install
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+The application will launch at `http://localhost:5173` (or similar).
+
+## Structure
+
+```
+src/
+├── components/      # Reusable UI components (VirtualKeyboard, Caret, etc.)
+├── hooks/           # Custom hooks (useInterval, game logic)
+├── pages/           # Main route views (Test, Settings, History)
+├── types.ts         # TypeScript definitions
+└── constants.ts     # Configuration, themes, and defaults
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## License
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+This project is open source and available under the [MIT License](LICENSE).
