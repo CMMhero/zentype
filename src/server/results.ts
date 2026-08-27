@@ -247,23 +247,50 @@ export interface PublicProfile {
 }
 
 export async function getPublicProfile(
-  userId: string,
+  identifier: string,
 ): Promise<PublicProfile | null> {
   const supabase = await getSupabaseServerClient();
   if (!supabase) return null;
-  const { data: profile } = await supabase
+  // Try username lookup first, then fallback to userId
+  let userId: string | null = null;
+  let username: string | null = null;
+  let avatarUrl: string | null = null;
+
+  const { data: profileByUsername } = await supabase
     .from("profiles")
-    .select("username")
-    .eq("id", userId)
+    .select("id,username,avatar_url")
+    .ilike("username", identifier)
     .maybeSingle();
-  const { data: authUsers } = await supabase.auth.admin.listUsers();
-  const authUser = authUsers?.users?.find((u) => u.id === userId);
-  const meta = authUser?.user_metadata ?? {};
-  const username = profile?.username ||
-    (meta["user_name"] as string) ||
-    (meta["preferred_username"] as string) ||
-    "unknown";
-  const avatarUrl = (meta["avatar_url"] as string) || (meta["picture"] as string) || null;
+  if (profileByUsername) {
+    userId = profileByUsername.id;
+    username = profileByUsername.username;
+    avatarUrl = profileByUsername.avatar_url;
+  } else {
+    // Try as userId
+    const { data: profileById } = await supabase
+      .from("profiles")
+      .select("id,username,avatar_url")
+      .eq("id", identifier)
+      .maybeSingle();
+    if (profileById) {
+      userId = profileById.id;
+      username = profileById.username;
+      avatarUrl = profileById.avatar_url;
+    }
+  }
+  if (!userId) return null;
+
+  // Fetch avatar from auth metadata if not in profiles
+  if (!avatarUrl) {
+    const { data: authUsers } = await supabase.auth.admin.listUsers();
+    const authUser = authUsers?.users?.find((u) => u.id === userId);
+    const meta = authUser?.user_metadata ?? {};
+    avatarUrl = (meta["avatar_url"] as string) || (meta["picture"] as string) || null;
+    if (!username) {
+      username = (meta["user_name"] as string) || (meta["preferred_username"] as string) || "unknown";
+    }
+  }
+
   const { data: rows } = await supabase
     .from("test_results")
     .select(RESULT_COLUMNS)
@@ -272,7 +299,7 @@ export async function getPublicProfile(
     .limit(1000);
   const results = (rows as unknown as DbResultRow[]).map(mapRow);
   if (results.length === 0) {
-    return { userId, username, avatarUrl, stats: null, results: [] };
+    return { userId, username: username ?? "unknown", avatarUrl, stats: null, results: [] };
   }
   const last10 = results.slice(0, 10);
   const bestByBoard: Record<string, number> = {};
@@ -291,7 +318,7 @@ export async function getPublicProfile(
     charsTyped: sum(results.map((r) => r.chars.correct + r.chars.incorrect + r.chars.extra)),
     bestByBoard,
   };
-  return { userId, username, avatarUrl, stats, results };
+  return { userId, username: username ?? "unknown", avatarUrl, stats, results };
 }
 
 /** Search users by username prefix (for command palette). */

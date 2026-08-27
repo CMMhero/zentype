@@ -42,45 +42,47 @@ export async function getLeaderboard(data: {
           scoreMap.set(userId, score);
         }
 
-        if (userIds.length === 0) return [];
+        if (userIds.length > 0) {
+          // Batch fetch all metadata in one call
+          const metaKey = `${key}:meta`;
+          const metaValues = await redis.hmget<Record<string, string>>(metaKey, ...userIds);
 
-        // Batch fetch all metadata in one call
-        const metaKey = `${key}:meta`;
-        const metaValues = await redis.hmget<Record<string, string>>(metaKey, ...userIds);
+          const entries: Array<LeaderboardEntry & { _score: number }> = [];
+          for (const userId of userIds) {
+            const metaJson = metaValues?.[userId] ?? null;
+            let meta: Partial<MetaValue> = {};
+            try {
+              meta = metaJson ? JSON.parse(metaJson) : {};
+            } catch { /* ignore */ }
+            if (!meta.username) continue;
+            const score = scoreMap.get(userId) ?? 0;
+            const decoded = lbDecode(score);
+            entries.push({
+              rank: 0,
+              userId,
+              username: meta.username,
+              avatarUrl: meta.avatarUrl ?? null,
+              wpm: decoded.wpm,
+              accuracy: meta.accuracy ?? decoded.accuracy,
+              consistency: meta.consistency ?? 0,
+              createdAt: meta.createdAt ?? new Date(0).toISOString(),
+              _score: score,
+            });
+          }
 
-        const entries: Array<LeaderboardEntry & { _score: number }> = [];
-        for (const userId of userIds) {
-          const metaJson = metaValues?.[userId] ?? null;
-          let meta: Partial<MetaValue> = {};
-          try {
-            meta = metaJson ? JSON.parse(metaJson) : {};
-          } catch { /* ignore */ }
-          if (!meta.username) continue;
-          const score = scoreMap.get(userId) ?? 0;
-          const decoded = lbDecode(score);
-          entries.push({
-            rank: 0,
-            userId,
-            username: meta.username,
-            avatarUrl: meta.avatarUrl ?? null,
-            wpm: decoded.wpm,
-            accuracy: meta.accuracy ?? decoded.accuracy,
-            consistency: meta.consistency ?? 0,
-            createdAt: meta.createdAt ?? new Date(0).toISOString(),
-            _score: score,
-          });
+          if (entries.length > 0) {
+            return entries.slice(0, limit).map((e, i) => ({
+              rank: i + 1,
+              userId: e.userId,
+              username: e.username,
+              avatarUrl: e.avatarUrl,
+              wpm: e.wpm,
+              accuracy: e.accuracy,
+              consistency: e.consistency,
+              createdAt: e.createdAt,
+            }));
+          }
         }
-
-        return entries.slice(0, limit).map((e, i) => ({
-          rank: i + 1,
-          userId: e.userId,
-          username: e.username,
-          avatarUrl: e.avatarUrl,
-          wpm: e.wpm,
-          accuracy: e.accuracy,
-          consistency: e.consistency,
-          createdAt: e.createdAt,
-        }));
       }
     } catch (e) {
       console.warn("[zentype] redis leaderboard read failed, using Postgres:", e);

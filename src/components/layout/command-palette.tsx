@@ -129,7 +129,7 @@ export function CommandPalette() {
               </CommandItem>
             )}
             {userResults.map((u) => (
-              <CommandItem key={u.userId} onSelect={() => go(`/profile/${u.userId}`)}>
+              <CommandItem key={u.userId} onSelect={() => go(`/profile/${u.username}`)}>
                 <Avatar className="size-5">
                   {u.avatarUrl && <AvatarImage src={u.avatarUrl} alt="" />}
                   <AvatarFallback className="rounded text-[9px] uppercase">{u.username.slice(0, 2)}</AvatarFallback>

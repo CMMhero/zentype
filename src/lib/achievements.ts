@@ -28,15 +28,21 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   // ── Test count milestones ──
   { id: "first_test", name: "First Steps", description: "Complete your first test", trigger: "api", xp: 10, check: (s) => s.testsCompleted >= 1 },
   { id: "tests_10", name: "Getting Started", description: "Complete 10 tests", trigger: "metric", xp: 25, check: (s) => Math.min(100, (s.testsCompleted / 10) * 100) },
+  { id: "tests_25", name: "Quarter Century", description: "Complete 25 tests", trigger: "metric", xp: 35, check: (s) => Math.min(100, (s.testsCompleted / 25) * 100) },
   { id: "tests_50", name: "Dedicated", description: "Complete 50 tests", trigger: "metric", xp: 50, check: (s) => Math.min(100, (s.testsCompleted / 50) * 100) },
   { id: "tests_100", name: "Centurion", description: "Complete 100 tests", trigger: "metric", xp: 100, check: (s) => Math.min(100, (s.testsCompleted / 100) * 100) },
+  { id: "tests_250", name: "Quarter Master", description: "Complete 250 tests", trigger: "metric", xp: 150, check: (s) => Math.min(100, (s.testsCompleted / 250) * 100) },
   { id: "tests_500", name: "Veteran", description: "Complete 500 tests", trigger: "metric", xp: 200, check: (s) => Math.min(100, (s.testsCompleted / 500) * 100) },
   { id: "tests_1000", name: "Legend", description: "Complete 1,000 tests", trigger: "metric", xp: 500, check: (s) => Math.min(100, (s.testsCompleted / 1000) * 100) },
 
   // ── WPM milestones ──
   { id: "wpm_30", name: "Slow & Steady", description: "Reach 30 WPM", trigger: "metric", xp: 15, check: (s) => s.bestWpm >= 30 },
+  { id: "wpm_40", name: "Warming Up", description: "Reach 40 WPM", trigger: "metric", xp: 20, check: (s) => s.bestWpm >= 40 },
   { id: "wpm_50", name: "Typist", description: "Reach 50 WPM", trigger: "metric", xp: 30, check: (s) => s.bestWpm >= 50 },
+  { id: "wpm_60", name: "Picking Up", description: "Reach 60 WPM", trigger: "metric", xp: 40, check: (s) => s.bestWpm >= 60 },
   { id: "wpm_70", name: "Speed Demon", description: "Reach 70 WPM", trigger: "metric", xp: 75, check: (s) => s.bestWpm >= 70 },
+  { id: "wpm_80", name: "Quick Typer", description: "Reach 80 WPM", trigger: "metric", xp: 100, check: (s) => s.bestWpm >= 80 },
+  { id: "wpm_90", name: "Blazing Fingers", description: "Reach 90 WPM", trigger: "metric", xp: 120, check: (s) => s.bestWpm >= 90 },
   { id: "wpm_100", name: "Century", description: "Reach 100 WPM", trigger: "metric", xp: 150, check: (s) => s.bestWpm >= 100 },
   { id: "wpm_120", name: "Blazing", description: "Reach 120 WPM", trigger: "metric", xp: 250, check: (s) => s.bestWpm >= 120 },
   { id: "wpm_150", name: "Lightning Fingers", description: "Reach 150 WPM", trigger: "metric", xp: 500, check: (s) => s.bestWpm >= 150 },
@@ -57,7 +63,9 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: "streak_3", name: "On a Roll", description: "Type for 3 days in a row", trigger: "streak", xp: 30, check: (s) => s.currentStreak >= 3 || s.longestStreak >= 3 },
   { id: "streak_7", name: "Week Warrior", description: "Type for 7 days in a row", trigger: "streak", xp: 75, check: (s) => s.currentStreak >= 7 || s.longestStreak >= 7 },
   { id: "streak_14", name: "Fortnight Focus", description: "Type for 14 days in a row", trigger: "streak", xp: 150, check: (s) => s.currentStreak >= 14 || s.longestStreak >= 14 },
+  { id: "streak_21", name: "Three Week Titan", description: "Type for 21 days in a row", trigger: "streak", xp: 225, check: (s) => s.currentStreak >= 21 || s.longestStreak >= 21 },
   { id: "streak_30", name: "Monthly Master", description: "Type for 30 days in a row", trigger: "streak", xp: 300, check: (s) => s.currentStreak >= 30 || s.longestStreak >= 30 },
+  { id: "streak_50", name: "Half Century Streak", description: "Type for 50 days in a row", trigger: "streak", xp: 600, check: (s) => s.currentStreak >= 50 || s.longestStreak >= 50 },
   { id: "streak_100", name: "Daily Legend", description: "Type for 100 days in a row", trigger: "streak", xp: 1000, check: (s) => s.currentStreak >= 100 || s.longestStreak >= 100 },
 
   // ── Time milestones ──
