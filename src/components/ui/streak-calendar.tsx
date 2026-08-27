@@ -192,9 +192,9 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
     const weekDates = getWeekDates(referenceDate, startOfWeek)
     const { cells: gitCells, dates: gitDates } = getGitCells(today, startOfWeek)
     const gitColumnCount = Math.ceil(gitCells.length / 7)
-    const cellSize = compact ? "0.55rem" : "0.75rem"
+    const cellSize = compact ? "0.75rem" : "0.75rem"
     const gitGridTemplateColumns = `repeat(${gitColumnCount}, ${cellSize})`
-    const cellClass = compact ? "h-[0.55rem] w-[0.55rem] rounded-[0.2rem] border-[0.5px]" : "h-3 w-3 rounded-[0.3rem] border"
+    const cellClass = compact ? "h-[0.75rem] w-[0.75rem] rounded-[0.2rem] border-[0.5px]" : "h-3 w-3 rounded-[0.3rem] border"
     const gitMonthLabels: Array<{ column: number; label: string }> = []
     const seenGitMonths = new Set<string>()
 
@@ -209,6 +209,11 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
         })
       }
     })
+
+    // Limit to 12 months max — drop the last label if there are 13
+    if (gitMonthLabels.length > 12) {
+      gitMonthLabels.pop()
+    }
 
     const firstDate = gitDates[0]
     if (firstDate) {

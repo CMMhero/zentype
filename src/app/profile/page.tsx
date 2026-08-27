@@ -254,7 +254,7 @@ export default function ProfilePage() {
               {unlockedAch.sort((a, b) => b.xp - a.xp).slice(0, 5).map((a) => (
                 <Tooltip key={a.id}>
                   <TooltipTrigger asChild>
-                    <div className="flex h-10 w-28 items-center gap-1.5 rounded-md border border-border/40 bg-secondary/30 px-2 cursor-default [&>div>div]:!h-6 [&>div>div]:!w-6 [&>div]:!m-0 [&>div]:!border-0 [&>div]:!bg-transparent [&>div]:!p-0 [&>div]:!shadow-none [&>span]:!hidden">
+                    <div className="flex h-10 w-28 items-center justify-center gap-1.5 rounded-md border border-border/40 bg-secondary/30 px-2 cursor-default [&>div>div]:!h-6 [&>div>div]:!w-6 [&>div]:!m-0 [&>div]:!border-0 [&>div]:!bg-transparent [&>div]:!p-0 [&>div]:!shadow-none [&>span]:!hidden">
                       <AchievementBadge
                         achievement={{ id: a.id, name: a.name, trigger: a.trigger, achievedAt: a.achievedAt, progress: a.progress }}
                         badgeSize="xs"
@@ -299,7 +299,7 @@ export default function ProfilePage() {
             {filteredAch.map((a) => (
               <Tooltip key={a.id}>
                 <TooltipTrigger asChild>
-                  <div className="flex h-10 items-center gap-1.5 rounded-md border border-border/40 bg-secondary/30 px-2 cursor-default [&>div>div]:!h-6 [&>div>div]:!w-6 [&>div]:!m-0 [&>div]:!border-0 [&>div]:!bg-transparent [&>div]:!p-0 [&>div]:!shadow-none [&>span]:!hidden">
+                  <div className="flex h-10 w-full items-center justify-center gap-1.5 rounded-md border border-border/40 bg-secondary/30 px-2 cursor-default [&>div>div]:!h-6 [&>div>div]:!w-6 [&>div]:!m-0 [&>div]:!border-0 [&>div]:!bg-transparent [&>div]:!p-0 [&>div]:!shadow-none [&>span]:!hidden">
                     <AchievementBadge
                       achievement={{ id: a.id, name: a.name, trigger: a.trigger, achievedAt: a.achievedAt, progress: a.progress }}
                       badgeSize="xs"
@@ -332,7 +332,6 @@ export default function ProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <StreakCalendar streak={streakPeriods} view="week" startOfWeek={0} compact className="max-w-none mb-3" />
           <StreakCalendar streak={streakPeriods} view="year" compact className="max-w-none" />
         </CardContent>
       </Card>
