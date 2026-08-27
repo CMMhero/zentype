@@ -1,4 +1,4 @@
-import { BookOpenText, Clapperboard, Clock, Globe, LetterText, Type } from "lucide-react";
+import { IconBook, IconMovie, IconClock, IconGlobe, IconLetterT, IconTypography } from "@tabler/icons-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
 import { Kbd } from "~/components/ui/kbd";
@@ -20,11 +20,11 @@ interface ConfigBarProps {
 }
 
 const SOURCE_ICONS = {
-  words: LetterText,
-  quotes: BookOpenText,
-  anime: Clapperboard,
-  wiki: Globe,
-  dictionary: BookOpenText,
+  words: IconLetterT,
+  quotes: IconBook,
+  anime: IconMovie,
+  wiki: IconGlobe,
+  dictionary: IconBook,
 } as const;
 
 export function ConfigBar({
@@ -51,10 +51,10 @@ export function ConfigBar({
         aria-label="game mode"
       >
         <ToggleGroupItem value="time" className="gap-1.5" aria-label="time mode">
-          <Clock className="size-3.5" /> time
+          <IconClock className="size-3.5" /> time
         </ToggleGroupItem>
         <ToggleGroupItem value="words" className="gap-1.5" aria-label="words mode">
-          <Type className="size-3.5" /> words
+          <IconTypography className="size-3.5" /> words
         </ToggleGroupItem>
       </ToggleGroup>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Github, Chrome } from "lucide-react";
+import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
@@ -31,8 +31,8 @@ export default function LoginPage() {
     <div className="flex flex-1 items-center justify-center px-4 py-16">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center gap-2 text-lg">
-            <span className="text-primary">$</span> zentype login
+          <CardTitle className="text-lg">
+            zentype login
           </CardTitle>
           <CardDescription>
             sync stats across devices · climb global leaderboards.
@@ -42,11 +42,11 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           <Button variant="outline" size="lg" onClick={() => signIn("github")} disabled={loading !== null} className="justify-start gap-3">
-            <Github className="size-4" />
+            <IconBrandGithub className="size-4" />
             {loading === "github" ? "redirecting…" : "continue with github"}
           </Button>
           <Button variant="outline" size="lg" onClick={() => signIn("google")} disabled={loading !== null} className="justify-start gap-3">
-            <Chrome className="size-4" />
+            <IconBrandGoogle className="size-4" />
             {loading === "google" ? "redirecting…" : "continue with google"}
           </Button>
           <p className="text-muted-foreground mt-2 text-center text-[11px]">

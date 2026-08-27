@@ -4,8 +4,9 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Command as CommandIcon, History, Keyboard, LayoutDashboard, LogOut, Settings, Trophy, User,
-} from "lucide-react";
+  IconCommand, IconHistory, IconKeyboard, IconLayoutDashboard,
+  IconLogout, IconSettings, IconTrophy, IconUser,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
@@ -20,16 +21,25 @@ import { useUiStore } from "~/stores/ui-store";
 import { signOutFn } from "~/server/auth";
 import { getTheme } from "~/lib/themes";
 import { useGlobalHotkeys } from "~/hooks/use-global-hotkeys";
+import { useSettingsSync } from "~/hooks/use-settings-sync";
 import { useUser } from "~/components/user-provider";
 import type { SessionUser } from "~/lib/types";
 
 const NAV = [
-  { to: "/", label: "test", icon: Keyboard },
-  { to: "/leaderboard", label: "leaderboard", icon: Trophy },
-  { to: "/profile", label: "profile", icon: LayoutDashboard },
-  { to: "/history", label: "history", icon: History },
-  { to: "/settings", label: "settings", icon: Settings },
+  { to: "/", label: "test", icon: IconKeyboard },
+  { to: "/leaderboard", label: "leaderboard", icon: IconTrophy },
+  { to: "/profile", label: "profile", icon: IconLayoutDashboard },
+  { to: "/history", label: "history", icon: IconHistory },
+  { to: "/settings", label: "settings", icon: IconSettings },
 ] as const;
+
+const FONT_BODY_CLASSES: Record<string, string> = {
+  "geist-mono": "font-geist-mono",
+  inter: "font-inter",
+  "jetbrains-mono": "font-jetbrains-mono",
+  sans: "font-sans",
+  serif: "font-serif",
+};
 
 export function AppShell({
   children,
@@ -40,10 +50,12 @@ export function AppShell({
   const pathname = usePathname();
   const router = useRouter();
   const themeId = useSettingsStore((s) => s.settings.themeId);
+  const fontFamily = useSettingsStore((s) => s.settings.fontFamily);
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
   const flipColors = useSettingsStore((s) => s.settings.flipColors);
 
   useGlobalHotkeys();
+  useSettingsSync();
 
   useEffect(() => {
     const root = document.documentElement;
@@ -51,6 +63,17 @@ export function AppShell({
     root.setAttribute("data-appearance", getTheme(themeId).appearance);
     root.setAttribute("data-flip", String(flipColors));
   }, [themeId, flipColors]);
+
+  // Apply font family to body
+  useEffect(() => {
+    const body = document.body;
+    const cls = FONT_BODY_CLASSES[fontFamily] ?? "font-geist-mono";
+    // Remove all font classes, add the selected one
+    for (const c of Object.values(FONT_BODY_CLASSES)) {
+      body.classList.remove(c);
+    }
+    body.classList.add(cls);
+  }, [fontFamily]);
 
   async function handleSignOut() {
     await signOutFn();
@@ -89,7 +112,7 @@ export function AppShell({
 
           <div className="ml-auto flex items-center gap-2">
             <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={() => setPaletteOpen(true)} aria-label="Open command palette (Ctrl+K)">
-              <CommandIcon className="size-3" />
+              <IconCommand className="size-3" />
               <span className="hidden sm:inline text-muted-foreground">commands</span>
               <Kbd>⌘k</Kbd>
             </Button>
@@ -107,7 +130,7 @@ export function AppShell({
 
       <main className="flex flex-1 flex-col">{children}</main>
 
-      <footer className="border-border/60 bg-secondary/40 text-muted-foreground mt-8 border-t">
+      <footer className="border-border/60 bg-secondary/40 text-muted-foreground mt-auto border-t">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 text-[11px]">
           <span className="flex items-center gap-1.5">
             <Badge variant="outline" className="h-4 px-1 text-[10px]">
@@ -142,11 +165,11 @@ function UserMenu({ user, onSignOut }: { user: SessionUser; onSignOut: () => voi
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuLabel className="text-xs"><div className="truncate">{user.email}</div></DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/profile")}><User /> profile</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/history")}><History /> history</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings")}><Settings /> settings</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/profile")}><IconUser className="size-4" /> profile</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/history")}><IconHistory className="size-4" /> history</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/settings")}><IconSettings className="size-4" /> settings</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={onSignOut}><LogOut /> sign out</DropdownMenuItem>
+        <DropdownMenuItem variant="destructive" onClick={onSignOut}><IconLogout className="size-4" /> sign out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

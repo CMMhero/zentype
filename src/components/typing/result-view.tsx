@@ -1,4 +1,4 @@
-import { RotateCcw } from "lucide-react";
+import { IconRefresh } from "@tabler/icons-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -75,7 +75,7 @@ export function ResultView({ result, saveState, onNext }: ResultViewProps) {
 
       <div className="flex items-center justify-between">
         <Button size="lg" onClick={onNext} className="gap-2.5">
-          <RotateCcw /> next test{" "}
+          <IconRefresh /> next test{" "}
           <Kbd className="ml-1 border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground">
             tab
           </Kbd>

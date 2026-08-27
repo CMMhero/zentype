@@ -3,7 +3,7 @@
 import { useEffect, useTransition, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Crown, Medal, Trophy } from "lucide-react";
+import { IconCrown, IconMedal, IconTrophy } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -51,7 +51,7 @@ export default function LeaderboardPage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <Trophy className="text-primary size-5" />
+          <IconTrophy className="text-primary size-5" />
           leaderboard
           <span className="text-muted-foreground text-xs">/ global bests</span>
         </h1>
@@ -86,7 +86,7 @@ export default function LeaderboardPage() {
         <LeaderboardSkeleton />
       ) : entries.length === 0 ? (
         <div className="border-border/60 text-muted-foreground rounded-md border border-dashed p-12 text-center text-sm">
-          no entries yet -- finish a test while signed in to claim rank #1.
+          no entries yet — finish a test while signed in to claim rank #1.
         </div>
       ) : (
         <div className="border-border/60 overflow-hidden rounded-md border">
@@ -140,8 +140,8 @@ export default function LeaderboardPage() {
 }
 
 function RankBadge({ rank }: { rank: number }) {
-  if (rank === 1) return <Badge className="gap-1"><Crown className="size-3" /> 1</Badge>;
-  if (rank === 2) return <Badge variant="secondary" className="gap-1"><Medal className="size-3" /> 2</Badge>;
-  if (rank === 3) return <Badge variant="secondary" className="gap-1"><Medal className="size-3" /> 3</Badge>;
+  if (rank === 1) return <Badge className="gap-1"><IconCrown className="size-3" /> 1</Badge>;
+  if (rank === 2) return <Badge variant="secondary" className="gap-1"><IconMedal className="size-3" /> 2</Badge>;
+  if (rank === 3) return <Badge variant="secondary" className="gap-1"><IconMedal className="size-3" /> 3</Badge>;
   return <span className="text-muted-foreground tabular-nums">{rank}</span>;
 }

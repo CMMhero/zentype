@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import {
-  AlertTriangle, Download, Eye, Gamepad2, Keyboard, Palette, Play, RotateCcw, User as UserIcon, Volume2,
-} from "lucide-react";
+  IconAlertTriangle, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboard,
+  IconPalette, IconPlayerPlay, IconRefresh, IconUser, IconVolume,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -38,26 +39,26 @@ export default function SettingsPage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <Keyboard className="text-primary size-5" /> settings
+          <IconKeyboard className="text-primary size-5" /> settings
         </h1>
         <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs" onClick={() => { reset(); toast.info("settings restored to defaults"); }}>
-          <RotateCcw className="size-3.5" /> restore defaults
+          <IconRefresh className="size-3.5" /> restore defaults
         </Button>
       </header>
 
       <Tabs defaultValue="gameplay" className="gap-4">
         <TabsList className="w-full sm:w-fit">
-          <TabsTrigger value="gameplay" className="flex-1 sm:flex-none"><Gamepad2 className="size-4" /> gameplay</TabsTrigger>
-          <TabsTrigger value="appearance" className="flex-1 sm:flex-none"><Palette className="size-4" /> appearance</TabsTrigger>
-          <TabsTrigger value="account" className="flex-1 sm:flex-none"><UserIcon className="size-4" /> account</TabsTrigger>
-          <TabsTrigger value="keybinds" className="flex-1 sm:flex-none"><Keyboard className="size-4" /> keybinds</TabsTrigger>
+          <TabsTrigger value="gameplay" className="flex-1 sm:flex-none"><IconDeviceGamepad2 className="size-4" /> gameplay</TabsTrigger>
+          <TabsTrigger value="appearance" className="flex-1 sm:flex-none"><IconPalette className="size-4" /> appearance</TabsTrigger>
+          <TabsTrigger value="account" className="flex-1 sm:flex-none"><IconUser className="size-4" /> account</TabsTrigger>
+          <TabsTrigger value="keybinds" className="flex-1 sm:flex-none"><IconKeyboard className="size-4" /> keybinds</TabsTrigger>
         </TabsList>
 
         <TabsContent value="gameplay" className="flex flex-col gap-4 outline-none">
           <Card className="py-4">
-            <SectionTitle icon={<Volume2 className="size-4" />} title="sound feedback" />
+            <SectionTitle icon={<IconVolume className="size-4" />} title="sound feedback" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
-              <SettingRow label="enabled" hint="synth keystroke sounds -- no assets, pure webaudio">
+              <SettingRow label="enabled" hint="synth keystroke sounds — no assets, pure webaudio">
                 <Switch checked={settings.sound.enabled} onCheckedChange={(v) => update({ sound: { ...settings.sound, enabled: v } })} />
               </SettingRow>
               <SettingRow label="volume">
@@ -74,20 +75,20 @@ export default function SettingsPage() {
                     </SelectContent>
                   </Select>
                   <Button variant="outline" size="sm" className="size-8 p-0" onClick={() => playKeypress(settings.sound.variant, settings.sound.volume)} title="preview sound">
-                    <Play className="size-3" />
+                    <IconPlayerPlay className="size-3" />
                   </Button>
                 </div>
               </SettingRow>
               <SettingRow label="error sound preview">
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => playError(settings.sound.volume)}>
-                  <Play className="size-3" /> play error
+                  <IconPlayerPlay className="size-3" /> play error
                 </Button>
               </SettingRow>
             </CardContent>
           </Card>
 
           <Card className="py-4">
-            <SectionTitle icon={<Gamepad2 className="size-4" />} title="typing rules" />
+            <SectionTitle icon={<IconDeviceGamepad2 className="size-4" />} title="typing rules" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
               <SettingRow label="stop on error" hint="incorrect letters block the cursor until fixed">
                 <Switch checked={settings.stopOnError} onCheckedChange={(v) => update({ stopOnError: v })} />
@@ -98,7 +99,7 @@ export default function SettingsPage() {
               <SettingRow label="free backspace" hint="backspace at a word start restores the previous word">
                 <Switch checked={settings.freeBackspace} onCheckedChange={(v) => update({ freeBackspace: v })} />
               </SettingRow>
-              <SettingRow label="blind mode" hint="hide error coloring while typing -- trust your fingers">
+              <SettingRow label="blind mode" hint="hide error coloring while typing — trust your fingers">
                 <Switch checked={settings.blindMode} onCheckedChange={(v) => update({ blindMode: v })} />
               </SettingRow>
               <SettingRow label="hide live stats" hint="blank wpm/acc while the test runs (shown after)">
@@ -110,7 +111,7 @@ export default function SettingsPage() {
 
         <TabsContent value="appearance" className="flex flex-col gap-4 outline-none">
           <Card className="py-4">
-            <SectionTitle icon={<Palette className="size-4" />} title="theme" />
+            <SectionTitle icon={<IconPalette className="size-4" />} title="theme" />
             <CardContent className="grid grid-cols-2 gap-2 px-4 sm:grid-cols-3 md:grid-cols-4">
               {THEMES.map((t) => (
                 <button key={t.id} onClick={() => update({ themeId: t.id })} className={`border-border hover:border-primary flex items-center gap-2 rounded-md border p-2 text-left transition-colors ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : ""}`}>
@@ -126,7 +127,7 @@ export default function SettingsPage() {
           </Card>
 
           <Card className="py-4">
-            <SectionTitle icon={<Eye className="size-4" />} title="display" />
+            <SectionTitle icon={<IconEye className="size-4" />} title="display" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
               <SettingRow label="caret style">
                 <Select value={settings.caretStyle} onValueChange={(v) => update({ caretStyle: v as CaretStyle })}>
@@ -194,7 +195,7 @@ export default function SettingsPage() {
           ) : (
             <Card className="py-6">
               <CardContent className="flex flex-col items-center gap-3 px-4 text-center">
-                <UserIcon className="text-muted-foreground size-6" />
+                <IconUser className="text-muted-foreground size-6" />
                 <p className="text-muted-foreground text-sm">you&apos;re typing as a guest. results live in this browser only.</p>
                 <Button asChild size="sm"><a href="/login">login / sign up →</a></Button>
               </CardContent>
@@ -245,7 +246,7 @@ function AccountCard({ username, email }: { username: string; email: string }) {
 
   return (
     <Card className="py-4">
-      <SectionTitle icon={<UserIcon className="size-4" />} title="profile" />
+      <SectionTitle icon={<IconUser className="size-4" />} title="profile" />
       <CardContent className="mt-3 flex flex-col gap-3 px-4">
         <div className="grid gap-1">
           <Label htmlFor="username" className="text-xs">display name</Label>
@@ -276,10 +277,10 @@ function DataExportCard() {
   }
   return (
     <Card className="py-4">
-      <SectionTitle icon={<Download className="size-4" />} title="your data" />
+      <SectionTitle icon={<IconDownload className="size-4" />} title="your data" />
       <CardContent className="mt-3 px-4">
         <p className="text-muted-foreground mb-3 text-sm">download everything stored for you</p>
-        <Button variant="outline" size="sm" onClick={exportAll}><Download /> export json</Button>
+        <Button variant="outline" size="sm" onClick={exportAll}><IconDownload className="size-4" /> export json</Button>
       </CardContent>
     </Card>
   );
@@ -291,7 +292,7 @@ function GuestDataCard() {
   if (local.length === 0) return null;
   return (
     <Card className="py-4">
-      <SectionTitle icon={<AlertTriangle className="size-4" />} title={`local guest queue — ${local.length} result${local.length === 1 ? "" : "s"}`} />
+      <SectionTitle icon={<IconAlertTriangle className="size-4" />} title={`local guest queue — ${local.length} result${local.length === 1 ? "" : "s"}`} />
       <CardContent className="mt-3 px-4">
         <p className="text-muted-foreground mb-3 text-sm">these will sync automatically when you log in.</p>
         <Button variant="destructive" size="sm" onClick={() => clearLocal()}>discard local results</Button>
@@ -304,7 +305,7 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
   if (!signedIn) return null;
   return (
     <Card className="border-destructive/40 py-4">
-      <SectionTitle icon={<AlertTriangle className="size-4 text-destructive" />} title="danger zone" />
+      <SectionTitle icon={<IconAlertTriangle className="size-4 text-destructive" />} title="danger zone" />
       <CardContent className="mt-3 px-4">
         <AlertDialog>
           <AlertDialogTrigger asChild>

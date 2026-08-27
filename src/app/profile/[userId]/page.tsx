@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
-  CalendarDays, Gauge, Target, Timer, TrendingUp, Trophy,
-} from "lucide-react";
+  IconCalendar, IconGauge, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
+} from "@tabler/icons-react";
 import {
   Area, AreaChart, CartesianGrid, XAxis, YAxis,
 } from "recharts";
@@ -89,17 +89,17 @@ export default function PublicProfilePage() {
       {stats && (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard icon={<TrendingUp className="size-4" />} label="avg wpm (last 10)" value={String(stats.avgWpm10)} />
-            <StatCard icon={<Gauge className="size-4" />} label="avg wpm (all)" value={String(stats.avgWpmAll)} />
-            <StatCard icon={<Target className="size-4" />} label="avg accuracy" value={`${stats.avgAccuracy}%`} />
-            <StatCard icon={<Timer className="size-4" />} label="time typed" value={formatDuration(stats.timeTypedSeconds)} />
+            <StatCard icon={<IconTrendingUp className="size-4" />} label="avg wpm (last 10)" value={String(stats.avgWpm10)} />
+            <StatCard icon={<IconGauge className="size-4" />} label="avg wpm (all)" value={String(stats.avgWpmAll)} />
+            <StatCard icon={<IconTarget className="size-4" />} label="avg accuracy" value={`${stats.avgAccuracy}%`} />
+            <StatCard icon={<IconStopwatch className="size-4" />} label="time typed" value={formatDuration(stats.timeTypedSeconds)} />
           </div>
 
           {bestBoardEntries.length > 0 && (
             <Card className="gap-3 py-4">
               <CardHeader className="px-4">
                 <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">
-                  <Trophy className="text-primary size-4" /> personal bests
+                  <IconTrophy className="text-primary size-4" /> personal bests
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-wrap gap-2 px-4">
@@ -139,7 +139,7 @@ export default function PublicProfilePage() {
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">
-            <CalendarDays className="size-4" /> activity
+            <IconCalendar className="size-4" /> activity
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">

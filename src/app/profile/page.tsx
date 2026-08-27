@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Activity, CalendarDays, Gauge, Target, Timer, TrendingUp, Trophy,
-} from "lucide-react";
+  IconActivity, IconCalendar, IconGauge, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
+} from "@tabler/icons-react";
 import {
   Area, AreaChart, CartesianGrid, Line, XAxis, YAxis,
 } from "recharts";
@@ -50,23 +50,23 @@ export default function ProfilePage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-lg font-semibold">
-          <span className="text-primary">~/{user.username}</span>
+          {user.username}
           <span className="text-muted-foreground ml-3 font-mono text-xs">{user.email}</span>
         </h1>
         <Badge variant="outline">account active</Badge>
       </header>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard icon={<TrendingUp className="size-4" />} label="avg wpm (last 10)" value={loading ? null : String(stats!.avgWpm10)} />
-        <StatCard icon={<Gauge className="size-4" />} label="avg wpm (all)" value={loading ? null : String(stats!.avgWpmAll)} />
-        <StatCard icon={<Target className="size-4" />} label="avg accuracy" value={loading ? null : `${stats!.avgAccuracy}%`} />
-        <StatCard icon={<Timer className="size-4" />} label="time typed" value={loading ? null : formatDuration(stats!.timeTypedSeconds)} />
+        <StatCard icon={<IconTrendingUp className="size-4" />} label="avg wpm (last 10)" value={loading ? null : String(stats!.avgWpm10)} />
+        <StatCard icon={<IconGauge className="size-4" />} label="avg wpm (all)" value={loading ? null : String(stats!.avgWpmAll)} />
+        <StatCard icon={<IconTarget className="size-4" />} label="avg accuracy" value={loading ? null : `${stats!.avgAccuracy}%`} />
+        <StatCard icon={<IconStopwatch className="size-4" />} label="time typed" value={loading ? null : formatDuration(stats!.timeTypedSeconds)} />
       </div>
 
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">
-            <Trophy className="text-primary size-4" /> personal bests by board
+            <IconTrophy className="text-primary size-4" /> personal bests by board
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2 px-4">
@@ -91,7 +91,7 @@ export default function ProfilePage() {
         <Card className="gap-2 py-4">
           <CardHeader className="px-4">
             <CardTitle className="text-xs tracking-widest uppercase">
-              wpm -- last {Math.min(100, chartData.length)} tests
+              wpm — last {Math.min(100, chartData.length)} tests
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4">
@@ -131,7 +131,7 @@ export default function ProfilePage() {
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">
-            <CalendarDays className="size-4" /> activity
+            <IconCalendar className="size-4" /> activity
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
@@ -145,7 +145,7 @@ export default function ProfilePage() {
 function EmptyChart() {
   return (
     <div className="border-border/60 text-muted-foreground flex h-48 items-center justify-center rounded-md border border-dashed text-xs">
-      <Activity className="mr-2 size-4" /> finish more tests to unlock trends
+      <IconActivity className="mr-2 size-4" /> finish more tests to unlock trends
     </div>
   );
 }

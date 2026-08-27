@@ -57,11 +57,11 @@ export default function TestPage() {
         const w = res.text.split(/\s+/).filter(Boolean);
         if (w.length === 0) throw new Error("empty prompt");
         if (res.fallback) {
-          toast.info(`${cfg.source} unavailable -- using english words`);
+          toast.info(`${cfg.source} unavailable — using english words`);
         }
         return w;
       } catch {
-        toast.warning(`couldn't fetch ${cfg.source} -- fell back to words`);
+        toast.warning(`couldn't fetch ${cfg.source} — fell back to words`);
         return randomWordSlice(want);
       }
     },
@@ -261,7 +261,7 @@ export default function TestPage() {
   const runningOrIdle = engine.status !== "finished";
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-8">
+    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6">
       <input
         ref={inputEl}
         className="pointer-events-none absolute size-0 opacity-0"
@@ -271,7 +271,7 @@ export default function TestPage() {
         onChange={() => {}}
       />
 
-      <div className="pb-6">
+      <div className="pb-4">
         <ConfigBar
           mode={settings.mode}
           duration={settings.duration}
@@ -325,9 +325,9 @@ export default function TestPage() {
             </div>
           </div>
 
-          <Progress value={engine.progress * 100} className="mb-8" aria-label="test progress" />
+          <Progress value={engine.progress * 100} className="mb-6" aria-label="test progress" />
 
-          <div className="relative">
+          <div className="relative flex-1">
             {loadingPrompt ? (
               <div className="flex flex-col gap-3 py-2">
                 <Skeleton className="h-7 w-4/5" />

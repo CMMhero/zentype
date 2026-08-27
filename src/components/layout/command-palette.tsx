@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  BookOpenText, Clapperboard, Eye, EyeOff, FlipVertical2, Globe, History, Keyboard, LayoutDashboard,
-  LetterText, List, Moon, RotateCcw, Settings, Trophy, Type, Volume2, VolumeX,
-} from "lucide-react";
+  IconBook, IconMovie, IconEye, IconEyeOff, IconFlipVertical,
+  IconGlobe, IconHistory, IconKeyboard, IconLayoutDashboard, IconLetterT,
+  IconList, IconMoon, IconRefresh, IconSettings, IconTrophy, IconTypography,
+  IconVolume, IconVolumeOff,
+} from "@tabler/icons-react";
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator,
 } from "~/components/ui/command";
@@ -112,18 +114,18 @@ export function CommandPalette() {
         )}
 
         <CommandGroup heading="navigate">
-          <CommandItem onSelect={() => go("/")}><Type /> test<Shortcut>alt+1</Shortcut></CommandItem>
-          <CommandItem onSelect={() => go("/leaderboard")}><Trophy /> leaderboard<Shortcut>alt+2</Shortcut></CommandItem>
-          <CommandItem onSelect={() => go("/profile")}><LayoutDashboard /> profile<Shortcut>alt+3</Shortcut></CommandItem>
-          <CommandItem onSelect={() => go("/history")}><History /> history<Shortcut>alt+4</Shortcut></CommandItem>
-          <CommandItem onSelect={() => go("/settings")}><Settings /> settings<Shortcut>alt+5</Shortcut></CommandItem>
+          <CommandItem onSelect={() => go("/")}><IconTypography /> test<Shortcut>alt+1</Shortcut></CommandItem>
+          <CommandItem onSelect={() => go("/leaderboard")}><IconTrophy /> leaderboard<Shortcut>alt+2</Shortcut></CommandItem>
+          <CommandItem onSelect={() => go("/profile")}><IconLayoutDashboard /> profile<Shortcut>alt+3</Shortcut></CommandItem>
+          <CommandItem onSelect={() => go("/history")}><IconHistory /> history<Shortcut>alt+4</Shortcut></CommandItem>
+          <CommandItem onSelect={() => go("/settings")}><IconSettings /> settings<Shortcut>alt+5</Shortcut></CommandItem>
         </CommandGroup>
 
         <CommandSeparator />
 
         <CommandGroup heading="actions">
           <CommandItem onSelect={() => { close(); window.dispatchEvent(new CustomEvent("zt:restart")); }}>
-            <RotateCcw /> restart test<Shortcut>tab</Shortcut>
+            <IconRefresh /> restart test<Shortcut>tab</Shortcut>
           </CommandItem>
         </CommandGroup>
 
@@ -146,12 +148,12 @@ export function CommandPalette() {
 
         <CommandGroup heading="prompt source">
           {([
-            ["words", LetterText, "random english words"],
-            ["quotes", BookOpenText, "famous quotes"],
-            ["anime", Clapperboard, "anime synopses"],
-            ["wiki", Globe, "wikipedia extracts"],
-            ["dictionary", BookOpenText, "dictionary definitions"],
-          ] as [PromptSource, typeof Globe, string][]).map(([src, Icon, desc]) => (
+            ["words", IconLetterT, "random english words"],
+            ["quotes", IconBook, "famous quotes"],
+            ["anime", IconMovie, "anime synopses"],
+            ["wiki", IconGlobe, "wikipedia extracts"],
+            ["dictionary", IconBook, "dictionary definitions"],
+          ] as [PromptSource, typeof IconGlobe, string][]).map(([src, Icon, desc]) => (
             <CommandItem key={src} onSelect={() => { update({ source: src }); close(); }} className={active(settings.source === src)}>
               <Icon /> {SOURCE_LABELS[src]}<CommandDesc>{desc}</CommandDesc>
             </CommandItem>
@@ -163,7 +165,7 @@ export function CommandPalette() {
         <CommandGroup heading="theme">
           {THEMES.map((t) => (
             <CommandItem key={t.id} onSelect={() => { update({ themeId: t.id }); close(); }} className={active(settings.themeId === t.id)}>
-              <Moon />
+              <IconMoon />
               <span className="mr-1.5 inline-flex gap-0.5" aria-hidden>
                 <span className="size-3 rounded-sm border border-border" style={{ background: t.vars["--background"] }} />
                 <span className="size-3 rounded-sm" style={{ background: t.vars["--primary"] }} />
@@ -177,7 +179,7 @@ export function CommandPalette() {
 
         <CommandGroup heading="sound">
           <CommandItem onSelect={() => update({ sound: { ...settings.sound, enabled: !settings.sound.enabled } })}>
-            {settings.sound.enabled ? <Volume2 /> : <VolumeX />}
+            {settings.sound.enabled ? <IconVolume /> : <IconVolumeOff />}
             sound {settings.sound.enabled ? "on" : "off"}<CommandDesc>enable or disable keystroke audio feedback</CommandDesc>
           </CommandItem>
           <CommandItem onSelect={() => update({ soundOnError: !settings.soundOnError })}>
@@ -195,7 +197,7 @@ export function CommandPalette() {
         <CommandGroup heading="caret style">
           {CARET_STYLES.map((c) => (
             <CommandItem key={c.value} onSelect={() => { update({ caretStyle: c.value }); close(); }} className={active(settings.caretStyle === c.value)}>
-              <Type /> {c.label}<CommandDesc>{c.desc}</CommandDesc>
+              <IconTypography /> {c.label}<CommandDesc>{c.desc}</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -205,7 +207,17 @@ export function CommandPalette() {
         <CommandGroup heading="font size">
           {FONT_SIZES.map((f) => (
             <CommandItem key={f.value} onSelect={() => { update({ fontSize: f.value }); close(); }} className={active(settings.fontSize === f.value)}>
-              <Type /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
+              <IconTypography /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+
+        <CommandSeparator />
+
+        <CommandGroup heading="font">
+          {FONT_FAMILIES.map((f) => (
+            <CommandItem key={f.value} onSelect={() => { update({ fontFamily: f.value }); close(); }} className={active(settings.fontFamily === f.value)}>
+              <IconTypography /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -215,7 +227,7 @@ export function CommandPalette() {
         <CommandGroup heading="visible lines">
           {([1, 2, 3] as const).map((n) => (
             <CommandItem key={n} onSelect={() => { update({ visibleLines: n }); close(); }} className={active(settings.visibleLines === n)}>
-              <List /> {n} line{n > 1 ? "s" : ""}<CommandDesc>show {n} line{n > 1 ? "s" : ""} of text at a time</CommandDesc>
+              <IconList /> {n} line{n > 1 ? "s" : ""}<CommandDesc>show {n} line{n > 1 ? "s" : ""} of text at a time</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -224,7 +236,7 @@ export function CommandPalette() {
 
         <CommandGroup heading="gameplay">
           <CommandItem onSelect={() => update({ blindMode: !settings.blindMode })}>
-            {settings.blindMode ? <EyeOff /> : <Eye />}
+            {settings.blindMode ? <IconEyeOff /> : <IconEye />}
             blind mode {settings.blindMode ? "on" : "off"}<CommandDesc>hide error coloring</CommandDesc>
           </CommandItem>
           <CommandItem onSelect={() => update({ stopOnError: !settings.stopOnError })}>
@@ -245,24 +257,14 @@ export function CommandPalette() {
 
         <CommandGroup heading="appearance">
           <CommandItem onSelect={() => update({ showKeyboard: !settings.showKeyboard })}>
-            <Keyboard /> virtual keyboard {settings.showKeyboard ? "on" : "off"}<CommandDesc>show key highlighter</CommandDesc>
+            <IconKeyboard /> virtual keyboard {settings.showKeyboard ? "on" : "off"}<CommandDesc>show key highlighter</CommandDesc>
           </CommandItem>
           <CommandItem onSelect={() => update({ smoothCaret: !settings.smoothCaret })}>
-            <Eye /> smooth caret {settings.smoothCaret ? "on" : "off"}<CommandDesc>animate caret movement</CommandDesc>
+            <IconEye /> smooth caret {settings.smoothCaret ? "on" : "off"}<CommandDesc>animate caret movement</CommandDesc>
           </CommandItem>
           <CommandItem onSelect={() => update({ flipColors: !settings.flipColors })}>
-            <FlipVertical2 /> flip colors {settings.flipColors ? "on" : "off"}<CommandDesc>invert the entire ui</CommandDesc>
+            <IconFlipVertical /> flip colors {settings.flipColors ? "on" : "off"}<CommandDesc>invert the entire ui</CommandDesc>
           </CommandItem>
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        <CommandGroup heading="font">
-          {FONT_FAMILIES.map((f) => (
-            <CommandItem key={f.value} onSelect={() => { update({ fontFamily: f.value }); close(); }} className={active(settings.fontFamily === f.value)}>
-              <Type /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
-            </CommandItem>
-          ))}
         </CommandGroup>
       </CommandList>
     </CommandDialog>
