@@ -3,7 +3,10 @@ export type PromptSource = "words";
 export type CaretStyle = "line" | "block" | "underline" | "off";
 export type FontSizeKey = "sm" | "md" | "lg" | "xl";
 export type SoundVariant = "click" | "thock" | "beep";
-export type FontFamily = "geist-mono" | "inter" | "jetbrains-mono" | "sans" | "serif";
+export type FontFamily =
+  | "geist-mono" | "inter" | "jetbrains-mono"
+  | "dm-sans" | "space-grotesk" | "nunito-sans" | "work-sans"
+  | "playfair-display" | "lora" | "merriweather";
 
 export interface SoundSettings {
   enabled: boolean;
@@ -28,7 +31,6 @@ export interface GameSettings {
   fontSize: FontSizeKey;
   fontFamily: FontFamily;
   showKeyboard: boolean;
-  flipColors: boolean;
   visibleLines: 1 | 2 | 3;
   hideLiveStats: boolean;
 }

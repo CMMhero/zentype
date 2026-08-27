@@ -36,8 +36,13 @@ const FONT_BODY_CLASSES: Record<string, string> = {
   "geist-mono": "font-geist-mono",
   inter: "font-inter",
   "jetbrains-mono": "font-jetbrains-mono",
-  sans: "font-sans",
-  serif: "font-serif",
+  "dm-sans": "font-dm-sans",
+  "space-grotesk": "font-space-grotesk",
+  "nunito-sans": "font-nunito-sans",
+  "work-sans": "font-work-sans",
+  "playfair-display": "font-playfair-display",
+  lora: "font-lora",
+  merriweather: "font-merriweather",
 };
 
 export function AppShell({
@@ -51,7 +56,6 @@ export function AppShell({
   const themeId = useSettingsStore((s) => s.settings.themeId);
   const fontFamily = useSettingsStore((s) => s.settings.fontFamily);
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
-  const flipColors = useSettingsStore((s) => s.settings.flipColors);
 
   useGlobalHotkeys();
   useSettingsSync();
@@ -60,8 +64,7 @@ export function AppShell({
     const root = document.documentElement;
     root.setAttribute("data-theme", themeId);
     root.setAttribute("data-appearance", getTheme(themeId).appearance);
-    root.setAttribute("data-flip", String(flipColors));
-  }, [themeId, flipColors]);
+  }, [themeId]);
 
   // Apply font family to body
   useEffect(() => {

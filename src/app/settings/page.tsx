@@ -153,8 +153,13 @@ export default function SettingsPage() {
                     <SelectItem value="geist-mono">Geist Mono</SelectItem>
                     <SelectItem value="inter">Inter</SelectItem>
                     <SelectItem value="jetbrains-mono">JetBrains Mono</SelectItem>
-                    <SelectItem value="sans">System Sans</SelectItem>
-                    <SelectItem value="serif">Serif</SelectItem>
+                    <SelectItem value="dm-sans">DM Sans</SelectItem>
+                    <SelectItem value="space-grotesk">Space Grotesk</SelectItem>
+                    <SelectItem value="nunito-sans">Nunito Sans</SelectItem>
+                    <SelectItem value="work-sans">Work Sans</SelectItem>
+                    <SelectItem value="playfair-display">Playfair Display</SelectItem>
+                    <SelectItem value="lora">Lora</SelectItem>
+                    <SelectItem value="merriweather">Merriweather</SelectItem>
                   </SelectContent>
                 </Select>
               </SettingRow>
@@ -181,9 +186,6 @@ export default function SettingsPage() {
               </SettingRow>
               <SettingRow label="virtual keyboard" hint="show key highlighter under the test">
                 <Switch checked={settings.showKeyboard} onCheckedChange={(v) => update({ showKeyboard: v })} />
-              </SettingRow>
-              <SettingRow label="flip colors" hint="invert the entire ui (light-mode hack)">
-                <Switch checked={settings.flipColors} onCheckedChange={(v) => update({ flipColors: v })} />
               </SettingRow>
             </CardContent>
           </Card>

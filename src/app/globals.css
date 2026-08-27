@@ -1,6 +1,13 @@
 @import "@fontsource-variable/geist-mono";
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource-variable/dm-sans";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/nunito-sans";
+@import "@fontsource-variable/work-sans";
+@import "@fontsource-variable/playfair-display";
+@import "@fontsource-variable/lora";
+@import "@fontsource-variable/merriweather";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -44,7 +51,13 @@
   --font-geist-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-inter: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-jetbrains-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-dm-sans: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-space-grotesk: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-nunito-sans: "Nunito Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-work-sans: "Work Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-playfair-display: "Playfair Display Variable", Georgia, "Times New Roman", serif;
+  --font-lora: "Lora Variable", Georgia, "Times New Roman", serif;
+  --font-merriweather: "Merriweather Variable", Georgia, "Times New Roman", serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
@@ -118,16 +131,18 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--muted-foreground);
   }
-  html[data-flip="true"] body {
-    filter: invert(1) hue-rotate(180deg);
-  }
 }
 
 .font-geist-mono { font-family: var(--font-geist-mono); }
 .font-inter { font-family: var(--font-inter); }
 .font-jetbrains-mono { font-family: var(--font-jetbrains-mono); }
-.font-sans { font-family: var(--font-sans); }
-.font-serif { font-family: Georgia, "Times New Roman", serif; }
+.font-dm-sans { font-family: var(--font-dm-sans); }
+.font-space-grotesk { font-family: var(--font-space-grotesk); }
+.font-nunito-sans { font-family: var(--font-nunito-sans); }
+.font-work-sans { font-family: var(--font-work-sans); }
+.font-playfair-display { font-family: var(--font-playfair-display); }
+.font-lora { font-family: var(--font-lora); }
+.font-merriweather { font-family: var(--font-merriweather); }
 
 .zt-caret-blink {
   animation: zt-blink 1s step-end infinite;

@@ -14,8 +14,13 @@ const FONT_CLASSES: Record<FontFamily, string> = {
   "geist-mono": "font-geist-mono",
   "inter": "font-inter",
   "jetbrains-mono": "font-jetbrains-mono",
-  "sans": "font-sans",
-  "serif": "font-serif",
+  "dm-sans": "font-dm-sans",
+  "space-grotesk": "font-space-grotesk",
+  "nunito-sans": "font-nunito-sans",
+  "work-sans": "font-work-sans",
+  "playfair-display": "font-playfair-display",
+  "lora": "font-lora",
+  "merriweather": "font-merriweather",
 };
 
 interface TypingDisplayProps {

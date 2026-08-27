@@ -38,11 +38,23 @@ ALTER TABLE user_achievements ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can read own points"
   ON user_points FOR SELECT USING (auth.uid() = user_id);
 
+CREATE POLICY "Users can insert own points"
+  ON user_points FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own points"
+  ON user_points FOR UPDATE USING (auth.uid() = user_id);
+
 CREATE POLICY "Users can read own point events"
   ON point_events FOR SELECT USING (auth.uid() = user_id);
 
+CREATE POLICY "Users can insert own point events"
+  ON point_events FOR INSERT WITH CHECK (auth.uid() = user_id);
+
 CREATE POLICY "Users can read own achievements"
   ON user_achievements FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own achievements"
+  ON user_achievements FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Functions to upsert points atomically
 CREATE OR REPLACE FUNCTION upsert_user_points(p_user_id uuid, p_xp integer)

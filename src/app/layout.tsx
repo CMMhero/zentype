@@ -22,7 +22,6 @@ const themeBootstrapScript = `
     var map = ${JSON.stringify(appearanceMap)};
     document.documentElement.setAttribute('data-theme', t);
     document.documentElement.setAttribute('data-appearance', map[t] || 'dark');
-    document.documentElement.setAttribute('data-flip', String(!!(st && st.flipColors)));
   } catch(e) {}
 })();
 `;

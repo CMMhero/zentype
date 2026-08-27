@@ -189,7 +189,7 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
     const weekDates = getWeekDates(referenceDate, startOfWeek)
     const { cells: gitCells, dates: gitDates } = getGitCells(today, startOfWeek)
     const gitColumnCount = Math.ceil(gitCells.length / 7)
-    const gitGridTemplateColumns = `repeat(${gitColumnCount}, 1rem)`
+    const gitGridTemplateColumns = `repeat(${gitColumnCount}, 0.75rem)`
     const gitMonthLabels: Array<{ column: number; label: string }> = []
     const seenGitMonths = new Set<string>()
 
@@ -441,7 +441,7 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                     {gitCells.map((date, index) => {
                       if (!date) {
                         return (
-                          <div key={`git-empty-${index}`} className="h-4 w-4" />
+                          <div key={`git-empty-${index}`} className="h-3 w-3" />
                         )
                       }
                       const { isToday, isActive, usedFreeze } =
@@ -462,7 +462,7 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                               aria-label={`${dateLabel}, ${usedFreeze ? "freeze used" : isActive ? "streak active" : "no activity"}`}
                               onClick={() => onDayClick?.(date, isActive)}
                               className={cn(
-                                "border-border/40 h-4 w-4 rounded-[0.4rem] border transition-colors",
+                                "border-border/40 h-3 w-3 rounded-[0.3rem] border transition-colors",
                                 "hover:ring-ring hover:ring-1",
                                 isToday &&
                                   "!bg-primary-foreground !text-primary border-primary",

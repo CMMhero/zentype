@@ -20,7 +20,6 @@ const DEFAULT_SETTINGS: GameSettings = {
   fontSize: "lg",
   fontFamily: "geist-mono",
   showKeyboard: false,
-  flipColors: false,
   visibleLines: 3,
   hideLiveStats: false,
 };

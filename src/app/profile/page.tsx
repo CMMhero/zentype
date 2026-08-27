@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconActivity, IconAward, IconCalendar, IconCloudOff, IconGauge, IconHistory,
+  IconActivity, IconAward, IconCalendar, IconGauge, IconHistory,
   IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
 } from "@tabler/icons-react";
 import {
-  Area, AreaChart, CartesianGrid, Line, XAxis, YAxis,
+  Area, AreaChart, CartesianGrid, XAxis, YAxis,
 } from "recharts";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
@@ -23,7 +23,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from "~/components/ui/dialog";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
-import { AchievementBadge, type UserAchievement } from "~/components/ui/achievement-badge";
+import { AchievementBadge } from "~/components/ui/achievement-badge";
 import { PointsBadge } from "~/components/ui/points-badge";
 import { WpmChart } from "~/components/charts/wpm-chart";
 import { getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
@@ -216,7 +216,7 @@ export default function ProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <StreakCalendar streak={streakPeriods} view="year" />
+          <StreakCalendar streak={streakPeriods} view="year" className="max-w-none" />
         </CardContent>
       </Card>
 
@@ -364,7 +364,7 @@ function ChartCard({ title, config, data, dataKey, loading, domain }: {
           <Skeleton className="h-32 w-full" />
         ) : hasData ? (
           <ChartContainer config={config} className="h-32 w-full">
-            <AreaChart data={data.map((r, i) => ({ n: i + 1, [dataKey]: (r as Record<string, number>)[dataKey] }))}>
+            <AreaChart data={data.map((r, i) => ({ n: i + 1, [dataKey]: (r as unknown as Record<string, number>)[dataKey] }))}>
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
               <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
               <YAxis domain={domain ?? [0, "auto"]} tickLine={false} axisLine={false} width={36} />

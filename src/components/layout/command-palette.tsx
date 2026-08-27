@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconArrowRight, IconBlender, IconClock, IconDeviceDesktop,
-  IconEye, IconEyeOff, IconFlipVertical, IconKeyboard, IconLayoutDashboard,
+  IconEye, IconEyeOff, IconKeyboard, IconLayoutDashboard,
   IconLetterT, IconList, IconMoon, IconPlayerPlay, IconRefresh, IconSearch,
   IconSettings, IconSparkles, IconTypography, IconUser, IconVolume, IconVolumeOff,
 } from "@tabler/icons-react";
@@ -46,8 +46,13 @@ const FONT_FAMILIES: { value: FontFamily; label: string; desc: string }[] = [
   { value: "geist-mono", label: "Geist Mono", desc: "default monospace" },
   { value: "inter", label: "Inter", desc: "clean sans-serif" },
   { value: "jetbrains-mono", label: "JetBrains Mono", desc: "developer monospace" },
-  { value: "sans", label: "System Sans", desc: "system ui sans-serif" },
-  { value: "serif", label: "Serif", desc: "classic serif" },
+  { value: "dm-sans", label: "DM Sans", desc: "geometric sans-serif" },
+  { value: "space-grotesk", label: "Space Grotesk", desc: "techy geometric" },
+  { value: "nunito-sans", label: "Nunito Sans", desc: "soft rounded sans" },
+  { value: "work-sans", label: "Work Sans", desc: "clean modern sans" },
+  { value: "playfair-display", label: "Playfair Display", desc: "elegant serif" },
+  { value: "lora", label: "Lora", desc: "readable serif" },
+  { value: "merriweather", label: "Merriweather", desc: "sturdy serif" },
 ];
 
 interface UserResult {
@@ -82,10 +87,13 @@ export function CommandPalette() {
     const q = userQuery.trim();
     if (!q) { setUserResults([]); setUserLoading(false); return; }
     setUserLoading(true);
+    let cancelled = false;
     const t = setTimeout(() => {
-      void searchUsers(q).then((r) => { setUserResults(r); setUserLoading(false); });
+      void searchUsers(q)
+        .then((r) => { if (!cancelled) { setUserResults(r); setUserLoading(false); } })
+        .catch(() => { if (!cancelled) setUserLoading(false); });
     }, 300);
-    return () => clearTimeout(t);
+    return () => { cancelled = true; clearTimeout(t); };
   }, [userQuery]);
 
   const go = (to: string) => { setOpen(false); router.push(to); };
@@ -260,9 +268,6 @@ export function CommandPalette() {
           </CommandItem>
           <CommandItem onSelect={() => update({ smoothCaret: !settings.smoothCaret })}>
             <IconEye /> smooth caret {settings.smoothCaret ? "on" : "off"}<CommandDesc>animate caret movement</CommandDesc>
-          </CommandItem>
-          <CommandItem onSelect={() => update({ flipColors: !settings.flipColors })}>
-            <IconFlipVertical /> flip colors {settings.flipColors ? "on" : "off"}<CommandDesc>invert the entire ui</CommandDesc>
           </CommandItem>
         </CommandGroup>
       </CommandList>

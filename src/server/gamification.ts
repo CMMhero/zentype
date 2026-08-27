@@ -166,6 +166,8 @@ export async function processTestResult(
       wpm: result.wpm,
       accuracy: result.accuracy,
     }),
+  }).then(({ error }) => {
+    if (error) console.error("[zentype] record_point_event failed:", error.message);
   });
 
   // Check achievements
@@ -189,6 +191,8 @@ export async function processTestResult(
       p_user_id: ctx.user.id,
       p_achievement_id: a.id,
       p_xp: a.xp,
+    }).then(({ error }) => {
+      if (error) console.error("[zentype] unlock_achievement failed:", error.message);
     });
 
     newAchievements.push({ id: a.id, name: a.name, description: a.description, xp: a.xp });

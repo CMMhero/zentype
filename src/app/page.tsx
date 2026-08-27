@@ -142,7 +142,7 @@ export default function TestPage() {
                 unlockedAt: new Date().toISOString(),
               });
             }
-          });
+          }).catch((err) => console.error("[zentype] processTestResult failed:", err));
         } else if (res.reason === "guest") {
           setSaveState("guest");
         } else {
