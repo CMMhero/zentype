@@ -168,69 +168,84 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Charts — wpm + accuracy only */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <ChartCard title="wpm trend" config={wpmConfig} data={chartData} dataKey="wpm" loading={loading} />
-        <ChartCard title="accuracy trend" config={accConfig} data={chartData} dataKey="accuracy" loading={loading} domain={[70, 100]} />
-      </div>
-
-      {/* Compact Streak + Achievements — side by side on desktop */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* Streak card — compact, combined week + year */}
-        <Card className="flex flex-col gap-3 py-4">
-          <CardHeader className="px-4">
-            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-              <IconCalendar className="size-4" /> streak
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 px-4">
-            <div className="mb-3 flex items-end gap-6">
-              <div>
-                <span className="text-3xl font-bold tabular-nums">{currentStreak}</span>
-                <span className="ml-1 text-sm text-muted-foreground">days</span>
-              </div>
-              <div className="text-right">
-                <span className="text-xs text-muted-foreground">best</span>
-                <span className="ml-1 text-lg font-bold tabular-nums">{longestStreak}</span>
-                <span className="ml-0.5 text-xs text-muted-foreground">days</span>
-              </div>
+      {/* Charts — wpm + accuracy in one card */}
+      <Card className="gap-2 py-3">
+        <CardHeader className="px-4">
+          <CardTitle className="text-xs font-semibold tracking-widest uppercase">performance trends</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4 px-4">
+          {loading ? (
+            <>
+              <Skeleton className="h-32 w-full" />
+              <Skeleton className="h-32 w-full" />
+            </>
+          ) : chartData.length >= 2 ? (
+            <>
+              <DualChart title="wpm" config={wpmConfig} data={chartData} dataKey="wpm" />
+              <DualChart title="accuracy" config={accConfig} data={chartData} dataKey="accuracy" domain={[70, 100]} />
+            </>
+          ) : (
+            <div className="flex h-32 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+              <IconActivity className="mr-2 size-4" /> finish more tests
             </div>
-            <StreakCalendar streak={streakPeriods} view="week" startOfWeek={0} className="max-w-none mb-4" />
-            <div className="border-t border-border/40 pt-3">
-              <p className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground mb-2">last 365 days</p>
-              <StreakCalendar streak={streakPeriods} view="year" compact className="max-w-none" />
-            </div>
-          </CardContent>
-        </Card>
+          )}
+        </CardContent>
+      </Card>
 
-        {/* Achievements card — compact, fixed height */}
-        <Card className="flex flex-col gap-3 py-4">
-          <CardHeader className="px-4">
-            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-              <IconAward className="size-4" /> achievements
-              <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{(achievements ?? []).length}</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 overflow-hidden px-4">
-            {bestAch.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {bestAch.map((a) => (
-                  <AchievementBadge
-                    key={a.id}
-                    achievement={{ id: a.id, name: a.name, trigger: a.trigger, achievedAt: a.achievedAt, progress: a.progress }}
-                    badgeSize="sm"
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">no achievements yet — finish tests to earn badges</p>
-            )}
-            {lockedAch.length > 0 && (
-              <p className="mt-2 text-[10px] text-muted-foreground">{lockedAch.length} locked — keep typing to unlock</p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      {/* Streak — full width */}
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <IconCalendar className="size-4" /> streak
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4">
+          <div className="mb-3 flex items-end gap-6">
+            <div>
+              <span className="text-3xl font-bold tabular-nums">{currentStreak}</span>
+              <span className="ml-1 text-sm text-muted-foreground">days</span>
+            </div>
+            <div className="text-right">
+              <span className="text-xs text-muted-foreground">best</span>
+              <span className="ml-1 text-lg font-bold tabular-nums">{longestStreak}</span>
+              <span className="ml-0.5 text-xs text-muted-foreground">days</span>
+            </div>
+          </div>
+          <StreakCalendar streak={streakPeriods} view="week" startOfWeek={0} className="max-w-none mb-4" />
+          <div className="border-t border-border/40 pt-3">
+            <p className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground mb-2">last 365 days</p>
+            <StreakCalendar streak={streakPeriods} view="year" compact className="max-w-none" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Achievements — compact */}
+      <Card className="gap-3 py-3">
+        <CardHeader className="px-4">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <IconAward className="size-4" /> achievements
+            <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{(achievements ?? []).length}</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="overflow-hidden px-4">
+          {bestAch.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5">
+              {bestAch.map((a) => (
+                <AchievementBadge
+                  key={a.id}
+                  achievement={{ id: a.id, name: a.name, trigger: a.trigger, achievedAt: a.achievedAt, progress: a.progress }}
+                  badgeSize="xs"
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground">no achievements yet — finish tests to earn badges</p>
+          )}
+          {lockedAch.length > 0 && (
+            <p className="mt-1.5 text-[10px] text-muted-foreground">{lockedAch.length} locked — keep typing to unlock</p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Test history — merged from /history */}
       <Card className="gap-3 py-4">
@@ -332,40 +347,27 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
-function ChartCard({ title, config, data, dataKey, loading, domain }: {
+function DualChart({ title, config, data, dataKey, domain }: {
   title: string;
   config: ChartConfig;
   data: TestResult[];
   dataKey: string;
-  loading: boolean;
   domain?: [number, number];
 }) {
-  const hasData = data.length >= 2;
+  const chartData = data.map((r, i) => ({ n: i + 1, [dataKey]: (r as unknown as Record<string, number>)[dataKey] }));
   return (
-    <Card className="gap-2 py-3">
-      <CardHeader className="px-4">
-        <CardTitle className="text-xs font-semibold tracking-widest uppercase">{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="px-4">
-        {loading ? (
-          <Skeleton className="h-32 w-full" />
-        ) : hasData ? (
-          <ChartContainer config={config} className="h-32 w-full">
-            <AreaChart data={data.map((r, i) => ({ n: i + 1, [dataKey]: (r as unknown as Record<string, number>)[dataKey] }))}>
-              <CartesianGrid vertical={false} strokeDasharray="3 3" />
-              <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
-              <YAxis domain={domain ?? [0, "auto"]} tickLine={false} axisLine={false} width={36} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Area dataKey={dataKey} type="monotone" stroke={`var(--color-${dataKey})`} fill={`var(--color-${dataKey})`} fillOpacity={0.15} strokeWidth={2} dot={false} />
-            </AreaChart>
-          </ChartContainer>
-        ) : (
-          <div className="flex h-32 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
-            <IconActivity className="mr-2 size-4" /> finish more tests
-          </div>
-        )}
-      </CardContent>
-    </Card>
+    <div>
+      <p className="mb-1 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{title}</p>
+      <ChartContainer config={config} className="h-24 w-full">
+        <AreaChart data={chartData}>
+          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
+          <YAxis domain={domain ?? [0, "auto"]} tickLine={false} axisLine={false} width={36} />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <Area dataKey={dataKey} type="monotone" stroke={`var(--color-${dataKey})`} fill={`var(--color-${dataKey})`} fillOpacity={0.15} strokeWidth={2} dot={false} />
+        </AreaChart>
+      </ChartContainer>
+    </div>
   );
 }
 

@@ -21,11 +21,12 @@ interface UserAchievement extends Achievement {
 
 interface AchievementBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   achievement: UserAchievement
-  badgeSize?: "sm" | "default" | "lg" | "xl"
+  badgeSize?: "xs" | "sm" | "default" | "lg" | "xl"
   onAchievementClick?: (achievement: UserAchievement) => void
 }
 
 const badgeSizeMap = {
+  xs: "h-8 w-8",
   sm: "h-12 w-12",
   default: "h-16 w-16",
   lg: "h-20 w-20",
@@ -33,6 +34,7 @@ const badgeSizeMap = {
 } as const
 
 const iconSizeMap = {
+  xs: "h-5 w-5",
   sm: "h-8 w-8",
   default: "h-10 w-10",
   lg: "h-12 w-12",
@@ -40,6 +42,7 @@ const iconSizeMap = {
 } as const
 
 const progressRingSizeMap = {
+  xs: 52,
   sm: 72,
   default: 88,
   lg: 104,
@@ -98,7 +101,8 @@ const AchievementBadge = React.forwardRef<
             : undefined
         }
         className={cn(
-          "bg-card flex flex-col items-center justify-center gap-2 rounded-lg border p-4",
+          "bg-card flex flex-col items-center justify-center gap-1 rounded-lg border",
+          badgeSize === "xs" ? "p-2 gap-1" : "gap-2 p-4",
           onAchievementClick && "cursor-pointer",
           !isUnlocked && "opacity-50",
           className
@@ -168,7 +172,8 @@ const AchievementBadge = React.forwardRef<
 
         <span
           className={cn(
-            "text-center text-sm leading-tight font-bold",
+            "text-center leading-tight font-bold",
+            badgeSize === "xs" ? "text-[9px]" : "text-sm",
             !isUnlocked && "text-muted-foreground"
           )}
         >
