@@ -22,7 +22,7 @@ export function VirtualKeyboard({ activeKey }: { activeKey: string | null }) {
               key={key}
               data-active={isActive(key)}
               className={cn(
-                "flex size-9 items-center justify-center rounded border text-xs font-medium uppercase transition-all duration-75",
+                "flex size-9 items-center justify-center rounded border text-xs font-medium transition-all duration-75",
                 isActive(key)
                   ? "border-primary bg-primary text-primary-foreground scale-95"
                   : "border-border bg-card text-muted-foreground",

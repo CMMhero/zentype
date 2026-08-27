@@ -81,6 +81,7 @@ const PointsBadge = React.forwardRef<HTMLDivElement, PointsBadgeProps>(
         <div className="flex items-center gap-2">
           {badgeUrl ? (
             <div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={badgeUrl}
                 alt=""

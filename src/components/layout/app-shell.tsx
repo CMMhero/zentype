@@ -9,7 +9,6 @@ import {
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -115,11 +114,6 @@ export function AppShell({
 
       <footer className="border-border/60 bg-secondary/40 text-muted-foreground mt-auto border-t">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 text-[11px]">
-          <span className="flex items-center gap-1.5">
-            <Badge variant="outline" className="h-4 px-1 text-[10px]">
-              {user ? `[${user.username}]` : "[guest]"}
-            </Badge>
-          </span>
           <span className="hidden sm:inline"><Kbd>tab</Kbd> restart · <Kbd>?</Kbd> shortcuts</span>
           <span className="ml-auto flex items-center gap-2">
             <span className="hidden sm:inline text-muted-foreground/60">v{typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "2.0.0"}</span>

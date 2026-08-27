@@ -129,6 +129,7 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                 )}
               >
                 {achievement.badgeUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={achievement.badgeUrl}
                     alt={achievement.name}

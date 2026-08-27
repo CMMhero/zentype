@@ -134,6 +134,7 @@ const AchievementBadge = React.forwardRef<
           ) : null}
 
           {achievement.badgeUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={achievement.badgeUrl}
               alt={`${achievement.name} badge - ${statusLabel}`}

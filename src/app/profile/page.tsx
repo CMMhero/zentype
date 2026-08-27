@@ -114,7 +114,6 @@ export default function ProfilePage() {
         </h1>
         <div className="flex items-center gap-3">
           {points && <PointsBadge name="XP" total={points.totalXP} size="sm" />}
-          <Badge variant="outline">account active</Badge>
         </div>
       </header>
 
@@ -178,13 +177,13 @@ export default function ProfilePage() {
       {/* Compact Streak + Achievements — side by side on desktop */}
       <div className="grid gap-4 md:grid-cols-2">
         {/* Streak card — compact */}
-        <Card className="gap-3 py-4">
+        <Card className="flex flex-col gap-3 py-4">
           <CardHeader className="px-4">
             <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
               <IconCalendar className="size-4" /> streak
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-4">
+          <CardContent className="flex-1 px-4">
             <div className="mb-3 flex items-end gap-6">
               <div>
                 <span className="text-3xl font-bold tabular-nums">{currentStreak}</span>
@@ -200,15 +199,15 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Achievements card — compact */}
-        <Card className="gap-3 py-4">
+        {/* Achievements card — compact, fixed height */}
+        <Card className="flex flex-col gap-3 py-4">
           <CardHeader className="px-4">
             <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
               <IconAward className="size-4" /> achievements
               <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{(achievements ?? []).length}</Badge>
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-4">
+          <CardContent className="flex-1 overflow-hidden px-4">
             {bestAch.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {bestAch.map((a) => (

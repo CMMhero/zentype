@@ -182,6 +182,7 @@ const LeaderboardRankings = React.forwardRef<
                 </div>
 
                 {ranking.avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={ranking.avatarUrl}
                     alt={`${displayName} avatar`}

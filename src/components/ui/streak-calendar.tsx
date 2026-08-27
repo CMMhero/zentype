@@ -416,7 +416,7 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
               </p>
             </div>
             <div className="overflow-x-auto">
-              <div className="inline-block pr-16">
+              <div className="inline-block min-w-full pr-4">
                 <div
                   aria-hidden="true"
                   className="mb-2 grid gap-1"
