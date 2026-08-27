@@ -34,8 +34,6 @@ import { formatDateTime } from "~/lib/utils";
 
 const wpmConfig = { wpm: { label: "wpm", color: "var(--chart-1)" } } satisfies ChartConfig;
 const accConfig = { accuracy: { label: "accuracy", color: "var(--chart-3)" } } satisfies ChartConfig;
-const rawConfig = { raw: { label: "raw wpm", color: "var(--chart-2)" } } satisfies ChartConfig;
-const consConfig = { consistency: { label: "consistency", color: "var(--chart-4)" } } satisfies ChartConfig;
 
 export default function ProfilePage() {
   const user = useUser();
@@ -146,12 +144,35 @@ export default function ProfilePage() {
         </Card>
       )}
 
-      {/* Charts — 2x2 grid */}
+      {/* Personal bests by board */}
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <IconTrophy className="text-primary size-4" /> personal bests
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2 px-4">
+          {loading ? (
+            Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-24" />)
+          ) : Object.keys(stats!.bestByBoard).length === 0 ? (
+            <span className="text-sm text-muted-foreground">no results yet</span>
+          ) : (
+            Object.entries(stats!.bestByBoard)
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .map(([board, wpm]) => (
+                <Badge key={board} variant="secondary" className="gap-1.5 py-1 text-xs">
+                  <span className="text-muted-foreground">{prettyBoard(board)}</span>
+                  <span className="text-primary font-bold tabular-nums">{wpm}</span>
+                </Badge>
+              ))
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Charts — wpm + accuracy only */}
       <div className="grid gap-4 md:grid-cols-2">
         <ChartCard title="wpm trend" config={wpmConfig} data={chartData} dataKey="wpm" loading={loading} />
         <ChartCard title="accuracy trend" config={accConfig} data={chartData} dataKey="accuracy" loading={loading} domain={[70, 100]} />
-        <ChartCard title="raw wpm" config={rawConfig} data={chartData} dataKey="rawWpm" loading={loading} />
-        <ChartCard title="consistency" config={consConfig} data={chartData} dataKey="consistency" loading={loading} domain={[0, 100]} />
       </div>
 
       {/* Compact Streak + Achievements — side by side on desktop */}
@@ -217,31 +238,6 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="px-4">
           <StreakCalendar streak={streakPeriods} view="year" className="max-w-none" />
-        </CardContent>
-      </Card>
-
-      {/* Personal bests by board */}
-      <Card className="gap-3 py-4">
-        <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconTrophy className="text-primary size-4" /> personal bests
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-wrap gap-2 px-4">
-          {loading ? (
-            Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-24" />)
-          ) : Object.keys(stats!.bestByBoard).length === 0 ? (
-            <span className="text-sm text-muted-foreground">no results yet</span>
-          ) : (
-            Object.entries(stats!.bestByBoard)
-              .sort((a, b) => a[0].localeCompare(b[0]))
-              .map(([board, wpm]) => (
-                <Badge key={board} variant="secondary" className="gap-1.5 py-1 text-xs">
-                  <span className="text-muted-foreground">{prettyBoard(board)}</span>
-                  <span className="text-primary font-bold tabular-nums">{wpm}</span>
-                </Badge>
-              ))
-          )}
         </CardContent>
       </Card>
 

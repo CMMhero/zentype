@@ -21,57 +21,73 @@ export async function getLeaderboard(data: {
 }): Promise<LeaderboardEntry[]> {
   const limit = Math.min(data.limit ?? 50, 100);
 
-  // fast path: Redis sorted set
-  try {
-    const redis = getRedis();
-    if (redis) {
-      const key = `lb:${boardKey(data.mode, data.variant)}`;
-      const raw = await redis.zrange(key, 0, limit * 4 - 1, { withScores: true });
-      const metaKey = `${key}:meta`;
-      const entries: Array<LeaderboardEntry & { _score: number }> = [];
-      for (let i = 0; i < raw.length; i += 2) {
-        const userId = String(raw[i]);
-        const score = Number(raw[i + 1]);
-        const metaJson = await redis.hget<string>(metaKey, userId);
-        let meta: Partial<MetaValue> = {};
-        try {
-          meta = metaJson ? JSON.parse(metaJson) : {};
-        } catch { /* ignore */ }
-        if (!meta.username) continue;
-        const decoded = lbDecode(score);
-        entries.push({
-          rank: 0,
-          userId,
-          username: meta.username,
-          avatarUrl: meta.avatarUrl ?? null,
-          wpm: decoded.wpm,
-          accuracy: meta.accuracy ?? decoded.accuracy,
-          consistency: meta.consistency ?? 0,
-          createdAt: meta.createdAt ?? new Date(0).toISOString(),
-          _score: score,
-        });
+  // For "today"/"week" periods, always use Postgres — Redis sorted sets
+  // only store all-time bests per user, so date filtering doesn't work.
+  if (!data.since) {
+    // fast path: Redis sorted set (all-time only)
+    try {
+      const redis = getRedis();
+      if (redis) {
+        const key = `lb:${boardKey(data.mode, data.variant)}`;
+        const fetchCount = limit * 4;
+        const raw = await redis.zrange(key, 0, fetchCount - 1, { withScores: true });
+
+        // Extract user IDs and scores
+        const userIds: string[] = [];
+        const scoreMap = new Map<string, number>();
+        for (let i = 0; i < raw.length; i += 2) {
+          const userId = String(raw[i]);
+          const score = Number(raw[i + 1]);
+          userIds.push(userId);
+          scoreMap.set(userId, score);
+        }
+
+        if (userIds.length === 0) return [];
+
+        // Batch fetch all metadata in one call
+        const metaKey = `${key}:meta`;
+        const metaValues = await redis.hmget<Record<string, string>>(metaKey, ...userIds);
+
+        const entries: Array<LeaderboardEntry & { _score: number }> = [];
+        for (const userId of userIds) {
+          const metaJson = metaValues?.[userId] ?? null;
+          let meta: Partial<MetaValue> = {};
+          try {
+            meta = metaJson ? JSON.parse(metaJson) : {};
+          } catch { /* ignore */ }
+          if (!meta.username) continue;
+          const score = scoreMap.get(userId) ?? 0;
+          const decoded = lbDecode(score);
+          entries.push({
+            rank: 0,
+            userId,
+            username: meta.username,
+            avatarUrl: meta.avatarUrl ?? null,
+            wpm: decoded.wpm,
+            accuracy: meta.accuracy ?? decoded.accuracy,
+            consistency: meta.consistency ?? 0,
+            createdAt: meta.createdAt ?? new Date(0).toISOString(),
+            _score: score,
+          });
+        }
+
+        return entries.slice(0, limit).map((e, i) => ({
+          rank: i + 1,
+          userId: e.userId,
+          username: e.username,
+          avatarUrl: e.avatarUrl,
+          wpm: e.wpm,
+          accuracy: e.accuracy,
+          consistency: e.consistency,
+          createdAt: e.createdAt,
+        }));
       }
-      let filtered = entries;
-      if (data.since) {
-        const since = new Date(data.since).getTime();
-        filtered = entries.filter((e) => new Date(e.createdAt).getTime() >= since);
-      }
-      return filtered.slice(0, limit).map((e, i) => ({
-        rank: i + 1,
-        userId: e.userId,
-        username: e.username,
-        avatarUrl: e.avatarUrl,
-        wpm: e.wpm,
-        accuracy: e.accuracy,
-        consistency: e.consistency,
-        createdAt: e.createdAt,
-      }));
+    } catch (e) {
+      console.warn("[zentype] redis leaderboard read failed, using Postgres:", e);
     }
-  } catch (e) {
-    console.warn("[zentype] redis leaderboard read failed, using Postgres:", e);
   }
 
-  // fallback: aggregate from Postgres
+  // fallback / date-filtered: aggregate from Postgres
   const supabase = await getSupabaseServerClient();
   if (!supabase) return [];
   let q = supabase
