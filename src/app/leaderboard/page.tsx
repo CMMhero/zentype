@@ -44,13 +44,20 @@ export default function LeaderboardPage() {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [pending, startTransition] = useTransition();
   const [userPoints, setUserPoints] = useState<{ totalXP: number; level: number } | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    setLoaded(false);
     startTransition(() => { setEntries([]); });
     const since = periodToDate(period);
     void getLeaderboard({ mode, variant, limit: 50, since }).then((data) => {
-      if (!cancelled) startTransition(() => setEntries(data));
+      if (!cancelled) {
+        startTransition(() => setEntries(data));
+        setLoaded(true);
+      }
+    }).catch(() => {
+      if (!cancelled) setLoaded(true);
     });
     return () => { cancelled = true; };
   }, [mode, variant, period]);
@@ -62,7 +69,7 @@ export default function LeaderboardPage() {
     });
   }, [user]);
 
-  const loading = pending || entries.length === 0;
+  const loading = pending || !loaded;
 
   function setParam(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());

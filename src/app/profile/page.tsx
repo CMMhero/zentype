@@ -176,7 +176,7 @@ export default function ProfilePage() {
 
       {/* Compact Streak + Achievements — side by side on desktop */}
       <div className="grid gap-4 md:grid-cols-2">
-        {/* Streak card — compact */}
+        {/* Streak card — compact, combined week + year */}
         <Card className="flex flex-col gap-3 py-4">
           <CardHeader className="px-4">
             <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
@@ -195,7 +195,11 @@ export default function ProfilePage() {
                 <span className="ml-0.5 text-xs text-muted-foreground">days</span>
               </div>
             </div>
-            <StreakCalendar streak={streakPeriods} view="week" startOfWeek={0} className="max-w-none" />
+            <StreakCalendar streak={streakPeriods} view="week" startOfWeek={0} className="max-w-none mb-4" />
+            <div className="border-t border-border/40 pt-3">
+              <p className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground mb-2">last 365 days</p>
+              <StreakCalendar streak={streakPeriods} view="year" compact className="max-w-none" />
+            </div>
           </CardContent>
         </Card>
 
@@ -227,18 +231,6 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Activity — Git-Style Year View */}
-      <Card className="gap-3 py-4">
-        <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconActivity className="size-4" /> activity
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="px-4">
-          <StreakCalendar streak={streakPeriods} view="year" className="max-w-none" />
-        </CardContent>
-      </Card>
 
       {/* Test history — merged from /history */}
       <Card className="gap-3 py-4">

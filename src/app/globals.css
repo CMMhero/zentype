@@ -8,6 +8,13 @@
 @import "@fontsource-variable/playfair-display";
 @import "@fontsource-variable/lora";
 @import "@fontsource-variable/merriweather";
+@import "@fontsource-variable/fira-code";
+@import "@fontsource-variable/cabin";
+@import "@fontsource-variable/josefin-sans";
+@import "@fontsource-variable/bitter";
+@import "@fontsource-variable/crimson-pro";
+@import "@fontsource-variable/roboto-flex";
+@import "@fontsource-variable/ibm-plex-sans";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -58,6 +65,13 @@
   --font-playfair-display: "Playfair Display Variable", Georgia, "Times New Roman", serif;
   --font-lora: "Lora Variable", Georgia, "Times New Roman", serif;
   --font-merriweather: "Merriweather Variable", Georgia, "Times New Roman", serif;
+  --font-fira-code: "Fira Code Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-cabin: "Cabin Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-josefin-sans: "Josefin Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-bitter: "Bitter Variable", Georgia, "Times New Roman", serif;
+  --font-crimson-pro: "Crimson Pro Variable", Georgia, "Times New Roman", serif;
+  --font-roboto-flex: "Roboto Flex Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-ibm-plex-sans: "IBM Plex Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
@@ -143,6 +157,13 @@ html[data-font="work-sans"] { font-family: var(--font-work-sans); }
 html[data-font="playfair-display"] { font-family: var(--font-playfair-display); }
 html[data-font="lora"] { font-family: var(--font-lora); }
 html[data-font="merriweather"] { font-family: var(--font-merriweather); }
+html[data-font="fira-code"] { font-family: var(--font-fira-code); }
+html[data-font="cabin"] { font-family: var(--font-cabin); }
+html[data-font="josefin-sans"] { font-family: var(--font-josefin-sans); }
+html[data-font="bitter"] { font-family: var(--font-bitter); }
+html[data-font="crimson-pro"] { font-family: var(--font-crimson-pro); }
+html[data-font="roboto-flex"] { font-family: var(--font-roboto-flex); }
+html[data-font="ibm-plex-sans"] { font-family: var(--font-ibm-plex-sans); }
 
 .zt-caret-blink {
   animation: zt-blink 1s step-end infinite;

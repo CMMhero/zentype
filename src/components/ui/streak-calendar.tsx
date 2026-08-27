@@ -72,6 +72,8 @@ interface StreakCalendarProps extends React.HTMLAttributes<HTMLDivElement> {
   startOfWeek?: 0 | 1
   /** Callback when a day is clicked */
   onDayClick?: (date: Date, wasActive: boolean) => void
+  /** Compact mode for year view (smaller cells) */
+  compact?: boolean
 }
 
 const WEEKDAYS_SUNDAY = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
@@ -166,6 +168,7 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
       showFreezes = true,
       startOfWeek = 0,
       onDayClick,
+      compact = false,
       ...props
     },
     ref
@@ -189,7 +192,9 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
     const weekDates = getWeekDates(referenceDate, startOfWeek)
     const { cells: gitCells, dates: gitDates } = getGitCells(today, startOfWeek)
     const gitColumnCount = Math.ceil(gitCells.length / 7)
-    const gitGridTemplateColumns = `repeat(${gitColumnCount}, 0.75rem)`
+    const cellSize = compact ? "0.55rem" : "0.75rem"
+    const gitGridTemplateColumns = `repeat(${gitColumnCount}, ${cellSize})`
+    const cellClass = compact ? "h-[0.55rem] w-[0.55rem] rounded-[0.2rem] border-[0.5px]" : "h-3 w-3 rounded-[0.3rem] border"
     const gitMonthLabels: Array<{ column: number; label: string }> = []
     const seenGitMonths = new Set<string>()
 
@@ -419,7 +424,7 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
               <div className="inline-block min-w-full pr-4">
                 <div
                   aria-hidden="true"
-                  className="mb-2 grid gap-1"
+                  className={cn("mb-2 grid", compact ? "gap-[3px]" : "gap-1")}
                   style={{ gridTemplateColumns: gitGridTemplateColumns }}
                 >
                   {gitMonthLabels.map((month) => (
@@ -435,13 +440,13 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                 <TooltipProvider>
                   <div
                     role="rowgroup"
-                    className="grid grid-flow-col grid-rows-7 gap-1"
+                    className={cn("grid grid-flow-col grid-rows-7", compact ? "gap-[3px]" : "gap-1")}
                     style={{ gridTemplateColumns: gitGridTemplateColumns }}
                   >
                     {gitCells.map((date, index) => {
                       if (!date) {
                         return (
-                          <div key={`git-empty-${index}`} className="h-3 w-3" />
+                          <div key={`git-empty-${index}`} className={compact ? "h-[0.55rem] w-[0.55rem]" : "h-3 w-3"} />
                         )
                       }
                       const { isToday, isActive, usedFreeze } =
@@ -462,7 +467,8 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                               aria-label={`${dateLabel}, ${usedFreeze ? "freeze used" : isActive ? "streak active" : "no activity"}`}
                               onClick={() => onDayClick?.(date, isActive)}
                               className={cn(
-                                "border-border/40 h-3 w-3 rounded-[0.3rem] border transition-colors",
+                                "border-border/40 transition-colors",
+                                cellClass,
                                 "hover:ring-ring hover:ring-1",
                                 isToday &&
                                   "!bg-primary-foreground !text-primary border-primary",

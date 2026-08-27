@@ -6,7 +6,9 @@ export type SoundVariant = "click" | "thock" | "beep";
 export type FontFamily =
   | "geist-mono" | "inter" | "jetbrains-mono"
   | "dm-sans" | "space-grotesk" | "nunito-sans" | "work-sans"
-  | "playfair-display" | "lora" | "merriweather";
+  | "playfair-display" | "lora" | "merriweather"
+  | "fira-code" | "cabin" | "josefin-sans" | "bitter"
+  | "crimson-pro" | "roboto-flex" | "ibm-plex-sans";
 
 export interface SoundSettings {
   enabled: boolean;

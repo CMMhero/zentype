@@ -53,6 +53,13 @@ const FONT_FAMILIES: { value: FontFamily; label: string; desc: string; cssVar: s
   { value: "playfair-display", label: "Playfair Display", desc: "elegant serif", cssVar: "var(--font-playfair-display)" },
   { value: "lora", label: "Lora", desc: "readable serif", cssVar: "var(--font-lora)" },
   { value: "merriweather", label: "Merriweather", desc: "sturdy serif", cssVar: "var(--font-merriweather)" },
+  { value: "fira-code", label: "Fira Code", desc: "ligature monospace", cssVar: "var(--font-fira-code)" },
+  { value: "cabin", label: "Cabin", desc: "humanist sans", cssVar: "var(--font-cabin)" },
+  { value: "josefin-sans", label: "Josefin Sans", desc: "geometric elegant", cssVar: "var(--font-josefin-sans)" },
+  { value: "bitter", label: "Bitter", desc: "slab serif", cssVar: "var(--font-bitter)" },
+  { value: "crimson-pro", label: "Crimson Pro", desc: "old-style serif", cssVar: "var(--font-crimson-pro)" },
+  { value: "roboto-flex", label: "Roboto Flex", desc: "superfamily variable", cssVar: "var(--font-roboto-flex)" },
+  { value: "ibm-plex-sans", label: "IBM Plex Sans", desc: "corporate sans-serif", cssVar: "var(--font-ibm-plex-sans)" },
 ];
 
 interface UserResult {
@@ -108,7 +115,7 @@ export function CommandPalette() {
 
         {/* User search results — always shown when there's a query */}
         {userQuery.trim().length > 0 && (
-          <CommandGroup heading="users">
+          <CommandGroup heading="users" forceMount>
             {userLoading && (
               <CommandItem disabled>
                 <IconSearch className="size-4 opacity-50" />

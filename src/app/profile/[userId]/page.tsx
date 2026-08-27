@@ -151,7 +151,7 @@ export default function PublicProfilePage() {
               dayMap.set(key, (dayMap.get(key) ?? 0) + 1);
             }
             const streakPeriods = Array.from(dayMap.keys()).sort().map((d) => ({ periodStart: d, periodEnd: d }));
-            return <StreakCalendar streak={streakPeriods} view="year" />;
+            return <StreakCalendar streak={streakPeriods} view="year" compact />;
           })()}
         </CardContent>
       </Card>

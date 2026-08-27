@@ -160,6 +160,13 @@ export default function SettingsPage() {
                     <SelectItem value="playfair-display" style={{ fontFamily: "var(--font-playfair-display)" }}>Playfair Display</SelectItem>
                     <SelectItem value="lora" style={{ fontFamily: "var(--font-lora)" }}>Lora</SelectItem>
                     <SelectItem value="merriweather" style={{ fontFamily: "var(--font-merriweather)" }}>Merriweather</SelectItem>
+                    <SelectItem value="fira-code" style={{ fontFamily: "var(--font-fira-code)" }}>Fira Code</SelectItem>
+                    <SelectItem value="cabin" style={{ fontFamily: "var(--font-cabin)" }}>Cabin</SelectItem>
+                    <SelectItem value="josefin-sans" style={{ fontFamily: "var(--font-josefin-sans)" }}>Josefin Sans</SelectItem>
+                    <SelectItem value="bitter" style={{ fontFamily: "var(--font-bitter)" }}>Bitter</SelectItem>
+                    <SelectItem value="crimson-pro" style={{ fontFamily: "var(--font-crimson-pro)" }}>Crimson Pro</SelectItem>
+                    <SelectItem value="roboto-flex" style={{ fontFamily: "var(--font-roboto-flex)" }}>Roboto Flex</SelectItem>
+                    <SelectItem value="ibm-plex-sans" style={{ fontFamily: "var(--font-ibm-plex-sans)" }}>IBM Plex Sans</SelectItem>
                   </SelectContent>
                 </Select>
               </SettingRow>
