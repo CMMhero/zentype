@@ -1,0 +1,361 @@
+export interface ThemeVars {
+  "--background": string;
+  "--foreground": string;
+  "--card": string;
+  "--card-foreground": string;
+  "--popover": string;
+  "--popover-foreground": string;
+  "--primary": string;
+  "--primary-foreground": string;
+  "--secondary": string;
+  "--secondary-foreground": string;
+  "--muted": string;
+  "--muted-foreground": string;
+  "--accent": string;
+  "--accent-foreground": string;
+  "--destructive": string;
+  "--destructive-foreground": string;
+  "--border": string;
+  "--input": string;
+  "--ring": string;
+  "--zt-sub": string;
+  "--chart-1": string;
+  "--chart-2": string;
+  "--chart-3": string;
+  "--chart-4": string;
+  "--chart-5": string;
+}
+
+export interface ThemePalette {
+  id: string;
+  label: string;
+  appearance: "dark" | "light";
+  vars: ThemeVars;
+}
+
+function theme(
+  id: string,
+  label: string,
+  appearance: "dark" | "light",
+  v: Omit<ThemeVars, "--card-foreground" | "--popover-foreground" | "--destructive-foreground"> &
+    Partial<Pick<ThemeVars, "--card-foreground" | "--popover-foreground" | "--destructive-foreground">>,
+): ThemePalette {
+  return {
+    id,
+    label,
+    appearance,
+    vars: {
+      ...v,
+      "--card-foreground": v["--card-foreground"] ?? v["--foreground"],
+      "--popover-foreground": v["--popover-foreground"] ?? v["--foreground"],
+      "--destructive-foreground": v["--destructive-foreground"] ?? v["--background"],
+    } as ThemeVars,
+  };
+}
+
+export const DEFAULT_THEME_ID = "gruvbox";
+
+export const THEMES: ThemePalette[] = [
+  theme("gruvbox", "Gruvbox Dark", "dark", {
+    "--background": "#282828",
+    "--foreground": "#ebdbb2",
+    "--card": "#2c2c28",
+    "--popover": "#32302f",
+    "--primary": "#fabd2f",
+    "--primary-foreground": "#1d2021",
+    "--secondary": "#3c3836",
+    "--secondary-foreground": "#ebdbb2",
+    "--muted": "#32302f",
+    "--muted-foreground": "#928374",
+    "--accent": "#3c3836",
+    "--accent-foreground": "#ebdbb2",
+    "--destructive": "#fb4934",
+    "--border": "#3c3836",
+    "--input": "#3c3836",
+    "--ring": "#fabd2f",
+    "--zt-sub": "#504945",
+    "--chart-1": "#fabd2f",
+    "--chart-2": "#83a598",
+    "--chart-3": "#8ec07c",
+    "--chart-4": "#d3869b",
+    "--chart-5": "#fe8019",
+  }),
+  theme("nord", "Nord", "dark", {
+    "--background": "#2e3440",
+    "--foreground": "#eceff4",
+    "--card": "#333b4a",
+    "--popover": "#3b4252",
+    "--primary": "#88c0d0",
+    "--primary-foreground": "#2e3440",
+    "--secondary": "#3b4252",
+    "--secondary-foreground": "#eceff4",
+    "--muted": "#3b4252",
+    "--muted-foreground": "#7b88a1",
+    "--accent": "#434c5e",
+    "--accent-foreground": "#eceff4",
+    "--destructive": "#bf616a",
+    "--border": "#434c5e",
+    "--input": "#434c5e",
+    "--ring": "#88c0d0",
+    "--zt-sub": "#4a5878",
+    "--chart-1": "#88c0d0",
+    "--chart-2": "#81a1c1",
+    "--chart-3": "#8fbcbb",
+    "--chart-4": "#ebcb8b",
+    "--chart-5": "#b48ead",
+  }),
+  theme("dracula", "Dracula", "dark", {
+    "--background": "#282a36",
+    "--foreground": "#f8f8f2",
+    "--card": "#2d2f3e",
+    "--popover": "#343746",
+    "--primary": "#bd93f9",
+    "--primary-foreground": "#1e2029",
+    "--secondary": "#44475a",
+    "--secondary-foreground": "#f8f8f2",
+    "--muted": "#343746",
+    "--muted-foreground": "#6272a4",
+    "--accent": "#44475a",
+    "--accent-foreground": "#f8f8f2",
+    "--destructive": "#ff5555",
+    "--border": "#44475a",
+    "--input": "#44475a",
+    "--ring": "#bd93f9",
+    "--zt-sub": "#4d5468",
+    "--chart-1": "#bd93f9",
+    "--chart-2": "#ff79c6",
+    "--chart-3": "#50fa7b",
+    "--chart-4": "#ffb86c",
+    "--chart-5": "#8be9fd",
+  }),
+  theme("tokyo_night", "Tokyo Night", "dark", {
+    "--background": "#1a1b26",
+    "--foreground": "#c0caf5",
+    "--card": "#1f2233",
+    "--popover": "#24283b",
+    "--primary": "#7aa2f7",
+    "--primary-foreground": "#1a1b26",
+    "--secondary": "#24283b",
+    "--secondary-foreground": "#c0caf5",
+    "--muted": "#24283b",
+    "--muted-foreground": "#565f89",
+    "--accent": "#292e42",
+    "--accent-foreground": "#c0caf5",
+    "--destructive": "#f7768e",
+    "--border": "#292e42",
+    "--input": "#292e42",
+    "--ring": "#7aa2f7",
+    "--zt-sub": "#2f3660",
+    "--chart-1": "#7aa2f7",
+    "--chart-2": "#bb9af7",
+    "--chart-3": "#73daca",
+    "--chart-4": "#e0af68",
+    "--chart-5": "#f7768e",
+  }),
+  theme("catppuccin_mocha", "Catppuccin Mocha", "dark", {
+    "--background": "#1e1e2e",
+    "--foreground": "#cdd6f4",
+    "--card": "#232338",
+    "--popover": "#313244",
+    "--primary": "#cba6f7",
+    "--primary-foreground": "#1e1e2e",
+    "--secondary": "#313244",
+    "--secondary-foreground": "#cdd6f4",
+    "--muted": "#313244",
+    "--muted-foreground": "#6c7086",
+    "--accent": "#313244",
+    "--accent-foreground": "#cdd6f4",
+    "--destructive": "#f38ba8",
+    "--border": "#313244",
+    "--input": "#313244",
+    "--ring": "#cba6f7",
+    "--zt-sub": "#45475a",
+    "--chart-1": "#cba6f7",
+    "--chart-2": "#89b4fa",
+    "--chart-3": "#94e2d5",
+    "--chart-4": "#f9e2af",
+    "--chart-5": "#f5c2e7",
+  }),
+  theme("catppuccin_latte", "Catppuccin Latte", "light", {
+    "--background": "#eff1f5",
+    "--foreground": "#4c4f69",
+    "--card": "#e6e9ef",
+    "--popover": "#ccd0da",
+    "--primary": "#8839ef",
+    "--primary-foreground": "#eff1f5",
+    "--secondary": "#ccd0da",
+    "--secondary-foreground": "#4c4f69",
+    "--muted": "#ccd0da",
+    "--muted-foreground": "#8c8fa1",
+    "--accent": "#dce0e8",
+    "--accent-foreground": "#4c4f69",
+    "--destructive": "#d20f39",
+    "--border": "#bcc0cc",
+    "--input": "#bcc0cc",
+    "--ring": "#8839ef",
+    "--zt-sub": "#a5adcb",
+    "--chart-1": "#8839ef",
+    "--chart-2": "#1e66f5",
+    "--chart-3": "#40a02b",
+    "--chart-4": "#df8e1d",
+    "--chart-5": "#d20f39",
+  }),
+  theme("everforest", "Everforest Dark", "dark", {
+    "--background": "#2d353b",
+    "--foreground": "#d3c6aa",
+    "--card": "#323d43",
+    "--popover": "#3a454a",
+    "--primary": "#a7c080",
+    "--primary-foreground": "#2d353b",
+    "--secondary": "#3a454a",
+    "--secondary-foreground": "#d3c6aa",
+    "--muted": "#3a454a",
+    "--muted-foreground": "#859289",
+    "--accent": "#414b50",
+    "--accent-foreground": "#d3c6aa",
+    "--destructive": "#e67e80",
+    "--border": "#414b50",
+    "--input": "#414b50",
+    "--ring": "#a7c080",
+    "--zt-sub": "#475158",
+    "--chart-1": "#a7c080",
+    "--chart-2": "#7fbbb3",
+    "--chart-3": "#dbbc7f",
+    "--chart-4": "#d699b6",
+    "--chart-5": "#e69875",
+  }),
+  theme("rose_pine", "Rosé Pine", "dark", {
+    "--background": "#191724",
+    "--foreground": "#e0def4",
+    "--card": "#1f1d2e",
+    "--popover": "#26233a",
+    "--primary": "#c4a7e7",
+    "--primary-foreground": "#191724",
+    "--secondary": "#26233a",
+    "--secondary-foreground": "#e0def4",
+    "--muted": "#26233a",
+    "--muted-foreground": "#908caa",
+    "--accent": "#312f45",
+    "--accent-foreground": "#e0def4",
+    "--destructive": "#eb6f92",
+    "--border": "#312f45",
+    "--input": "#312f45",
+    "--ring": "#c4a7e7",
+    "--zt-sub": "#403d52",
+    "--chart-1": "#c4a7e7",
+    "--chart-2": "#9ccfd8",
+    "--chart-3": "#f6c177",
+    "--chart-4": "#ebbcba",
+    "--chart-5": "#31748f",
+  }),
+  theme("serika_dark", "Serika Dark", "dark", {
+    "--background": "#323437",
+    "--foreground": "#d1d0c5",
+    "--card": "#37393d",
+    "--popover": "#3d4043",
+    "--primary": "#e2b714",
+    "--primary-foreground": "#323437",
+    "--secondary": "#2c2e31",
+    "--secondary-foreground": "#d1d0c5",
+    "--muted": "#3d4043",
+    "--muted-foreground": "#646669",
+    "--accent": "#3d4043",
+    "--accent-foreground": "#d1d0c5",
+    "--destructive": "#ca4754",
+    "--border": "#3d4043",
+    "--input": "#3d4043",
+    "--ring": "#e2b714",
+    "--zt-sub": "#55585c",
+    "--chart-1": "#e2b714",
+    "--chart-2": "#98c379",
+    "--chart-3": "#61afef",
+    "--chart-4": "#c678dd",
+    "--chart-5": "#ca4754",
+  }),
+  theme("matrix", "Matrix", "dark", {
+    "--background": "#000000",
+    "--foreground": "#00ff41",
+    "--card": "#050d05",
+    "--popover": "#081208",
+    "--primary": "#00ff41",
+    "--primary-foreground": "#000000",
+    "--secondary": "#001100",
+    "--secondary-foreground": "#00ff41",
+    "--muted": "#001100",
+    "--muted-foreground": "#007a22",
+    "--accent": "#001800",
+    "--accent-foreground": "#00ff41",
+    "--destructive": "#da3333",
+    "--border": "#002900",
+    "--input": "#002900",
+    "--ring": "#00ff41",
+    "--zt-sub": "#003b00",
+    "--chart-1": "#00ff41",
+    "--chart-2": "#008f11",
+    "--chart-3": "#007a22",
+    "--chart-4": "#00c853",
+    "--chart-5": "#da3333",
+  }),
+  theme("amber_terminal", "Amber Terminal", "dark", {
+    "--background": "#100a03",
+    "--foreground": "#ffb000",
+    "--card": "#171006",
+    "--popover": "#1e1508",
+    "--primary": "#ffb000",
+    "--primary-foreground": "#100a03",
+    "--secondary": "#241a09",
+    "--secondary-foreground": "#ffb000",
+    "--muted": "#1e1508",
+    "--muted-foreground": "#8a6200",
+    "--accent": "#2a1e0b",
+    "--accent-foreground": "#ffc63f",
+    "--destructive": "#ff5555",
+    "--border": "#332408",
+    "--input": "#332408",
+    "--ring": "#ffb000",
+    "--zt-sub": "#4a3508",
+    "--chart-1": "#ffb000",
+    "--chart-2": "#ff8c00",
+    "--chart-3": "#ffd700",
+    "--chart-4": "#c97a00",
+    "--chart-5": "#ff5555",
+  }),
+  theme("paper", "Paper White", "light", {
+    "--background": "#fafafa",
+    "--foreground": "#333333",
+    "--card": "#ffffff",
+    "--popover": "#ffffff",
+    "--primary": "#0969da",
+    "--primary-foreground": "#ffffff",
+    "--secondary": "#f0f0f0",
+    "--secondary-foreground": "#333333",
+    "--muted": "#f0f0f0",
+    "--muted-foreground": "#8a8a8a",
+    "--accent": "#eaeaea",
+    "--accent-foreground": "#222222",
+    "--destructive": "#d1242f",
+    "--border": "#dcdcdc",
+    "--input": "#dcdcdc",
+    "--ring": "#0969da",
+    "--zt-sub": "#b4b4b4",
+    "--chart-1": "#0969da",
+    "--chart-2": "#1a7f37",
+    "--chart-3": "#9a6700",
+    "--chart-4": "#8250df",
+    "--chart-5": "#cf222e",
+  }),
+];
+
+export function getTheme(id: string | undefined | null): ThemePalette {
+  return THEMES.find((t) => t.id === id) ?? THEMES[0];
+}
+
+/** Generates `[data-theme='id'] { --var: val; ... }` rules for every palette. */
+export function themeStyleSheet(): string {
+  return THEMES.map(
+    (t) =>
+      `[data-theme='${t.id}']{${Object.entries(t.vars)
+        .map(([k, v]) => `${k}:${v}`)
+        .join(";")}}`,
+  ).join("\n");
+}

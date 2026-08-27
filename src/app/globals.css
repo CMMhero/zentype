@@ -1,0 +1,143 @@
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --radius: 0.25rem;
+  --background: #282828;
+  --foreground: #ebdbb2;
+  --card: #2c2c28;
+  --card-foreground: #ebdbb2;
+  --popover: #32302f;
+  --popover-foreground: #ebdbb2;
+  --primary: #fabd2f;
+  --primary-foreground: #1d2021;
+  --secondary: #3c3836;
+  --secondary-foreground: #ebdbb2;
+  --muted: #32302f;
+  --muted-foreground: #928374;
+  --accent: #3c3836;
+  --accent-foreground: #ebdbb2;
+  --destructive: #fb4934;
+  --destructive-foreground: #1d2021;
+  --border: #3c3836;
+  --input: #3c3836;
+  --ring: #fabd2f;
+  --zt-sub: #504945;
+  --chart-1: #fabd2f;
+  --chart-2: #83a598;
+  --chart-3: #8ec07c;
+  --chart-4: #d3869b;
+  --chart-5: #fe8019;
+}
+
+@theme inline {
+  --font-geist-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-inter: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-zt-sub: var(--zt-sub);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 0.125rem);
+  --radius-md: calc(var(--radius));
+  --radius-lg: calc(var(--radius) + 0.125rem);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/40;
+  }
+  html {
+    color-scheme: dark;
+  }
+  html[data-appearance="light"] {
+    color-scheme: light;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-geist-mono);
+    font-feature-settings: "zero" 1, "ss01" 1;
+  }
+  ::selection {
+    background-color: color-mix(in srgb, var(--primary) 35%, transparent);
+    color: var(--foreground);
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--muted);
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
+  }
+  html[data-flip="true"] body {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+.font-geist-mono { font-family: var(--font-geist-mono); }
+.font-inter { font-family: var(--font-inter); }
+.font-jetbrains-mono { font-family: var(--font-jetbrains-mono); }
+.font-sans { font-family: var(--font-sans); }
+.font-serif { font-family: Georgia, "Times New Roman", serif; }
+
+.zt-caret-blink {
+  animation: zt-blink 1s step-end infinite;
+}
+@keyframes zt-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.zt-fade-in {
+  animation: zt-fade-in 0.25s ease-out both;
+}
+@keyframes zt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

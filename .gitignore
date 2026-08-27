@@ -8,9 +8,15 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.next
+out
 dist
-dist-ssr
 *.local
+
+# env & secrets
+.env
+.env.*
+!.env.example
 
 # Editor directories and files
 .vscode/*

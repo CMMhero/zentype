@@ -1,7 +1,0 @@
-{
-  "name": "zentype",
-  "compatibility_date": "20250-11-24",
-  "assets": {
-    "directory": "./dist"
-  }
-}
