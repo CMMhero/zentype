@@ -1,22 +1,18 @@
 "use client";
 
 import { useEffect, useTransition, useState } from "react";
-import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { IconCalendar, IconCalendarMonth, IconCrown, IconMedal, IconTrophy } from "@tabler/icons-react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "~/components/ui/table";
+import { IconCalendar, IconCalendarMonth, IconTrophy } from "@tabler/icons-react";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "~/components/ui/select";
+import { LeaderboardRankings, type LeaderboardRankingItem } from "~/components/ui/leaderboard-rankings";
 import { LeaderboardSkeleton } from "~/components/leaderboard-skeleton";
 import { getLeaderboard } from "~/server/leaderboard";
+import { getUserPoints } from "~/server/gamification";
+import { useUser } from "~/components/user-provider";
 import type { GameMode, LeaderboardEntry } from "~/lib/types";
-import { formatDateTime } from "~/lib/utils";
 
 type Period = "all" | "week" | "today";
 
@@ -28,12 +24,12 @@ function periodToDate(period: Period): string | undefined {
     d.setDate(d.getDate() - 7);
     return d.toISOString();
   }
-  // today
   const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   return d.toISOString();
 }
 
 export default function LeaderboardPage() {
+  const user = useUser();
   const searchParams = useSearchParams();
   const router = useRouter();
   const mode = (searchParams.get("mode") === "words" ? "words" : "time") as GameMode;
@@ -47,6 +43,7 @@ export default function LeaderboardPage() {
 
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [pending, startTransition] = useTransition();
+  const [userPoints, setUserPoints] = useState<{ totalXP: number; level: number } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,6 +55,13 @@ export default function LeaderboardPage() {
     return () => { cancelled = true; };
   }, [mode, variant, period]);
 
+  useEffect(() => {
+    if (!user) return;
+    void getUserPoints().then((p) => {
+      if (p) setUserPoints({ totalXP: p.totalXP, level: p.level });
+    });
+  }, [user]);
+
   const loading = pending || entries.length === 0;
 
   function setParam(key: string, value: string) {
@@ -66,15 +70,30 @@ export default function LeaderboardPage() {
     router.push(`/leaderboard?${params.toString()}`);
   }
 
+  const rankings: LeaderboardRankingItem[] = entries.map((e) => ({
+    userId: e.userId,
+    userName: e.username,
+    rank: e.rank,
+    value: Math.round(e.wpm * 100 + e.accuracy), // composite score
+    byline: `${e.wpm} wpm · ${e.accuracy}% acc`,
+    avatarUrl: e.avatarUrl,
+  }));
+
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconTrophy className="text-primary size-5" />
           leaderboard
-          <span className="text-muted-foreground text-xs">/ global bests</span>
+          <span className="text-xs text-muted-foreground">/ global bests</span>
         </h1>
         <div className="flex items-center gap-2">
+          {userPoints && (
+            <span className="text-xs text-muted-foreground">
+              Level <span className="text-foreground font-bold">{userPoints.level}</span> ·{" "}
+              <span className="text-foreground font-bold">{userPoints.totalXP.toLocaleString()}</span> XP
+            </span>
+          )}
           <Tabs value={mode} onValueChange={(v) => setParam("mode", v)}>
             <TabsList>
               <TabsTrigger value="time">time</TabsTrigger>
@@ -106,71 +125,25 @@ export default function LeaderboardPage() {
         </Tabs>
       </div>
 
-      <p className="text-muted-foreground text-xs">
-        ranked by net wpm · ties broken by accuracy · minimum 80% accuracy to qualify ·
+      <p className="text-xs text-muted-foreground">
+        ranked by composite score (wpm + accuracy) · minimum 80% accuracy to qualify ·
         results sync when you finish a test signed in.
       </p>
 
       {loading ? (
         <LeaderboardSkeleton />
       ) : entries.length === 0 ? (
-        <div className="border-border/60 text-muted-foreground rounded-md border border-dashed p-12 text-center text-sm">
+        <div className="rounded-md border border-dashed border-border/60 p-12 text-center text-sm text-muted-foreground">
           no entries yet — finish a test while signed in to claim rank #1.
         </div>
       ) : (
-        <div className="border-border/60 overflow-hidden rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="w-14">#</TableHead>
-                <TableHead>typist</TableHead>
-                <TableHead className="text-right">wpm</TableHead>
-                <TableHead className="text-right">accuracy</TableHead>
-                <TableHead className="hidden text-right sm:table-cell">consistency</TableHead>
-                <TableHead className="hidden text-right md:table-cell">date</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {entries.map((e) => (
-                <TableRow key={e.userId}>
-                  <TableCell><RankBadge rank={e.rank} /></TableCell>
-                  <TableCell>
-                    <Link
-                      href={`/profile/${e.userId}`}
-                      className="flex items-center gap-2 hover:underline"
-                    >
-                      <Avatar className="size-5">
-                        {e.avatarUrl && <AvatarImage src={e.avatarUrl} alt="" />}
-                        <AvatarFallback className="rounded text-[9px] uppercase">
-                          {e.username.slice(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="max-w-40 truncate">{e.username}</span>
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-primary text-right font-bold tabular-nums">
-                    {e.wpm}
-                  </TableCell>
-                  <TableCell className="text-right tabular-nums">{e.accuracy}%</TableCell>
-                  <TableCell className="text-muted-foreground hidden text-right tabular-nums sm:table-cell">
-                    {e.consistency}%
-                  </TableCell>
-                  <TableCell className="text-muted-foreground hidden text-right text-xs md:table-cell">
-                    {formatDateTime(e.createdAt)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <LeaderboardRankings
+          rankings={rankings}
+          currentUserId={user?.id}
+          showPagination
+          defaultPageSize={25}
+        />
       )}
     </div>
   );
-}
-
-function RankBadge({ rank }: { rank: number }) {
-  if (rank === 1) return <Badge className="gap-1"><IconCrown className="size-3" /> 1</Badge>;
-  if (rank === 2) return <Badge variant="secondary" className="gap-1"><IconMedal className="size-3" /> 2</Badge>;
-  if (rank === 3) return <Badge variant="secondary" className="gap-1"><IconMedal className="size-3" /> 3</Badge>;
-  return <span className="text-muted-foreground tabular-nums">{rank}</span>;
 }

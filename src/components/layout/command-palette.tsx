@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  IconBook, IconMovie, IconEye, IconEyeOff, IconFlipVertical,
-  IconGlobe, IconHistory, IconKeyboard, IconLayoutDashboard, IconLetterT,
-  IconList, IconMoon, IconRefresh, IconSettings, IconTrophy, IconTypography,
-  IconVolume, IconVolumeOff,
+  IconArrowRight, IconBlender, IconClock, IconDeviceDesktop,
+  IconEye, IconEyeOff, IconFlipVertical, IconKeyboard, IconLayoutDashboard,
+  IconLetterT, IconList, IconMoon, IconPlayerPlay, IconRefresh, IconSearch,
+  IconSettings, IconSparkles, IconTypography, IconUser, IconVolume, IconVolumeOff,
 } from "@tabler/icons-react";
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator,
@@ -16,8 +16,8 @@ import { useUiStore } from "~/stores/ui-store";
 import { useSettingsStore } from "~/stores/settings-store";
 import { THEMES } from "~/lib/themes";
 import {
-  SOURCE_LABELS, TIME_OPTIONS, WORD_OPTIONS,
-  type CaretStyle, type FontFamily, type FontSizeKey, type PromptSource, type SoundVariant,
+  TIME_OPTIONS, WORD_OPTIONS,
+  type CaretStyle, type FontFamily, type FontSizeKey, type SoundVariant,
 } from "~/lib/types";
 import { playKeypress } from "~/lib/sound";
 import { searchUsers } from "~/server/results";
@@ -64,6 +64,7 @@ export function CommandPalette() {
   const update = useSettingsStore((s) => s.update);
   const [userQuery, setUserQuery] = useState("");
   const [userResults, setUserResults] = useState<UserResult[]>([]);
+  const [userLoading, setUserLoading] = useState(false);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -78,9 +79,11 @@ export function CommandPalette() {
 
   // debounced user search
   useEffect(() => {
-    if (!userQuery.trim()) { setUserResults([]); return; }
+    const q = userQuery.trim();
+    if (!q) { setUserResults([]); setUserLoading(false); return; }
+    setUserLoading(true);
     const t = setTimeout(() => {
-      void searchUsers(userQuery).then(setUserResults);
+      void searchUsers(q).then((r) => { setUserResults(r); setUserLoading(false); });
     }, 300);
     return () => clearTimeout(t);
   }, [userQuery]);
@@ -88,36 +91,49 @@ export function CommandPalette() {
   const go = (to: string) => { setOpen(false); router.push(to); };
   const close = () => setOpen(false);
 
+  const showUserResults = userQuery.trim().length > 0;
+
   return (
     <CommandDialog open={open} onOpenChange={setOpen} className="sm:max-w-xl" data-command-overlay="">
-      <CommandInput placeholder="type a command or search…" onValueChange={setUserQuery} />
+      <CommandInput placeholder="search users or type a command…" onValueChange={setUserQuery} />
       <CommandList>
         <CommandEmpty>no matching command</CommandEmpty>
 
-        {/* user search results */}
-        {userQuery.trim() && userResults.length > 0 && (
-          <>
-            <CommandGroup heading="users">
-              {userResults.map((u) => (
-                <CommandItem key={u.userId} onSelect={() => go(`/profile/${u.userId}`)}>
-                  <Avatar className="size-5">
-                    {u.avatarUrl && <AvatarImage src={u.avatarUrl} alt="" />}
-                    <AvatarFallback className="rounded text-[9px] uppercase">{u.username.slice(0, 2)}</AvatarFallback>
-                  </Avatar>
-                  <span>{u.username}</span>
-                  <CommandDesc>view profile</CommandDesc>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-            <CommandSeparator />
-          </>
+        {/* user search results — always shown when there's a query */}
+        {showUserResults && (
+          <CommandGroup heading="users">
+            {userLoading && (
+              <CommandItem disabled>
+                <IconSearch className="size-4 opacity-50" />
+                <span className="text-muted-foreground">searching…</span>
+              </CommandItem>
+            )}
+            {!userLoading && userResults.length === 0 && (
+              <CommandItem disabled>
+                <IconUser className="size-4 opacity-50" />
+                <span className="text-muted-foreground">no users found for &ldquo;{userQuery.trim()}&rdquo;</span>
+              </CommandItem>
+            )}
+            {userResults.map((u) => (
+              <CommandItem key={u.userId} onSelect={() => go(`/profile/${u.userId}`)}>
+                <Avatar className="size-5">
+                  {u.avatarUrl && <AvatarImage src={u.avatarUrl} alt="" />}
+                  <AvatarFallback className="rounded text-[9px] uppercase">{u.username.slice(0, 2)}</AvatarFallback>
+                </Avatar>
+                <span>{u.username}</span>
+                <CommandDesc><IconArrowRight className="size-3" /> view profile</CommandDesc>
+              </CommandItem>
+            ))}
+          </CommandGroup>
         )}
 
+        {showUserResults && <CommandSeparator />}
+
         <CommandGroup heading="navigate">
-          <CommandItem onSelect={() => go("/")}><IconTypography /> test<Shortcut>alt+1</Shortcut></CommandItem>
-          <CommandItem onSelect={() => go("/leaderboard")}><IconTrophy /> leaderboard<Shortcut>alt+2</Shortcut></CommandItem>
+          <CommandItem onSelect={() => go("/")}><IconKeyboard /> test<Shortcut>alt+1</Shortcut></CommandItem>
+          <CommandItem onSelect={() => go("/leaderboard")}><IconSparkles /> leaderboard<Shortcut>alt+2</Shortcut></CommandItem>
           <CommandItem onSelect={() => go("/profile")}><IconLayoutDashboard /> profile<Shortcut>alt+3</Shortcut></CommandItem>
-          <CommandItem onSelect={() => go("/history")}><IconHistory /> history<Shortcut>alt+4</Shortcut></CommandItem>
+          <CommandItem onSelect={() => go("/history")}><IconClock /> history<Shortcut>alt+4</Shortcut></CommandItem>
           <CommandItem onSelect={() => go("/settings")}><IconSettings /> settings<Shortcut>alt+5</Shortcut></CommandItem>
         </CommandGroup>
 
@@ -134,28 +150,12 @@ export function CommandPalette() {
         <CommandGroup heading="mode">
           {TIME_OPTIONS.map((t) => (
             <CommandItem key={`time-${t}`} onSelect={() => { update({ mode: "time", duration: t }); close(); }} className={active(settings.mode === "time" && settings.duration === t)}>
-              <span className="text-primary w-14">time</span> {t}s<CommandDesc>type for {t} seconds</CommandDesc>
+              <IconClock /> {t}s — time<CommandDesc>type for {t} seconds</CommandDesc>
             </CommandItem>
           ))}
           {WORD_OPTIONS.map((w) => (
             <CommandItem key={`words-${w}`} onSelect={() => { update({ mode: "words", wordCount: w }); close(); }} className={active(settings.mode === "words" && settings.wordCount === w)}>
-              <span className="text-primary w-14">words</span> {w}w<CommandDesc>type {w} words</CommandDesc>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        <CommandGroup heading="prompt source">
-          {([
-            ["words", IconLetterT, "random english words"],
-            ["quotes", IconBook, "famous quotes"],
-            ["anime", IconMovie, "anime synopses"],
-            ["wiki", IconGlobe, "wikipedia extracts"],
-            ["dictionary", IconBook, "dictionary definitions"],
-          ] as [PromptSource, typeof IconGlobe, string][]).map(([src, Icon, desc]) => (
-            <CommandItem key={src} onSelect={() => { update({ source: src }); close(); }} className={active(settings.source === src)}>
-              <Icon /> {SOURCE_LABELS[src]}<CommandDesc>{desc}</CommandDesc>
+              <IconLetterT /> {w}w — words<CommandDesc>type {w} words</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -183,18 +183,18 @@ export function CommandPalette() {
             sound {settings.sound.enabled ? "on" : "off"}<CommandDesc>enable or disable keystroke audio feedback</CommandDesc>
           </CommandItem>
           <CommandItem onSelect={() => update({ soundOnError: !settings.soundOnError })}>
-            error sound {settings.soundOnError ? "on" : "off"}<CommandDesc>play a sound when you type an incorrect character</CommandDesc>
+            <IconBlender /> error sound {settings.soundOnError ? "on" : "off"}<CommandDesc>play a sound when you type an incorrect character</CommandDesc>
           </CommandItem>
           {SOUND_VARIANTS.map((v) => (
             <CommandItem key={v.value} onSelect={() => { update({ sound: { ...settings.sound, variant: v.value } }); playKeypress(v.value, settings.sound.volume); }} className={active(settings.sound.variant === v.value)}>
-              <span className="text-primary w-14">{v.label}</span> sound variant<CommandDesc>{v.desc}</CommandDesc>
+              <IconPlayerPlay /> {v.label}<CommandDesc>{v.desc}</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
 
         <CommandSeparator />
 
-        <CommandGroup heading="caret style">
+        <CommandGroup heading="caret">
           {CARET_STYLES.map((c) => (
             <CommandItem key={c.value} onSelect={() => { update({ caretStyle: c.value }); close(); }} className={active(settings.caretStyle === c.value)}>
               <IconTypography /> {c.label}<CommandDesc>{c.desc}</CommandDesc>
@@ -207,14 +207,14 @@ export function CommandPalette() {
         <CommandGroup heading="font size">
           {FONT_SIZES.map((f) => (
             <CommandItem key={f.value} onSelect={() => { update({ fontSize: f.value }); close(); }} className={active(settings.fontSize === f.value)}>
-              <IconTypography /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
+              <IconDeviceDesktop /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
 
         <CommandSeparator />
 
-        <CommandGroup heading="font">
+        <CommandGroup heading="font family">
           {FONT_FAMILIES.map((f) => (
             <CommandItem key={f.value} onSelect={() => { update({ fontFamily: f.value }); close(); }} className={active(settings.fontFamily === f.value)}>
               <IconTypography /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
@@ -240,16 +240,16 @@ export function CommandPalette() {
             blind mode {settings.blindMode ? "on" : "off"}<CommandDesc>hide error coloring</CommandDesc>
           </CommandItem>
           <CommandItem onSelect={() => update({ stopOnError: !settings.stopOnError })}>
-            stop on error {settings.stopOnError ? "on" : "off"}<CommandDesc>block cursor until fixed</CommandDesc>
+            <IconBlender /> stop on error {settings.stopOnError ? "on" : "off"}<CommandDesc>block cursor until fixed</CommandDesc>
           </CommandItem>
           <CommandItem onSelect={() => update({ strictSpace: !settings.strictSpace })}>
-            strict space {settings.strictSpace ? "on" : "off"}<CommandDesc>wrong words can't be skipped</CommandDesc>
+            <IconBlender /> strict space {settings.strictSpace ? "on" : "off"}<CommandDesc>wrong words can't be skipped</CommandDesc>
           </CommandItem>
           <CommandItem onSelect={() => update({ freeBackspace: !settings.freeBackspace })}>
-            free backspace {settings.freeBackspace ? "on" : "off"}<CommandDesc>restore previous word on backspace</CommandDesc>
+            <IconRefresh /> free backspace {settings.freeBackspace ? "on" : "off"}<CommandDesc>restore previous word on backspace</CommandDesc>
           </CommandItem>
           <CommandItem onSelect={() => update({ hideLiveStats: !settings.hideLiveStats })}>
-            hide live stats {settings.hideLiveStats ? "on" : "off"}<CommandDesc>blank wpm/acc while running</CommandDesc>
+            <IconEyeOff /> hide live stats {settings.hideLiveStats ? "on" : "off"}<CommandDesc>blank wpm/acc while running</CommandDesc>
           </CommandItem>
         </CommandGroup>
 
@@ -280,5 +280,5 @@ function Shortcut({ children }: { children: React.ReactNode }) {
 }
 
 function CommandDesc({ children }: { children: React.ReactNode }) {
-  return <span className="text-muted-foreground ml-auto text-[10px] shrink-0">{children}</span>;
+  return <span className="text-muted-foreground ml-auto text-[10px] shrink-0 flex items-center gap-1">{children}</span>;
 }

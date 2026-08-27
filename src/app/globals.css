@@ -31,6 +31,13 @@
   --chart-3: #8ec07c;
   --chart-4: #d3869b;
   --chart-5: #fe8019;
+  --info: #458588;
+  --info-foreground: #ebdbb2;
+  --success: #b8bb26;
+  --success-foreground: #1d2021;
+  --rank-1: #fabd2f;
+  --rank-2: #928374;
+  --rank-3: #a87d5a;
 }
 
 @theme inline {
@@ -65,6 +72,13 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-rank-1: var(--rank-1);
+  --color-rank-2: var(--rank-2);
+  --color-rank-3: var(--rank-3);
   --radius-sm: calc(var(--radius) - 0.125rem);
   --radius-md: calc(var(--radius));
   --radius-lg: calc(var(--radius) + 0.125rem);

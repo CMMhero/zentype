@@ -1,10 +1,5 @@
 export type GameMode = "time" | "words";
-export type PromptSource =
-  | "words"
-  | "quotes"
-  | "anime"
-  | "wiki"
-  | "dictionary";
+export type PromptSource = "words";
 export type CaretStyle = "line" | "block" | "underline" | "off";
 export type FontSizeKey = "sm" | "md" | "lg" | "xl";
 export type SoundVariant = "click" | "thock" | "beep";
@@ -103,10 +98,6 @@ export const WORD_OPTIONS = [10, 25, 50, 100] as const;
 
 export const SOURCE_LABELS: Record<PromptSource, string> = {
   words: "english",
-  quotes: "quotes",
-  anime: "anime",
-  wiki: "wikipedia",
-  dictionary: "dictionary",
 };
 
 export function modeLabel(result: Pick<TestResult, "mode" | "variant">) {

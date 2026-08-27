@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   IconCommand, IconHistory, IconKeyboard, IconLayoutDashboard,
-  IconLogout, IconSettings, IconTrophy, IconUser,
+  IconLogout, IconSettings, IconTrophy, IconUser, IconAward,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -28,6 +28,7 @@ import type { SessionUser } from "~/lib/types";
 const NAV = [
   { to: "/", label: "test", icon: IconKeyboard },
   { to: "/leaderboard", label: "leaderboard", icon: IconTrophy },
+  { to: "/achievements", label: "achievements", icon: IconAward },
   { to: "/profile", label: "profile", icon: IconLayoutDashboard },
   { to: "/history", label: "history", icon: IconHistory },
   { to: "/settings", label: "settings", icon: IconSettings },

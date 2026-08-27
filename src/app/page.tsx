@@ -6,6 +6,7 @@ import { ConfigBar } from "~/components/typing/config-bar";
 import { TypingDisplay } from "~/components/typing/typing-display";
 import { VirtualKeyboard } from "~/components/typing/virtual-keyboard";
 import { ResultView, type SaveState } from "~/components/typing/result-view";
+import { AchievementUnlocked, type Achievement } from "~/components/ui/achievement-unlocked";
 import { Progress } from "~/components/ui/progress";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Kbd } from "~/components/ui/kbd";
@@ -19,6 +20,7 @@ import { playError, playKeypress } from "~/lib/sound";
 import { randomWordSlice } from "~/lib/prompt-utils";
 import { getPrompt } from "~/server/prompts";
 import { mergeLocalResults, saveResult } from "~/server/results";
+import { processTestResult } from "~/server/gamification";
 import { useUser } from "~/components/user-provider";
 import type { GameSettings, TestResult } from "~/lib/types";
 
@@ -35,6 +37,7 @@ export default function TestPage() {
   const [saveState, setSaveState] = useState<SaveState>("skipped");
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [focused, setFocused] = useState(true);
+  const [unlockAchievement, setUnlockAchievement] = useState<Achievement | null>(null);
 
   const soundRef = useRef(settings.sound);
   soundRef.current = settings.sound;
@@ -127,6 +130,19 @@ export default function TestPage() {
         if (res.saved) {
           removeLocal(full.id);
           setSaveState("cloud");
+          // Process gamification (XP + achievements)
+          void processTestResult(full).then((g) => {
+            if (g.newAchievements.length > 0) {
+              // Show first new achievement unlock
+              const first = g.newAchievements[0];
+              setUnlockAchievement({
+                id: first.id,
+                name: first.name,
+                description: first.description,
+                unlockedAt: new Date().toISOString(),
+              });
+            }
+          });
         } else if (res.reason === "guest") {
           setSaveState("guest");
         } else {
@@ -276,7 +292,6 @@ export default function TestPage() {
           mode={settings.mode}
           duration={settings.duration}
           wordCount={settings.wordCount}
-          source={settings.source}
           locked={engine.status === "running"}
           onChange={applyConfig}
         />
@@ -375,6 +390,12 @@ export default function TestPage() {
           )}
         </>
       )}
+
+      <AchievementUnlocked
+        achievement={unlockAchievement ?? { id: "", name: "", description: "" }}
+        open={unlockAchievement !== null}
+        onOpenChange={(open) => { if (!open) setUnlockAchievement(null); }}
+      />
     </div>
   );
 }
