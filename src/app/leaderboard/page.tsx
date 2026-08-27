@@ -3,7 +3,7 @@
 import { useEffect, useTransition, useState } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { IconCrown, IconMedal, IconTrophy } from "@tabler/icons-react";
+import { IconCalendar, IconCalendarMonth, IconCrown, IconMedal, IconTrophy } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -18,6 +18,21 @@ import { getLeaderboard } from "~/server/leaderboard";
 import type { GameMode, LeaderboardEntry } from "~/lib/types";
 import { formatDateTime } from "~/lib/utils";
 
+type Period = "all" | "week" | "today";
+
+function periodToDate(period: Period): string | undefined {
+  if (period === "all") return undefined;
+  const now = new Date();
+  if (period === "week") {
+    const d = new Date(now);
+    d.setDate(d.getDate() - 7);
+    return d.toISOString();
+  }
+  // today
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return d.toISOString();
+}
+
 export default function LeaderboardPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -26,6 +41,9 @@ export default function LeaderboardPage() {
   const defaultVariant = mode === "words" ? 25 : 30;
   const validVariants = mode === "time" ? [15, 30, 60, 120] : [10, 25, 50, 100];
   const variant = validVariants.includes(rawVariant) ? rawVariant : defaultVariant;
+  const period = (["all", "week", "today"].includes(searchParams.get("period") ?? "")
+    ? searchParams.get("period")!
+    : "all") as Period;
 
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [pending, startTransition] = useTransition();
@@ -33,11 +51,12 @@ export default function LeaderboardPage() {
   useEffect(() => {
     let cancelled = false;
     startTransition(() => { setEntries([]); });
-    void getLeaderboard({ mode, variant, limit: 50 }).then((data) => {
+    const since = periodToDate(period);
+    void getLeaderboard({ mode, variant, limit: 50, since }).then((data) => {
       if (!cancelled) startTransition(() => setEntries(data));
     });
     return () => { cancelled = true; };
-  }, [mode, variant]);
+  }, [mode, variant, period]);
 
   const loading = pending || entries.length === 0;
 
@@ -76,6 +95,16 @@ export default function LeaderboardPage() {
           </Select>
         </div>
       </header>
+
+      <div className="flex items-center gap-1">
+        <Tabs value={period} onValueChange={(v) => setParam("period", v)}>
+          <TabsList>
+            <TabsTrigger value="all" className="gap-1.5"><IconCalendarMonth className="size-3.5" /> all time</TabsTrigger>
+            <TabsTrigger value="week" className="gap-1.5"><IconCalendar className="size-3.5" /> this week</TabsTrigger>
+            <TabsTrigger value="today" className="gap-1.5"><IconCalendar className="size-3.5" /> today</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
       <p className="text-muted-foreground text-xs">
         ranked by net wpm · ties broken by accuracy · minimum 80% accuracy to qualify ·

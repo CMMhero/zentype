@@ -79,6 +79,9 @@ export default function SettingsPage() {
                   </Button>
                 </div>
               </SettingRow>
+              <SettingRow label="error sound" hint="play a sound when you type an incorrect character">
+                <Switch checked={settings.soundOnError} onCheckedChange={(v) => update({ soundOnError: v })} />
+              </SettingRow>
               <SettingRow label="error sound preview">
                 <Button variant="outline" size="sm" className="gap-1.5" onClick={() => playError(settings.sound.volume)}>
                   <IconPlayerPlay className="size-3" /> play error
