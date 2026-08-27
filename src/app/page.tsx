@@ -359,7 +359,6 @@ export default function TestPage() {
                 caretStyle={settings.caretStyle}
                 smoothCaret={settings.smoothCaret}
                 fontSize={settings.fontSize}
-                fontFamily={settings.fontFamily}
                 visibleLines={settings.visibleLines}
                 gameMode={settings.mode}
                 wordCount={settings.wordCount}

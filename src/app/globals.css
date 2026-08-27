@@ -110,9 +110,18 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: var(--font-geist-mono);
     font-feature-settings: "zero" 1, "ss01" 1;
   }
+  html[data-font="geist-mono"] { font-family: var(--font-geist-mono); }
+  html[data-font="inter"] { font-family: var(--font-inter); }
+  html[data-font="jetbrains-mono"] { font-family: var(--font-jetbrains-mono); }
+  html[data-font="dm-sans"] { font-family: var(--font-dm-sans); }
+  html[data-font="space-grotesk"] { font-family: var(--font-space-grotesk); }
+  html[data-font="nunito-sans"] { font-family: var(--font-nunito-sans); }
+  html[data-font="work-sans"] { font-family: var(--font-work-sans); }
+  html[data-font="playfair-display"] { font-family: var(--font-playfair-display); }
+  html[data-font="lora"] { font-family: var(--font-lora); }
+  html[data-font="merriweather"] { font-family: var(--font-merriweather); }
   ::selection {
     background-color: color-mix(in srgb, var(--primary) 35%, transparent);
     color: var(--foreground);
@@ -132,17 +141,6 @@
     background: var(--muted-foreground);
   }
 }
-
-.font-geist-mono { font-family: var(--font-geist-mono); }
-.font-inter { font-family: var(--font-inter); }
-.font-jetbrains-mono { font-family: var(--font-jetbrains-mono); }
-.font-dm-sans { font-family: var(--font-dm-sans); }
-.font-space-grotesk { font-family: var(--font-space-grotesk); }
-.font-nunito-sans { font-family: var(--font-nunito-sans); }
-.font-work-sans { font-family: var(--font-work-sans); }
-.font-playfair-display { font-family: var(--font-playfair-display); }
-.font-lora { font-family: var(--font-lora); }
-.font-merriweather { font-family: var(--font-merriweather); }
 
 .zt-caret-blink {
   animation: zt-blink 1s step-end infinite;

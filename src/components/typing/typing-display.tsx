@@ -1,26 +1,13 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Caret } from "~/components/typing/caret";
 import { cn } from "~/lib/utils";
-import type { CaretStyle, FontFamily, FontSizeKey, GameMode } from "~/lib/types";
+import type { CaretStyle, FontSizeKey, GameMode } from "~/lib/types";
 
 const FONT_SIZES: Record<FontSizeKey, string> = {
   sm: "text-xl md:text-2xl",
   md: "text-2xl md:text-3xl",
   lg: "text-3xl md:text-4xl",
   xl: "text-4xl md:text-5xl",
-};
-
-const FONT_CLASSES: Record<FontFamily, string> = {
-  "geist-mono": "font-geist-mono",
-  "inter": "font-inter",
-  "jetbrains-mono": "font-jetbrains-mono",
-  "dm-sans": "font-dm-sans",
-  "space-grotesk": "font-space-grotesk",
-  "nunito-sans": "font-nunito-sans",
-  "work-sans": "font-work-sans",
-  "playfair-display": "font-playfair-display",
-  "lora": "font-lora",
-  "merriweather": "font-merriweather",
 };
 
 interface TypingDisplayProps {
@@ -32,7 +19,6 @@ interface TypingDisplayProps {
   caretStyle: CaretStyle;
   smoothCaret: boolean;
   fontSize: FontSizeKey;
-  fontFamily: FontFamily;
   visibleLines: 1 | 2 | 3;
   gameMode: GameMode;
   wordCount: number;
@@ -48,7 +34,6 @@ export function TypingDisplay({
   caretStyle,
   smoothCaret,
   fontSize,
-  fontFamily,
   visibleLines,
   gameMode,
   wordCount,
@@ -134,7 +119,6 @@ export function TypingDisplay({
         className={cn(
           "relative leading-[1.75] tracking-wide transition-transform duration-150 ease-out will-change-transform",
           FONT_SIZES[fontSize],
-          FONT_CLASSES[fontFamily],
         )}
         style={{ transform: `translateY(-${scrollY}px)` }}
       >

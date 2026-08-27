@@ -150,16 +150,16 @@ export default function SettingsPage() {
                 <Select value={settings.fontFamily} onValueChange={(v) => update({ fontFamily: v as FontFamily })}>
                   <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="geist-mono">Geist Mono</SelectItem>
-                    <SelectItem value="inter">Inter</SelectItem>
-                    <SelectItem value="jetbrains-mono">JetBrains Mono</SelectItem>
-                    <SelectItem value="dm-sans">DM Sans</SelectItem>
-                    <SelectItem value="space-grotesk">Space Grotesk</SelectItem>
-                    <SelectItem value="nunito-sans">Nunito Sans</SelectItem>
-                    <SelectItem value="work-sans">Work Sans</SelectItem>
-                    <SelectItem value="playfair-display">Playfair Display</SelectItem>
-                    <SelectItem value="lora">Lora</SelectItem>
-                    <SelectItem value="merriweather">Merriweather</SelectItem>
+                    <SelectItem value="geist-mono" style={{ fontFamily: "var(--font-geist-mono)" }}>Geist Mono</SelectItem>
+                    <SelectItem value="inter" style={{ fontFamily: "var(--font-inter)" }}>Inter</SelectItem>
+                    <SelectItem value="jetbrains-mono" style={{ fontFamily: "var(--font-jetbrains-mono)" }}>JetBrains Mono</SelectItem>
+                    <SelectItem value="dm-sans" style={{ fontFamily: "var(--font-dm-sans)" }}>DM Sans</SelectItem>
+                    <SelectItem value="space-grotesk" style={{ fontFamily: "var(--font-space-grotesk)" }}>Space Grotesk</SelectItem>
+                    <SelectItem value="nunito-sans" style={{ fontFamily: "var(--font-nunito-sans)" }}>Nunito Sans</SelectItem>
+                    <SelectItem value="work-sans" style={{ fontFamily: "var(--font-work-sans)" }}>Work Sans</SelectItem>
+                    <SelectItem value="playfair-display" style={{ fontFamily: "var(--font-playfair-display)" }}>Playfair Display</SelectItem>
+                    <SelectItem value="lora" style={{ fontFamily: "var(--font-lora)" }}>Lora</SelectItem>
+                    <SelectItem value="merriweather" style={{ fontFamily: "var(--font-merriweather)" }}>Merriweather</SelectItem>
                   </SelectContent>
                 </Select>
               </SettingRow>

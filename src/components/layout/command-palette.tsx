@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconArrowRight, IconBlender, IconClock, IconDeviceDesktop,
@@ -42,17 +42,17 @@ const SOUND_VARIANTS: { value: SoundVariant; label: string; desc: string }[] = [
   { value: "beep", label: "beep", desc: "soft sine beep" },
 ];
 
-const FONT_FAMILIES: { value: FontFamily; label: string; desc: string }[] = [
-  { value: "geist-mono", label: "Geist Mono", desc: "default monospace" },
-  { value: "inter", label: "Inter", desc: "clean sans-serif" },
-  { value: "jetbrains-mono", label: "JetBrains Mono", desc: "developer monospace" },
-  { value: "dm-sans", label: "DM Sans", desc: "geometric sans-serif" },
-  { value: "space-grotesk", label: "Space Grotesk", desc: "techy geometric" },
-  { value: "nunito-sans", label: "Nunito Sans", desc: "soft rounded sans" },
-  { value: "work-sans", label: "Work Sans", desc: "clean modern sans" },
-  { value: "playfair-display", label: "Playfair Display", desc: "elegant serif" },
-  { value: "lora", label: "Lora", desc: "readable serif" },
-  { value: "merriweather", label: "Merriweather", desc: "sturdy serif" },
+const FONT_FAMILIES: { value: FontFamily; label: string; desc: string; cssVar: string }[] = [
+  { value: "geist-mono", label: "Geist Mono", desc: "default monospace", cssVar: "var(--font-geist-mono)" },
+  { value: "inter", label: "Inter", desc: "clean sans-serif", cssVar: "var(--font-inter)" },
+  { value: "jetbrains-mono", label: "JetBrains Mono", desc: "developer monospace", cssVar: "var(--font-jetbrains-mono)" },
+  { value: "dm-sans", label: "DM Sans", desc: "geometric sans-serif", cssVar: "var(--font-dm-sans)" },
+  { value: "space-grotesk", label: "Space Grotesk", desc: "techy geometric", cssVar: "var(--font-space-grotesk)" },
+  { value: "nunito-sans", label: "Nunito Sans", desc: "soft rounded sans", cssVar: "var(--font-nunito-sans)" },
+  { value: "work-sans", label: "Work Sans", desc: "clean modern sans", cssVar: "var(--font-work-sans)" },
+  { value: "playfair-display", label: "Playfair Display", desc: "elegant serif", cssVar: "var(--font-playfair-display)" },
+  { value: "lora", label: "Lora", desc: "readable serif", cssVar: "var(--font-lora)" },
+  { value: "merriweather", label: "Merriweather", desc: "sturdy serif", cssVar: "var(--font-merriweather)" },
 ];
 
 interface UserResult {
@@ -70,6 +70,7 @@ export function CommandPalette() {
   const [userQuery, setUserQuery] = useState("");
   const [userResults, setUserResults] = useState<UserResult[]>([]);
   const [userLoading, setUserLoading] = useState(false);
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -82,44 +83,42 @@ export function CommandPalette() {
     return () => document.removeEventListener("keydown", down);
   }, [setOpen]);
 
-  // debounced user search
+  // debounced user search — always searches DB when there's input
   useEffect(() => {
     const q = userQuery.trim();
     if (!q) { setUserResults([]); setUserLoading(false); return; }
     setUserLoading(true);
     let cancelled = false;
-    const t = setTimeout(() => {
+    searchTimerRef.current = setTimeout(() => {
       void searchUsers(q)
         .then((r) => { if (!cancelled) { setUserResults(r); setUserLoading(false); } })
         .catch(() => { if (!cancelled) setUserLoading(false); });
-    }, 300);
-    return () => { cancelled = true; clearTimeout(t); };
+    }, 250);
+    return () => { cancelled = true; if (searchTimerRef.current) clearTimeout(searchTimerRef.current); };
   }, [userQuery]);
 
   const go = (to: string) => { setOpen(false); router.push(to); };
   const close = () => setOpen(false);
 
-  const showUserResults = userQuery.trim().length > 0;
-
   return (
     <CommandDialog open={open} onOpenChange={setOpen} className="sm:max-w-xl" data-command-overlay="">
-      <CommandInput placeholder="search users or type a command…" onValueChange={setUserQuery} />
+      <CommandInput placeholder="search users, settings, or commands…" onValueChange={setUserQuery} />
       <CommandList>
         <CommandEmpty>no matching command</CommandEmpty>
 
-        {/* user search results — always shown when there's a query */}
-        {showUserResults && (
+        {/* User search results — always shown when there's a query */}
+        {userQuery.trim().length > 0 && (
           <CommandGroup heading="users">
             {userLoading && (
               <CommandItem disabled>
                 <IconSearch className="size-4 opacity-50" />
-                <span className="text-muted-foreground">searching…</span>
+                <span className="text-muted-foreground">searching users…</span>
               </CommandItem>
             )}
             {!userLoading && userResults.length === 0 && (
               <CommandItem disabled>
                 <IconUser className="size-4 opacity-50" />
-                <span className="text-muted-foreground">no users found for &ldquo;{userQuery.trim()}&rdquo;</span>
+                <span className="text-muted-foreground">no users found</span>
               </CommandItem>
             )}
             {userResults.map((u) => (
@@ -135,7 +134,7 @@ export function CommandPalette() {
           </CommandGroup>
         )}
 
-        {showUserResults && <CommandSeparator />}
+        {userQuery.trim().length > 0 && <CommandSeparator />}
 
         <CommandGroup heading="navigate">
           <CommandItem onSelect={() => go("/")}><IconKeyboard /> test<Shortcut>alt+1</Shortcut></CommandItem>
@@ -224,7 +223,9 @@ export function CommandPalette() {
         <CommandGroup heading="font family">
           {FONT_FAMILIES.map((f) => (
             <CommandItem key={f.value} onSelect={() => { update({ fontFamily: f.value }); close(); }} className={active(settings.fontFamily === f.value)}>
-              <IconTypography /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
+              <IconTypography />
+              <span style={{ fontFamily: f.cssVar }}>{f.label}</span>
+              <CommandDesc>{f.desc}</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>

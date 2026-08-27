@@ -32,19 +32,6 @@ const NAV = [
   { to: "/settings", label: "settings", icon: IconSettings },
 ] as const;
 
-const FONT_BODY_CLASSES: Record<string, string> = {
-  "geist-mono": "font-geist-mono",
-  inter: "font-inter",
-  "jetbrains-mono": "font-jetbrains-mono",
-  "dm-sans": "font-dm-sans",
-  "space-grotesk": "font-space-grotesk",
-  "nunito-sans": "font-nunito-sans",
-  "work-sans": "font-work-sans",
-  "playfair-display": "font-playfair-display",
-  lora: "font-lora",
-  merriweather: "font-merriweather",
-};
-
 export function AppShell({
   children,
 }: {
@@ -66,15 +53,9 @@ export function AppShell({
     root.setAttribute("data-appearance", getTheme(themeId).appearance);
   }, [themeId]);
 
-  // Apply font family to body
+  // Apply font family to html element via data attribute
   useEffect(() => {
-    const body = document.body;
-    const cls = FONT_BODY_CLASSES[fontFamily] ?? "font-geist-mono";
-    // Remove all font classes, add the selected one
-    for (const c of Object.values(FONT_BODY_CLASSES)) {
-      body.classList.remove(c);
-    }
-    body.classList.add(cls);
+    document.documentElement.setAttribute("data-font", fontFamily);
   }, [fontFamily]);
 
   async function handleSignOut() {
