@@ -16,7 +16,7 @@ import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { getPublicProfile, type PublicProfile } from "~/server/results";
-import { StreakCalendar } from "~/components/streak-calendar";
+import { StreakCalendar } from "~/components/ui/streak-calendar";
 
 const trendConfig = { wpm: { label: "wpm", color: "var(--chart-1)" } } satisfies ChartConfig;
 
@@ -143,7 +143,16 @@ export default function PublicProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <StreakCalendar results={safeResults} />
+          {(() => {
+            const dayMap = new Map<string, number>();
+            for (const r of safeResults) {
+              const d = new Date(r.createdAt);
+              const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+              dayMap.set(key, (dayMap.get(key) ?? 0) + 1);
+            }
+            const streakPeriods = Array.from(dayMap.keys()).sort().map((d) => ({ periodStart: d, periodEnd: d }));
+            return <StreakCalendar streak={streakPeriods} view="year" />;
+          })()}
         </CardContent>
       </Card>
     </div>

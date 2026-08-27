@@ -133,8 +133,7 @@ export function CommandPalette() {
           <CommandItem onSelect={() => go("/")}><IconKeyboard /> test<Shortcut>alt+1</Shortcut></CommandItem>
           <CommandItem onSelect={() => go("/leaderboard")}><IconSparkles /> leaderboard<Shortcut>alt+2</Shortcut></CommandItem>
           <CommandItem onSelect={() => go("/profile")}><IconLayoutDashboard /> profile<Shortcut>alt+3</Shortcut></CommandItem>
-          <CommandItem onSelect={() => go("/history")}><IconClock /> history<Shortcut>alt+4</Shortcut></CommandItem>
-          <CommandItem onSelect={() => go("/settings")}><IconSettings /> settings<Shortcut>alt+5</Shortcut></CommandItem>
+          <CommandItem onSelect={() => go("/settings")}><IconSettings /> settings<Shortcut>alt+4</Shortcut></CommandItem>
         </CommandGroup>
 
         <CommandSeparator />

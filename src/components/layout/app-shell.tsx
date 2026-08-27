@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  IconCommand, IconHistory, IconKeyboard, IconLayoutDashboard,
-  IconLogout, IconSettings, IconTrophy, IconUser, IconAward,
+  IconCommand, IconKeyboard, IconLayoutDashboard,
+  IconLogout, IconSettings, IconTrophy, IconUser,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -28,9 +28,7 @@ import type { SessionUser } from "~/lib/types";
 const NAV = [
   { to: "/", label: "test", icon: IconKeyboard },
   { to: "/leaderboard", label: "leaderboard", icon: IconTrophy },
-  { to: "/achievements", label: "achievements", icon: IconAward },
   { to: "/profile", label: "profile", icon: IconLayoutDashboard },
-  { to: "/history", label: "history", icon: IconHistory },
   { to: "/settings", label: "settings", icon: IconSettings },
 ] as const;
 
@@ -167,7 +165,6 @@ function UserMenu({ user, onSignOut }: { user: SessionUser; onSignOut: () => voi
         <DropdownMenuLabel className="text-xs"><div className="truncate">{user.email}</div></DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/profile")}><IconUser className="size-4" /> profile</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/history")}><IconHistory className="size-4" /> history</DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/settings")}><IconSettings className="size-4" /> settings</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={onSignOut}><IconLogout className="size-4" /> sign out</DropdownMenuItem>

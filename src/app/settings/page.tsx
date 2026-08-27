@@ -362,7 +362,6 @@ const KEYBINDS: Array<[string[], string]> = [
   [["alt", "1"], "test page"],
   [["alt", "2"], "leaderboard"],
   [["alt", "3"], "profile"],
-  [["alt", "4"], "history"],
-  [["alt", "5"], "settings"],
+  [["alt", "4"], "settings"],
   [["backspace"], "fix current word"],
 ];

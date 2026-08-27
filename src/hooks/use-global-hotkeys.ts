@@ -27,7 +27,7 @@ export function useGlobalHotkeys() {
       }
 
       if (e.altKey && !e.ctrlKey && !e.metaKey) {
-        const routes = ["/", "/leaderboard", "/profile", "/history", "/settings"];
+        const routes = ["/", "/leaderboard", "/profile", "/settings"];
         const idx = Number(e.key);
         if (idx >= 1 && idx <= routes.length) {
           e.preventDefault();
