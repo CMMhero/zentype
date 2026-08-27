@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconActivity, IconAward, IconCalendar, IconGauge, IconHistory,
+  IconActivity, IconAward, IconBolt, IconClock, IconGauge, IconHistory,
   IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
 } from "@tabler/icons-react";
 import {
-  Area, AreaChart, CartesianGrid, XAxis, YAxis,
+  Area, AreaChart, CartesianGrid, Legend, XAxis, YAxis,
 } from "recharts";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
@@ -24,7 +24,6 @@ import {
 } from "~/components/ui/dialog";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementBadge } from "~/components/ui/achievement-badge";
-import { PointsBadge } from "~/components/ui/points-badge";
 import { WpmChart } from "~/components/charts/wpm-chart";
 import { getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
@@ -32,8 +31,10 @@ import { useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
 import { formatDateTime } from "~/lib/utils";
 
-const wpmConfig = { wpm: { label: "wpm", color: "var(--chart-1)" } } satisfies ChartConfig;
-const accConfig = { accuracy: { label: "accuracy", color: "var(--chart-3)" } } satisfies ChartConfig;
+const trendConfig = {
+  wpm: { label: "wpm", color: "var(--chart-1)" },
+  accuracy: { label: "accuracy", color: "var(--chart-3)" },
+} satisfies ChartConfig;
 
 export default function ProfilePage() {
   const user = useUser();
@@ -105,16 +106,13 @@ export default function ProfilePage() {
   const lockedAch = (achievements ?? []).filter((a) => a.achievedAt === null);
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       {/* Header */}
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-lg font-semibold">
           {user.username}
           <span className="ml-3 font-mono text-xs text-muted-foreground">{user.email}</span>
         </h1>
-        <div className="flex items-center gap-3">
-          {points && <PointsBadge name="XP" total={points.totalXP} size="sm" />}
-        </div>
       </header>
 
       {/* Stats row */}
@@ -125,25 +123,33 @@ export default function ProfilePage() {
         <StatCard icon={<IconStopwatch className="size-4" />} label="time typed" value={loading ? null : formatDuration(stats!.timeTypedSeconds)} />
       </div>
 
-      {/* XP level bar */}
+      {/* Level + XP — full width */}
       {points && points.totalXP > 0 && (
-        <Card className="gap-2 py-3">
-          <CardContent className="flex items-center gap-4 px-4">
-            <div className="flex items-baseline gap-2">
-              <span className="text-xs font-bold tracking-widest uppercase text-muted-foreground">level</span>
-              <span className="text-xl font-bold tabular-nums">{points.level}</span>
-            </div>
-            <div className="flex-1">
-              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${points.progress}%` }} />
+        <Card className="gap-3 py-4">
+          <CardHeader className="px-4">
+            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+              <IconBolt className="text-primary size-4" /> level &amp; xp
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold tabular-nums text-primary">{points.level}</span>
+                <span className="text-xs text-muted-foreground">level</span>
               </div>
+              <div className="flex-1">
+                <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${points.progress}%` }} />
+                </div>
+              </div>
+              <span className="text-xs font-bold tabular-nums text-muted-foreground">{points.progress}%</span>
+              <span className="text-sm font-bold tabular-nums">{points.totalXP.toLocaleString()} <span className="text-xs text-muted-foreground">xp</span></span>
             </div>
-            <span className="text-xs font-bold tabular-nums text-muted-foreground">{points.progress}%</span>
           </CardContent>
         </Card>
       )}
 
-      {/* Personal bests by board */}
+      {/* Personal bests */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
@@ -152,14 +158,14 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2 px-4">
           {loading ? (
-            Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-8 w-24" />)
+            Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-9 w-28" />)
           ) : Object.keys(stats!.bestByBoard).length === 0 ? (
             <span className="text-sm text-muted-foreground">no results yet</span>
           ) : (
             Object.entries(stats!.bestByBoard)
               .sort((a, b) => a[0].localeCompare(b[0]))
               .map(([board, wpm]) => (
-                <Badge key={board} variant="secondary" className="gap-1.5 py-1 text-xs">
+                <Badge key={board} variant="secondary" className="gap-2 py-1.5 text-sm">
                   <span className="text-muted-foreground">{prettyBoard(board)}</span>
                   <span className="text-primary font-bold tabular-nums">{wpm}</span>
                 </Badge>
@@ -168,86 +174,93 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Charts — wpm + accuracy in one card */}
-      <Card className="gap-2 py-3">
-        <CardHeader className="px-4">
-          <CardTitle className="text-xs font-semibold tracking-widest uppercase">performance trends</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4 px-4">
-          {loading ? (
-            <>
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-32 w-full" />
-            </>
-          ) : chartData.length >= 2 ? (
-            <>
-              <DualChart title="wpm" config={wpmConfig} data={chartData} dataKey="wpm" />
-              <DualChart title="accuracy" config={accConfig} data={chartData} dataKey="accuracy" domain={[70, 100]} />
-            </>
-          ) : (
-            <div className="flex h-32 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
-              <IconActivity className="mr-2 size-4" /> finish more tests
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* Trend chart + Achievements — side by side */}
+      <div className="grid gap-5 md:grid-cols-[1.4fr_1fr]">
+        {/* Trend chart — single card, two lines */}
+        <Card className="gap-3 py-4">
+          <CardHeader className="px-4">
+            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+              <IconActivity className="size-4" /> performance trend
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-4">
+            {loading ? (
+              <Skeleton className="h-48 w-full" />
+            ) : chartData.length >= 2 ? (
+              <ChartContainer config={trendConfig} className="h-48 w-full">
+                <AreaChart data={chartData.map((r, i) => ({ n: i + 1, wpm: r.wpm, accuracy: r.accuracy }))}>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
+                  <YAxis yAxisId="wpm" tickLine={false} axisLine={false} width={36} />
+                  <YAxis yAxisId="acc" orientation="right" tickLine={false} axisLine={false} width={36} domain={[70, 100]} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Legend />
+                  <Area yAxisId="wpm" dataKey="wpm" type="monotone" stroke="var(--color-wpm)" fill="var(--color-wpm)" fillOpacity={0.1} strokeWidth={2} dot={false} />
+                  <Area yAxisId="acc" dataKey="accuracy" type="monotone" stroke="var(--color-accuracy)" fill="var(--color-accuracy)" fillOpacity={0.1} strokeWidth={2} dot={false} />
+                </AreaChart>
+              </ChartContainer>
+            ) : (
+              <div className="flex h-48 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+                <IconActivity className="mr-2 size-4" /> finish more tests
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-      {/* Streak — full width */}
+        {/* Achievements */}
+        <Card className="flex flex-col gap-3 py-4">
+          <CardHeader className="px-4">
+            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+              <IconAward className="size-4" /> achievements
+              <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{(achievements ?? []).length}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 overflow-hidden px-4">
+            {bestAch.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {bestAch.map((a) => (
+                  <AchievementBadge
+                    key={a.id}
+                    achievement={{ id: a.id, name: a.name, trigger: a.trigger, achievedAt: a.achievedAt, progress: a.progress }}
+                    badgeSize="sm"
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">no achievements yet — finish tests to earn badges</p>
+            )}
+            {lockedAch.length > 0 && (
+              <p className="mt-2 text-[10px] text-muted-foreground">{lockedAch.length} locked — keep typing to unlock</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Streak — full width, bigger */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconCalendar className="size-4" /> streak
+            <IconClock className="size-4" /> streak
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <div className="mb-3 flex items-end gap-6">
+          <div className="mb-4 flex items-end gap-8">
             <div>
-              <span className="text-3xl font-bold tabular-nums">{currentStreak}</span>
-              <span className="ml-1 text-sm text-muted-foreground">days</span>
+              <span className="text-4xl font-bold tabular-nums">{currentStreak}</span>
+              <span className="ml-1.5 text-sm text-muted-foreground">days</span>
             </div>
             <div className="text-right">
               <span className="text-xs text-muted-foreground">best</span>
-              <span className="ml-1 text-lg font-bold tabular-nums">{longestStreak}</span>
-              <span className="ml-0.5 text-xs text-muted-foreground">days</span>
+              <span className="ml-1.5 text-xl font-bold tabular-nums">{longestStreak}</span>
+              <span className="ml-1 text-xs text-muted-foreground">days</span>
             </div>
           </div>
-          <StreakCalendar streak={streakPeriods} view="week" startOfWeek={0} className="max-w-none mb-4" />
-          <div className="border-t border-border/40 pt-3">
-            <p className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground mb-2">last 365 days</p>
-            <StreakCalendar streak={streakPeriods} view="year" compact className="max-w-none" />
-          </div>
+          <StreakCalendar streak={streakPeriods} view="week" startOfWeek={0} className="max-w-none mb-5" />
+          <StreakCalendar streak={streakPeriods} view="year" className="max-w-none" />
         </CardContent>
       </Card>
 
-      {/* Achievements — compact */}
-      <Card className="gap-3 py-3">
-        <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconAward className="size-4" /> achievements
-            <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{(achievements ?? []).length}</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="overflow-hidden px-4">
-          {bestAch.length > 0 ? (
-            <div className="flex flex-wrap gap-1.5">
-              {bestAch.map((a) => (
-                <AchievementBadge
-                  key={a.id}
-                  achievement={{ id: a.id, name: a.name, trigger: a.trigger, achievedAt: a.achievedAt, progress: a.progress }}
-                  badgeSize="xs"
-                />
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs text-muted-foreground">no achievements yet — finish tests to earn badges</p>
-          )}
-          {lockedAch.length > 0 && (
-            <p className="mt-1.5 text-[10px] text-muted-foreground">{lockedAch.length} locked — keep typing to unlock</p>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Test history — merged from /history */}
+      {/* Test history */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
@@ -344,30 +357,6 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
         {value === null ? <Skeleton className="mt-1 h-7 w-16" /> : <span className="text-xl font-bold tabular-nums text-primary">{value}</span>}
       </CardContent>
     </Card>
-  );
-}
-
-function DualChart({ title, config, data, dataKey, domain }: {
-  title: string;
-  config: ChartConfig;
-  data: TestResult[];
-  dataKey: string;
-  domain?: [number, number];
-}) {
-  const chartData = data.map((r, i) => ({ n: i + 1, [dataKey]: (r as unknown as Record<string, number>)[dataKey] }));
-  return (
-    <div>
-      <p className="mb-1 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{title}</p>
-      <ChartContainer config={config} className="h-24 w-full">
-        <AreaChart data={chartData}>
-          <CartesianGrid vertical={false} strokeDasharray="3 3" />
-          <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
-          <YAxis domain={domain ?? [0, "auto"]} tickLine={false} axisLine={false} width={36} />
-          <ChartTooltip content={<ChartTooltipContent />} />
-          <Area dataKey={dataKey} type="monotone" stroke={`var(--color-${dataKey})`} fill={`var(--color-${dataKey})`} fillOpacity={0.15} strokeWidth={2} dot={false} />
-        </AreaChart>
-      </ChartContainer>
-    </div>
   );
 }
 

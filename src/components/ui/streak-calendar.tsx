@@ -235,9 +235,6 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
     }
 
     const monthName = month.toLocaleDateString("en-US", { month: "long" })
-    const gitEndMonthName = today.toLocaleDateString("en-US", {
-      month: "long",
-    })
 
     const freezeColorStyles = {
       "--freeze-color": "var(--info)",
@@ -412,14 +409,6 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
 
         {view === "year" && (
           <>
-            <div className="mb-4 text-center">
-              <h3 className="text-lg font-semibold" id="streak-calendar-title">
-                Last 365 days
-              </h3>
-              <p className="text-muted-foreground text-xs">
-                Ending {gitEndMonthName} {today.getDate()}
-              </p>
-            </div>
             <div className="overflow-x-auto">
               <div className="inline-block min-w-full pr-4">
                 <div

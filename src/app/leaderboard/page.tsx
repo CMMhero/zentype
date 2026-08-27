@@ -149,6 +149,7 @@ export default function LeaderboardPage() {
           currentUserId={user?.id}
           showPagination
           defaultPageSize={25}
+          onUserClick={(r) => router.push(`/profile/${r.userId}`)}
         />
       )}
     </div>
