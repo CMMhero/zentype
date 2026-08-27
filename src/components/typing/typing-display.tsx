@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Caret } from "~/components/typing/caret";
 import { cn } from "~/lib/utils";
-import type { CaretStyle, FontFamily, FontSizeKey } from "~/lib/types";
+import type { CaretStyle, FontFamily, FontSizeKey, GameMode } from "~/lib/types";
 
 const FONT_SIZES: Record<FontSizeKey, string> = {
   sm: "text-xl md:text-2xl",
@@ -29,6 +29,8 @@ interface TypingDisplayProps {
   fontSize: FontSizeKey;
   fontFamily: FontFamily;
   visibleLines: 1 | 2 | 3;
+  gameMode: GameMode;
+  wordCount: number;
   focused?: boolean;
 }
 
@@ -43,6 +45,8 @@ export function TypingDisplay({
   fontSize,
   fontFamily,
   visibleLines,
+  gameMode,
+  wordCount,
 }: TypingDisplayProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const wordRefs = useRef<Map<number, HTMLSpanElement>>(new Map());
@@ -91,7 +95,8 @@ export function TypingDisplay({
     setContainerHeight(`${visibleLines * lineH + fs * 0.25}px`);
 
     setScrollY((prevScroll) => {
-      const target = Math.max(0, y - (visibleLines - 1) * lineH);
+      // Keep the active line at the top so the user always sees upcoming lines
+      const target = Math.max(0, y);
       return Math.abs(prevScroll - target) < 0.5 ? prevScroll : target;
     });
   }, [activeIndex, current, visibleLines]);
@@ -129,7 +134,7 @@ export function TypingDisplay({
         style={{ transform: `translateY(-${scrollY}px)` }}
       >
         <div className="flex flex-wrap content-start">
-          {words.map((word, i) => {
+          {words.slice(0, gameMode === "words" ? wordCount : undefined).map((word, i) => {
             const isPast = i < activeIndex;
             const isActive = i === activeIndex;
             return (
