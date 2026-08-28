@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconKeyboardFilled } from "@tabler/icons-react";
+import Link from "next/link";
+import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconKeyboardFilled, IconArrowLeft } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { signInWithProvider, type AuthProvider } from "~/server/auth";
 
 export default function LoginPage() {
@@ -26,34 +26,69 @@ export default function LoginPage() {
     }
   }
 
+  const providers: { id: AuthProvider; label: string; icon: typeof IconBrandGithubFilled }[] = [
+    { id: "github", label: "Continue with GitHub", icon: IconBrandGithubFilled },
+    { id: "google", label: "Continue with Google", icon: IconBrandGoogleFilled },
+    { id: "discord", label: "Continue with Discord", icon: IconBrandDiscordFilled },
+  ];
+
   return (
     <div className="flex flex-1 items-center justify-center px-4 py-16">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center gap-2 text-lg">
-            <IconKeyboardFilled className="text-primary size-6" />
-            zentype
-          </CardTitle>
-          <CardDescription>
-            Save your results, track progress, and climb the leaderboard.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          <Button variant="outline" size="lg" onClick={() => signIn("github")} disabled={loading !== null} className="justify-start gap-3">
-            <IconBrandGithubFilled className="size-4" />
-            {loading === "github" ? "Redirecting…" : "Continue with GitHub"}
-          </Button>
-          <Button variant="outline" size="lg" onClick={() => signIn("google")} disabled={loading !== null} className="justify-start gap-3">
-            <IconBrandGoogleFilled className="size-4" />
-            {loading === "google" ? "Redirecting…" : "Continue with Google"}
-          </Button>
-          <Button variant="outline" size="lg" onClick={() => signIn("discord")} disabled={loading !== null} className="justify-start gap-3">
-            <IconBrandDiscordFilled className="size-4" />
-            {loading === "discord" ? "Redirecting…" : "Continue with Discord"}
-          </Button>
+      <div className="relative w-full max-w-sm">
+        {/* Background glow */}
+        <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2">
+          <div className="size-64 rounded-full bg-primary/5 blur-3xl" />
+        </div>
 
-        </CardContent>
-      </Card>
+        <div className="relative flex flex-col items-center gap-8">
+          {/* Logo + heading */}
+          <div className="flex flex-col items-center gap-3 text-center">
+            <div className="bg-primary/10 flex size-14 items-center justify-center rounded-2xl border border-primary/20">
+              <IconKeyboardFilled className="text-primary size-7" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h1 className="text-xl font-semibold tracking-tight">
+                welcome to zentype
+              </h1>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                save your results, track progress,<br />and climb the leaderboard.
+              </p>
+            </div>
+          </div>
+
+          {/* Sign in buttons */}
+          <div className="flex w-full flex-col gap-2.5">
+            {providers.map(({ id, label, icon: Icon }) => (
+              <Button
+                key={id}
+                variant="outline"
+                size="lg"
+                onClick={() => signIn(id)}
+                disabled={loading !== null}
+                className="w-full justify-start gap-3 text-sm"
+              >
+                <Icon className="size-4" />
+                {loading === id ? "Redirecting…" : label}
+              </Button>
+            ))}
+          </div>
+
+          {/* Footer hint */}
+          <p className="text-muted-foreground/60 text-center text-[11px] leading-relaxed">
+            your results are saved locally either way —<br />
+            signing in lets you sync across devices.
+          </p>
+
+          {/* Back link */}
+          <Link
+            href="/"
+            className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-xs transition-colors"
+          >
+            <IconArrowLeft className="size-3" />
+            back to typing
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
