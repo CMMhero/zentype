@@ -53,7 +53,15 @@ export async function getUserPointsByUsername(
     .ilike("username", username)
     .maybeSingle();
   if (!profile) return null;
-  // Then get points
+  // Try RPC first (bypasses RLS)
+  const { data: rpcData, error: rpcErr } = await supabase.rpc("get_user_points_by_id", {
+    p_user_id: profile.id,
+  });
+  if (!rpcErr && rpcData && rpcData.length > 0) {
+    const d = rpcData[0];
+    return { totalXP: d.total_xp, level: d.level, progress: xpProgress(d.total_xp) };
+  }
+  // Fallback: direct query
   const { data } = await supabase
     .from("user_points")
     .select("total_xp,level")
