@@ -77,7 +77,7 @@ export default function PublicProfilePage() {
           <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2">
             <div className="size-48 rounded-full bg-primary/5 blur-3xl" />
           </div>
-          <span className="text-[120px] font-bold leading-none tracking-tighter text-muted/30 select-none">
+          <span className="text-[120px] font-bold leading-none tracking-tighter text-primary/10 select-none">
             ?
           </span>
           <div className="flex flex-col items-center gap-2">
