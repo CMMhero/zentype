@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import {
@@ -99,6 +99,42 @@ const FONT_FAMILIES: { value: FontFamily; label: string; desc: string; cssVar: s
   { value: "work-sans", label: "Work Sans", desc: "clean modern sans", cssVar: "var(--font-work-sans)" },
 ];
 
+// ─── Static items (built once, never changes) ────────────────────────
+const STATIC_ITEMS = (() => {
+  const items: { id: string; group: string; value: string; keywords: string; label: string }[] = [
+    { id: "nav-test", group: "navigate", value: "navigate test alt+1", keywords: "navigate test", label: "test" },
+    { id: "nav-lb", group: "navigate", value: "navigate leaderboard global bests alt+2", keywords: "navigate leaderboard", label: "leaderboard" },
+    { id: "nav-profile", group: "navigate", value: "navigate profile dashboard alt+3", keywords: "navigate profile", label: "profile" },
+    { id: "nav-settings", group: "navigate", value: "navigate settings config alt+4", keywords: "navigate settings", label: "settings" },
+    { id: "act-restart", group: "actions", value: "actions restart test tab", keywords: "actions restart", label: "restart test" },
+    ...TIME_OPTIONS.map((t) => ({ id: `mode-time-${t}`, group: "mode", value: `mode time ${t}s type for ${t} seconds`, keywords: `mode time ${t}s`, label: `${t}s time` })),
+    ...WORD_OPTIONS.map((w) => ({ id: `mode-words-${w}`, group: "mode", value: `mode words ${w}w type ${w} words`, keywords: `mode words ${w}w`, label: `${w}w words` })),
+    ...THEMES.map((t) => ({ id: `theme-${t.id}`, group: "theme", value: `theme appearance ${t.label} ${t.appearance} ${t.id}`, keywords: `theme appearance ${t.label} ${t.appearance}`, label: t.label })),
+    { id: "sound-toggle", group: "sound", value: "sound audio keystroke click thock beep enable disable", keywords: "sound audio enable disable", label: "sound toggle" },
+    { id: "sound-error", group: "sound", value: "sound error beep incorrect character", keywords: "sound error beep", label: "error sound" },
+    ...SOUND_VARIANTS.map((v) => ({ id: `sound-${v.value}`, group: "sound", value: `sound audio variant ${v.label} ${v.desc}`, keywords: `sound ${v.label}`, label: v.label })),
+    ...CARET_STYLES.map((c) => ({ id: `caret-${c.value}`, group: "caret", value: `caret cursor ${c.label} ${c.desc}`, keywords: `caret ${c.label}`, label: c.label })),
+    ...FONT_SIZES.map((f) => ({ id: `fsize-${f.value}`, group: "font size", value: `font size ${f.label} ${f.desc} text`, keywords: `font size ${f.label}`, label: f.label })),
+    ...FONT_FAMILIES.map((f) => ({ id: `ffam-${f.value}`, group: "font family", value: `font family ${f.label} ${f.desc} typeface`, keywords: `font family ${f.label}`, label: f.label })),
+    ...([1, 2, 3] as const).map((n) => ({ id: `lines-${n}`, group: "visible lines", value: `visible lines ${n} line show text`, keywords: `visible lines ${n}`, label: `${n} line${n > 1 ? 's' : ''}` })),
+    { id: "gp-blind", group: "gameplay", value: "gameplay blind mode hide error coloring trust fingers", keywords: "gameplay blind mode", label: "blind mode" },
+    { id: "gp-stop", group: "gameplay", value: "gameplay stop on error block cursor until fixed", keywords: "gameplay stop error", label: "stop on error" },
+    { id: "gp-strict", group: "gameplay", value: "gameplay strict space wrong words cannot be skipped", keywords: "gameplay strict space", label: "strict space" },
+    { id: "gp-back", group: "gameplay", value: "gameplay free backspace restore previous word", keywords: "gameplay free backspace", label: "free backspace" },
+    { id: "gp-hide", group: "gameplay", value: "gameplay hide live stats blank wpm acc while running", keywords: "gameplay hide live stats", label: "hide live stats" },
+    { id: "app-kb", group: "appearance", value: "appearance virtual keyboard show key highlighter", keywords: "appearance keyboard", label: "virtual keyboard" },
+    { id: "app-smooth", group: "appearance", value: "appearance smooth caret animate caret movement", keywords: "appearance smooth caret", label: "smooth caret" },
+  ];
+  return items;
+})();
+
+// ─── Single fuse instance (built once) ──────────────────────────────
+const fuse = new Fuse(STATIC_ITEMS, {
+  keys: ["keywords", "label"],
+  threshold: 0.4,
+  ignoreLocation: true,
+});
+
 interface UserResult {
   userId: string;
   username: string;
@@ -111,11 +147,24 @@ export function CommandPalette() {
   const router = useRouter();
   const settings = useSettingsStore((s) => s.settings);
   const update = useSettingsStore((s) => s.update);
+
   const [userQuery, setUserQuery] = useState("");
   const [userResults, setUserResults] = useState<UserResult[]>([]);
   const [userLoading, setUserLoading] = useState(false);
-  const searchTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const userSearchTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
+  // ─── Fuse search result cache ──────────────────────────────────────
+  // cmdk calls filter(value, search) for EVERY item on each keystroke.
+  // Instead of running fuse.search() ~100+ times per keystroke, we run it
+  // ONCE per unique query and cache the Set of matching value strings.
+  const matchCacheRef = useRef<Map<string, Set<string>>>(new Map());
+
+  // Evict cache entries when it grows too large (prevent memory leak)
+  if (matchCacheRef.current.size > 100) {
+    matchCacheRef.current.clear();
+  }
+
+  // ─── Keyboard shortcut listener (stable) ───────────────────────────
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
@@ -127,79 +176,82 @@ export function CommandPalette() {
     return () => document.removeEventListener("keydown", down);
   }, [setOpen]);
 
-  // debounced user search — only fires after 3+ chars with 400ms delay
+  // ─── Debounced user search ─────────────────────────────────────────
   useEffect(() => {
     const q = userQuery.trim();
     if (q.length < 3) { setUserResults([]); setUserLoading(false); return; }
     setUserLoading(true);
     let cancelled = false;
-    searchTimerRef.current = setTimeout(() => {
+    userSearchTimerRef.current = setTimeout(() => {
       void searchUsers(q)
         .then((r) => { if (!cancelled) { setUserResults(r); setUserLoading(false); } })
         .catch(() => { if (!cancelled) setUserLoading(false); });
     }, 400);
-    return () => { cancelled = true; if (searchTimerRef.current) clearTimeout(searchTimerRef.current); };
+    return () => { cancelled = true; if (userSearchTimerRef.current) clearTimeout(userSearchTimerRef.current); };
   }, [userQuery]);
 
-  const go = (to: string) => { setOpen(false); router.push(to); };
-  const close = () => setOpen(false);
+  // ─── Navigation helpers (stable) ───────────────────────────────────
+  const go = useCallback((to: string) => { setOpen(false); router.push(to); }, [setOpen, router]);
+  const close = useCallback(() => setOpen(false), [setOpen]);
 
-  // Fuse.js fuzzy index for all static command items
-  const allStaticItems = useMemo(() => [
-    // navigate
-    { id: "nav-test", group: "navigate", value: "navigate test alt+1", keywords: "navigate test", label: "test" },
-    { id: "nav-lb", group: "navigate", value: "navigate leaderboard global bests alt+2", keywords: "navigate leaderboard", label: "leaderboard" },
-    { id: "nav-profile", group: "navigate", value: "navigate profile dashboard alt+3", keywords: "navigate profile", label: "profile" },
-    { id: "nav-settings", group: "navigate", value: "navigate settings config alt+4", keywords: "navigate settings", label: "settings" },
-    // actions
-    { id: "act-restart", group: "actions", value: "actions restart test tab", keywords: "actions restart", label: "restart test" },
-    // mode
-    ...TIME_OPTIONS.map((t) => ({ id: `mode-time-${t}`, group: "mode", value: `mode time ${t}s type for ${t} seconds`, keywords: `mode time ${t}s`, label: `${t}s time` })),
-    ...WORD_OPTIONS.map((w) => ({ id: `mode-words-${w}`, group: "mode", value: `mode words ${w}w type ${w} words`, keywords: `mode words ${w}w`, label: `${w}w words` })),
-    // themes
-    ...THEMES.map((t) => ({ id: `theme-${t.id}`, group: "theme", value: `theme appearance ${t.label} ${t.appearance} ${t.id}`, keywords: `theme appearance ${t.label} ${t.appearance}`, label: t.label })),
-    // sound
-    { id: "sound-toggle", group: "sound", value: "sound audio keystroke click thock beep enable disable", keywords: "sound audio enable disable", label: "sound toggle" },
-    { id: "sound-error", group: "sound", value: "sound error beep incorrect character", keywords: "sound error beep", label: "error sound" },
-    ...SOUND_VARIANTS.map((v) => ({ id: `sound-${v.value}`, group: "sound", value: `sound audio variant ${v.label} ${v.desc}`, keywords: `sound ${v.label}`, label: v.label })),
-    // caret
-    ...CARET_STYLES.map((c) => ({ id: `caret-${c.value}`, group: "caret", value: `caret cursor ${c.label} ${c.desc}`, keywords: `caret ${c.label}`, label: c.label })),
-    // font size
-    ...FONT_SIZES.map((f) => ({ id: `fsize-${f.value}`, group: "font size", value: `font size ${f.label} ${f.desc} text`, keywords: `font size ${f.label}`, label: f.label })),
-    // font family
-    ...FONT_FAMILIES.map((f) => ({ id: `ffam-${f.value}`, group: "font family", value: `font family ${f.label} ${f.desc} typeface`, keywords: `font family ${f.label}`, label: f.label })),
-    // visible lines
-    ...([1, 2, 3] as const).map((n) => ({ id: `lines-${n}`, group: "visible lines", value: `visible lines ${n} line show text`, keywords: `visible lines ${n}`, label: `${n} line${n > 1 ? 's' : ''}` })),
-    // gameplay toggles
-    { id: "gp-blind", group: "gameplay", value: "gameplay blind mode hide error coloring trust fingers", keywords: "gameplay blind mode", label: "blind mode" },
-    { id: "gp-stop", group: "gameplay", value: "gameplay stop on error block cursor until fixed", keywords: "gameplay stop error", label: "stop on error" },
-    { id: "gp-strict", group: "gameplay", value: "gameplay strict space wrong words cannot be skipped", keywords: "gameplay strict space", label: "strict space" },
-    { id: "gp-back", group: "gameplay", value: "gameplay free backspace restore previous word", keywords: "gameplay free backspace", label: "free backspace" },
-    { id: "gp-hide", group: "gameplay", value: "gameplay hide live stats blank wpm acc while running", keywords: "gameplay hide live stats", label: "hide live stats" },
-    // appearance toggles
-    { id: "app-kb", group: "appearance", value: "appearance virtual keyboard show key highlighter", keywords: "appearance keyboard", label: "virtual keyboard" },
-    { id: "app-smooth", group: "appearance", value: "appearance smooth caret animate caret movement", keywords: "appearance smooth caret", label: "smooth caret" },
-  ], []);
-
-  const fuse = useMemo(() => new Fuse(allStaticItems, {
-    keys: ["keywords", "label"],
-    threshold: 0.4,
-    ignoreLocation: true,
-  }), [allStaticItems]);
-
-  // Memoized fuzzy filter — avoids re-creating Set on every cmdk filter pass
+  // ─── Optimized fuzzy filter ────────────────────────────────────────
+  // Key insight: cmdk calls this function N times per keystroke (once per
+  // CommandItem). We compute the match set ONCE and cache it so subsequent
+  // calls are O(1) Set lookups instead of O(N) fuse searches.
   const fuzzyFilter = useCallback((value: string, search: string) => {
     if (!search) return 1;
-    const results = fuse.search(search);
-    for (const r of results) {
-      if (r.item.value === value) return 1;
+    let matchSet = matchCacheRef.current.get(search);
+    if (!matchSet) {
+      const results = fuse.search(search, { limit: 30 });
+      matchSet = new Set(results.map((r) => r.item.value));
+      matchCacheRef.current.set(search, matchSet);
     }
-    return 0;
-  }, [fuse]);
+    return matchSet.has(value) ? 1 : 0;
+  }, []);
+
+  // ─── Settings-derived active state (memoized) ──────────────────────
+  const activeSet = useMemo(() => ({
+    mode: `${settings.mode}:${settings.mode === "time" ? settings.duration : settings.wordCount}`,
+    theme: settings.themeId,
+    soundVariant: settings.sound.variant,
+    soundEnabled: settings.sound.enabled,
+    soundOnError: settings.soundOnError,
+    caret: settings.caretStyle,
+    fontSize: settings.fontSize,
+    fontFamily: settings.fontFamily,
+    visibleLines: settings.visibleLines,
+    blindMode: settings.blindMode,
+    stopOnError: settings.stopOnError,
+    strictSpace: settings.strictSpace,
+    freeBackspace: settings.freeBackspace,
+    hideLiveStats: settings.hideLiveStats,
+    showKeyboard: settings.showKeyboard,
+    smoothCaret: settings.smoothCaret,
+  }), [settings]);
+
+  // ─── Stable callbacks for toggles ──────────────────────────────────
+  const toggleSound = useCallback(() => update({ sound: { ...settings.sound, enabled: !settings.sound.enabled } }), [update, settings.sound]);
+  const toggleSoundError = useCallback(() => update({ soundOnError: !settings.soundOnError }), [update, settings.soundOnError]);
+  const toggleBlind = useCallback(() => update({ blindMode: !settings.blindMode }), [update, settings.blindMode]);
+  const toggleStop = useCallback(() => update({ stopOnError: !settings.stopOnError }), [update, settings.stopOnError]);
+  const toggleStrict = useCallback(() => update({ strictSpace: !settings.strictSpace }), [update, settings.strictSpace]);
+  const toggleFreeBack = useCallback(() => update({ freeBackspace: !settings.freeBackspace }), [update, settings.freeBackspace]);
+  const toggleHideLive = useCallback(() => update({ hideLiveStats: !settings.hideLiveStats }), [update, settings.hideLiveStats]);
+  const toggleKeyboard = useCallback(() => update({ showKeyboard: !settings.showKeyboard }), [update, settings.showKeyboard]);
+  const toggleSmoothCaret = useCallback(() => update({ smoothCaret: !settings.smoothCaret }), [update, settings.smoothCaret]);
+  const restartTest = useCallback(() => { close(); window.dispatchEvent(new CustomEvent("zt:restart")); }, [close]);
+
+  // Clear fuse cache when dialog closes
+  useEffect(() => {
+    if (!open) {
+      matchCacheRef.current.clear();
+      setUserQuery("");
+    }
+  }, [open]);
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen} className="sm:max-w-2xl max-h-[80vh]" filter={fuzzyFilter} data-command-overlay="">
-      <CommandInput placeholder="search users, settings, or commands…" onValueChange={setUserQuery} />
+      <CommandInput placeholder="search users, settings, or commands…"      onValueChange={setUserQuery} />
       <CommandList>
         <CommandEmpty>no matching command</CommandEmpty>
 
@@ -219,19 +271,7 @@ export function CommandPalette() {
               </CommandItem>
             )}
             {userResults.map((u) => (
-              <CommandItem
-                key={u.userId}
-                value={`users ${u.username} view profile`}
-                keywords={["users", u.username]}
-                onSelect={() => go(`/profile/${u.username}`)}
-              >
-                <Avatar className="size-5">
-                  {u.avatarUrl && <AvatarImage src={u.avatarUrl} alt="" />}
-                  <AvatarFallback className="rounded text-[9px] uppercase">{u.username.slice(0, 2)}</AvatarFallback>
-                </Avatar>
-                <span>{u.username}</span>
-                <CommandDesc><IconArrowRight className="size-3" /> view profile</CommandDesc>
-              </CommandItem>
+              <UserResultItem key={u.userId} u={u} onSelect={go} />
             ))}
           </CommandGroup>
         )}
@@ -248,7 +288,7 @@ export function CommandPalette() {
         <CommandSeparator />
 
         <CommandGroup heading="actions">
-          <CommandItem value="actions restart test tab" keywords={["actions", "restart"]} onSelect={() => { close(); window.dispatchEvent(new CustomEvent("zt:restart")); }}>
+          <CommandItem value="actions restart test tab" keywords={["actions", "restart"]} onSelect={restartTest}>
             <IconRefresh /> restart test<Shortcut>tab</Shortcut>
           </CommandItem>
         </CommandGroup>
@@ -261,7 +301,9 @@ export function CommandPalette() {
               key={`time-${t}`}
               value={`mode time ${t}s type for ${t} seconds`}
               keywords={["mode", "time"]}
-              onSelect={() => { update({ mode: "time", duration: t }); close(); }} className={active(settings.mode === "time" && settings.duration === t)}>
+              onSelect={() => { update({ mode: "time", duration: t }); close(); }}
+              className={activeSet.mode === `time:${t}` ? "text-primary bg-primary/10" : ""}
+            >
               <IconClock /> {t}s — time<CommandDesc>type for {t} seconds</CommandDesc>
             </CommandItem>
           ))}
@@ -270,7 +312,9 @@ export function CommandPalette() {
               key={`words-${w}`}
               value={`mode words ${w}w type ${w} words`}
               keywords={["mode", "words"]}
-              onSelect={() => { update({ mode: "words", wordCount: w }); close(); }} className={active(settings.mode === "words" && settings.wordCount === w)}>
+              onSelect={() => { update({ mode: "words", wordCount: w }); close(); }}
+              className={activeSet.mode === `words:${w}` ? "text-primary bg-primary/10" : ""}
+            >
               <IconLetterT /> {w}w — words<CommandDesc>type {w} words</CommandDesc>
             </CommandItem>
           ))}
@@ -284,7 +328,9 @@ export function CommandPalette() {
               key={t.id}
               value={`theme appearance ${t.label} ${t.appearance} ${t.id}`}
               keywords={["theme", "appearance", t.label, t.appearance]}
-              onSelect={() => { update({ themeId: t.id }); close(); }} className={active(settings.themeId === t.id)}>
+              onSelect={() => { update({ themeId: t.id }); close(); }}
+              className={activeSet.theme === t.id ? "text-primary bg-primary/10" : ""}
+            >
               <IconMoon />
               <span className="mr-1.5 inline-flex gap-0.5" aria-hidden>
                 <span className="size-3 rounded-sm border border-border" style={{ background: t.vars["--background"] }} />
@@ -301,24 +347,26 @@ export function CommandPalette() {
           <CommandItem
             value="sound audio keystroke click thock beep enable disable"
             keywords={["sound", "audio"]}
-            onSelect={() => update({ sound: { ...settings.sound, enabled: !settings.sound.enabled } })}
+            onSelect={toggleSound}
           >
-            {settings.sound.enabled ? <IconVolume /> : <IconVolumeOff />}
-            sound {settings.sound.enabled ? "on" : "off"}<CommandDesc>enable or disable keystroke audio feedback</CommandDesc>
+            {activeSet.soundEnabled ? <IconVolume /> : <IconVolumeOff />}
+            sound {activeSet.soundEnabled ? "on" : "off"}<CommandDesc>enable or disable keystroke audio feedback</CommandDesc>
           </CommandItem>
           <CommandItem
             value="sound error beep incorrect character"
             keywords={["sound", "error"]}
-            onSelect={() => update({ soundOnError: !settings.soundOnError })}
+            onSelect={toggleSoundError}
           >
-            <IconBlender /> error sound {settings.soundOnError ? "on" : "off"}<CommandDesc>play a sound when you type an incorrect character</CommandDesc>
+            <IconBlender /> error sound {activeSet.soundOnError ? "on" : "off"}<CommandDesc>play a sound when you type an incorrect character</CommandDesc>
           </CommandItem>
           {SOUND_VARIANTS.map((v) => (
             <CommandItem
               key={v.value}
               value={`sound audio variant ${v.label} ${v.desc}`}
               keywords={["sound", v.label]}
-              onSelect={() => { update({ sound: { ...settings.sound, variant: v.value } }); playKeypress(v.value, settings.sound.volume); }} className={active(settings.sound.variant === v.value)}>
+              onSelect={() => { update({ sound: { ...settings.sound, variant: v.value } }); playKeypress(v.value, settings.sound.volume); }}
+              className={activeSet.soundVariant === v.value ? "text-primary bg-primary/10" : ""}
+            >
               <IconPlayerPlay /> {v.label}<CommandDesc>{v.desc}</CommandDesc>
             </CommandItem>
           ))}
@@ -332,7 +380,9 @@ export function CommandPalette() {
               key={c.value}
               value={`caret cursor ${c.label} ${c.desc}`}
               keywords={["caret", c.label]}
-              onSelect={() => { update({ caretStyle: c.value }); close(); }} className={active(settings.caretStyle === c.value)}>
+              onSelect={() => { update({ caretStyle: c.value }); close(); }}
+              className={activeSet.caret === c.value ? "text-primary bg-primary/10" : ""}
+            >
               <IconTypography /> {c.label}<CommandDesc>{c.desc}</CommandDesc>
             </CommandItem>
           ))}
@@ -346,7 +396,9 @@ export function CommandPalette() {
               key={f.value}
               value={`font size ${f.label} ${f.desc} text`}
               keywords={["font", "size", f.label]}
-              onSelect={() => { update({ fontSize: f.value }); close(); }} className={active(settings.fontSize === f.value)}>
+              onSelect={() => { update({ fontSize: f.value }); close(); }}
+              className={activeSet.fontSize === f.value ? "text-primary bg-primary/10" : ""}
+            >
               <IconDeviceDesktop /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
             </CommandItem>
           ))}
@@ -360,7 +412,9 @@ export function CommandPalette() {
               key={f.value}
               value={`font family ${f.label} ${f.desc} typeface`}
               keywords={["font", "family", f.label]}
-              onSelect={() => { update({ fontFamily: f.value }); close(); }} className={active(settings.fontFamily === f.value)}>
+              onSelect={() => { update({ fontFamily: f.value }); close(); }}
+              className={activeSet.fontFamily === f.value ? "text-primary bg-primary/10" : ""}
+            >
               <IconTypography />
               <span style={{ fontFamily: f.cssVar }}>{f.label}</span>
               <CommandDesc>{f.desc}</CommandDesc>
@@ -376,7 +430,9 @@ export function CommandPalette() {
               key={n}
               value={`visible lines ${n} line show text`}
               keywords={["visible", "lines"]}
-              onSelect={() => { update({ visibleLines: n }); close(); }} className={active(settings.visibleLines === n)}>
+              onSelect={() => { update({ visibleLines: n }); close(); }}
+              className={activeSet.visibleLines === n ? "text-primary bg-primary/10" : ""}
+            >
               <IconList /> {n} line{n > 1 ? "s" : ""}<CommandDesc>show {n} line{n > 1 ? "s" : ""} of text at a time</CommandDesc>
             </CommandItem>
           ))}
@@ -388,38 +444,38 @@ export function CommandPalette() {
           <CommandItem
             value="gameplay blind mode hide error coloring trust fingers"
             keywords={["gameplay", "blind"]}
-            onSelect={() => update({ blindMode: !settings.blindMode })}
+            onSelect={toggleBlind}
           >
-            {settings.blindMode ? <IconEyeOff /> : <IconEye />}
-            blind mode {settings.blindMode ? "on" : "off"}<CommandDesc>hide error coloring</CommandDesc>
+            {activeSet.blindMode ? <IconEyeOff /> : <IconEye />}
+            blind mode {activeSet.blindMode ? "on" : "off"}<CommandDesc>hide error coloring</CommandDesc>
           </CommandItem>
           <CommandItem
             value="gameplay stop on error block cursor until fixed"
             keywords={["gameplay", "stop"]}
-            onSelect={() => update({ stopOnError: !settings.stopOnError })}
+            onSelect={toggleStop}
           >
-            <IconBlender /> stop on error {settings.stopOnError ? "on" : "off"}<CommandDesc>block cursor until fixed</CommandDesc>
+            <IconBlender /> stop on error {activeSet.stopOnError ? "on" : "off"}<CommandDesc>block cursor until fixed</CommandDesc>
           </CommandItem>
           <CommandItem
             value="gameplay strict space wrong words cannot be skipped"
             keywords={["gameplay", "strict"]}
-            onSelect={() => update({ strictSpace: !settings.strictSpace })}
+            onSelect={toggleStrict}
           >
-            <IconBlender /> strict space {settings.strictSpace ? "on" : "off"}<CommandDesc>wrong words can't be skipped</CommandDesc>
+            <IconBlender /> strict space {activeSet.strictSpace ? "on" : "off"}<CommandDesc>wrong words can&apos;t be skipped</CommandDesc>
           </CommandItem>
           <CommandItem
             value="gameplay free backspace restore previous word"
             keywords={["gameplay", "backspace"]}
-            onSelect={() => update({ freeBackspace: !settings.freeBackspace })}
+            onSelect={toggleFreeBack}
           >
-            <IconRefresh /> free backspace {settings.freeBackspace ? "on" : "off"}<CommandDesc>restore previous word on backspace</CommandDesc>
+            <IconRefresh /> free backspace {activeSet.freeBackspace ? "on" : "off"}<CommandDesc>restore previous word on backspace</CommandDesc>
           </CommandItem>
           <CommandItem
             value="gameplay hide live stats blank wpm acc while running"
             keywords={["gameplay", "live", "stats"]}
-            onSelect={() => update({ hideLiveStats: !settings.hideLiveStats })}
+            onSelect={toggleHideLive}
           >
-            <IconEyeOff /> hide live stats {settings.hideLiveStats ? "on" : "off"}<CommandDesc>blank wpm/acc while running</CommandDesc>
+            <IconEyeOff /> hide live stats {activeSet.hideLiveStats ? "on" : "off"}<CommandDesc>blank wpm/acc while running</CommandDesc>
           </CommandItem>
         </CommandGroup>
 
@@ -429,16 +485,16 @@ export function CommandPalette() {
           <CommandItem
             value="appearance virtual keyboard show key highlighter"
             keywords={["appearance", "keyboard"]}
-            onSelect={() => update({ showKeyboard: !settings.showKeyboard })}
+            onSelect={toggleKeyboard}
           >
-            <IconKeyboardFilled /> virtual keyboard {settings.showKeyboard ? "on" : "off"}<CommandDesc>show key highlighter</CommandDesc>
+            <IconKeyboardFilled /> virtual keyboard {activeSet.showKeyboard ? "on" : "off"}<CommandDesc>show key highlighter</CommandDesc>
           </CommandItem>
           <CommandItem
             value="appearance smooth caret animate caret movement"
             keywords={["appearance", "caret"]}
-            onSelect={() => update({ smoothCaret: !settings.smoothCaret })}
+            onSelect={toggleSmoothCaret}
           >
-            <IconEye /> smooth caret {settings.smoothCaret ? "on" : "off"}<CommandDesc>animate caret movement</CommandDesc>
+            <IconEye /> smooth caret {activeSet.smoothCaret ? "on" : "off"}<CommandDesc>animate caret movement</CommandDesc>
           </CommandItem>
         </CommandGroup>
       </CommandList>
@@ -446,9 +502,24 @@ export function CommandPalette() {
   );
 }
 
-function active(isActive: boolean) {
-  return isActive ? "text-primary bg-primary/10" : "";
-}
+// ─── Memoized user result item ────────────────────────────────────────
+const UserResultItem = memo(function UserResultItem({ u, onSelect }: { u: UserResult; onSelect: (path: string) => void }) {
+  const handleClick = useCallback(() => onSelect(`/profile/${u.username}`), [onSelect, u.username]);
+  return (
+    <CommandItem
+      value={`users ${u.username} view profile`}
+      keywords={["users", u.username]}
+      onSelect={handleClick}
+    >
+      <Avatar className="size-5">
+        {u.avatarUrl && <AvatarImage src={u.avatarUrl} alt="" />}
+        <AvatarFallback className="rounded text-[9px] uppercase">{u.username.slice(0, 2)}</AvatarFallback>
+      </Avatar>
+      <span>{u.username}</span>
+      <CommandDesc><IconArrowRight className="size-3" /> view profile</CommandDesc>
+    </CommandItem>
+  );
+});
 
 function Shortcut({ children }: { children: React.ReactNode }) {
   return <span className="text-muted-foreground ml-auto text-[10px] shrink-0">{children}</span>;
