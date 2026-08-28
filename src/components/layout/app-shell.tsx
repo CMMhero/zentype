@@ -109,9 +109,8 @@ export function AppShell({
 
           <div className="ml-auto flex items-center gap-2">
             <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={() => setPaletteOpen(true)} aria-label="Open command palette (Ctrl+K)">
-              <IconCommand className="size-3" />
               <span className="hidden sm:inline text-muted-foreground">commands</span>
-              <Kbd>⌘k</Kbd>
+              <Kbd><IconCommand className="size-3" />k</Kbd>
             </Button>
 
             {user ? (

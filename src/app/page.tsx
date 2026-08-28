@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { IconCommand } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { ConfigBar } from "~/components/typing/config-bar";
 import { TypingDisplay } from "~/components/typing/typing-display";
@@ -382,7 +383,7 @@ export default function TestPage() {
           <div className={`mt-6 flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
             <p>press any key to start</p>
             <p className="flex flex-wrap items-center justify-center gap-1.5">
-              <Kbd>tab</Kbd> new test <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>esc</Kbd> close <span>·</span> <Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> palette
+              <Kbd>tab</Kbd> new test <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>esc</Kbd> close <span>·</span> <Kbd><IconCommand className="size-3" />{isMac ? "cmd" : "ctrl"}+k</Kbd> command
             </p>
           </div>
         </>
