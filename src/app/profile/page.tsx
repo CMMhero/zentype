@@ -393,10 +393,10 @@ export default function ProfilePage() {
       {/* All achievements modal — uses AchievementList with progress */}
       <Dialog open={achOpen} onOpenChange={setAchOpen}>
         <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-hidden flex flex-col">
-          <DialogHeader>
+          <DialogHeader className="pr-8">
             <DialogTitle className="flex items-center gap-2">
               <IconAward className="size-4" /> achievements
-              <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+              <Badge variant="secondary" className="text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
             </DialogTitle>
           </DialogHeader>
           <Tabs value={achTab} onValueChange={(v) => setAchTab(v as "all" | "unlocked" | "locked")}>
