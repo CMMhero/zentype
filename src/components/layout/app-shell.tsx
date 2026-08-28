@@ -123,7 +123,7 @@ export function AppShell({
 
       <main className="flex flex-1 flex-col">{children}</main>
 
-      <footer className={`border-border/60 bg-secondary/40 text-muted-foreground mt-auto border-t`}>
+      <footer className="text-muted-foreground mt-auto">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-[11px]">
           <span className="flex items-center gap-2">
             <span>Made by <a href="https://cmmhero.top" target="_blank" rel="noreferrer" className="hover:text-foreground underline underline-offset-2">CMMhero</a></span>
