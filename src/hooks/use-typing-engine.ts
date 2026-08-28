@@ -240,8 +240,9 @@ export function useTypingEngine({
       if (status === "finished") return;
 
       // never hijack browser/global shortcuts; AltGr (ctrl+alt) stays allowed
+      // ctrl+backspace is handled below for word deletion
       // alt+number navigation must not type into the test
-      if (e.metaKey || (e.ctrlKey && !e.altKey)) return;
+      if (e.metaKey || (e.ctrlKey && !e.altKey && e.key !== "Backspace")) return;
       if (e.altKey && !e.ctrlKey) return;
 
       // Escape cancels the test completely (like Tab) — no results saved
@@ -358,9 +359,10 @@ export function useTypingEngine({
     )
       return;
     if (current === words[history.length]) {
-      keys.current.total++;
-      setKeysView({ ...keys.current });
-      setHistory([...history, current]);
+      const nextHistory = [...history, current];
+      // Update liveRef before finishing so charBreakdown sees the correct state
+      liveRef.current = { history: nextHistory, current: "", words };
+      setHistory(nextHistory);
       setCurrent("");
       finishRef.current();
     }

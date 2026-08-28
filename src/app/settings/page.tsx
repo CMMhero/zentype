@@ -16,6 +16,7 @@ import { Input } from "~/components/ui/input";
 import { Kbd } from "~/components/ui/kbd";
 import { Label } from "~/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
 import { Separator as Sep } from "~/components/ui/separator";
 import { Slider } from "~/components/ui/slider";
 import { Switch } from "~/components/ui/switch";
@@ -115,17 +116,14 @@ export default function SettingsPage() {
         <TabsContent value="appearance" className="flex flex-col gap-4 outline-none">
           <Card className="py-4">
             <SectionTitle icon={<IconPalette className="size-4" />} title="theme" />
-            <CardContent className="grid grid-cols-2 gap-2 px-4 sm:grid-cols-3 md:grid-cols-4">
-              {[...THEMES].sort((a, b) => a.label.localeCompare(b.label)).map((t) => (
-                <button key={t.id} onClick={() => update({ themeId: t.id })} className={`border-border hover:border-primary flex items-center gap-2 rounded-md border p-2 text-left transition-colors ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : ""}`}>
-                  <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
-                    <span className="size-5" style={{ background: t.vars["--background"] }} />
-                    <span className="size-5" style={{ background: t.vars["--primary"] }} />
-                    <span className="size-5" style={{ background: t.vars["--zt-sub"] }} />
-                  </span>
-                  <span className="truncate text-xs">{t.label}</span>
-                </button>
-              ))}
+            <CardContent className="px-4">
+              <Combobox
+                items={THEME_ITEMS}
+                value={settings.themeId}
+                onValueChange={(v) => update({ themeId: v })}
+                placeholder="Search themes…"
+                searchPlaceholder="Type to search themes…"
+              />
             </CardContent>
           </Card>
 
@@ -147,55 +145,13 @@ export default function SettingsPage() {
                 <Switch checked={settings.smoothCaret} onCheckedChange={(v) => update({ smoothCaret: v })} />
               </SettingRow>
               <SettingRow label="font family">
-                <Select value={settings.fontFamily} onValueChange={(v) => update({ fontFamily: v as FontFamily })}>
-                  <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="anonymous-pro" style={{ fontFamily: "var(--font-anonymous-pro)" }}>Anonymous Pro</SelectItem>
-                    <SelectItem value="barlow" style={{ fontFamily: "var(--font-barlow)" }}>Barlow</SelectItem>
-                    <SelectItem value="bitter" style={{ fontFamily: "var(--font-bitter)" }}>Bitter</SelectItem>
-                    <SelectItem value="cabin" style={{ fontFamily: "var(--font-cabin)" }}>Cabin</SelectItem>
-                    <SelectItem value="cascadia-code" style={{ fontFamily: "var(--font-cascadia-code)" }}>Cascadia Code</SelectItem>
-                    <SelectItem value="commit-mono" style={{ fontFamily: "var(--font-commit-mono)" }}>Commit Mono</SelectItem>
-                    <SelectItem value="crimson-pro" style={{ fontFamily: "var(--font-crimson-pro)" }}>Crimson Pro</SelectItem>
-                    <SelectItem value="dm-sans" style={{ fontFamily: "var(--font-dm-sans)" }}>DM Sans</SelectItem>
-                    <SelectItem value="exo-2" style={{ fontFamily: "var(--font-exo-2)" }}>Exo 2</SelectItem>
-                    <SelectItem value="fira-code" style={{ fontFamily: "var(--font-fira-code)" }}>Fira Code</SelectItem>
-                    <SelectItem value="geist-mono" style={{ fontFamily: "var(--font-geist-mono)" }}>Geist Mono</SelectItem>
-                    <SelectItem value="ibm-plex-mono" style={{ fontFamily: "var(--font-ibm-plex-mono)" }}>IBM Plex Mono</SelectItem>
-                    <SelectItem value="ibm-plex-sans" style={{ fontFamily: "var(--font-ibm-plex-sans)" }}>IBM Plex Sans</SelectItem>
-                    <SelectItem value="inconsolata" style={{ fontFamily: "var(--font-inconsolata)" }}>Inconsolata</SelectItem>
-                    <SelectItem value="inter" style={{ fontFamily: "var(--font-inter)" }}>Inter</SelectItem>
-                    <SelectItem value="jetbrains-mono" style={{ fontFamily: "var(--font-jetbrains-mono)" }}>JetBrains Mono</SelectItem>
-                    <SelectItem value="josefin-sans" style={{ fontFamily: "var(--font-josefin-sans)" }}>Josefin Sans</SelectItem>
-                    <SelectItem value="lato" style={{ fontFamily: "var(--font-lato)" }}>Lato</SelectItem>
-                    <SelectItem value="lexend" style={{ fontFamily: "var(--font-lexend)" }}>Lexend</SelectItem>
-                    <SelectItem value="lora" style={{ fontFamily: "var(--font-lora)" }}>Lora</SelectItem>
-                    <SelectItem value="manrope" style={{ fontFamily: "var(--font-manrope)" }}>Manrope</SelectItem>
-                    <SelectItem value="merriweather" style={{ fontFamily: "var(--font-merriweather)" }}>Merriweather</SelectItem>
-                    <SelectItem value="montserrat" style={{ fontFamily: "var(--font-montserrat)" }}>Montserrat</SelectItem>
-                    <SelectItem value="noto-sans" style={{ fontFamily: "var(--font-noto-sans)" }}>Noto Sans</SelectItem>
-                    <SelectItem value="noto-serif" style={{ fontFamily: "var(--font-noto-serif)" }}>Noto Serif</SelectItem>
-                    <SelectItem value="nunito-sans" style={{ fontFamily: "var(--font-nunito-sans)" }}>Nunito Sans</SelectItem>
-                    <SelectItem value="open-sans" style={{ fontFamily: "var(--font-open-sans)" }}>Open Sans</SelectItem>
-                    <SelectItem value="oswald" style={{ fontFamily: "var(--font-oswald)" }}>Oswald</SelectItem>
-                    <SelectItem value="outfit" style={{ fontFamily: "var(--font-outfit)" }}>Outfit</SelectItem>
-                    <SelectItem value="playfair-display" style={{ fontFamily: "var(--font-playfair-display)" }}>Playfair Display</SelectItem>
-                    <SelectItem value="plus-jakarta-sans" style={{ fontFamily: "var(--font-plus-jakarta-sans)" }}>Plus Jakarta Sans</SelectItem>
-                    <SelectItem value="poppins" style={{ fontFamily: "var(--font-poppins)" }}>Poppins</SelectItem>
-                    <SelectItem value="pt-sans" style={{ fontFamily: "var(--font-pt-sans)" }}>PT Sans</SelectItem>
-                    <SelectItem value="pt-serif" style={{ fontFamily: "var(--font-pt-serif)" }}>PT Serif</SelectItem>
-                    <SelectItem value="raleway" style={{ fontFamily: "var(--font-raleway)" }}>Raleway</SelectItem>
-                    <SelectItem value="roboto-flex" style={{ fontFamily: "var(--font-roboto-flex)" }}>Roboto Flex</SelectItem>
-                    <SelectItem value="roboto-mono" style={{ fontFamily: "var(--font-roboto-mono)" }}>Roboto Mono</SelectItem>
-                    <SelectItem value="source-code-pro" style={{ fontFamily: "var(--font-source-code-pro)" }}>Source Code Pro</SelectItem>
-                    <SelectItem value="space-grotesk" style={{ fontFamily: "var(--font-space-grotesk)" }}>Space Grotesk</SelectItem>
-                    <SelectItem value="space-mono" style={{ fontFamily: "var(--font-space-mono)" }}>Space Mono</SelectItem>
-                    <SelectItem value="titillium-web" style={{ fontFamily: "var(--font-titillium-web)" }}>Titillium Web</SelectItem>
-                    <SelectItem value="ubuntu-mono" style={{ fontFamily: "var(--font-ubuntu-mono)" }}>Ubuntu Mono</SelectItem>
-                    <SelectItem value="victor-mono" style={{ fontFamily: "var(--font-victor-mono)" }}>Victor Mono</SelectItem>
-                    <SelectItem value="work-sans" style={{ fontFamily: "var(--font-work-sans)" }}>Work Sans</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Combobox
+                  items={FONT_ITEMS}
+                  value={settings.fontFamily}
+                  onValueChange={(v) => update({ fontFamily: v as FontFamily })}
+                  placeholder="Search fonts…"
+                  searchPlaceholder="Type to search fonts…"
+                />
               </SettingRow>
               <SettingRow label="font size">
                 <Select value={settings.fontSize} onValueChange={(v) => update({ fontSize: v as FontSizeKey })}>
@@ -401,3 +357,64 @@ const KEYBINDS: Array<[string[], string]> = [
   [["alt", "4"], "settings"],
   [["backspace"], "fix current word"],
 ];
+
+const FONT_ITEMS: ComboboxItem[] = [
+  { value: "anonymous-pro", label: "Anonymous Pro", leading: <span style={{ fontFamily: "var(--font-anonymous-pro)" }}>Aa</span> },
+  { value: "barlow", label: "Barlow", leading: <span style={{ fontFamily: "var(--font-barlow)" }}>Aa</span> },
+  { value: "bitter", label: "Bitter", leading: <span style={{ fontFamily: "var(--font-bitter)" }}>Aa</span> },
+  { value: "cabin", label: "Cabin", leading: <span style={{ fontFamily: "var(--font-cabin)" }}>Aa</span> },
+  { value: "cascadia-code", label: "Cascadia Code", leading: <span style={{ fontFamily: "var(--font-cascadia-code)" }}>Aa</span> },
+  { value: "commit-mono", label: "Commit Mono", leading: <span style={{ fontFamily: "var(--font-commit-mono)" }}>Aa</span> },
+  { value: "crimson-pro", label: "Crimson Pro", leading: <span style={{ fontFamily: "var(--font-crimson-pro)" }}>Aa</span> },
+  { value: "dm-sans", label: "DM Sans", leading: <span style={{ fontFamily: "var(--font-dm-sans)" }}>Aa</span> },
+  { value: "exo-2", label: "Exo 2", leading: <span style={{ fontFamily: "var(--font-exo-2)" }}>Aa</span> },
+  { value: "fira-code", label: "Fira Code", leading: <span style={{ fontFamily: "var(--font-fira-code)" }}>Aa</span> },
+  { value: "geist-mono", label: "Geist Mono", leading: <span style={{ fontFamily: "var(--font-geist-mono)" }}>Aa</span> },
+  { value: "ibm-plex-mono", label: "IBM Plex Mono", leading: <span style={{ fontFamily: "var(--font-ibm-plex-mono)" }}>Aa</span> },
+  { value: "ibm-plex-sans", label: "IBM Plex Sans", leading: <span style={{ fontFamily: "var(--font-ibm-plex-sans)" }}>Aa</span> },
+  { value: "inconsolata", label: "Inconsolata", leading: <span style={{ fontFamily: "var(--font-inconsolata)" }}>Aa</span> },
+  { value: "inter", label: "Inter", leading: <span style={{ fontFamily: "var(--font-inter)" }}>Aa</span> },
+  { value: "jetbrains-mono", label: "JetBrains Mono", leading: <span style={{ fontFamily: "var(--font-jetbrains-mono)" }}>Aa</span> },
+  { value: "josefin-sans", label: "Josefin Sans", leading: <span style={{ fontFamily: "var(--font-josefin-sans)" }}>Aa</span> },
+  { value: "lato", label: "Lato", leading: <span style={{ fontFamily: "var(--font-lato)" }}>Aa</span> },
+  { value: "lexend", label: "Lexend", leading: <span style={{ fontFamily: "var(--font-lexend)" }}>Aa</span> },
+  { value: "lora", label: "Lora", leading: <span style={{ fontFamily: "var(--font-lora)" }}>Aa</span> },
+  { value: "manrope", label: "Manrope", leading: <span style={{ fontFamily: "var(--font-manrope)" }}>Aa</span> },
+  { value: "merriweather", label: "Merriweather", leading: <span style={{ fontFamily: "var(--font-merriweather)" }}>Aa</span> },
+  { value: "montserrat", label: "Montserrat", leading: <span style={{ fontFamily: "var(--font-montserrat)" }}>Aa</span> },
+  { value: "noto-sans", label: "Noto Sans", leading: <span style={{ fontFamily: "var(--font-noto-sans)" }}>Aa</span> },
+  { value: "noto-serif", label: "Noto Serif", leading: <span style={{ fontFamily: "var(--font-noto-serif)" }}>Aa</span> },
+  { value: "nunito-sans", label: "Nunito Sans", leading: <span style={{ fontFamily: "var(--font-nunito-sans)" }}>Aa</span> },
+  { value: "open-sans", label: "Open Sans", leading: <span style={{ fontFamily: "var(--font-open-sans)" }}>Aa</span> },
+  { value: "oswald", label: "Oswald", leading: <span style={{ fontFamily: "var(--font-oswald)" }}>Aa</span> },
+  { value: "outfit", label: "Outfit", leading: <span style={{ fontFamily: "var(--font-outfit)" }}>Aa</span> },
+  { value: "playfair-display", label: "Playfair Display", leading: <span style={{ fontFamily: "var(--font-playfair-display)" }}>Aa</span> },
+  { value: "plus-jakarta-sans", label: "Plus Jakarta Sans", leading: <span style={{ fontFamily: "var(--font-plus-jakarta-sans)" }}>Aa</span> },
+  { value: "poppins", label: "Poppins", leading: <span style={{ fontFamily: "var(--font-poppins)" }}>Aa</span> },
+  { value: "pt-sans", label: "PT Sans", leading: <span style={{ fontFamily: "var(--font-pt-sans)" }}>Aa</span> },
+  { value: "pt-serif", label: "PT Serif", leading: <span style={{ fontFamily: "var(--font-pt-serif)" }}>Aa</span> },
+  { value: "raleway", label: "Raleway", leading: <span style={{ fontFamily: "var(--font-raleway)" }}>Aa</span> },
+  { value: "roboto-flex", label: "Roboto Flex", leading: <span style={{ fontFamily: "var(--font-roboto-flex)" }}>Aa</span> },
+  { value: "roboto-mono", label: "Roboto Mono", leading: <span style={{ fontFamily: "var(--font-roboto-mono)" }}>Aa</span> },
+  { value: "source-code-pro", label: "Source Code Pro", leading: <span style={{ fontFamily: "var(--font-source-code-pro)" }}>Aa</span> },
+  { value: "space-grotesk", label: "Space Grotesk", leading: <span style={{ fontFamily: "var(--font-space-grotesk)" }}>Aa</span> },
+  { value: "space-mono", label: "Space Mono", leading: <span style={{ fontFamily: "var(--font-space-mono)" }}>Aa</span> },
+  { value: "titillium-web", label: "Titillium Web", leading: <span style={{ fontFamily: "var(--font-titillium-web)" }}>Aa</span> },
+  { value: "ubuntu-mono", label: "Ubuntu Mono", leading: <span style={{ fontFamily: "var(--font-ubuntu-mono)" }}>Aa</span> },
+  { value: "victor-mono", label: "Victor Mono", leading: <span style={{ fontFamily: "var(--font-victor-mono)" }}>Aa</span> },
+  { value: "work-sans", label: "Work Sans", leading: <span style={{ fontFamily: "var(--font-work-sans)" }}>Aa</span> },
+];
+
+const THEME_ITEMS: ComboboxItem[] = [...THEMES]
+  .sort((a, b) => a.label.localeCompare(b.label))
+  .map((t) => ({
+    value: t.id,
+    label: t.label,
+    leading: (
+      <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
+        <span className="size-4" style={{ background: t.vars["--background"] }} />
+        <span className="size-4" style={{ background: t.vars["--primary"] }} />
+        <span className="size-4" style={{ background: t.vars["--zt-sub"] }} />
+      </span>
+    ),
+  }));
