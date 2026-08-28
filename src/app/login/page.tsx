@@ -65,7 +65,7 @@ export default function LoginPage() {
                 size="lg"
                 onClick={() => signIn(id)}
                 disabled={loading !== null}
-                className="w-full justify-center gap-3 rounded-full text-sm"
+                className="w-full justify-center gap-3 text-sm"
               >
                 <Icon className="size-4" />
                 {loading === id ? "Redirecting…" : label}
