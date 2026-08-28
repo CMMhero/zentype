@@ -1,6 +1,6 @@
 "use server";
 
-import { getSupabaseServerClient } from "~/lib/supabase/server";
+import { getSupabaseServerClient, getSupabasePublicClient } from "~/lib/supabase/server";
 import { getRedis, lbScore } from "~/lib/redis";
 import { isPlausible } from "~/lib/stats";
 import { boardKey, type GameMode, type TestResult } from "~/lib/types";
@@ -261,7 +261,7 @@ export async function getMyJoinDate(): Promise<string | null> {
 export async function getPublicProfile(
   identifier: string,
 ): Promise<PublicProfile | null> {
-  const supabase = await getSupabaseServerClient();
+  const supabase = getSupabasePublicClient();
   if (!supabase) return null;
   // Try username lookup first, then fallback to userId
   let userId: string | null = null;
@@ -340,7 +340,7 @@ export async function getPublicProfile(
 export async function searchUsers(
   query: string,
 ): Promise<Array<{ userId: string; username: string; avatarUrl: string | null }>> {
-  const supabase = await getSupabaseServerClient();
+  const supabase = getSupabasePublicClient();
   if (!supabase || !query.trim()) return [];
   const { data: profiles } = await supabase
     .from("profiles")

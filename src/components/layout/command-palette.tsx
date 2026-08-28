@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import {
@@ -49,7 +49,6 @@ const SOUND_VARIANTS: { value: SoundVariant; label: string; desc: string }[] = [
 const FONT_FAMILIES: { value: FontFamily; label: string; desc: string; cssVar: string }[] = [
   { value: "anonymous-pro", label: "Anonymous Pro", desc: "typewriter mono", cssVar: "var(--font-anonymous-pro)" },
   { value: "barlow", label: "Barlow", desc: "neo-grotesk sans", cssVar: "var(--font-barlow)" },
-  { value: "bebas-neue", label: "Bebas Neue", desc: "condensed display", cssVar: "var(--font-bebas-neue)" },
   { value: "bricolage-grotesque", label: "Bricolage Grotesque", desc: "variable grotesk", cssVar: "var(--font-bricolage-grotesque)" },
   { value: "bitter", label: "Bitter", desc: "slab serif", cssVar: "var(--font-bitter)" },
   { value: "cal-sans", label: "Cal Sans", desc: "geometric display", cssVar: "var(--font-cal-sans)" },
@@ -128,17 +127,17 @@ export function CommandPalette() {
     return () => document.removeEventListener("keydown", down);
   }, [setOpen]);
 
-  // debounced user search — always searches DB when there's input
+  // debounced user search — only fires after 3+ chars with 400ms delay
   useEffect(() => {
     const q = userQuery.trim();
-    if (!q) { setUserResults([]); setUserLoading(false); return; }
+    if (q.length < 3) { setUserResults([]); setUserLoading(false); return; }
     setUserLoading(true);
     let cancelled = false;
     searchTimerRef.current = setTimeout(() => {
       void searchUsers(q)
         .then((r) => { if (!cancelled) { setUserResults(r); setUserLoading(false); } })
         .catch(() => { if (!cancelled) setUserLoading(false); });
-    }, 250);
+    }, 400);
     return () => { cancelled = true; if (searchTimerRef.current) clearTimeout(searchTimerRef.current); };
   }, [userQuery]);
 
@@ -188,13 +187,15 @@ export function CommandPalette() {
     ignoreLocation: true,
   }), [allStaticItems]);
 
-  // Fuzzy filter: returns 1 for match, 0 for no match
-  const fuzzyFilter = (value: string, search: string) => {
+  // Memoized fuzzy filter — avoids re-creating Set on every cmdk filter pass
+  const fuzzyFilter = useCallback((value: string, search: string) => {
     if (!search) return 1;
     const results = fuse.search(search);
-    const matchedValues = new Set(results.map((r) => r.item.value));
-    return matchedValues.has(value) ? 1 : 0;
-  };
+    for (const r of results) {
+      if (r.item.value === value) return 1;
+    }
+    return 0;
+  }, [fuse]);
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen} className="sm:max-w-2xl max-h-[80vh]" filter={fuzzyFilter} data-command-overlay="">
@@ -202,8 +203,8 @@ export function CommandPalette() {
       <CommandList>
         <CommandEmpty>no matching command</CommandEmpty>
 
-        {/* User search results — always shown when there's a query */}
-        {userQuery.trim().length > 0 && (
+        {/* User search results — shown after 3+ chars */}
+        {userQuery.trim().length >= 3 && (
           <CommandGroup heading="users" forceMount>
             {userLoading && (
               <CommandItem disabled value="users searching">
@@ -235,7 +236,7 @@ export function CommandPalette() {
           </CommandGroup>
         )}
 
-        {userQuery.trim().length > 0 && <CommandSeparator />}
+        {userQuery.trim().length >= 3 && <CommandSeparator />}
 
         <CommandGroup heading="navigate">
           <CommandItem value="navigate test alt+1" keywords={["navigate", "test"]} onSelect={() => go("/")}><IconKeyboardFilled /> test<Shortcut>alt+1</Shortcut></CommandItem>

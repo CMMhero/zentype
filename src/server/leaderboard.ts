@@ -1,7 +1,7 @@
 "use server";
 
 import { getRedis, lbDecode } from "~/lib/redis";
-import { getSupabaseServerClient } from "~/lib/supabase/server";
+import { getSupabasePublicClient } from "~/lib/supabase/server";
 import { boardKey, type GameMode, type LeaderboardEntry } from "~/lib/types";
 
 export interface LevelLeaderboardEntry {
@@ -14,7 +14,7 @@ export interface LevelLeaderboardEntry {
 }
 
 export async function getLevelLeaderboard(limit = 50): Promise<LevelLeaderboardEntry[]> {
-  const supabase = await getSupabaseServerClient();
+  const supabase = getSupabasePublicClient();
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("user_points")
@@ -45,7 +45,7 @@ export async function getBoardRanks(
   userId: string,
   boards: string[],
 ): Promise<Record<string, number>> {
-  const supabase = await getSupabaseServerClient();
+  const supabase = getSupabasePublicClient();
   if (!supabase || boards.length === 0) return {};
   const result: Record<string, number> = {};
   // For each board, count how many users have a better best than this user
@@ -162,7 +162,7 @@ export async function getLeaderboard(data: {
   }
 
   // fallback / date-filtered: aggregate from Postgres
-  const supabase = await getSupabaseServerClient();
+  const supabase = getSupabasePublicClient();
   if (!supabase) return [];
   let q = supabase
     .from("test_results")

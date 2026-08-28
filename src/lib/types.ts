@@ -4,7 +4,7 @@ export type CaretStyle = "line" | "block" | "underline" | "off";
 export type FontSizeKey = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type SoundVariant = "click" | "thock" | "beep";
 export type FontFamily =
-  | "anonymous-pro" | "barlow" | "bebas-neue" | "bricolage-grotesque" | "bitter"
+  | "anonymous-pro" | "barlow" | "bricolage-grotesque" | "bitter"
   | "cal-sans" | "cabin" | "cascadia-code" | "comic-neue" | "commit-mono"
   | "crimson-pro" | "dm-sans" | "exo-2" | "fira-code" | "geist" | "geist-mono"
   | "google-sans" | "ibm-plex-mono" | "ibm-plex-sans" | "inconsolata" | "inter"

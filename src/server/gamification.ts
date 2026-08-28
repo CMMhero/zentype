@@ -1,6 +1,6 @@
 "use server";
 
-import { getSupabaseServerClient } from "~/lib/supabase/server";
+import { getSupabaseServerClient, getSupabasePublicClient } from "~/lib/supabase/server";
 import {
   ACHIEVEMENTS,
   type AchievementCheckInput,
@@ -44,7 +44,7 @@ export async function getUserPointsByUsername(
   level: number;
   progress: number;
 } | null> {
-  const supabase = await getSupabaseServerClient();
+  const supabase = getSupabasePublicClient();
   if (!supabase) return null;
   // First get user_id from username
   const { data: profile } = await supabase

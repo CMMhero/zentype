@@ -61,7 +61,6 @@
 @import "@fontsource-variable/google-sans";
 @import "@fontsource-variable/bricolage-grotesque";
 @import "@fontsource/cal-sans";
-@import "@fontsource/bebas-neue";
 @import "@fontsource/comic-neue";
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -166,7 +165,6 @@
   --font-google-sans: "Google Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-bricolage-grotesque: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
   --font-cal-sans: "Cal Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-bebas-neue: "Bebas Neue", ui-sans-serif, system-ui, sans-serif;
   --font-comic-neue: "Comic Neue", cursive, ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
@@ -294,7 +292,6 @@ html[data-font="mona-sans"] { font-family: var(--font-mona-sans); }
 html[data-font="google-sans"] { font-family: var(--font-google-sans); }
 html[data-font="bricolage-grotesque"] { font-family: var(--font-bricolage-grotesque); }
 html[data-font="cal-sans"] { font-family: var(--font-cal-sans); }
-html[data-font="bebas-neue"] { font-family: var(--font-bebas-neue); }
 html[data-font="comic-neue"] { font-family: var(--font-comic-neue); }
 
 .zt-caret-blink {
