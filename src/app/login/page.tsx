@@ -43,18 +43,17 @@ export default function LoginPage() {
         <div className="relative flex flex-col items-center gap-8">
           {/* Logo + heading */}
           <div className="flex flex-col items-center gap-3 text-center">
-            <div className="bg-primary/10 flex size-14 items-center justify-2xl border border-primary/20">
-              <IconKeyboardFilled className="text-primary size-7" />
-            </div>
             <div className="flex flex-col gap-1">
-              <h1 className="text-xl font-semibold tracking-tight">
-                welcome to zentype
+              <p className="text-muted-foreground text-sm">welcome to</p>
+              <h1 className="flex items-center justify-center gap-2 text-xl font-semibold tracking-tight">
+                <IconKeyboardFilled className="text-primary size-6" />
+                zentype
               </h1>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                keep your stats across devices.<br />
-                sign in to sync, or keep playing as a guest.
-              </p>
             </div>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              keep your stats across devices.<br />
+              sign in to sync, or keep playing as a guest.
+            </p>
           </div>
 
           {/* Sign in buttons */}
@@ -66,7 +65,7 @@ export default function LoginPage() {
                 size="lg"
                 onClick={() => signIn(id)}
                 disabled={loading !== null}
-                className="w-full justify-start gap-3 rounded-full text-sm"
+                className="w-full justify-center gap-3 rounded-full text-sm"
               >
                 <Icon className="size-4" />
                 {loading === id ? "Redirecting…" : label}
