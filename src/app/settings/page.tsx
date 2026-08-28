@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-  IconAlertTriangle, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboard,
+  IconAlertTriangle, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboardFilled,
   IconPalette, IconPlayerPlay, IconRefresh, IconUser, IconVolume,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -39,7 +39,7 @@ export default function SettingsPage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconKeyboard className="text-primary size-5" /> settings
+          <IconKeyboardFilled className="text-primary size-5" /> settings
         </h1>
         <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs" onClick={() => { reset(); toast.info("Settings restored to defaults"); }}>
           <IconRefresh className="size-3.5" /> restore defaults
@@ -51,7 +51,7 @@ export default function SettingsPage() {
           <TabsTrigger value="gameplay" className="flex-1 sm:flex-none"><IconDeviceGamepad2 className="size-4" /> gameplay</TabsTrigger>
           <TabsTrigger value="appearance" className="flex-1 sm:flex-none"><IconPalette className="size-4" /> appearance</TabsTrigger>
           <TabsTrigger value="account" className="flex-1 sm:flex-none"><IconUser className="size-4" /> account</TabsTrigger>
-          <TabsTrigger value="keybinds" className="flex-1 sm:flex-none"><IconKeyboard className="size-4" /> keybinds</TabsTrigger>
+          <TabsTrigger value="keybinds" className="flex-1 sm:flex-none"><IconKeyboardFilled className="size-4" /> keybinds</TabsTrigger>
         </TabsList>
 
         <TabsContent value="gameplay" className="flex flex-col gap-4 outline-none">
