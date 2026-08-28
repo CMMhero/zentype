@@ -30,10 +30,13 @@ const CARET_STYLES: { value: CaretStyle; label: string; desc: string }[] = [
 ];
 
 const FONT_SIZES: { value: FontSizeKey; label: string; desc: string }[] = [
+  { value: "xs", label: "extra small", desc: "very compact text" },
   { value: "sm", label: "small", desc: "compact text" },
   { value: "md", label: "medium", desc: "balanced" },
   { value: "lg", label: "large", desc: "default, easy to read" },
   { value: "xl", label: "xlarge", desc: "extra large text" },
+  { value: "2xl", label: "2xlarge", desc: "very large text" },
+  { value: "3xl", label: "3xlarge", desc: "huge text" },
 ];
 
 const SOUND_VARIANTS: { value: SoundVariant; label: string; desc: string }[] = [
@@ -134,8 +137,32 @@ export function CommandPalette() {
   const go = (to: string) => { setOpen(false); router.push(to); };
   const close = () => setOpen(false);
 
+  // Custom fuzzy filter for better search results
+  const fuzzyFilter = (value: string, search: string) => {
+    if (!search) return 1;
+    const lowerValue = value.toLowerCase();
+    const lowerSearch = search.toLowerCase();
+    
+    // Exact match gets highest score
+    if (lowerValue.includes(lowerSearch)) return 1;
+    
+    // Fuzzy match: check if all search chars appear in order
+    let searchIdx = 0;
+    for (let i = 0; i < lowerValue.length && searchIdx < lowerSearch.length; i++) {
+      if (lowerValue[i] === lowerSearch[searchIdx]) searchIdx++;
+    }
+    if (searchIdx === lowerSearch.length) return 0.8;
+    
+    // Partial match: at least some chars match
+    let matchCount = 0;
+    for (const char of lowerSearch) {
+      if (lowerValue.includes(char)) matchCount++;
+    }
+    return matchCount / lowerSearch.length > 0.5 ? 0.5 : 0;
+  };
+
   return (
-    <CommandDialog open={open} onOpenChange={setOpen} className="sm:max-w-2xl max-h-[80vh]" data-command-overlay="">
+    <CommandDialog open={open} onOpenChange={setOpen} className="sm:max-w-2xl max-h-[80vh]" filter={fuzzyFilter} data-command-overlay="">
       <CommandInput placeholder="search users, settings, or commands…" onValueChange={setUserQuery} />
       <CommandList>
         <CommandEmpty>no matching command</CommandEmpty>

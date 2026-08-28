@@ -1,7 +1,7 @@
 export type GameMode = "time" | "words";
 export type PromptSource = "words";
 export type CaretStyle = "line" | "block" | "underline" | "off";
-export type FontSizeKey = "sm" | "md" | "lg" | "xl";
+export type FontSizeKey = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type SoundVariant = "click" | "thock" | "beep";
 export type FontFamily =
   | "anonymous-pro" | "barlow" | "bitter" | "cabin" | "cascadia-code" | "commit-mono"
