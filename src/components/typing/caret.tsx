@@ -25,7 +25,7 @@ export function Caret({ style, x, y, height, width, smooth }: CaretProps) {
         <div
           aria-hidden
           className={cn(
-            "zt-caret-blink bg-primary/40 pointer-events-none absolute rounded-[1px]",
+            "zt-caret-blink bg-primary/40 pointer-events-none absolute rounded-sm",
             transition,
           )}
           style={{ ...base, height, width }}
@@ -35,7 +35,7 @@ export function Caret({ style, x, y, height, width, smooth }: CaretProps) {
       return (
         <div
           aria-hidden
-          className={cn("bg-primary pointer-events-none absolute", transition)}
+          className={cn("bg-primary pointer-events-none absolute rounded-full", transition)}
           style={{ ...base, top: y + height - 2, height: 2, width }}
         />
       );
