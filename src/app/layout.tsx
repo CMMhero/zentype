@@ -31,7 +31,7 @@ const themeBootstrapScript = `
 export const metadata: Metadata = {
   title: "zentype",
   description:
-    "A keyboard-first typing test. Quotes, anime synopses, wikipedia extracts and dictionary definitions. Track stats, climb leaderboards.",
+    "A minimal typing test. Track stats and climb leaderboards.",
   icons: { icon: "/logo.svg" },
 };
 

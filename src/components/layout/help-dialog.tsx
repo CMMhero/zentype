@@ -31,7 +31,7 @@ export function HelpDialog() {
         <DialogHeader>
           <DialogTitle>keyboard shortcuts</DialogTitle>
           <DialogDescription>
-            keyboard-first by design. every action is reachable without a mouse.
+            Shortcuts for navigating and controlling tests.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-1">

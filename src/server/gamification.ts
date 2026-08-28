@@ -246,6 +246,15 @@ async function buildAchievementStats(
       bestByBoard: {},
       level,
       accountAgeDays,
+      testsAbove60Wpm: 0,
+      testsAbove80Wpm: 0,
+      testsAbove90Wpm: 0,
+      testsAbove100Wpm: 0,
+      testsAbove120Wpm: 0,
+      testsAbove95Acc: 0,
+      testsAbove98Acc: 0,
+      testsAbove99Acc: 0,
+      testsAbove90Acc: 0,
     };
   }
 
@@ -259,6 +268,15 @@ async function buildAchievementStats(
   let totalCons = 0;
   let totalChars = 0;
   let totalTime = 0;
+  let testsAbove60Wpm = 0;
+  let testsAbove80Wpm = 0;
+  let testsAbove90Wpm = 0;
+  let testsAbove100Wpm = 0;
+  let testsAbove120Wpm = 0;
+  let testsAbove95Acc = 0;
+  let testsAbove98Acc = 0;
+  let testsAbove99Acc = 0;
+  let testsAbove90Acc = 0;
 
   for (const r of results) {
     if (r.wpm > bestWpm) bestWpm = r.wpm;
@@ -268,6 +286,15 @@ async function buildAchievementStats(
     totalAcc += r.accuracy;
     totalCons += r.consistency;
     totalChars += (r.chars?.correct ?? 0) + (r.chars?.incorrect ?? 0) + (r.chars?.extra ?? 0);
+    if (r.wpm >= 60) testsAbove60Wpm++;
+    if (r.wpm >= 80) testsAbove80Wpm++;
+    if (r.wpm >= 90) testsAbove90Wpm++;
+    if (r.wpm >= 100) testsAbove100Wpm++;
+    if (r.wpm >= 120) testsAbove120Wpm++;
+    if (r.accuracy >= 95) testsAbove95Acc++;
+    if (r.accuracy >= 98) testsAbove98Acc++;
+    if (r.accuracy >= 99) testsAbove99Acc++;
+    if (r.accuracy >= 90) testsAbove90Acc++;
     if (r.mode === "time") {
       totalTime += r.variant;
     } else {
@@ -320,5 +347,14 @@ async function buildAchievementStats(
     bestByBoard,
     level,
     accountAgeDays,
+    testsAbove60Wpm,
+    testsAbove80Wpm,
+    testsAbove90Wpm,
+    testsAbove100Wpm,
+    testsAbove120Wpm,
+    testsAbove95Acc,
+    testsAbove98Acc,
+    testsAbove99Acc,
+    testsAbove90Acc,
   };
 }

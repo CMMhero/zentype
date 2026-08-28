@@ -173,12 +173,6 @@ export default function LeaderboardPage() {
         </div>
       )}
 
-      <p className="text-xs text-muted-foreground">
-        {isLevel
-          ? "ranked by total XP · gain XP from tests and achievements · level = floor(XP/500)+1"
-          : "ranked by composite score (wpm + accuracy) · minimum 80% accuracy to qualify · results sync when you finish a test signed in."}
-      </p>
-
       {myRankItem && (
         <div className="flex items-center gap-3 rounded-xl border-2 border-primary bg-primary/5 px-4 py-3">
           <span className="text-xs font-bold tracking-widest uppercase text-primary">your rank</span>

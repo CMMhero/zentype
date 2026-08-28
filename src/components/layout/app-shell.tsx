@@ -68,7 +68,7 @@ export function AppShell({
       <header className="border-border/60 bg-background/95 sticky top-0 z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4">
           <Link href="/" className="group flex shrink-0 items-center gap-2 font-semibold tracking-tight">
-            <span className="text-sm">zentype<span className="text-muted-foreground"> v2</span></span>
+            <span className="text-sm">zentype</span>
           </Link>
 
           <nav className="ml-4 hidden items-center gap-0.5 md:flex" aria-label="Primary">
@@ -116,7 +116,6 @@ export function AppShell({
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 text-[11px]">
           <span className="hidden sm:inline"><Kbd>tab</Kbd> restart · <Kbd>?</Kbd> shortcuts</span>
           <span className="ml-auto flex items-center gap-2">
-            <span className="hidden sm:inline text-muted-foreground/60">v{typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "2.0.0"}</span>
             <span className="inline-block size-2 rounded-full bg-primary/80" />
             {themeId.replace(/_/g, "-")}
           </span>

@@ -8,7 +8,7 @@ import {
   IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
 } from "@tabler/icons-react";
 import {
-  Area, AreaChart, Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis,
+  Area, AreaChart, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis,
 } from "recharts";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
@@ -40,19 +40,15 @@ import { ACHIEVEMENTS } from "~/lib/achievements";
 
 const wpmConfig = {
   wpm: { label: "wpm", color: "var(--chart-1)" },
+  avg: { label: "avg", color: "var(--chart-2)" },
 } satisfies ChartConfig;
 
 const accConfig = {
   accuracy: { label: "accuracy", color: "var(--chart-3)" },
 } satisfies ChartConfig;
 
-const avgConfig = {
-  wpm: { label: "wpm", color: "var(--chart-1)" },
-  avg: { label: "avg wpm", color: "var(--chart-2)" },
-} satisfies ChartConfig;
-
-const barConfig = {
-  wpm: { label: "wpm", color: "var(--chart-1)" },
+const distConfig = {
+  count: { label: "tests", color: "var(--chart-1)" },
 } satisfies ChartConfig;
 
 export default function ProfilePage() {
@@ -171,17 +167,26 @@ export default function ProfilePage() {
   })();
   const visibleHistory = (results ?? []).slice(0, historyCount);
 
-  const avgOvertimeData = (() => {
+  const wpmWithAvgData = (() => {
     let sum = 0;
     return chartData.map((r, i) => {
       sum += r.wpm;
       return { n: i + 1, wpm: r.wpm, avg: Math.round(sum / (i + 1)) };
     });
   })();
-  const barData = chartData.slice(-30).map((r, i) => ({
-    name: String(chartData.length - 30 + i + 1),
-    wpm: r.wpm,
-  }));
+  const distributionData = (() => {
+    const buckets = new Map<string, number>();
+    const BUCKET = 10;
+    for (const r of chartData) {
+      const start = Math.floor(r.wpm / BUCKET) * BUCKET;
+      const label = `${start}-${start + BUCKET - 1}`;
+      buckets.set(label, (buckets.get(label) ?? 0) + 1);
+    }
+    return Array.from(buckets.entries())
+      .map(([range, count]) => ({ range, count, start: Number(range.split("-")[0]) }))
+      .sort((a, b) => a.start - b.start)
+      .map(({ range, count }) => ({ range, count }));
+  })();
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
@@ -263,7 +268,7 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Trend charts — side by side */}
+      {/* Trend charts — side by side, wpm with avg dotted */}
       <div className="grid gap-5 md:grid-cols-2">
         <Card className="gap-3 py-4">
           <CardHeader className="px-4">
@@ -274,15 +279,16 @@ export default function ProfilePage() {
           <CardContent className="px-4">
             {loading ? (
               <Skeleton className="h-40 w-full" />
-            ) : chartData.length >= 2 ? (
+            ) : wpmWithAvgData.length >= 2 ? (
               <ChartContainer config={wpmConfig} className="h-40 w-full">
-                <AreaChart data={chartData.map((r, i) => ({ n: i + 1, wpm: r.wpm }))}>
+                <ComposedChart data={wpmWithAvgData}>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis tickLine={false} axisLine={false} width={36} />
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <Area dataKey="wpm" type="monotone" stroke="var(--color-wpm)" fill="var(--color-wpm)" fillOpacity={0.1} strokeWidth={2} dot={false} />
-                </AreaChart>
+                  <Line dataKey="avg" type="monotone" stroke="var(--color-avg)" strokeWidth={1.5} dot={false} strokeDasharray="4 4" />
+                </ComposedChart>
               </ChartContainer>
             ) : (
               <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
@@ -320,63 +326,33 @@ export default function ProfilePage() {
         </Card>
       </div>
 
-      {/* Detailed graphs — avg wpm overtime + wpm bar chart */}
-      <div className="grid gap-5 md:grid-cols-2">
-        <Card className="gap-3 py-4">
-          <CardHeader className="px-4">
-            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-              <IconTrendingUp className="size-4" /> avg wpm overtime
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4">
-            {loading ? (
-              <Skeleton className="h-40 w-full" />
-            ) : avgOvertimeData.length >= 2 ? (
-              <ChartContainer config={avgConfig} className="h-40 w-full">
-                <LineChart data={avgOvertimeData}>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                  <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
-                  <YAxis tickLine={false} axisLine={false} width={36} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Line dataKey="wpm" type="monotone" stroke="var(--color-wpm)" strokeWidth={2} dot={false} />
-                  <Line dataKey="avg" type="monotone" stroke="var(--color-avg)" strokeWidth={2} dot={false} strokeDasharray="4 4" />
-                </LineChart>
-              </ChartContainer>
-            ) : (
-              <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
-                <IconTrendingUp className="mr-2 size-4" /> not enough data
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="gap-3 py-4">
-          <CardHeader className="px-4">
-            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-              <IconTrophy className="size-4" /> wpm per test
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4">
-            {loading ? (
-              <Skeleton className="h-40 w-full" />
-            ) : barData.length >= 1 ? (
-              <ChartContainer config={barConfig} className="h-40 w-full">
-                <BarChart data={barData}>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                  <XAxis dataKey="name" tickLine={false} axisLine={false} minTickGap={10} />
-                  <YAxis tickLine={false} axisLine={false} width={36} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="wpm" fill="var(--color-wpm)" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ChartContainer>
-            ) : (
-              <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
-                <IconTrophy className="mr-2 size-4" /> no tests yet
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      {/* WPM distribution — full width */}
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <IconTrophy className="size-4" /> wpm distribution
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4">
+          {loading ? (
+            <Skeleton className="h-40 w-full" />
+          ) : distributionData.length >= 1 ? (
+            <ChartContainer config={distConfig} className="h-40 w-full">
+              <BarChart data={distributionData}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="range" tickLine={false} axisLine={false} />
+                <YAxis tickLine={false} axisLine={false} width={36} allowDecimals={false} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="count" fill="var(--color-count)" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ChartContainer>
+          ) : (
+            <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+              <IconTrophy className="mr-2 size-4" /> no tests yet
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Top achievements — uses AchievementGrid */}
       <Card className="gap-3 py-4">
