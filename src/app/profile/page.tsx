@@ -496,8 +496,8 @@ export default function ProfilePage() {
           ) : (results ?? []).length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-12 text-center">
               <IconHistory className="size-8 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">no tests recorded yet</p>
-              <Link href="/" className="text-sm text-primary hover:underline">start typing →</Link>
+              <p className="text-sm text-muted-foreground">No tests recorded yet</p>
+              <Link href="/" className="text-sm text-primary hover:underline">Start typing →</Link>
             </div>
           ) : (
             <div className="overflow-x-auto">

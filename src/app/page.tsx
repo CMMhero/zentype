@@ -63,11 +63,11 @@ export default function TestPage() {
         const w = res.text.split(/\s+/).filter(Boolean);
         if (w.length === 0) throw new Error("empty prompt");
         if (res.fallback) {
-          toast.info(`${cfg.source} unavailable — using english words`);
+          toast.info(`${cfg.source} unavailable — using English words`);
         }
         return w;
       } catch {
-        toast.warning(`couldn't fetch ${cfg.source} — fell back to words`);
+        toast.warning(`Couldn't fetch ${cfg.source} — fell back to words`);
         return randomWordSlice(want);
       }
     },
@@ -156,7 +156,7 @@ export default function TestPage() {
     if (locals.length === 0) return;
     void mergeLocalResults(locals)
       .then((r) => {
-        if (r.merged > 0) toast.success(`synced ${r.merged} local test(s) to your account`);
+        if (r.merged > 0) toast.success(`Synced ${r.merged} local test(s) to your account`);
         useResultsStore.getState().clearLocal();
       })
       .catch(() => {});

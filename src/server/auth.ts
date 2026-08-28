@@ -43,8 +43,10 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   }
 }
 
+export type AuthProvider = "github" | "google" | "discord";
+
 export async function signInWithProvider(
-  provider: "github" | "google",
+  provider: AuthProvider,
 ): Promise<{ url: string | null; error: string | null }> {
   const supabase = await getSupabaseServerClient();
   if (!supabase) {

@@ -70,7 +70,7 @@ export function AppShell({
 
   async function handleSignOut() {
     await signOutFn();
-    toast.success("signed out");
+    toast.success("Signed out");
     router.push("/");
   }
 
@@ -114,7 +114,7 @@ export function AppShell({
               <UserMenu user={user} onSignOut={handleSignOut} userLevel={userLevel} />
             ) : (
               <Button variant="secondary" size="sm" asChild className="text-xs">
-                <Link href="/login">login</Link>
+                <Link href="/login">Login</Link>
               </Button>
             )}
           </div>
