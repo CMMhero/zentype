@@ -42,9 +42,7 @@ export function TypingDisplay({
   const wordRefs = useRef<Map<number, HTMLSpanElement>>(new Map());
   const [caret, setCaret] = useState({ x: 0, y: 0, h: 24, w: 10 });
   const [scrollY, setScrollY] = useState(0);
-  const [containerHeight, setContainerHeight] = useState("6em");
-
-  const measure = useCallback(() => {
+  const [containerHeight, setContainerHeight] = useState("6em");  const measure = useCallback(() => {
     const content = contentRef.current;
     const activeEl = wordRefs.current.get(activeIndex);
     if (!content || !activeEl) return;
@@ -68,21 +66,28 @@ export function TypingDisplay({
     }
 
     setCaret((prev) =>
-      Math.abs(prev.x - x) < 0.5 &&
-      Math.abs(prev.y - y) < 0.5 &&
-      Math.abs(prev.h - h) < 0.5
+      Math.abs(prev.x - x) < 0.5 && Math.abs(prev.y - y) < 0.5 && Math.abs(prev.h - h) < 0.5
         ? prev
         : { x, y, h, w },
     );
 
-    const cs = window.getComputedStyle(activeEl);
-    const fs = parseFloat(cs.fontSize);
-    const rawLineH = parseFloat(cs.lineHeight) || fs * 1.75;
-    const marginBottom = parseFloat(cs.marginBottom) || fs * 0.35;
-    const lineH = rawLineH + marginBottom;
+    // Measure actual rendered line height from multiple words for accuracy
+    const firstWord = content.querySelector("[data-char]") as HTMLElement | null;
+    if (!firstWord) return;
+    const cs = window.getComputedStyle(firstWord);
+    const fontSize = parseFloat(cs.fontSize);
+    // Get actual line height from the computed style (handles all fonts/sizes)
+    const computedLineHeight = parseFloat(cs.lineHeight);
+    // Use the actual line height if available, otherwise calculate from font size
+    const actualLineHeight = computedLineHeight || fontSize * 1.75;
+    // Add margin-bottom from word elements for accurate line spacing
+    const wordEl = content.querySelector(".mr-\\[1ch\\]") as HTMLElement | null;
+    const marginBottom = wordEl ? parseFloat(window.getComputedStyle(wordEl).marginBottom) : fontSize * 0.35;
+    const totalLineHeight = actualLineHeight + marginBottom;
 
-    // compute container height in px from the actual rendered line height
-    setContainerHeight(`${visibleLines * lineH + fs * 0.25}px`);
+    // Container height = visible lines * total line height + small buffer for anti-aliasing
+    const containerH = visibleLines * totalLineHeight + 2; // 2px buffer for sub-pixel rendering
+    setContainerHeight(`${containerH}px`);
 
     setScrollY((prevScroll) => {
       // Keep the active line at the top so the user always sees upcoming lines
@@ -166,7 +171,8 @@ const Word = React.memo(function Word({
   blindMode: boolean;
   refCb?: (el: HTMLSpanElement | null) => void;
 }) {
-  const cls = "mr-[1ch] mb-[0.35em] inline-block whitespace-nowrap select-none";
+  // Use em-based spacing that scales with font size for consistent line breaks
+  const cls = "mr-[1ch] mb-[0.35em] inline-block whitespace-nowrap select-none leading-[1.75]";
 
   if (state === "future") {
     return (
