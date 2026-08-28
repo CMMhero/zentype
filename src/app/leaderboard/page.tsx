@@ -10,7 +10,6 @@ import {
 import { LeaderboardRankings, type LeaderboardRankingItem } from "~/components/ui/leaderboard-rankings";
 import { LeaderboardSkeleton } from "~/components/leaderboard-skeleton";
 import { getLeaderboard, getLevelLeaderboard, type LevelLeaderboardEntry } from "~/server/leaderboard";
-import { getUserPoints } from "~/server/gamification";
 import { useUser } from "~/components/user-provider";
 import type { GameMode, LeaderboardEntry } from "~/lib/types";
 
@@ -46,7 +45,6 @@ export default function LeaderboardPage() {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [levelEntries, setLevelEntries] = useState<LevelLeaderboardEntry[]>([]);
   const [pending, startTransition] = useTransition();
-  const [userPoints, setUserPoints] = useState<{ totalXP: number; level: number } | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -73,15 +71,7 @@ export default function LeaderboardPage() {
       console.error("[zentype] leaderboard load failed:", err);
       if (!cancelled) setLoaded(true);
     });
-    return () => { cancelled = true; };
-  }, [mode, variant, period, boardTab]);
-
-  useEffect(() => {
-    if (!user) return;
-    void getUserPoints().then((p) => {
-      if (p) setUserPoints({ totalXP: p.totalXP, level: p.level });
-    });
-  }, [user]);
+    return () => { cancelled = true; };  }, [mode, variant, period, boardTab]);
 
   const loading = pending || !loaded;
 
@@ -123,12 +113,6 @@ export default function LeaderboardPage() {
           Leaderboard
         </h1>
         <div className="flex items-center gap-2">
-          {userPoints && (
-            <span className="text-xs text-muted-foreground">
-              Level <span className="text-foreground font-bold">{userPoints.level}</span> ·{" "}
-              <span className="text-foreground font-bold">{userPoints.totalXP.toLocaleString()}</span> XP
-            </span>
-          )}
           <Tabs value={boardTab} onValueChange={(v) => setParam("board", v)}>
             <TabsList>
               <TabsTrigger value="wpm" className="gap-1.5"><IconTrophy className="size-3.5" /> wpm</TabsTrigger>

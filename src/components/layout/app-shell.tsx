@@ -158,7 +158,7 @@ export function AppShell({
               onValueChange={(v) => updateSettings({ themeId: v })}
               placeholder="Theme"
               searchPlaceholder="Search themes…"
-              className="h-7 text-[11px]"
+              className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
             />
             <Combobox
               items={FONT_FOOTER_ITEMS}
@@ -166,7 +166,7 @@ export function AppShell({
               onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}
               placeholder="Font"
               searchPlaceholder="Search fonts…"
-              className="h-7 text-[11px]"
+              className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
             />
           </span>
         </div>
@@ -189,57 +189,57 @@ const THEME_FOOTER_ITEMS: ComboboxItem[] = [...THEMES]
   }));
 
 const FONT_FOOTER_ITEMS: ComboboxItem[] = [
-  { value: "anonymous-pro", label: "Anonymous Pro", leading: <span style={{ fontFamily: "var(--font-anonymous-pro)" }}>Aa</span> },
-  { value: "barlow", label: "Barlow", leading: <span style={{ fontFamily: "var(--font-barlow)" }}>Aa</span> },
-  { value: "bebas-neue", label: "Bebas Neue", leading: <span style={{ fontFamily: "var(--font-bebas-neue)" }}>Aa</span> },
-  { value: "bricolage-grotesque", label: "Bricolage Grotesque", leading: <span style={{ fontFamily: "var(--font-bricolage-grotesque)" }}>Aa</span> },
-  { value: "bitter", label: "Bitter", leading: <span style={{ fontFamily: "var(--font-bitter)" }}>Aa</span> },
-  { value: "cal-sans", label: "Cal Sans", leading: <span style={{ fontFamily: "var(--font-cal-sans)" }}>Aa</span> },
-  { value: "cabin", label: "Cabin", leading: <span style={{ fontFamily: "var(--font-cabin)" }}>Aa</span> },
-  { value: "cascadia-code", label: "Cascadia Code", leading: <span style={{ fontFamily: "var(--font-cascadia-code)" }}>Aa</span> },
-  { value: "comic-neue", label: "Comic Sans", leading: <span style={{ fontFamily: "var(--font-comic-neue)" }}>Aa</span> },
-  { value: "commit-mono", label: "Commit Mono", leading: <span style={{ fontFamily: "var(--font-commit-mono)" }}>Aa</span> },
-  { value: "crimson-pro", label: "Crimson Pro", leading: <span style={{ fontFamily: "var(--font-crimson-pro)" }}>Aa</span> },
-  { value: "dm-sans", label: "DM Sans", leading: <span style={{ fontFamily: "var(--font-dm-sans)" }}>Aa</span> },
-  { value: "exo-2", label: "Exo 2", leading: <span style={{ fontFamily: "var(--font-exo-2)" }}>Aa</span> },
-  { value: "fira-code", label: "Fira Code", leading: <span style={{ fontFamily: "var(--font-fira-code)" }}>Aa</span> },
-  { value: "geist", label: "Geist", leading: <span style={{ fontFamily: "var(--font-geist)" }}>Aa</span> },
-  { value: "geist-mono", label: "Geist Mono", leading: <span style={{ fontFamily: "var(--font-geist-mono)" }}>Aa</span> },
-  { value: "google-sans", label: "Google Sans", leading: <span style={{ fontFamily: "var(--font-google-sans)" }}>Aa</span> },
-  { value: "ibm-plex-mono", label: "IBM Plex Mono", leading: <span style={{ fontFamily: "var(--font-ibm-plex-mono)" }}>Aa</span> },
-  { value: "ibm-plex-sans", label: "IBM Plex Sans", leading: <span style={{ fontFamily: "var(--font-ibm-plex-sans)" }}>Aa</span> },
-  { value: "inconsolata", label: "Inconsolata", leading: <span style={{ fontFamily: "var(--font-inconsolata)" }}>Aa</span> },
-  { value: "inter", label: "Inter", leading: <span style={{ fontFamily: "var(--font-inter)" }}>Aa</span> },
-  { value: "jetbrains-mono", label: "JetBrains Mono", leading: <span style={{ fontFamily: "var(--font-jetbrains-mono)" }}>Aa</span> },
-  { value: "josefin-sans", label: "Josefin Sans", leading: <span style={{ fontFamily: "var(--font-josefin-sans)" }}>Aa</span> },
-  { value: "lato", label: "Lato", leading: <span style={{ fontFamily: "var(--font-lato)" }}>Aa</span> },
-  { value: "lexend", label: "Lexend", leading: <span style={{ fontFamily: "var(--font-lexend)" }}>Aa</span> },
-  { value: "lora", label: "Lora", leading: <span style={{ fontFamily: "var(--font-lora)" }}>Aa</span> },
-  { value: "manrope", label: "Manrope", leading: <span style={{ fontFamily: "var(--font-manrope)" }}>Aa</span> },
-  { value: "merriweather", label: "Merriweather", leading: <span style={{ fontFamily: "var(--font-merriweather)" }}>Aa</span> },
-  { value: "mona-sans", label: "Mona Sans", leading: <span style={{ fontFamily: "var(--font-mona-sans)" }}>Aa</span> },
-  { value: "montserrat", label: "Montserrat", leading: <span style={{ fontFamily: "var(--font-montserrat)" }}>Aa</span> },
-  { value: "noto-sans", label: "Noto Sans", leading: <span style={{ fontFamily: "var(--font-noto-sans)" }}>Aa</span> },
-  { value: "noto-serif", label: "Noto Serif", leading: <span style={{ fontFamily: "var(--font-noto-serif)" }}>Aa</span> },
-  { value: "nunito-sans", label: "Nunito Sans", leading: <span style={{ fontFamily: "var(--font-nunito-sans)" }}>Aa</span> },
-  { value: "open-sans", label: "Open Sans", leading: <span style={{ fontFamily: "var(--font-open-sans)" }}>Aa</span> },
-  { value: "oswald", label: "Oswald", leading: <span style={{ fontFamily: "var(--font-oswald)" }}>Aa</span> },
-  { value: "outfit", label: "Outfit", leading: <span style={{ fontFamily: "var(--font-outfit)" }}>Aa</span> },
-  { value: "playfair-display", label: "Playfair Display", leading: <span style={{ fontFamily: "var(--font-playfair-display)" }}>Aa</span> },
-  { value: "plus-jakarta-sans", label: "Plus Jakarta Sans", leading: <span style={{ fontFamily: "var(--font-plus-jakarta-sans)" }}>Aa</span> },
-  { value: "poppins", label: "Poppins", leading: <span style={{ fontFamily: "var(--font-poppins)" }}>Aa</span> },
-  { value: "pt-sans", label: "PT Sans", leading: <span style={{ fontFamily: "var(--font-pt-sans)" }}>Aa</span> },
-  { value: "pt-serif", label: "PT Serif", leading: <span style={{ fontFamily: "var(--font-pt-serif)" }}>Aa</span> },
-  { value: "raleway", label: "Raleway", leading: <span style={{ fontFamily: "var(--font-raleway)" }}>Aa</span> },
-  { value: "roboto-flex", label: "Roboto Flex", leading: <span style={{ fontFamily: "var(--font-roboto-flex)" }}>Aa</span> },
-  { value: "roboto-mono", label: "Roboto Mono", leading: <span style={{ fontFamily: "var(--font-roboto-mono)" }}>Aa</span> },
-  { value: "source-code-pro", label: "Source Code Pro", leading: <span style={{ fontFamily: "var(--font-source-code-pro)" }}>Aa</span> },
-  { value: "space-grotesk", label: "Space Grotesk", leading: <span style={{ fontFamily: "var(--font-space-grotesk)" }}>Aa</span> },
-  { value: "space-mono", label: "Space Mono", leading: <span style={{ fontFamily: "var(--font-space-mono)" }}>Aa</span> },
-  { value: "titillium-web", label: "Titillium Web", leading: <span style={{ fontFamily: "var(--font-titillium-web)" }}>Aa</span> },
-  { value: "ubuntu-mono", label: "Ubuntu Mono", leading: <span style={{ fontFamily: "var(--font-ubuntu-mono)" }}>Aa</span> },
-  { value: "victor-mono", label: "Victor Mono", leading: <span style={{ fontFamily: "var(--font-victor-mono)" }}>Aa</span> },
-  { value: "work-sans", label: "Work Sans", leading: <span style={{ fontFamily: "var(--font-work-sans)" }}>Aa</span> },
+  { value: "anonymous-pro", label: "Anonymous Pro", fontCssVar: "var(--font-anonymous-pro)" },
+  { value: "barlow", label: "Barlow", fontCssVar: "var(--font-barlow)" },
+  { value: "bebas-neue", label: "Bebas Neue", fontCssVar: "var(--font-bebas-neue)" },
+  { value: "bricolage-grotesque", label: "Bricolage Grotesque", fontCssVar: "var(--font-bricolage-grotesque)" },
+  { value: "bitter", label: "Bitter", fontCssVar: "var(--font-bitter)" },
+  { value: "cal-sans", label: "Cal Sans", fontCssVar: "var(--font-cal-sans)" },
+  { value: "cabin", label: "Cabin", fontCssVar: "var(--font-cabin)" },
+  { value: "cascadia-code", label: "Cascadia Code", fontCssVar: "var(--font-cascadia-code)" },
+  { value: "comic-neue", label: "Comic Sans", fontCssVar: "var(--font-comic-neue)" },
+  { value: "commit-mono", label: "Commit Mono", fontCssVar: "var(--font-commit-mono)" },
+  { value: "crimson-pro", label: "Crimson Pro", fontCssVar: "var(--font-crimson-pro)" },
+  { value: "dm-sans", label: "DM Sans", fontCssVar: "var(--font-dm-sans)" },
+  { value: "exo-2", label: "Exo 2", fontCssVar: "var(--font-exo-2)" },
+  { value: "fira-code", label: "Fira Code", fontCssVar: "var(--font-fira-code)" },
+  { value: "geist", label: "Geist", fontCssVar: "var(--font-geist)" },
+  { value: "geist-mono", label: "Geist Mono", fontCssVar: "var(--font-geist-mono)" },
+  { value: "google-sans", label: "Google Sans", fontCssVar: "var(--font-google-sans)" },
+  { value: "ibm-plex-mono", label: "IBM Plex Mono", fontCssVar: "var(--font-ibm-plex-mono)" },
+  { value: "ibm-plex-sans", label: "IBM Plex Sans", fontCssVar: "var(--font-ibm-plex-sans)" },
+  { value: "inconsolata", label: "Inconsolata", fontCssVar: "var(--font-inconsolata)" },
+  { value: "inter", label: "Inter", fontCssVar: "var(--font-inter)" },
+  { value: "jetbrains-mono", label: "JetBrains Mono", fontCssVar: "var(--font-jetbrains-mono)" },
+  { value: "josefin-sans", label: "Josefin Sans", fontCssVar: "var(--font-josefin-sans)" },
+  { value: "lato", label: "Lato", fontCssVar: "var(--font-lato)" },
+  { value: "lexend", label: "Lexend", fontCssVar: "var(--font-lexend)" },
+  { value: "lora", label: "Lora", fontCssVar: "var(--font-lora)" },
+  { value: "manrope", label: "Manrope", fontCssVar: "var(--font-manrope)" },
+  { value: "merriweather", label: "Merriweather", fontCssVar: "var(--font-merriweather)" },
+  { value: "mona-sans", label: "Mona Sans", fontCssVar: "var(--font-mona-sans)" },
+  { value: "montserrat", label: "Montserrat", fontCssVar: "var(--font-montserrat)" },
+  { value: "noto-sans", label: "Noto Sans", fontCssVar: "var(--font-noto-sans)" },
+  { value: "noto-serif", label: "Noto Serif", fontCssVar: "var(--font-noto-serif)" },
+  { value: "nunito-sans", label: "Nunito Sans", fontCssVar: "var(--font-nunito-sans)" },
+  { value: "open-sans", label: "Open Sans", fontCssVar: "var(--font-open-sans)" },
+  { value: "oswald", label: "Oswald", fontCssVar: "var(--font-oswald)" },
+  { value: "outfit", label: "Outfit", fontCssVar: "var(--font-outfit)" },
+  { value: "playfair-display", label: "Playfair Display", fontCssVar: "var(--font-playfair-display)" },
+  { value: "plus-jakarta-sans", label: "Plus Jakarta Sans", fontCssVar: "var(--font-plus-jakarta-sans)" },
+  { value: "poppins", label: "Poppins", fontCssVar: "var(--font-poppins)" },
+  { value: "pt-sans", label: "PT Sans", fontCssVar: "var(--font-pt-sans)" },
+  { value: "pt-serif", label: "PT Serif", fontCssVar: "var(--font-pt-serif)" },
+  { value: "raleway", label: "Raleway", fontCssVar: "var(--font-raleway)" },
+  { value: "roboto-flex", label: "Roboto Flex", fontCssVar: "var(--font-roboto-flex)" },
+  { value: "roboto-mono", label: "Roboto Mono", fontCssVar: "var(--font-roboto-mono)" },
+  { value: "source-code-pro", label: "Source Code Pro", fontCssVar: "var(--font-source-code-pro)" },
+  { value: "space-grotesk", label: "Space Grotesk", fontCssVar: "var(--font-space-grotesk)" },
+  { value: "space-mono", label: "Space Mono", fontCssVar: "var(--font-space-mono)" },
+  { value: "titillium-web", label: "Titillium Web", fontCssVar: "var(--font-titillium-web)" },
+  { value: "ubuntu-mono", label: "Ubuntu Mono", fontCssVar: "var(--font-ubuntu-mono)" },
+  { value: "victor-mono", label: "Victor Mono", fontCssVar: "var(--font-victor-mono)" },
+  { value: "work-sans", label: "Work Sans", fontCssVar: "var(--font-work-sans)" },
 ];
 
 function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut: () => void; userLevel: number | null }) {

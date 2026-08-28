@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Fuse from "fuse.js";
 import {
   IconArrowRight, IconBlender, IconClock, IconDeviceDesktop,
   IconEye, IconEyeOff, IconKeyboardFilled, IconLayoutDashboard,
@@ -48,15 +49,21 @@ const SOUND_VARIANTS: { value: SoundVariant; label: string; desc: string }[] = [
 const FONT_FAMILIES: { value: FontFamily; label: string; desc: string; cssVar: string }[] = [
   { value: "anonymous-pro", label: "Anonymous Pro", desc: "typewriter mono", cssVar: "var(--font-anonymous-pro)" },
   { value: "barlow", label: "Barlow", desc: "neo-grotesk sans", cssVar: "var(--font-barlow)" },
+  { value: "bebas-neue", label: "Bebas Neue", desc: "condensed display", cssVar: "var(--font-bebas-neue)" },
+  { value: "bricolage-grotesque", label: "Bricolage Grotesque", desc: "variable grotesk", cssVar: "var(--font-bricolage-grotesque)" },
   { value: "bitter", label: "Bitter", desc: "slab serif", cssVar: "var(--font-bitter)" },
+  { value: "cal-sans", label: "Cal Sans", desc: "geometric display", cssVar: "var(--font-cal-sans)" },
   { value: "cabin", label: "Cabin", desc: "humanist sans", cssVar: "var(--font-cabin)" },
   { value: "cascadia-code", label: "Cascadia Code", desc: "microsoft mono", cssVar: "var(--font-cascadia-code)" },
+  { value: "comic-neue", label: "Comic Sans", desc: "casual cursive", cssVar: "var(--font-comic-neue)" },
   { value: "commit-mono", label: "Commit Mono", desc: "neutral mono", cssVar: "var(--font-commit-mono)" },
   { value: "crimson-pro", label: "Crimson Pro", desc: "old-style serif", cssVar: "var(--font-crimson-pro)" },
   { value: "dm-sans", label: "DM Sans", desc: "geometric sans-serif", cssVar: "var(--font-dm-sans)" },
   { value: "exo-2", label: "Exo 2", desc: "geometric sans", cssVar: "var(--font-exo-2)" },
   { value: "fira-code", label: "Fira Code", desc: "ligature monospace", cssVar: "var(--font-fira-code)" },
+  { value: "geist", label: "Geist", desc: "vercel sans", cssVar: "var(--font-geist)" },
   { value: "geist-mono", label: "Geist Mono", desc: "default monospace", cssVar: "var(--font-geist-mono)" },
+  { value: "google-sans", label: "Google Sans", desc: "google product sans", cssVar: "var(--font-google-sans)" },
   { value: "ibm-plex-mono", label: "IBM Plex Mono", desc: "ibm monospace", cssVar: "var(--font-ibm-plex-mono)" },
   { value: "ibm-plex-sans", label: "IBM Plex Sans", desc: "corporate sans-serif", cssVar: "var(--font-ibm-plex-sans)" },
   { value: "inconsolata", label: "Inconsolata", desc: "humanist mono", cssVar: "var(--font-inconsolata)" },
@@ -68,6 +75,7 @@ const FONT_FAMILIES: { value: FontFamily; label: string; desc: string; cssVar: s
   { value: "lora", label: "Lora", desc: "readable serif", cssVar: "var(--font-lora)" },
   { value: "manrope", label: "Manrope", desc: "modern geometric sans", cssVar: "var(--font-manrope)" },
   { value: "merriweather", label: "Merriweather", desc: "sturdy serif", cssVar: "var(--font-merriweather)" },
+  { value: "mona-sans", label: "Mona Sans", desc: "github sans", cssVar: "var(--font-mona-sans)" },
   { value: "montserrat", label: "Montserrat", desc: "urban sans", cssVar: "var(--font-montserrat)" },
   { value: "noto-sans", label: "Noto Sans", desc: "google sans", cssVar: "var(--font-noto-sans)" },
   { value: "noto-serif", label: "Noto Serif", desc: "google serif", cssVar: "var(--font-noto-serif)" },
@@ -137,28 +145,55 @@ export function CommandPalette() {
   const go = (to: string) => { setOpen(false); router.push(to); };
   const close = () => setOpen(false);
 
-  // Custom fuzzy filter for better search results
+  // Fuse.js fuzzy index for all static command items
+  const allStaticItems = useMemo(() => [
+    // navigate
+    { id: "nav-test", group: "navigate", value: "navigate test alt+1", keywords: "navigate test", label: "test" },
+    { id: "nav-lb", group: "navigate", value: "navigate leaderboard global bests alt+2", keywords: "navigate leaderboard", label: "leaderboard" },
+    { id: "nav-profile", group: "navigate", value: "navigate profile dashboard alt+3", keywords: "navigate profile", label: "profile" },
+    { id: "nav-settings", group: "navigate", value: "navigate settings config alt+4", keywords: "navigate settings", label: "settings" },
+    // actions
+    { id: "act-restart", group: "actions", value: "actions restart test tab", keywords: "actions restart", label: "restart test" },
+    // mode
+    ...TIME_OPTIONS.map((t) => ({ id: `mode-time-${t}`, group: "mode", value: `mode time ${t}s type for ${t} seconds`, keywords: `mode time ${t}s`, label: `${t}s time` })),
+    ...WORD_OPTIONS.map((w) => ({ id: `mode-words-${w}`, group: "mode", value: `mode words ${w}w type ${w} words`, keywords: `mode words ${w}w`, label: `${w}w words` })),
+    // themes
+    ...THEMES.map((t) => ({ id: `theme-${t.id}`, group: "theme", value: `theme appearance ${t.label} ${t.appearance} ${t.id}`, keywords: `theme appearance ${t.label} ${t.appearance}`, label: t.label })),
+    // sound
+    { id: "sound-toggle", group: "sound", value: "sound audio keystroke click thock beep enable disable", keywords: "sound audio enable disable", label: "sound toggle" },
+    { id: "sound-error", group: "sound", value: "sound error beep incorrect character", keywords: "sound error beep", label: "error sound" },
+    ...SOUND_VARIANTS.map((v) => ({ id: `sound-${v.value}`, group: "sound", value: `sound audio variant ${v.label} ${v.desc}`, keywords: `sound ${v.label}`, label: v.label })),
+    // caret
+    ...CARET_STYLES.map((c) => ({ id: `caret-${c.value}`, group: "caret", value: `caret cursor ${c.label} ${c.desc}`, keywords: `caret ${c.label}`, label: c.label })),
+    // font size
+    ...FONT_SIZES.map((f) => ({ id: `fsize-${f.value}`, group: "font size", value: `font size ${f.label} ${f.desc} text`, keywords: `font size ${f.label}`, label: f.label })),
+    // font family
+    ...FONT_FAMILIES.map((f) => ({ id: `ffam-${f.value}`, group: "font family", value: `font family ${f.label} ${f.desc} typeface`, keywords: `font family ${f.label}`, label: f.label })),
+    // visible lines
+    ...([1, 2, 3] as const).map((n) => ({ id: `lines-${n}`, group: "visible lines", value: `visible lines ${n} line show text`, keywords: `visible lines ${n}`, label: `${n} line${n > 1 ? 's' : ''}` })),
+    // gameplay toggles
+    { id: "gp-blind", group: "gameplay", value: "gameplay blind mode hide error coloring trust fingers", keywords: "gameplay blind mode", label: "blind mode" },
+    { id: "gp-stop", group: "gameplay", value: "gameplay stop on error block cursor until fixed", keywords: "gameplay stop error", label: "stop on error" },
+    { id: "gp-strict", group: "gameplay", value: "gameplay strict space wrong words cannot be skipped", keywords: "gameplay strict space", label: "strict space" },
+    { id: "gp-back", group: "gameplay", value: "gameplay free backspace restore previous word", keywords: "gameplay free backspace", label: "free backspace" },
+    { id: "gp-hide", group: "gameplay", value: "gameplay hide live stats blank wpm acc while running", keywords: "gameplay hide live stats", label: "hide live stats" },
+    // appearance toggles
+    { id: "app-kb", group: "appearance", value: "appearance virtual keyboard show key highlighter", keywords: "appearance keyboard", label: "virtual keyboard" },
+    { id: "app-smooth", group: "appearance", value: "appearance smooth caret animate caret movement", keywords: "appearance smooth caret", label: "smooth caret" },
+  ], []);
+
+  const fuse = useMemo(() => new Fuse(allStaticItems, {
+    keys: ["keywords", "label"],
+    threshold: 0.4,
+    ignoreLocation: true,
+  }), [allStaticItems]);
+
+  // Fuzzy filter: returns 1 for match, 0 for no match
   const fuzzyFilter = (value: string, search: string) => {
     if (!search) return 1;
-    const lowerValue = value.toLowerCase();
-    const lowerSearch = search.toLowerCase();
-    
-    // Exact match gets highest score
-    if (lowerValue.includes(lowerSearch)) return 1;
-    
-    // Fuzzy match: check if all search chars appear in order
-    let searchIdx = 0;
-    for (let i = 0; i < lowerValue.length && searchIdx < lowerSearch.length; i++) {
-      if (lowerValue[i] === lowerSearch[searchIdx]) searchIdx++;
-    }
-    if (searchIdx === lowerSearch.length) return 0.8;
-    
-    // Partial match: at least some chars match
-    let matchCount = 0;
-    for (const char of lowerSearch) {
-      if (lowerValue.includes(char)) matchCount++;
-    }
-    return matchCount / lowerSearch.length > 0.5 ? 0.5 : 0;
+    const results = fuse.search(search);
+    const matchedValues = new Set(results.map((r) => r.item.value));
+    return matchedValues.has(value) ? 1 : 0;
   };
 
   return (

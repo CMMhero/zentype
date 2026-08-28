@@ -17,6 +17,8 @@ export interface ComboboxItem {
   label: string;
   /** Optional element to render before the label */
   leading?: React.ReactNode;
+  /** Optional CSS font-family variable for rendering the label in its own font */
+  fontCssVar?: string;
 }
 
 interface ComboboxProps {
@@ -63,7 +65,7 @@ export function Combobox({
           <IconChevronDown className="size-4 opacity-50" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+      <PopoverContent className="min-w-64 p-0" align="start">
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
           <CommandList>
@@ -79,7 +81,7 @@ export function Combobox({
               >
                 <span className="flex flex-1 items-center gap-2">
                   {item.leading}
-                  {item.label}
+                  <span style={item.fontCssVar ? { fontFamily: item.fontCssVar } : undefined}>{item.label}</span>
                 </span>
                 {value === item.value && (
                   <IconCheck className="size-4 shrink-0" />
