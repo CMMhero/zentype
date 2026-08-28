@@ -133,7 +133,7 @@ const LeaderboardRankings = React.forwardRef<
                   aria-label="Collapsed leaderboard rows"
                   className="text-muted-foreground flex items-center justify-center px-4 py-2"
                 >
-                    <IconDots className="h-5 w-5" />
+                    <IconDots className="size-5" />
                 </div>
               )
             }
@@ -175,7 +175,7 @@ const LeaderboardRankings = React.forwardRef<
                   </span>
                   {showCrown ? (
                     <IconCrown
-                      className={cn("h-5 w-5", crownColor)}
+                      className={cn("size-5", crownColor)}
                       aria-hidden="true"
                     />
                   ) : null}
@@ -186,10 +186,10 @@ const LeaderboardRankings = React.forwardRef<
                   <img
                     src={ranking.avatarUrl}
                     alt={`${displayName} avatar`}
-                    className="h-10 w-10 rounded-full object-cover"
+                    className="size-10 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="bg-muted text-muted-foreground flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium">
+                  <div className="bg-muted text-muted-foreground flex size-10 items-center justify-center rounded-full text-sm font-medium">
                     {(ranking.userName ?? ranking.userId)
                       .charAt(0)
                       .toUpperCase()}
@@ -220,12 +220,12 @@ const LeaderboardRankings = React.forwardRef<
                     >
                       {ranking.rankChange > 0 ? (
                         <IconTrendingUp
-                          className="h-3.5 w-3.5"
+                          className="size-3.5"
                           aria-hidden="true"
                         />
                       ) : (
                         <IconTrendingDown
-                          className="h-3.5 w-3.5"
+                          className="size-3.5"
                           aria-hidden="true"
                         />
                       )}
@@ -274,7 +274,7 @@ const LeaderboardRankings = React.forwardRef<
                 disabled={currentPage === 1}
                 className="hover:bg-muted rounded-md border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <IconChevronLeft className="h-4 w-4" />
+                <IconChevronLeft className="size-4" />
               </Button>
 
               <span className="text-muted-foreground text-sm">
@@ -290,7 +290,7 @@ const LeaderboardRankings = React.forwardRef<
                 disabled={currentPage === totalPages}
                 className="hover:bg-muted rounded-md border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <IconChevronRight className="h-4 w-4" />
+                <IconChevronRight className="size-4" />
               </Button>
             </div>
           </div>
