@@ -194,6 +194,11 @@ export default function PublicProfilePage() {
             <div className="text-center">
               <h1 className="text-xl font-bold">{name}</h1>
               <Badge variant="outline" className="text-[10px]">public profile</Badge>
+              {profile.joinedAt && (
+                <p className="mt-1 text-[10px] text-muted-foreground/70">
+                  Joined {new Date(profile.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -280,7 +285,7 @@ export default function PublicProfilePage() {
               achievements={unlockedAch
                 .slice()
                 .sort((a, b) => b.xp - a.xp)
-                .slice(0, 5)
+                .slice(0, 8)
                 .map((a) => ({
                   id: a.id,
                   name: a.name,

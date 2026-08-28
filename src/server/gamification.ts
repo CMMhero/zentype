@@ -224,6 +224,8 @@ async function buildAchievementStats(
       testsCompleted: 0,
       timeTypedSeconds: 0,
       bestWpm: 0,
+      bestAccuracy: 0,
+      bestConsistency: 0,
       avgWpm: 0,
       avgWpm10: 0,
       avgAccuracy: 0,
@@ -238,6 +240,8 @@ async function buildAchievementStats(
   const last10 = results.slice(0, 10);
   const bestByBoard: Record<string, number> = {};
   let bestWpm = 0;
+  let bestAccuracy = 0;
+  let bestConsistency = 0;
   let totalWpm = 0;
   let totalAcc = 0;
   let totalCons = 0;
@@ -246,11 +250,19 @@ async function buildAchievementStats(
 
   for (const r of results) {
     if (r.wpm > bestWpm) bestWpm = r.wpm;
+    if (r.accuracy > bestAccuracy) bestAccuracy = r.accuracy;
+    if (r.consistency > bestConsistency) bestConsistency = r.consistency;
     totalWpm += r.wpm;
     totalAcc += r.accuracy;
     totalCons += r.consistency;
     totalChars += (r.chars?.correct ?? 0) + (r.chars?.incorrect ?? 0) + (r.chars?.extra ?? 0);
-    totalTime += r.mode === "time" ? r.variant : 8;
+    if (r.mode === "time") {
+      totalTime += r.variant;
+    } else {
+      // words mode: estimate time from wpm and word count; fallback to 30s if wpm is 0
+      const est = r.wpm > 0 ? Math.round((r.variant * 60) / r.wpm) : 30;
+      totalTime += Math.min(600, Math.max(5, est));
+    }
     const k = `${r.mode}:${r.variant}`;
     if (!bestByBoard[k] || r.wpm > bestByBoard[k]) bestByBoard[k] = r.wpm;
   }
@@ -284,6 +296,8 @@ async function buildAchievementStats(
     testsCompleted: results.length,
     timeTypedSeconds: totalTime,
     bestWpm,
+    bestAccuracy: Math.round(bestAccuracy * 100) / 100,
+    bestConsistency: Math.round(bestConsistency * 100) / 100,
     avgWpm: Math.round(totalWpm / results.length),
     avgWpm10: Math.round(last10.reduce((a, r) => a + r.wpm, 0) / last10.length),
     avgAccuracy: Math.round(totalAcc / results.length),

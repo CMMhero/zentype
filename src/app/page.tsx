@@ -132,6 +132,12 @@ export default function TestPage() {
           setSaveState("cloud");
           // Process gamification (XP + achievements)
           void processTestResult(full).then((g) => {
+            if (g.xpEarned > 0) {
+              toast.success(`+${g.xpEarned} XP`, {
+                description: g.newAchievements.length > 0 ? `+ ${g.newAchievements.map((a) => a.name).join(", ")}` : undefined,
+                duration: 3000,
+              });
+            }
             if (g.newAchievements.length > 0) {
               // Show first new achievement unlock
               const first = g.newAchievements[0];

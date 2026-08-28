@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { IconTrophy } from "@tabler/icons-react"
+import { IconCheck, IconTrophy } from "@tabler/icons-react"
 
 import { cn } from "~/lib/utils"
 
@@ -101,10 +101,12 @@ const AchievementBadge = React.forwardRef<
             : undefined
         }
         className={cn(
-          "bg-card flex flex-col items-center justify-center gap-1 rounded-lg border",
+          "relative flex flex-col items-center justify-center gap-1 rounded-lg border bg-card",
           badgeSize === "xs" ? "p-2 gap-1" : "gap-2 p-4",
           onAchievementClick && "cursor-pointer",
-          !isUnlocked && "opacity-50",
+          isUnlocked
+            ? "border-primary/40 bg-card shadow-sm"
+            : "border-border/30 bg-muted/20 opacity-60",
           className
         )}
         {...props}
@@ -145,7 +147,7 @@ const AchievementBadge = React.forwardRef<
               className={cn(
                 badgeSizeMap[badgeSize],
                 "relative z-10 rounded-full object-cover",
-                !isUnlocked && "grayscale"
+                !isUnlocked && "grayscale opacity-70"
               )}
             />
           ) : (
@@ -153,14 +155,19 @@ const AchievementBadge = React.forwardRef<
               aria-hidden="true"
               className={cn(
                 badgeSizeMap[badgeSize],
-                "relative z-10 flex items-center justify-center rounded-full",
+                "relative z-10 flex items-center justify-center rounded-full shadow-sm",
                 isUnlocked
-                  ? "bg-muted text-muted-foreground"
-                  : "bg-primary text-primary-foreground"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground grayscale"
               )}
             >
               <IconTrophy className={iconSizeMap[badgeSize]} />
             </div>
+          )}
+          {isUnlocked && (
+            <span className="absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground border-2 border-card shadow-sm">
+              <IconCheck className="size-2.5" />
+            </span>
           )}
         </div>
 

@@ -242,8 +242,20 @@ export interface PublicProfile {
   userId: string;
   username: string;
   avatarUrl: string | null;
+  joinedAt: string | null;
   stats: AggregatedStats | null;
   results: TestResult[];
+}
+
+export async function getMyJoinDate(): Promise<string | null> {
+  const ctx = await requireUser();
+  if (!ctx) return null;
+  const { data } = await ctx.supabase
+    .from("profiles")
+    .select("created_at")
+    .eq("id", ctx.user.id)
+    .maybeSingle();
+  return (data?.created_at as string | null) ?? null;
 }
 
 export async function getPublicProfile(
@@ -256,26 +268,29 @@ export async function getPublicProfile(
   let username: string | null = null;
   let avatarUrl: string | null = null;
 
+  let joinedAt: string | null = null;
   const { data: profileByUsername } = await supabase
     .from("profiles")
-    .select("id,username,avatar_url")
+    .select("id,username,avatar_url,created_at")
     .ilike("username", identifier)
     .maybeSingle();
   if (profileByUsername) {
     userId = profileByUsername.id;
     username = profileByUsername.username;
     avatarUrl = profileByUsername.avatar_url;
+    joinedAt = profileByUsername.created_at as string | null;
   } else {
     // Try as userId
     const { data: profileById } = await supabase
       .from("profiles")
-      .select("id,username,avatar_url")
+      .select("id,username,avatar_url,created_at")
       .eq("id", identifier)
       .maybeSingle();
     if (profileById) {
       userId = profileById.id;
       username = profileById.username;
       avatarUrl = profileById.avatar_url;
+      joinedAt = profileById.created_at as string | null;
     }
   }
   if (!userId) return null;
@@ -299,7 +314,7 @@ export async function getPublicProfile(
     .limit(1000);
   const results = (rows as unknown as DbResultRow[]).map(mapRow);
   if (results.length === 0) {
-    return { userId, username: username ?? "unknown", avatarUrl, stats: null, results: [] };
+    return { userId, username: username ?? "unknown", avatarUrl, joinedAt, stats: null, results: [] };
   }
   const last10 = results.slice(0, 10);
   const bestByBoard: Record<string, number> = {};
@@ -318,7 +333,7 @@ export async function getPublicProfile(
     charsTyped: sum(results.map((r) => r.chars.correct + r.chars.incorrect + r.chars.extra)),
     bestByBoard,
   };
-  return { userId, username: username ?? "unknown", avatarUrl, stats, results };
+  return { userId, username: username ?? "unknown", avatarUrl, joinedAt, stats, results };
 }
 
 /** Search users by username prefix (for command palette). */

@@ -29,7 +29,7 @@ import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { AchievementList } from "~/components/ui/achievement-list";
 import { WpmChart } from "~/components/charts/wpm-chart";
-import { getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
+import { getMyJoinDate, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
 import { useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
@@ -58,6 +58,7 @@ export default function ProfilePage() {
   const [achOpen, setAchOpen] = useState(false);
   const [achTab, setAchTab] = useState<"all" | "unlocked" | "locked">("all");
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
+  const [joinedAt, setJoinedAt] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -71,9 +72,10 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!user) return;
-    void Promise.all([getUserPoints(), getUserAchievements()]).then(([p, a]) => {
+    void Promise.all([getUserPoints(), getUserAchievements(), getMyJoinDate()]).then(([p, a, j]) => {
       if (p) setPoints(p);
       if (a) setAchievements(a);
+      if (j) setJoinedAt(j);
     });
   }, [user]);
 
@@ -150,6 +152,11 @@ export default function ProfilePage() {
             <div className="flex-1 min-w-0">
               <h1 className="text-lg font-bold truncate">{user.username}</h1>
               <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+              {joinedAt && (
+                <p className="text-[10px] text-muted-foreground/70">
+                  Joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                </p>
+              )}
               {points && points.totalXP > 0 ? (
                 <div className="mt-2 flex flex-col gap-1.5">
                   <div className="flex items-baseline gap-2">
@@ -274,7 +281,7 @@ export default function ProfilePage() {
               achievements={unlockedAch
                 .slice()
                 .sort((a, b) => b.xp - a.xp)
-                .slice(0, 5)
+                .slice(0, 8)
                 .map((a) => ({
                   id: a.id,
                   name: a.name,

@@ -126,8 +126,11 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                     : undefined
                 }
                 className={cn(
-                  "bg-background flex items-center gap-4 rounded-2xl border px-4 py-3",
-                  onAchievementClick && "cursor-pointer"
+                  "flex items-center gap-4 rounded-2xl border px-4 py-3 transition-colors",
+                  onAchievementClick && "cursor-pointer",
+                  isUnlocked
+                    ? "bg-card border-primary/20 shadow-sm"
+                    : "bg-muted/20 border-border/40 opacity-70"
                 )}
               >
                 {achievement.badgeUrl ? (
@@ -149,10 +152,10 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                     aria-hidden="true"
                     className={cn(
                       badgeSizeMap[badgeSize],
-                      "flex shrink-0 items-center justify-center rounded-xl",
+                      "flex shrink-0 items-center justify-center rounded-xl shadow-sm",
                       isUnlocked
-                        ? "bg-muted text-muted-foreground"
-                        : "bg-primary text-primary-foreground"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground grayscale"
                     )}
                   >
                     <IconTrophy className={iconSizeMap[badgeSize]} />
