@@ -4,10 +4,10 @@ import { cn } from "~/lib/utils";
 import type { CaretStyle, FontSizeKey, GameMode } from "~/lib/types";
 
 const FONT_SIZES: Record<FontSizeKey, string> = {
-  sm: "text-xl md:text-2xl",
-  md: "text-2xl md:text-3xl",
-  lg: "text-3xl md:text-4xl",
-  xl: "text-4xl md:text-5xl",
+  sm: "text-2xl md:text-3xl",
+  md: "text-3xl md:text-4xl",
+  lg: "text-4xl md:text-5xl",
+  xl: "text-5xl md:text-6xl",
 };
 
 interface TypingDisplayProps {
