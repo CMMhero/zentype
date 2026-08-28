@@ -11,7 +11,9 @@ import {
 } from "@tabler/icons-react"
 
 import { cn } from "~/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 
 interface LeaderboardRankingItem {
   userId: string
@@ -184,20 +186,12 @@ const LeaderboardRankings = React.forwardRef<
                   ) : null}
                 </div>
 
-                {ranking.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={ranking.avatarUrl}
-                    alt={`${displayName} avatar`}
-                    className="size-10 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="bg-muted text-muted-foreground flex size-10 items-center justify-center rounded-full text-sm font-medium">
-                    {(ranking.userName ?? ranking.userId)
-                      .charAt(0)
-                      .toUpperCase()}
-                  </div>
-                )}
+                <Avatar className="size-10">
+                  {ranking.avatarUrl && <AvatarImage src={ranking.avatarUrl} alt={`${displayName} avatar`} />}
+                  <AvatarFallback className="rounded-full text-sm font-medium">
+                    {(ranking.userName ?? ranking.userId).charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
 
                 <div className="min-w-0 flex-1">
                   <p className="text-foreground truncate font-medium">
@@ -247,26 +241,24 @@ const LeaderboardRankings = React.forwardRef<
         {showPagination ? (
           <div className="flex items-center justify-between gap-3 border-t px-4 py-2">
             <div className="flex items-center gap-2">
-              <label
-                htmlFor="leaderboard-page-size"
-                className="text-muted-foreground text-sm"
-              >
-                Show
-              </label>
-              <select
-                id="leaderboard-page-size"
-                value={pageSize}
-                onChange={(e) =>
-                  setPageSize(Number(e.target.value) as 10 | 25 | 50 | 100)
+              <span className="text-muted-foreground text-sm">Show</span>
+              <Select
+                value={String(pageSize)}
+                onValueChange={(v) =>
+                  setPageSize(Number(v) as 10 | 25 | 50 | 100)
                 }
-                className="bg-background text-muted-foreground rounded-md border px-2 py-1 text-sm"
               >
-                {pageSizeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
+                <SelectTrigger size="sm" className="w-16">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {pageSizeOptions.map((option) => (
+                    <SelectItem key={option} value={String(option)}>
+                      {option}
+                  </SelectItem>
                 ))}
-              </select>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex items-center gap-2">
