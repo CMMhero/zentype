@@ -24,9 +24,10 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from "~/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
-import { AchievementBadge } from "~/components/ui/achievement-badge";
+import { AchievementGrid } from "~/components/ui/achievement-grid";
+import { AchievementList } from "~/components/ui/achievement-list";
 import { WpmChart } from "~/components/charts/wpm-chart";
 import { getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
@@ -56,6 +57,7 @@ export default function ProfilePage() {
   const [selected, setSelected] = useState<TestResult | null>(null);
   const [achOpen, setAchOpen] = useState(false);
   const [achTab, setAchTab] = useState<"all" | "unlocked" | "locked">("all");
+  const [streakYear, setStreakYear] = useState<number | "last12">("last12");
 
   useEffect(() => {
     let cancelled = false;
@@ -108,6 +110,24 @@ export default function ProfilePage() {
     if (run > longestStreak) longestStreak = run;
   }
   const streakPeriods = sortedDays.map((d) => ({ periodStart: d, periodEnd: d }));
+  const countsRecord = Object.fromEntries(dayMap.entries()) as Record<string, number>;
+  const availableYears = Array.from(
+    new Set([...sortedDays.map((d) => Number(d.slice(0, 4))), new Date().getFullYear()])
+  ).sort((a, b) => b - a);
+  const totalTestsInStreakPeriod =
+    streakYear === "last12"
+      ? (() => {
+          const start = new Date();
+          start.setHours(0, 0, 0, 0);
+          start.setDate(start.getDate() - 364);
+          const startKey = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`;
+          let total = 0;
+          for (const [k, v] of dayMap) if (k >= startKey) total += v;
+          return total;
+        })()
+      : Array.from(dayMap.entries())
+          .filter(([k]) => k.startsWith(String(streakYear)))
+          .reduce((a, [, v]) => a + v, 0);
 
   const unlockedAch = (achievements ?? []).filter((a) => a.achievedAt !== null);
   const allAch = (achievements ?? ACHIEVEMENTS.map((a) => ({
@@ -240,36 +260,33 @@ export default function ProfilePage() {
         </Card>
       </div>
 
-      {/* Top achievements — click to see all */}
+      {/* Top achievements — uses AchievementGrid */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconAward className="size-4" /> top achievements
+            <IconAward className="size-4" /> achievements
             <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
           {unlockedAch.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {unlockedAch.sort((a, b) => b.xp - a.xp).slice(0, 5).map((a) => (
-                <Tooltip key={a.id}>
-                  <TooltipTrigger asChild>
-                    <div className="flex h-16 w-32 items-center justify-center gap-1.5 rounded-md border border-border/40 bg-secondary/30 px-2 cursor-default [&>div>div]:!h-6 [&>div>div]:!w-6 [&>div]:!m-0 [&>div]:!border-0 [&>div]:!bg-transparent [&>div]:!p-0 [&>div]:!shadow-none [&>span]:!hidden">
-                      <AchievementBadge
-                        achievement={{ id: a.id, name: a.name, trigger: a.trigger, achievedAt: a.achievedAt, progress: a.progress }}
-                        badgeSize="xs"
-                      />
-                      <span className="truncate text-xs font-medium leading-tight">{a.name}</span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="max-w-48">
-                    <p className="font-semibold text-xs">{a.name}</p>
-                    <p className="text-[11px] text-muted-foreground">{a.description}</p>
-                    <p className="mt-1 text-[10px] text-primary">{a.xp} XP</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
+            <AchievementGrid
+              achievements={unlockedAch
+                .slice()
+                .sort((a, b) => b.xp - a.xp)
+                .slice(0, 5)
+                .map((a) => ({
+                  id: a.id,
+                  name: a.name,
+                  description: a.description,
+                  trigger: a.trigger,
+                  achievedAt: a.achievedAt,
+                  progress: a.progress,
+                }))}
+              columns={4}
+              gap="sm"
+              badgeSize="sm"
+            />
           ) : (
             <p className="text-xs text-muted-foreground">no achievements yet — finish tests to earn badges</p>
           )}
@@ -279,9 +296,9 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* All achievements modal */}
+      {/* All achievements modal — uses AchievementList with progress */}
       <Dialog open={achOpen} onOpenChange={setAchOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <IconAward className="size-4" /> achievements
@@ -295,44 +312,54 @@ export default function ProfilePage() {
               <TabsTrigger value="locked">locked</TabsTrigger>
             </TabsList>
           </Tabs>
-          <div className="grid max-h-80 grid-cols-2 gap-2 overflow-y-auto py-2 sm:grid-cols-3 md:grid-cols-4">
-            {filteredAch.map((a) => (
-              <Tooltip key={a.id}>
-                <TooltipTrigger asChild>
-                  <div className="flex h-16 w-full items-center justify-center gap-1.5 rounded-md border border-border/40 bg-secondary/30 px-2 cursor-default [&>div>div]:!h-6 [&>div>div]:!w-6 [&>div]:!m-0 [&>div]:!border-0 [&>div]:!bg-transparent [&>div]:!p-0 [&>div]:!shadow-none [&>span]:!hidden">
-                    <AchievementBadge
-                      achievement={{ id: a.id, name: a.name, trigger: a.trigger, achievedAt: a.achievedAt, progress: a.progress }}
-                      badgeSize="xs"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs font-medium leading-tight">{a.name}</p>
-                      <p className="truncate text-[10px] leading-tight text-muted-foreground">{a.description}</p>
-                    </div>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="max-w-48">
-                  <p className="font-semibold text-xs">{a.name}</p>
-                  <p className="text-[11px] text-muted-foreground">{a.description}</p>
-                  <p className="mt-1 text-[10px] text-primary">{a.xp} XP</p>
-                  {a.progress > 0 && a.progress < 100 && (
-                    <p className="text-[10px] text-muted-foreground">{a.progress}% complete</p>
-                  )}
-                </TooltipContent>
-              </Tooltip>
-            ))}
+          <div className="flex-1 overflow-y-auto pr-1">
+            <AchievementList
+              achievements={filteredAch.map((a) => ({
+                id: a.id,
+                name: a.name,
+                description: a.description,
+                trigger: a.trigger,
+                achievedAt: a.achievedAt,
+                progress: a.progress,
+              }))}
+              badgeSize="sm"
+            />
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Streak */}
+      {/* Streak — last 12 months / by year with totals */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
             <IconClock className="size-4" /> streak
+            <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
+              {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
+            </span>
+            <div className="ml-auto">
+              <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
+                <SelectTrigger size="sm" className="h-7 w-36 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="last12">Last 12 months</SelectItem>
+                  {availableYears.map((y) => (
+                    <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <StreakCalendar streak={streakPeriods} view="year" compact className="max-w-none" />
+          <StreakCalendar
+            streak={streakPeriods}
+            counts={countsRecord}
+            displayYear={streakYear}
+            view="year"
+            compact
+            className="max-w-none"
+          />
         </CardContent>
       </Card>
 

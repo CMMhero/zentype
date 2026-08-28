@@ -60,6 +60,10 @@ function getFirstDayOfMonth(year: number, month: number): number {
 interface StreakCalendarProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Streak periods */
   streak: StreakPeriod[]
+  /** Tests per day: "YYYY-MM-DD" -> count */
+  counts?: Record<string, number>
+  /** Year to display for year view: "last12" (last 365 days) or a specific year (e.g. 2025) */
+  displayYear?: number | "last12"
   /** Calendar layout variant */
   view?: "week" | "month" | "year"
   /** Month to display (default: current month) */
@@ -137,14 +141,34 @@ function getGitDates(endDate: Date): Date[] {
   })
 }
 
+function getYearDates(year: number, today: Date): Date[] {
+  const isCurrentYear = year === today.getFullYear()
+  const start = new Date(year, 0, 1)
+  const end = isCurrentYear ? new Date(today) : new Date(year, 11, 31)
+  start.setHours(0, 0, 0, 0)
+  end.setHours(0, 0, 0, 0)
+  const diffDays = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1
+  return Array.from({ length: diffDays }, (_, i) => {
+    const d = new Date(start)
+    d.setDate(start.getDate() + i)
+    return d
+  })
+}
+
 function getGitCells(
   endDate: Date,
-  startOfWeek: 0 | 1
+  startOfWeek: 0 | 1,
+  displayYear?: number | "last12"
 ): {
   cells: (Date | null)[]
   dates: Date[]
 } {
-  const dates = getGitDates(endDate)
+  const todayNorm = new Date(endDate)
+  todayNorm.setHours(0, 0, 0, 0)
+  const dates =
+    typeof displayYear === "number"
+      ? getYearDates(displayYear, todayNorm)
+      : getGitDates(todayNorm)
   const firstDate = dates[0]
   if (!firstDate) return { cells: [], dates: [] }
 
@@ -162,6 +186,8 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
     {
       className,
       streak,
+      counts,
+      displayYear = "last12",
       view = "week",
       month = new Date(),
       referenceDate = new Date(),
@@ -189,8 +215,9 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
     today.setHours(0, 0, 0, 0)
 
     const periods = streak ?? []
+    const countsMap = counts ?? {}
     const weekDates = getWeekDates(referenceDate, startOfWeek)
-    const { cells: gitCells, dates: gitDates } = getGitCells(today, startOfWeek)
+    const { cells: gitCells, dates: gitDates } = getGitCells(today, startOfWeek, displayYear)
     const gitColumnCount = Math.ceil(gitCells.length / 7)
     const cellSize = compact ? "0.75rem" : "0.75rem"
     const gitGridTemplateColumns = `repeat(${gitColumnCount}, ${cellSize})`
@@ -445,39 +472,46 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                       }
                       const { isToday, isActive, usedFreeze } =
                         getCellState(date)
+                      const dateKey = getDateKey(date)
+                      const count = countsMap[dateKey] ?? 0
                       const dateLabel = date.toLocaleDateString("en-US", {
                         weekday: "long",
                         month: "long",
                         day: "numeric",
                         year: "numeric",
                       })
+                      const intensityClass =
+                        usedFreeze ? "border-[var(--freeze-color)] bg-[var(--freeze-color)]"
+                        : count >= 4 ? "bg-primary border-primary"
+                        : count >= 2 ? "bg-primary/70 border-primary/70"
+                        : count === 1 ? "bg-primary/40 border-primary/40"
+                        : isActive ? "bg-primary/30 border-primary/30"
+                        : "bg-muted/40"
+                      const tooltipText =
+                        count === 0 ? `No tests on ${dateLabel}`
+                        : count === 1 ? `1 test on ${dateLabel}`
+                        : `${count} tests on ${dateLabel}`
                       return (
-                        <Tooltip key={getDateKey(date)}>
+                        <Tooltip key={dateKey}>
                           <TooltipTrigger asChild>
                             <button
                               type="button"
                               role="gridcell"
                               aria-current={isToday ? "date" : undefined}
-                              aria-label={`${dateLabel}, ${usedFreeze ? "freeze used" : isActive ? "streak active" : "no activity"}`}
+                              aria-label={`${tooltipText}, ${usedFreeze ? "freeze used" : isActive ? "streak active" : "no activity"}`}
                               onClick={() => onDayClick?.(date, isActive)}
                               className={cn(
                                 "border-border/40 transition-colors",
                                 cellClass,
                                 "hover:ring-ring hover:ring-1",
-                                isToday &&
-                                  "!bg-primary-foreground !text-primary border-primary",
-                                isActive &&
-                                  !usedFreeze &&
-                                  "bg-primary border-primary/80",
-                                usedFreeze &&
-                                  "border-[var(--freeze-color)] bg-[var(--freeze-color)]",
-                                !isActive && !usedFreeze && "bg-muted/40"
+                                isToday && "!bg-primary-foreground !text-primary border-primary",
+                                !isToday && intensityClass
                               )}
                               style={usedFreeze ? freezeColorStyles : undefined}
                             />
                           </TooltipTrigger>
                           <TooltipContent side="top">
-                            {dateLabel}
+                            {tooltipText}
                           </TooltipContent>
                         </Tooltip>
                       )

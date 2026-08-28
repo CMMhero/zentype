@@ -92,7 +92,9 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
           {achievements.map((achievement) => {
             const isUnlocked = achievement.achievedAt !== null
             const hasProgress =
-              isUnlocked && typeof achievement.progress === "number"
+              typeof achievement.progress === "number" &&
+              (achievement.progress ?? 0) > 0 &&
+              (achievement.progress ?? 0) < 100
 
             if (!isUnlocked && lockedStyle === "hidden") {
               return null
