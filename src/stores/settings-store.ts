@@ -40,19 +40,24 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: "zentype-settings",
-      version: 3,
-      migrate: (persisted) => {
-        const p = (persisted ?? {}) as Partial<GameSettings> & {
-          soundVolume?: number;
-        };
+      version: 4,
+      migrate: (persistedState) => {
+        // persistedState may be { settings: {...} } or legacy flat shape
+        const raw = (persistedState ?? {}) as Record<string, unknown>;
+        const p = (raw.settings as Partial<GameSettings> | undefined) ?? (raw as Partial<GameSettings>);
+        const legacy = p as Partial<GameSettings> & { soundVolume?: number; settings?: unknown };
+        // unwrap nested settings if previous buggy migration stored { settings: { settings: {...} } }
+        const actual = (legacy.settings && typeof legacy.settings === "object" && !Array.isArray(legacy.settings)
+          ? (legacy.settings as Partial<GameSettings>)
+          : p) as Partial<GameSettings> & { soundVolume?: number };
         return {
           settings: {
             ...DEFAULT_SETTINGS,
-            ...p,
+            ...actual,
             sound: {
               ...DEFAULT_SETTINGS.sound,
-              ...(p.sound ?? {}),
-              volume: p.sound?.volume ?? p.soundVolume ?? DEFAULT_SETTINGS.sound.volume,
+              ...(actual.sound ?? {}),
+              volume: actual.sound?.volume ?? legacy.soundVolume ?? DEFAULT_SETTINGS.sound.volume,
             },
           },
         } as SettingsState;

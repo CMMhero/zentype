@@ -210,11 +210,6 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
       }
     })
 
-    // Limit to 12 months max — drop the first label if there are 13
-    if (gitMonthLabels.length > 12) {
-      gitMonthLabels.shift()
-    }
-
     const firstDate = gitDates[0]
     if (firstDate) {
       const firstMonthKey = `${firstDate.getFullYear()}-${firstDate.getMonth()}`
@@ -224,6 +219,11 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
           label: firstDate.toLocaleDateString("en-US", { month: "short" }),
         })
       }
+    }
+
+    // Limit to 12 months max — drop the first month label if >12
+    if (gitMonthLabels.length > 12) {
+      gitMonthLabels.shift()
     }
 
     // Generate calendar days

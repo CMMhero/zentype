@@ -64,13 +64,14 @@ export default function PublicProfilePage() {
 
   if (loading) {
     return (
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
+        {/* Level card + 2x2 stats — matches loaded layout */}
         <div className="grid gap-4 md:grid-cols-[1fr_auto]">
           <Card className="row-span-2 gap-3 py-4">
             <CardContent className="flex flex-col items-center gap-4 px-6 pt-2">
               <Skeleton className="size-20 rounded-full" />
               <Skeleton className="h-6 w-32" />
-              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-24" />
             </CardContent>
           </Card>
           <div className="grid grid-cols-2 gap-3">
@@ -84,6 +85,48 @@ export default function PublicProfilePage() {
             ))}
           </div>
         </div>
+
+        {/* Personal bests */}
+        <Card className="gap-3 py-4">
+          <CardHeader className="px-4">
+            <Skeleton className="h-3 w-28" />
+          </CardHeader>
+          <CardContent className="flex gap-2 px-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-9 w-20" />
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Charts — side by side */}
+        <div className="grid gap-5 md:grid-cols-2">
+          <Card className="gap-3 py-4">
+            <CardHeader className="px-4"><Skeleton className="h-3 w-16" /></CardHeader>
+            <CardContent className="px-4"><Skeleton className="h-40 w-full" /></CardContent>
+          </Card>
+          <Card className="gap-3 py-4">
+            <CardHeader className="px-4"><Skeleton className="h-3 w-20" /></CardHeader>
+            <CardContent className="px-4"><Skeleton className="h-40 w-full" /></CardContent>
+          </Card>
+        </div>
+
+        {/* Top achievements */}
+        <Card className="gap-3 py-4">
+          <CardHeader className="px-4"><Skeleton className="h-3 w-32" /></CardHeader>
+          <CardContent className="px-4">
+            <div className="flex gap-2">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 w-32" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Activity */}
+        <Card className="gap-3 py-4">
+          <CardHeader className="px-4"><Skeleton className="h-3 w-20" /></CardHeader>
+          <CardContent className="px-4"><Skeleton className="h-24 w-full" /></CardContent>
+        </Card>
       </div>
     );
   }
