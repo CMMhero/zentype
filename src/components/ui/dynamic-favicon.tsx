@@ -9,14 +9,18 @@ export function DynamicFavicon() {
 
   useEffect(() => {
     const theme = getTheme(themeId);
-    const bgColor = theme.vars["--background"];
     const fgColor = theme.vars["--primary"];
 
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-      <rect width="24" height="24" rx="4" fill="${bgColor}"/>
-      <g transform="translate(0, 0)">
-        <path fill="${fgColor}" d="M20 5a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3zM6 13a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V14a1 1 0 0 0-1-1m12 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V14a1 1 0 0 0-1-1m-7.998 0a1 1 0 0 0-.004 2l4 .01a1 1 0 0 0 .005-2zM6 9a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1m4 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1m4 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1m4 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1"/>
-      </g>
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="${fgColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect width="20" height="16" x="2" y="4" rx="2"/>
+      <path d="M6 8h.01"/>
+      <path d="M10 8h.01"/>
+      <path d="M14 8h.01"/>
+      <path d="M18 8h.01"/>
+      <path d="M8 12h.01"/>
+      <path d="M12 12h.01"/>
+      <path d="M16 12h.01"/>
+      <path d="M7 16h10"/>
     </svg>`;
 
     const blob = new Blob([svg], { type: "image/svg+xml" });
