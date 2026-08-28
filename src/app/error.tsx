@@ -14,7 +14,7 @@ export default function Error({
   const router = useRouter();
 
   return (
-    <div className="flex min-h-full flex-col items-center justify-center px-4">
+    <div className="flex flex-1 flex-col items-center justify-center px-4">
       <div className="relative flex flex-col items-center gap-8 text-center">
         {/* Decorative gradient orb */}
         <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2">
