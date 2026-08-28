@@ -277,7 +277,7 @@ html[data-font="victor-mono"] { font-family: var(--font-victor-mono); }
 html[data-font="work-sans"] { font-family: var(--font-work-sans); }
 
 .zt-caret-blink {
-  animation: zt-blink 1s step-end infinite;
+  animation: zt-blink 1s ease-in-out infinite;
 }
 @keyframes zt-blink {
   0%,
