@@ -193,8 +193,8 @@ export default function ProfilePage() {
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
         {/* Level card — 2-row layout: avatar+username, then level/XP */}
-        <Card className="row-span-2 gap-4 py-4">
-          <CardContent className="px-6 pt-2">
+        <Card className="row-span-2 gap-3 py-3">
+          <CardContent className="px-5 pt-2">
             {/* Row 1: Avatar + Username */}
             <div className="flex items-center gap-4">
               <Avatar className="size-16 shrink-0 border-2 border-primary/30">
@@ -226,8 +226,8 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* 2x2 stat grid */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* 2x2 stat grid — same height as profile card */}
+        <div className="grid grid-cols-2 gap-3 row-span-2">
           <StatCard icon={<IconTrendingUp className="size-4" />} label="avg wpm (last 10)" value={loading ? null : String(stats!.avgWpm10)} />
           <StatCard icon={<IconGauge className="size-4" />} label="avg wpm (all)" value={loading ? null : String(stats!.avgWpmAll)} />
           <StatCard icon={<IconTarget className="size-4" />} label="avg accuracy" value={loading ? null : `${stats!.avgAccuracy}%`} />
@@ -426,11 +426,11 @@ export default function ProfilePage() {
         </DialogContent>
       </Dialog>
 
-      {/* Streak — last 12 months / by year with totals */}
+      {/* Activity — last 12 months / by year with totals */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconClock className="size-4" /> streak
+            <IconClock className="size-4" /> activity
             <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
               {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
             </span>
