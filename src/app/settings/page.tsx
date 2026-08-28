@@ -116,7 +116,7 @@ export default function SettingsPage() {
           <Card className="py-4">
             <SectionTitle icon={<IconPalette className="size-4" />} title="theme" />
             <CardContent className="grid grid-cols-2 gap-2 px-4 sm:grid-cols-3 md:grid-cols-4">
-              {THEMES.map((t) => (
+              {[...THEMES].sort((a, b) => a.label.localeCompare(b.label)).map((t) => (
                 <button key={t.id} onClick={() => update({ themeId: t.id })} className={`border-border hover:border-primary flex items-center gap-2 rounded-md border p-2 text-left transition-colors ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : ""}`}>
                   <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
                     <span className="size-5" style={{ background: t.vars["--background"] }} />
