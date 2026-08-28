@@ -110,7 +110,7 @@ const AchievementUnlocked = React.forwardRef<
             aria-label="Close"
             className="absolute top-4 right-4"
           >
-            <IconX className="h-4 w-4" />
+            <IconX className="size-4" />
           </Button>
 
           <div className="flex flex-col items-center text-center">
@@ -121,7 +121,7 @@ const AchievementUnlocked = React.forwardRef<
             />
 
             <span className="mb-4 inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm text-muted-foreground">
-              <IconCalendar className="h-4 w-4" />
+              <IconCalendar className="size-4" />
               {unlockedDateLabel}
             </span>
 
@@ -145,7 +145,7 @@ const AchievementUnlocked = React.forwardRef<
                   size="lg"
                   onClick={handleSecondaryActionClick}
                 >
-                  <IconShare2 className="h-4 w-4" />
+                  <IconShare2 className="size-4" />
                   {secondaryActionLabel}
                 </Button>
               )}
