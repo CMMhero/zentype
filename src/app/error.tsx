@@ -50,10 +50,10 @@ export default function Error({
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={() => router.back()}>
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => router.back()}>
             <IconArrowLeft className="size-4" /> go back
           </Button>
-          <Button size="sm" className="gap-2 rounded-full" onClick={reset}>
+          <Button size="sm" className="gap-2" onClick={reset}>
             <IconRefresh className="size-4" /> try again
           </Button>
         </div>

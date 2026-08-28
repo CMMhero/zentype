@@ -37,10 +37,10 @@ export default function NotFound() {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" className="gap-2 rounded-full" onClick={() => history.back()}>
+          <Button variant="outline" size="sm" className="gap-2" onClick={() => history.back()}>
             <IconArrowLeft className="size-4" /> go back
           </Button>
-          <Button asChild size="sm" className="gap-2 rounded-full">
+          <Button asChild size="sm" className="gap-2">
             <Link href="/">
               <IconKeyboardFilled className="size-4" /> start typing
             </Link>
