@@ -283,7 +283,7 @@ export default function TestPage() {
         onChange={() => {}}
       />
 
-      <div className={`pb-4 transition-all duration-200 ${engine.status === "running" ? "pointer-events-none h-0 overflow-hidden opacity-0 p-0" : "opacity-100"}`}>
+      <div className={`pb-4 transition-all duration-200 ${engine.status === "running" ? "pointer-events-none opacity-50" : "opacity-100"}`}>
         <ConfigBar
           mode={settings.mode}
           duration={settings.duration}
@@ -305,7 +305,7 @@ export default function TestPage() {
         <>
           <div
             className={`mb-4 flex items-end justify-between transition-opacity duration-300 ${
-              settings.hideLiveStats && engine.status === "running" ? "opacity-0" : "opacity-100"
+              settings.hideLiveStats && engine.status === "running" ? "opacity-50" : "opacity-100"
             }`}
           >
             <div className="flex items-baseline gap-5">
@@ -377,14 +377,12 @@ export default function TestPage() {
             <VirtualKeyboard activeKey={activeKey} />
           )}
 
-          {engine.status === "idle" && !loadingPrompt && (
-            <div className="mt-6 flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground">
-              <p>press any key to start</p>
-              <p className="flex flex-wrap items-center justify-center gap-1.5">
-                <Kbd>tab</Kbd> new test <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>esc</Kbd> close <span>·</span> <Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> palette
-              </p>
-            </div>
-          )}
+          <div className={`mt-6 flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+            <p>press any key to start</p>
+            <p className="flex flex-wrap items-center justify-center gap-1.5">
+              <Kbd>tab</Kbd> new test <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>esc</Kbd> close <span>·</span> <Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> palette
+            </p>
+          </div>
         </>
       )}
 
