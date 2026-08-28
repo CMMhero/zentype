@@ -181,6 +181,8 @@ export function useTypingEngine({
     finishRef.current = finish;
   }, [finish]);
 
+  const resetRef = useRef<() => void>(() => {});
+
   /* ---------- sampling loop (single 100ms tick, 1s buckets) ---------- */
 
   useEffect(() => {
@@ -242,11 +244,11 @@ export function useTypingEngine({
       if (e.metaKey || (e.ctrlKey && !e.altKey)) return;
       if (e.altKey && !e.ctrlKey) return;
 
-      // Escape restarts the test (like Tab)
+      // Escape cancels the test completely (like Tab) — no results saved
       if (e.key === "Escape") {
         if (status === "running") {
           e.preventDefault();
-          finishRef.current();
+          resetRef.current();
         }
         return;
       }
@@ -383,6 +385,11 @@ export function useTypingEngine({
     errorsPerSecondRef.current = {};
     timelineRef.current = [];
   }, []);
+
+  // Wire up reset to ref so handleKeyDown can call it
+  useEffect(() => {
+    resetRef.current = reset;
+  }, [reset]);
 
   return {
     status,
