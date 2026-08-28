@@ -63,7 +63,8 @@ export default function PublicProfilePage() {
     void getBoardRanks(profile.userId, boards).then(setBoardRanks);
   }, [profile]);
 
-  if (!profile && !loading) {
+  if (!profile) {
+    if (loading) return <ProfileSkeleton />;
     return (
       <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 px-4 py-16 text-center">
         <p className="text-muted-foreground text-sm">user not found</p>
@@ -71,7 +72,7 @@ export default function PublicProfilePage() {
     );
   }
 
-  const { username: name, avatarUrl, stats, results } = profile!;
+  const { username: name, avatarUrl, stats, results } = profile;
   const safeResults = results ?? [];
 
   const dayMap = new Map<string, number>();
@@ -329,3 +330,62 @@ const ALL_BOARDS = [
   "time:15", "time:30", "time:60", "time:120",
   "words:10", "words:25", "words:50", "words:100",
 ] as const;
+
+function ProfileSkeleton() {
+  return (
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
+      <div className="grid gap-4 md:grid-cols-[1fr_auto]">
+        <Card className="row-span-2 gap-3 py-3">
+          <CardContent className="px-5 pt-2">
+            <div className="flex items-center gap-4">
+              <Skeleton className="size-16 shrink-0 rounded-full" />
+              <div className="flex-1 min-w-0 space-y-2">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center gap-3">
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-1.5 flex-1" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+          </CardContent>
+        </Card>
+        <div className="grid grid-cols-2 gap-3 row-span-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i} className="gap-1 py-3">
+              <CardContent className="flex flex-col gap-1 px-3">
+                <Skeleton className="h-3 w-20" />
+                <Skeleton className="mt-1 h-7 w-16" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4"><Skeleton className="h-3 w-28" /></CardHeader>
+        <CardContent className="px-4">
+          <div className="grid grid-cols-4 gap-3">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="h-20 w-full rounded-xl" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4"><Skeleton className="h-3 w-32" /></CardHeader>
+        <CardContent className="px-4">
+          <div className="grid grid-cols-4 gap-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-16 w-full rounded-lg" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4"><Skeleton className="h-3 w-20" /></CardHeader>
+        <CardContent className="px-4"><Skeleton className="h-24 w-full" /></CardContent>
+      </Card>
+    </div>
+  );
+}
