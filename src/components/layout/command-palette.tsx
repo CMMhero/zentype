@@ -202,7 +202,7 @@ export function CommandPalette() {
     if (!search) return 1;
     let matchSet = matchCacheRef.current.get(search);
     if (!matchSet) {
-      const results = fuse.search(search, { limit: 30 });
+      const results = fuse.search(search);
       matchSet = new Set(results.map((r) => r.item.value));
       matchCacheRef.current.set(search, matchSet);
     }
