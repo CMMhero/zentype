@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — zentype",
+  title: "Terms of Service | zentype",
   description: "Terms of Service for zentype",
 };
 

@@ -63,11 +63,11 @@ export default function TestPage() {
         const w = res.text.split(/\s+/).filter(Boolean);
         if (w.length === 0) throw new Error("empty prompt");
         if (res.fallback) {
-          toast.info(`${cfg.source} unavailable — using English words`);
+          toast.info(`${cfg.source} unavailable, using English words`);
         }
         return w;
       } catch {
-        toast.warning(`Couldn't fetch ${cfg.source} — fell back to words`);
+        toast.warning(`Couldn't fetch ${cfg.source}, fell back to words`);
         return randomWordSlice(want);
       }
     },

@@ -39,7 +39,7 @@ export function ResultView({ result, saveState, onNext }: ResultViewProps) {
               : saveState === "guest"
                 ? "saved locally (guest)"
                 : saveState === "failed"
-                  ? "sync failed — kept locally"
+                  ? "sync failed, kept locally"
                   : "not saved"}
           </Badge>
           <span className="text-muted-foreground font-mono text-xs">

@@ -410,7 +410,7 @@ export default function ProfilePage() {
               badgeSize="sm"
             />
           ) : (
-            <p className="text-xs text-muted-foreground">no achievements yet — finish tests to earn badges</p>
+            <p className="text-xs text-muted-foreground">no achievements yet. finish tests to earn badges.</p>
           )}
           <button onClick={() => setAchOpen(true)} className="mt-3 text-xs text-primary hover:underline">
             view all achievements →
