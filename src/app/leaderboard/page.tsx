@@ -173,7 +173,7 @@ export default function LeaderboardPage() {
         <LeaderboardSkeleton />
       ) : activeEmpty ? (
         <div className="rounded-md border border-dashed border-border/60 p-12 text-center text-sm text-muted-foreground">
-          {isLevel ? "no levels yet — finish a test to earn XP." : "no entries yet — finish a test while signed in to claim rank #1."}
+          {isLevel ? "no levels yet. finish a test to earn XP." : "no entries yet. finish a test while signed in to claim rank #1."}
         </div>
       ) : (
         <LeaderboardRankings

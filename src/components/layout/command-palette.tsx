@@ -304,7 +304,7 @@ export function CommandPalette() {
               onSelect={() => { update({ mode: "time", duration: t }); close(); }}
               className={activeSet.mode === `time:${t}` ? "text-primary bg-primary/10" : ""}
             >
-              <IconClock /> {t}s — time<CommandDesc>type for {t} seconds</CommandDesc>
+              <IconClock /> {t}s time<CommandDesc>type for {t} seconds</CommandDesc>
             </CommandItem>
           ))}
           {WORD_OPTIONS.map((w) => (
@@ -315,7 +315,7 @@ export function CommandPalette() {
               onSelect={() => { update({ mode: "words", wordCount: w }); close(); }}
               className={activeSet.mode === `words:${w}` ? "text-primary bg-primary/10" : ""}
             >
-              <IconLetterT /> {w}w — words<CommandDesc>type {w} words</CommandDesc>
+              <IconLetterT /> {w}w words<CommandDesc>type {w} words</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>

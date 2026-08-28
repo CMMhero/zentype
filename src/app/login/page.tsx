@@ -43,7 +43,7 @@ export default function LoginPage() {
         <div className="relative flex flex-col items-center gap-8">
           {/* Logo + heading */}
           <div className="flex flex-col items-center gap-3 text-center">
-            <div className="bg-primary/10 flex size-14 items-center justify-center rounded-2xl border border-primary/20">
+            <div className="bg-primary/10 flex size-14 items-center justify-2xl border border-primary/20">
               <IconKeyboardFilled className="text-primary size-7" />
             </div>
             <div className="flex flex-col gap-1">
@@ -51,7 +51,8 @@ export default function LoginPage() {
                 welcome to zentype
               </h1>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                save your results, track progress,<br />and climb the leaderboard.
+                keep your stats across devices.<br />
+                sign in to sync, or keep playing as a guest.
               </p>
             </div>
           </div>
@@ -65,7 +66,7 @@ export default function LoginPage() {
                 size="lg"
                 onClick={() => signIn(id)}
                 disabled={loading !== null}
-                className="w-full justify-start gap-3 text-sm"
+                className="w-full justify-start gap-3 rounded-full text-sm"
               >
                 <Icon className="size-4" />
                 {loading === id ? "Redirecting…" : label}
@@ -75,8 +76,8 @@ export default function LoginPage() {
 
           {/* Footer hint */}
           <p className="text-muted-foreground/60 text-center text-[11px] leading-relaxed">
-            your results are saved locally either way —<br />
-            signing in lets you sync across devices.
+            guest results stay on this device.<br />
+            signing in lets you pick up where you left off.
           </p>
 
           {/* Back link */}

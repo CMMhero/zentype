@@ -36,7 +36,7 @@ export function WpmChart({
           className,
         )}
       >
-        not enough data for a graph — run a longer test
+        not enough data for a graph. run a longer test.
       </div>
     );
   }

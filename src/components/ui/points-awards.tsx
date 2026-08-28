@@ -160,7 +160,7 @@ const PointsAwards = React.forwardRef<HTMLDivElement, PointsAwardsProps>(
                 ? formatTotalPoints(award.total)
                 : award.total.toLocaleString()
               const description = awardActionDescription(award.trigger)
-              const tooltip = `${awardedLabel} — ${description}`
+              const tooltip = `${awardedLabel}: ${description}`
               const Icon = triggerIcon(award.trigger.type)
 
               return (

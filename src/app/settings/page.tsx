@@ -202,7 +202,7 @@ export default function SettingsPage() {
               <CardContent className="flex flex-col items-center gap-3 px-4 text-center">
                 <IconUser className="text-muted-foreground size-6" />
                 <p className="text-muted-foreground text-sm">You're typing as a guest. Results live in this browser only.</p>
-                <Button asChild size="sm"><a href="/login">Login / Sign up →</a></Button>
+                <Button asChild size="sm"><a href="/login">login / Sign up →</a></Button>
               </CardContent>
             </Card>
           )}
@@ -297,7 +297,7 @@ function GuestDataCard() {
   if (local.length === 0) return null;
   return (
     <Card className="py-4">
-      <SectionTitle icon={<IconAlertTriangle className="size-4" />} title={`local guest queue — ${local.length} result${local.length === 1 ? "" : "s"}`} />
+      <SectionTitle icon={<IconAlertTriangle className="size-4" />} title={`local guest queue (${local.length} result${local.length === 1 ? "" : "s"})`} />
       <CardContent className="mt-3 px-4">
         <p className="text-muted-foreground mb-3 text-sm">these will sync automatically when you log in.</p>
         <AlertDialog>
