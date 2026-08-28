@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconAward, IconClock, IconGauge, IconHistory,
+  IconAward, IconClock, IconCrown, IconGauge, IconHistory,
   IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
 } from "@tabler/icons-react";
 import {
@@ -15,6 +15,7 @@ import {
 } from "~/components/ui/chart";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import {
@@ -59,6 +60,7 @@ export default function ProfilePage() {
   const [achTab, setAchTab] = useState<"all" | "unlocked" | "locked">("all");
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [joinedAt, setJoinedAt] = useState<string | null>(null);
+  const [historyCount, setHistoryCount] = useState(10);
 
   useEffect(() => {
     let cancelled = false;
@@ -137,6 +139,19 @@ export default function ProfilePage() {
     achievedAt: null as string | null, progress: 0, xp: a.xp,
   })));
   const filteredAch = achTab === "unlocked" ? allAch.filter((a) => a.achievedAt !== null) : achTab === "locked" ? allAch.filter((a) => a.achievedAt === null) : allAch;
+
+  const pbIds = (() => {
+    const best = new Map<string, { id: string; wpm: number; acc: number }>();
+    for (const r of results ?? []) {
+      const k = `${r.mode}:${r.variant}`;
+      const cur = best.get(k);
+      if (!cur || r.wpm > cur.wpm || (r.wpm === cur.wpm && r.accuracy > cur.acc)) {
+        best.set(k, { id: r.id, wpm: r.wpm, acc: r.accuracy });
+      }
+    }
+    return new Set(Array.from(best.values()).map((v) => v.id));
+  })();
+  const visibleHistory = (results ?? []).slice(0, historyCount);
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
@@ -403,10 +418,19 @@ export default function ProfilePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {(results ?? []).map((r) => (
+                  {visibleHistory.map((r) => (
                     <TableRow key={r.id} onClick={() => setSelected(r)} className="cursor-pointer">
                       <TableCell className="text-xs text-muted-foreground">{formatDateTime(r.createdAt)}</TableCell>
-                      <TableCell className="text-right font-bold tabular-nums text-primary">{r.wpm}</TableCell>
+                      <TableCell className="text-right font-bold tabular-nums text-primary">
+                        <span className="inline-flex items-center justify-end gap-1.5">
+                          {pbIds.has(r.id) && (
+                            <span className="inline-flex items-center gap-0.5 rounded bg-primary/10 px-1 py-0 text-[9px] font-bold tracking-widest uppercase text-primary">
+                              <IconCrown className="size-3" /> PB
+                            </span>
+                          )}
+                          {r.wpm}
+                        </span>
+                      </TableCell>
                       <TableCell className="text-right tabular-nums text-muted-foreground">{r.rawWpm}</TableCell>
                       <AccCell value={r.accuracy} />
                       <TableCell className="hidden text-right tabular-nums sm:table-cell">{r.consistency}%</TableCell>
@@ -417,6 +441,13 @@ export default function ProfilePage() {
                   ))}
                 </TableBody>
               </Table>
+              {(results?.length ?? 0) > historyCount && (
+                <div className="mt-3 flex justify-center">
+                  <Button variant="outline" size="sm" onClick={() => setHistoryCount((c) => Math.min(c + 10, results?.length ?? c))}>
+                    load more ({(results?.length ?? 0) - historyCount} remaining)
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </CardContent>
