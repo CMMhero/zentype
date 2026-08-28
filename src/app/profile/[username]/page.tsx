@@ -179,20 +179,23 @@ export default function PublicProfilePage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
-        <Card className="row-span-2 gap-3 py-4">
-          <CardContent className="flex flex-col items-center gap-4 px-6 pt-2">
-            <Avatar className="size-20 border-2 border-primary/30">
-              {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}
-              <AvatarFallback className="rounded text-2xl font-bold uppercase">{name.slice(0, 2)}</AvatarFallback>
-            </Avatar>
-            <div className="text-center">
-              <h1 className="text-xl font-bold">{name}</h1>
-              <Badge variant="outline" className="text-[10px]">public profile</Badge>
-              {profile.joinedAt && (
-                <p className="mt-1 text-[10px] text-muted-foreground/70">
-                  Joined {new Date(profile.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-                </p>
-              )}
+        <Card className="row-span-2 gap-4 py-4">
+          <CardContent className="px-6 pt-2">
+            {/* Row 1: Avatar + Username */}
+            <div className="flex items-center gap-4">
+              <Avatar className="size-16 shrink-0 border-2 border-primary/30">
+                {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}
+                <AvatarFallback className="rounded text-xl font-bold uppercase">{name.slice(0, 2)}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-lg font-bold truncate">{name}</h1>
+                <Badge variant="outline" className="text-[10px]">public profile</Badge>
+                {profile.joinedAt && (
+                  <p className="mt-1 text-[10px] text-muted-foreground/70">
+                    Joined {new Date(profile.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                  </p>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>

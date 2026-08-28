@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  IconBolt, IconCommand, IconKeyboard, IconLayoutDashboard,
+  IconCommand, IconKeyboard, IconLayoutDashboard,
   IconLogout, IconPalette, IconSettings, IconTrophy, IconTypography, IconUser,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -239,7 +239,7 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
           {userLevel !== null && (
             <span className="hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
-              <IconBolt className="size-2.5" /> {userLevel}
+              {userLevel}
             </span>
           )}
         </button>

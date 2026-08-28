@@ -192,37 +192,41 @@ export default function ProfilePage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
-        {/* Level card — avatar + level info side by side */}
-        <Card className="row-span-2 gap-3 py-4">
-          <CardContent className="flex items-center gap-5 px-6 pt-2">
-            <Avatar className="size-16 shrink-0 border-2 border-primary/30">
-              {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-              <AvatarFallback className="rounded text-xl font-bold uppercase">{user.username.slice(0, 2)}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-bold truncate">{user.username}</h1>
-              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-              {joinedAt && (
-                <p className="text-[10px] text-muted-foreground/70">
-                  Joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-                </p>
-              )}
-              {points && points.totalXP > 0 ? (
-                <div className="mt-2 flex flex-col gap-1.5">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold tabular-nums text-primary">{points.level}</span>
-                    <span className="text-[10px] text-muted-foreground">level</span>
-                    <span className="ml-auto text-xs font-bold tabular-nums">{points.totalXP.toLocaleString()} <span className="text-muted-foreground">xp</span></span>
-                  </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                    <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${points.progress}%` }} />
-                  </div>
-                  <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.progress}%</span>
-                </div>
-              ) : (
-                <p className="mt-2 text-[10px] text-muted-foreground">finish tests to earn xp</p>
-              )}
+        {/* Level card — 2-row layout: avatar+username, then level/XP */}
+        <Card className="row-span-2 gap-4 py-4">
+          <CardContent className="px-6 pt-2">
+            {/* Row 1: Avatar + Username */}
+            <div className="flex items-center gap-4">
+              <Avatar className="size-16 shrink-0 border-2 border-primary/30">
+                {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+                <AvatarFallback className="rounded text-xl font-bold uppercase">{user.username.slice(0, 2)}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-lg font-bold truncate">{user.username}</h1>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                {joinedAt && (
+                  <p className="text-[10px] text-muted-foreground/70">
+                    Joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                  </p>
+                )}
+              </div>
             </div>
+            {/* Row 2: Level/XP bar */}
+            {points && points.totalXP > 0 ? (
+              <div className="mt-4 flex flex-col gap-1.5">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold tabular-nums text-primary">{points.level}</span>
+                  <span className="text-[10px] text-muted-foreground">level</span>
+                  <span className="ml-auto text-xs font-bold tabular-nums">{points.totalXP.toLocaleString()} <span className="text-muted-foreground">xp</span></span>
+                </div>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${points.progress}%` }} />
+                </div>
+                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.progress}%</span>
+              </div>
+            ) : (
+              <p className="mt-4 text-[10px] text-muted-foreground">finish tests to earn xp</p>
+            )}
           </CardContent>
         </Card>
 
