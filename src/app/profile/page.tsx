@@ -211,18 +211,14 @@ export default function ProfilePage() {
                 )}
               </div>
             </div>
-            {/* Row 2: Level/XP bar */}
+            {/* Row 2: Level/XP bar — compact single row */}
             {points && points.totalXP > 0 ? (
-              <div className="mt-4 flex flex-col gap-1.5">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold tabular-nums text-primary">{points.level}</span>
-                  <span className="text-[10px] text-muted-foreground">level</span>
-                  <span className="ml-auto text-xs font-bold tabular-nums">{points.totalXP.toLocaleString()} <span className="text-muted-foreground">xp</span></span>
-                </div>
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+              <div className="mt-4 flex items-center gap-3">
+                <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
                   <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${points.progress}%` }} />
                 </div>
-                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.progress}%</span>
+                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
               </div>
             ) : (
               <p className="mt-4 text-[10px] text-muted-foreground">finish tests to earn xp</p>
