@@ -88,15 +88,15 @@ export default function PublicProfilePage() {
               there&apos;s no account with that username. double-check the spelling or try searching for them in the command bar.
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" className="gap-2" onClick={() => history.back()}>
-              <IconArrowLeft className="size-4" /> go back
-            </Button>
+          <div className="flex flex-col items-center gap-4">
             <Button asChild size="sm" className="gap-2">
               <Link href="/leaderboard">
                 <IconTrophy className="size-4" /> view leaderboard
               </Link>
             </Button>
+            <button onClick={() => history.back()} className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-xs transition-colors">
+              <IconArrowLeft className="size-3" /> go back
+            </button>
           </div>
         </div>
       </div>

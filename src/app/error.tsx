@@ -49,13 +49,13 @@ export default function Error({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" className="gap-2" onClick={() => router.back()}>
-            <IconArrowLeft className="size-4" /> go back
-          </Button>
+        <div className="flex flex-col items-center gap-4">
           <Button size="sm" className="gap-2" onClick={reset}>
             <IconRefresh className="size-4" /> try again
           </Button>
+          <button onClick={() => router.back()} className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-xs transition-colors">
+            <IconArrowLeft className="size-3" /> go back
+          </button>
         </div>
       </div>
     </div>
