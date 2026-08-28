@@ -150,35 +150,50 @@ export default function SettingsPage() {
                 <Select value={settings.fontFamily} onValueChange={(v) => update({ fontFamily: v as FontFamily })}>
                   <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="geist-mono" style={{ fontFamily: "var(--font-geist-mono)" }}>Geist Mono</SelectItem>
-                    <SelectItem value="inter" style={{ fontFamily: "var(--font-inter)" }}>Inter</SelectItem>
-                    <SelectItem value="jetbrains-mono" style={{ fontFamily: "var(--font-jetbrains-mono)" }}>JetBrains Mono</SelectItem>
-                    <SelectItem value="dm-sans" style={{ fontFamily: "var(--font-dm-sans)" }}>DM Sans</SelectItem>
-                    <SelectItem value="space-grotesk" style={{ fontFamily: "var(--font-space-grotesk)" }}>Space Grotesk</SelectItem>
-                    <SelectItem value="nunito-sans" style={{ fontFamily: "var(--font-nunito-sans)" }}>Nunito Sans</SelectItem>
-                    <SelectItem value="work-sans" style={{ fontFamily: "var(--font-work-sans)" }}>Work Sans</SelectItem>
-                    <SelectItem value="playfair-display" style={{ fontFamily: "var(--font-playfair-display)" }}>Playfair Display</SelectItem>
-                    <SelectItem value="lora" style={{ fontFamily: "var(--font-lora)" }}>Lora</SelectItem>
-                    <SelectItem value="merriweather" style={{ fontFamily: "var(--font-merriweather)" }}>Merriweather</SelectItem>
-                    <SelectItem value="fira-code" style={{ fontFamily: "var(--font-fira-code)" }}>Fira Code</SelectItem>
-                    <SelectItem value="cabin" style={{ fontFamily: "var(--font-cabin)" }}>Cabin</SelectItem>
-                    <SelectItem value="josefin-sans" style={{ fontFamily: "var(--font-josefin-sans)" }}>Josefin Sans</SelectItem>
-                    <SelectItem value="bitter" style={{ fontFamily: "var(--font-bitter)" }}>Bitter</SelectItem>
-                    <SelectItem value="crimson-pro" style={{ fontFamily: "var(--font-crimson-pro)" }}>Crimson Pro</SelectItem>
-                    <SelectItem value="roboto-flex" style={{ fontFamily: "var(--font-roboto-flex)" }}>Roboto Flex</SelectItem>
-                    <SelectItem value="ibm-plex-sans" style={{ fontFamily: "var(--font-ibm-plex-sans)" }}>IBM Plex Sans</SelectItem>
-                    <SelectItem value="roboto-mono" style={{ fontFamily: "var(--font-roboto-mono)" }}>Roboto Mono</SelectItem>
-                    <SelectItem value="source-code-pro" style={{ fontFamily: "var(--font-source-code-pro)" }}>Source Code Pro</SelectItem>
-                    <SelectItem value="ibm-plex-mono" style={{ fontFamily: "var(--font-ibm-plex-mono)" }}>IBM Plex Mono</SelectItem>
-                    <SelectItem value="space-mono" style={{ fontFamily: "var(--font-space-mono)" }}>Space Mono</SelectItem>
                     <SelectItem value="anonymous-pro" style={{ fontFamily: "var(--font-anonymous-pro)" }}>Anonymous Pro</SelectItem>
-                    <SelectItem value="ubuntu-mono" style={{ fontFamily: "var(--font-ubuntu-mono)" }}>Ubuntu Mono</SelectItem>
-                    <SelectItem value="victor-mono" style={{ fontFamily: "var(--font-victor-mono)" }}>Victor Mono</SelectItem>
-                    <SelectItem value="inconsolata" style={{ fontFamily: "var(--font-inconsolata)" }}>Inconsolata</SelectItem>
-                    <SelectItem value="lexend" style={{ fontFamily: "var(--font-lexend)" }}>Lexend</SelectItem>
-                    <SelectItem value="outfit" style={{ fontFamily: "var(--font-outfit)" }}>Outfit</SelectItem>
+                    <SelectItem value="barlow" style={{ fontFamily: "var(--font-barlow)" }}>Barlow</SelectItem>
+                    <SelectItem value="bitter" style={{ fontFamily: "var(--font-bitter)" }}>Bitter</SelectItem>
+                    <SelectItem value="cabin" style={{ fontFamily: "var(--font-cabin)" }}>Cabin</SelectItem>
                     <SelectItem value="cascadia-code" style={{ fontFamily: "var(--font-cascadia-code)" }}>Cascadia Code</SelectItem>
                     <SelectItem value="commit-mono" style={{ fontFamily: "var(--font-commit-mono)" }}>Commit Mono</SelectItem>
+                    <SelectItem value="crimson-pro" style={{ fontFamily: "var(--font-crimson-pro)" }}>Crimson Pro</SelectItem>
+                    <SelectItem value="dm-sans" style={{ fontFamily: "var(--font-dm-sans)" }}>DM Sans</SelectItem>
+                    <SelectItem value="exo-2" style={{ fontFamily: "var(--font-exo-2)" }}>Exo 2</SelectItem>
+                    <SelectItem value="fira-code" style={{ fontFamily: "var(--font-fira-code)" }}>Fira Code</SelectItem>
+                    <SelectItem value="geist-mono" style={{ fontFamily: "var(--font-geist-mono)" }}>Geist Mono</SelectItem>
+                    <SelectItem value="ibm-plex-mono" style={{ fontFamily: "var(--font-ibm-plex-mono)" }}>IBM Plex Mono</SelectItem>
+                    <SelectItem value="ibm-plex-sans" style={{ fontFamily: "var(--font-ibm-plex-sans)" }}>IBM Plex Sans</SelectItem>
+                    <SelectItem value="inconsolata" style={{ fontFamily: "var(--font-inconsolata)" }}>Inconsolata</SelectItem>
+                    <SelectItem value="inter" style={{ fontFamily: "var(--font-inter)" }}>Inter</SelectItem>
+                    <SelectItem value="jetbrains-mono" style={{ fontFamily: "var(--font-jetbrains-mono)" }}>JetBrains Mono</SelectItem>
+                    <SelectItem value="josefin-sans" style={{ fontFamily: "var(--font-josefin-sans)" }}>Josefin Sans</SelectItem>
+                    <SelectItem value="lato" style={{ fontFamily: "var(--font-lato)" }}>Lato</SelectItem>
+                    <SelectItem value="lexend" style={{ fontFamily: "var(--font-lexend)" }}>Lexend</SelectItem>
+                    <SelectItem value="lora" style={{ fontFamily: "var(--font-lora)" }}>Lora</SelectItem>
+                    <SelectItem value="manrope" style={{ fontFamily: "var(--font-manrope)" }}>Manrope</SelectItem>
+                    <SelectItem value="merriweather" style={{ fontFamily: "var(--font-merriweather)" }}>Merriweather</SelectItem>
+                    <SelectItem value="montserrat" style={{ fontFamily: "var(--font-montserrat)" }}>Montserrat</SelectItem>
+                    <SelectItem value="noto-sans" style={{ fontFamily: "var(--font-noto-sans)" }}>Noto Sans</SelectItem>
+                    <SelectItem value="noto-serif" style={{ fontFamily: "var(--font-noto-serif)" }}>Noto Serif</SelectItem>
+                    <SelectItem value="nunito-sans" style={{ fontFamily: "var(--font-nunito-sans)" }}>Nunito Sans</SelectItem>
+                    <SelectItem value="open-sans" style={{ fontFamily: "var(--font-open-sans)" }}>Open Sans</SelectItem>
+                    <SelectItem value="oswald" style={{ fontFamily: "var(--font-oswald)" }}>Oswald</SelectItem>
+                    <SelectItem value="outfit" style={{ fontFamily: "var(--font-outfit)" }}>Outfit</SelectItem>
+                    <SelectItem value="playfair-display" style={{ fontFamily: "var(--font-playfair-display)" }}>Playfair Display</SelectItem>
+                    <SelectItem value="plus-jakarta-sans" style={{ fontFamily: "var(--font-plus-jakarta-sans)" }}>Plus Jakarta Sans</SelectItem>
+                    <SelectItem value="poppins" style={{ fontFamily: "var(--font-poppins)" }}>Poppins</SelectItem>
+                    <SelectItem value="pt-sans" style={{ fontFamily: "var(--font-pt-sans)" }}>PT Sans</SelectItem>
+                    <SelectItem value="pt-serif" style={{ fontFamily: "var(--font-pt-serif)" }}>PT Serif</SelectItem>
+                    <SelectItem value="raleway" style={{ fontFamily: "var(--font-raleway)" }}>Raleway</SelectItem>
+                    <SelectItem value="roboto-flex" style={{ fontFamily: "var(--font-roboto-flex)" }}>Roboto Flex</SelectItem>
+                    <SelectItem value="roboto-mono" style={{ fontFamily: "var(--font-roboto-mono)" }}>Roboto Mono</SelectItem>
+                    <SelectItem value="source-code-pro" style={{ fontFamily: "var(--font-source-code-pro)" }}>Source Code Pro</SelectItem>
+                    <SelectItem value="space-grotesk" style={{ fontFamily: "var(--font-space-grotesk)" }}>Space Grotesk</SelectItem>
+                    <SelectItem value="space-mono" style={{ fontFamily: "var(--font-space-mono)" }}>Space Mono</SelectItem>
+                    <SelectItem value="titillium-web" style={{ fontFamily: "var(--font-titillium-web)" }}>Titillium Web</SelectItem>
+                    <SelectItem value="ubuntu-mono" style={{ fontFamily: "var(--font-ubuntu-mono)" }}>Ubuntu Mono</SelectItem>
+                    <SelectItem value="victor-mono" style={{ fontFamily: "var(--font-victor-mono)" }}>Victor Mono</SelectItem>
+                    <SelectItem value="work-sans" style={{ fontFamily: "var(--font-work-sans)" }}>Work Sans</SelectItem>
                   </SelectContent>
                 </Select>
               </SettingRow>

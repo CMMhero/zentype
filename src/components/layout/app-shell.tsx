@@ -15,14 +15,15 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Kbd } from "~/components/ui/kbd";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useUiStore } from "~/stores/ui-store";
 import { signOutFn } from "~/server/auth";
-import { getTheme } from "~/lib/themes";
+import { THEMES, getTheme } from "~/lib/themes";
 import { useGlobalHotkeys } from "~/hooks/use-global-hotkeys";
 import { useSettingsSync } from "~/hooks/use-settings-sync";
 import { useUser } from "~/components/user-provider";
-import type { SessionUser } from "~/lib/types";
+import type { FontFamily, SessionUser } from "~/lib/types";
 
 const NAV = [
   { to: "/", label: "test", icon: IconKeyboard },
@@ -41,7 +42,9 @@ export function AppShell({
   const router = useRouter();
   const themeId = useSettingsStore((s) => s.settings.themeId);
   const fontFamily = useSettingsStore((s) => s.settings.fontFamily);
+  const updateSettings = useSettingsStore((s) => s.update);
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
+  const isTestRunning = useUiStore((s) => s.isTestRunning);
 
   useGlobalHotkeys();
   useSettingsSync();
@@ -65,7 +68,7 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-border/60 bg-background/95 sticky top-0 z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <header className={`border-border/60 bg-background/95 sticky top-0 z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80 transition-all ${isTestRunning ? "h-0 overflow-hidden opacity-0 border-0" : "opacity-100"}`}>
         <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4">
           <Link href="/" className="group flex shrink-0 items-center gap-2 font-semibold tracking-tight">
             <span className="text-sm">zentype</span>
@@ -112,12 +115,38 @@ export function AppShell({
 
       <main className="flex flex-1 flex-col">{children}</main>
 
-      <footer className="border-border/60 bg-secondary/40 text-muted-foreground mt-auto border-t">
-        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 text-[11px]">
-          <span className="hidden sm:inline"><Kbd>tab</Kbd> restart · <Kbd>?</Kbd> shortcuts</span>
+      <footer className={`border-border/60 bg-secondary/40 text-muted-foreground mt-auto border-t transition-all ${isTestRunning ? "h-0 overflow-hidden opacity-0 border-0 p-0" : "opacity-100"}`}>
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-[11px]">
+          <span className="flex items-center gap-2">
+            <span>Made by <a href="https://github.com/CMMhero" target="_blank" rel="noreferrer" className="hover:text-foreground underline underline-offset-2">CMMhero</a></span>
+            <span className="text-muted-foreground/50">·</span>
+            <Link href="/terms" className="hover:text-foreground underline underline-offset-2">Terms</Link>
+            <span className="text-muted-foreground/50">·</span>
+            <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">Privacy</Link>
+          </span>
           <span className="ml-auto flex items-center gap-2">
-            <span className="inline-block size-2 rounded-full bg-primary/80" />
-            {themeId.replace(/_/g, "-")}
+            <Select value={themeId} onValueChange={(v) => updateSettings({ themeId: v })}>
+              <SelectTrigger size="sm" className="h-6 w-32 text-[10px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {THEMES.map((t) => (
+                  <SelectItem key={t.id} value={t.id} className="text-xs">{t.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={fontFamily} onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}>
+              <SelectTrigger size="sm" className="h-6 w-32 text-[10px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[
+                  "anonymous-pro","barlow","bitter","cabin","cascadia-code","commit-mono","crimson-pro","dm-sans","exo-2","fira-code","geist-mono","ibm-plex-mono","ibm-plex-sans","inconsolata","inter","jetbrains-mono","josefin-sans","lato","lexend","lora","manrope","merriweather","montserrat","noto-sans","noto-serif","nunito-sans","open-sans","oswald","outfit","playfair-display","plus-jakarta-sans","poppins","pt-sans","pt-serif","raleway","roboto-flex","roboto-mono","source-code-pro","space-grotesk","space-mono","titillium-web","ubuntu-mono","victor-mono","work-sans"
+                ].map((f) => (
+                  <SelectItem key={f} value={f} className="text-xs" style={{ fontFamily: `var(--font-${f})` }}>{f}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </span>
         </div>
       </footer>

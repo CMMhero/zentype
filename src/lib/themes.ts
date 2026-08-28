@@ -765,6 +765,63 @@ export const THEMES: ThemePalette[] = [
   theme("viridian", "Viridian", "dark", {
     "--background": "#0e1a16", "--foreground": "#c8e6c9", "--card": "#16261e", "--popover": "#1e3328", "--primary": "#26a69a", "--primary-foreground": "#0e1a16", "--secondary": "#1e3328", "--secondary-foreground": "#c8e6c9", "--muted": "#1e3328", "--muted-foreground": "#6b8a7a", "--accent": "#243d32", "--accent-foreground": "#c8e6c9", "--destructive": "#e57373", "--border": "#243d32", "--input": "#243d32", "--ring": "#26a69a", "--zt-sub": "#2e4a3e", "--chart-1": "#26a69a", "--chart-2": "#66bb6a", "--chart-3": "#ffee58", "--chart-4": "#ab47bc", "--chart-5": "#e57373",
   }),
+  theme("gmk_laser", "GMK Laser", "dark", {
+    "--background": "#0d1526", "--foreground": "#e6e1cf", "--card": "#141e33", "--popover": "#1a2744", "--primary": "#ff6ac1", "--primary-foreground": "#0d1526", "--secondary": "#1a2744", "--secondary-foreground": "#e6e1cf", "--muted": "#1a2744", "--muted-foreground": "#6b7a9a", "--accent": "#223355", "--accent-foreground": "#e6e1cf", "--destructive": "#ff6ac1", "--border": "#223355", "--input": "#223355", "--ring": "#ff6ac1", "--zt-sub": "#2e4466", "--chart-1": "#ff6ac1", "--chart-2": "#5af2ff", "--chart-3": "#a6ff6a", "--chart-4": "#ffe66b", "--chart-5": "#ff6ac1",
+  }),
+  theme("gmk_olivia", "GMK Olivia", "dark", {
+    "--background": "#1c1c1c", "--foreground": "#e8d5c4", "--card": "#262626", "--popover": "#303030", "--primary": "#e8d5c4", "--primary-foreground": "#1c1c1c", "--secondary": "#303030", "--secondary-foreground": "#e8d5c4", "--muted": "#303030", "--muted-foreground": "#8a7a6e", "--accent": "#3a3a3a", "--accent-foreground": "#e8d5c4", "--destructive": "#c0392b", "--border": "#3a3a3a", "--input": "#3a3a3a", "--ring": "#e8d5c4", "--zt-sub": "#4a4a4a", "--chart-1": "#e8d5c4", "--chart-2": "#a8a8a8", "--chart-3": "#c0c0c0", "--chart-4": "#e0e0e0", "--chart-5": "#c0392b",
+  }),
+  theme("gmk_striker", "GMK Striker", "dark", {
+    "--background": "#0a1a2a", "--foreground": "#e0e0e0", "--card": "#142038", "--popover": "#1a2a4a", "--primary": "#ff3b30", "--primary-foreground": "#0a1a2a", "--secondary": "#1a2a4a", "--secondary-foreground": "#e0e0e0", "--muted": "#1a2a4a", "--muted-foreground": "#6b7a9e", "--accent": "#223355", "--accent-foreground": "#e0e0e0", "--destructive": "#ff3b30", "--border": "#223355", "--input": "#223355", "--ring": "#ff3b30", "--zt-sub": "#2e4466", "--chart-1": "#ff3b30", "--chart-2": "#007aff", "--chart-3": "#ffffff", "--chart-4": "#ffcc00", "--chart-5": "#ff3b30",
+  }),
+  theme("gmk_cafe", "GMK Cafe", "light", {
+    "--background": "#f5f1e8", "--foreground": "#4a3a2a", "--card": "#ffffff", "--popover": "#fff8f0", "--primary": "#c0392b", "--primary-foreground": "#f5f1e8", "--secondary": "#fff8f0", "--secondary-foreground": "#4a3a2a", "--muted": "#fff8f0", "--muted-foreground": "#8a7a6b", "--accent": "#ffe8cc", "--accent-foreground": "#4a3a2a", "--destructive": "#c0392b", "--border": "#ffe8cc", "--input": "#ffe8cc", "--ring": "#c0392b", "--zt-sub": "#d4c5a0", "--chart-1": "#c0392b", "--chart-2": "#8a7a6e", "--chart-3": "#a8a8a8", "--chart-4": "#4a3a2a", "--chart-5": "#c0392b",
+  }),
+  theme("gmk_red_samurai", "GMK Red Samurai", "dark", {
+    "--background": "#0a0a0a", "--foreground": "#e0e0e0", "--card": "#1a1a1a", "--popover": "#242424", "--primary": "#c0392b", "--primary-foreground": "#0a0a0a", "--secondary": "#242424", "--secondary-foreground": "#e0e0e0", "--muted": "#242424", "--muted-foreground": "#6e6e6e", "--accent": "#2e2e2e", "--accent-foreground": "#e0e0e0", "--destructive": "#c0392b", "--border": "#2e2e2e", "--input": "#2e2e2e", "--ring": "#c0392b", "--zt-sub": "#3a3a3a", "--chart-1": "#c0392b", "--chart-2": "#4a4a4a", "--chart-3": "#8a8a8a", "--chart-4": "#e0e0e0", "--chart-5": "#c0392b",
+  }),
+  theme("gmk_wob", "GMK WOB", "dark", {
+    "--background": "#000000", "--foreground": "#ffffff", "--card": "#0a0a0a", "--popover": "#141414", "--primary": "#ffffff", "--primary-foreground": "#000000", "--secondary": "#141414", "--secondary-foreground": "#ffffff", "--muted": "#141414", "--muted-foreground": "#6e6e6e", "--accent": "#1e1e1e", "--accent-foreground": "#ffffff", "--destructive": "#ff3b30", "--border": "#1e1e1e", "--input": "#1e1e1e", "--ring": "#ffffff", "--zt-sub": "#2a2a2a", "--chart-1": "#ffffff", "--chart-2": "#a0a0a0", "--chart-3": "#707070", "--chart-4": "#505050", "--chart-5": "#ff3b30",
+  }),
+  theme("gmk_bow", "GMK BOW", "light", {
+    "--background": "#ffffff", "--foreground": "#000000", "--card": "#f5f5f5", "--popover": "#eeeeee", "--primary": "#000000", "--primary-foreground": "#ffffff", "--secondary": "#eeeeee", "--secondary-foreground": "#000000", "--muted": "#eeeeee", "--muted-foreground": "#6e6e6e", "--accent": "#e0e0e0", "--accent-foreground": "#000000", "--destructive": "#ff3b30", "--border": "#e0e0e0", "--input": "#e0e0e0", "--ring": "#000000", "--zt-sub": "#cccccc", "--chart-1": "#000000", "--chart-2": "#505050", "--chart-3": "#808080", "--chart-4": "#a0a0a0", "--chart-5": "#ff3b30",
+  }),
+  theme("gmk_nautilus", "GMK Nautilus", "dark", {
+    "--background": "#0a1a1e", "--foreground": "#e0f0f0", "--card": "#14262e", "--popover": "#1a3340", "--primary": "#4ecdc4", "--primary-foreground": "#0a1a1e", "--secondary": "#1a3340", "--secondary-foreground": "#e0f0f0", "--muted": "#1a3340", "--muted-foreground": "#6b8a8f", "--accent": "#22404e", "--accent-foreground": "#e0f0f0", "--destructive": "#ff6b6b", "--border": "#22404e", "--input": "#22404e", "--ring": "#4ecdc4", "--zt-sub": "#2e4e5e", "--chart-1": "#4ecdc4", "--chart-2": "#ffd166", "--chart-3": "#06d6a0", "--chart-4": "#118ab2", "--chart-5": "#ff6b6b",
+  }),
+  theme("gmk_mika", "GMK Mika", "dark", {
+    "--background": "#1a1a2e", "--foreground": "#ffd6e7", "--card": "#252545", "--popover": "#2e2e5a", "--primary": "#ff6b9e", "--primary-foreground": "#1a1a2e", "--secondary": "#2e2e5a", "--secondary-foreground": "#ffd6e7", "--muted": "#2e2e5a", "--muted-foreground": "#8a6b8f", "--accent": "#38366a", "--accent-foreground": "#ffd6e7", "--destructive": "#ff6b6b", "--border": "#38366a", "--input": "#38366a", "--ring": "#ff6b9e", "--zt-sub": "#4a487a", "--chart-1": "#ff6b9e", "--chart-2": "#7ec8e3", "--chart-3": "#a8e6cf", "--chart-4": "#ffd3b6", "--chart-5": "#ff6b6b",
+  }),
+  theme("modern_dolch", "Modern Dolch", "light", {
+    "--background": "#f5f5dc", "--foreground": "#2a2a2a", "--card": "#ffffff", "--popover": "#fafaf0", "--primary": "#2a7a2a", "--primary-foreground": "#f5f5dc", "--secondary": "#fafaf0", "--secondary-foreground": "#2a2a2a", "--muted": "#fafaf0", "--muted-foreground": "#6b7a6e", "--accent": "#e8e8d8", "--accent-foreground": "#2a2a2a", "--destructive": "#c0392b", "--border": "#e8e8d8", "--input": "#e8e8d8", "--ring": "#2a7a2a", "--zt-sub": "#d0d0c0", "--chart-1": "#2a7a2a", "--chart-2": "#4a4a4a", "--chart-3": "#8a8a8a", "--chart-4": "#a0a0a0", "--chart-5": "#c0392b",
+  }),
+  theme("solarized_light", "Solarized Light", "light", {
+    "--background": "#fdf6e3", "--foreground": "#657b83", "--card": "#eee8d5", "--popover": "#fdf6e3", "--primary": "#268bd2", "--primary-foreground": "#fdf6e3", "--secondary": "#eee8d5", "--secondary-foreground": "#657b83", "--muted": "#eee8d5", "--muted-foreground": "#93a1a1", "--accent": "#e8d5b5", "--accent-foreground": "#657b83", "--destructive": "#dc322f", "--border": "#e8d5b5", "--input": "#e8d5b5", "--ring": "#268bd2", "--zt-sub": "#d3c6aa", "--chart-1": "#268bd2", "--chart-2": "#2aa198", "--chart-3": "#859900", "--chart-4": "#b58900", "--chart-5": "#dc322f",
+  }),
+  theme("one_light", "One Light", "light", {
+    "--background": "#fafafa", "--foreground": "#383a42", "--card": "#ffffff", "--popover": "#f0f0f0", "--primary": "#4078f2", "--primary-foreground": "#fafafa", "--secondary": "#f0f0f0", "--secondary-foreground": "#383a42", "--muted": "#f0f0f0", "--muted-foreground": "#a0a1a7", "--accent": "#e5e5e6", "--accent-foreground": "#383a42", "--destructive": "#e45649", "--border": "#e5e5e6", "--input": "#e5e5e6", "--ring": "#4078f2", "--zt-sub": "#c8c8c8", "--chart-1": "#4078f2", "--chart-2": "#986801", "--chart-3": "#50a14f", "--chart-4": "#a626a4", "--chart-5": "#e45649",
+  }),
+  theme("vscode_dark", "VSCode Dark+", "dark", {
+    "--background": "#1e1e1e", "--foreground": "#d4d4d4", "--card": "#252526", "--popover": "#2d2d2d", "--primary": "#007acc", "--primary-foreground": "#1e1e1e", "--secondary": "#2d2d2d", "--secondary-foreground": "#d4d4d4", "--muted": "#2d2d2d", "--muted-foreground": "#858585", "--accent": "#333333", "--accent-foreground": "#d4d4d4", "--destructive": "#f44747", "--border": "#333333", "--input": "#333333", "--ring": "#007acc", "--zt-sub": "#3c3c3c", "--chart-1": "#007acc", "--chart-2": "#4ec9b0", "--chart-3": "#dcdcaa", "--chart-4": "#c586c0", "--chart-5": "#f44747",
+  }),
+  theme("ayu_light", "Ayu Light", "light", {
+    "--background": "#fafafa", "--foreground": "#5c6773", "--card": "#ffffff", "--popover": "#f3f4f5", "--primary": "#ff9940", "--primary-foreground": "#fafafa", "--secondary": "#f3f4f5", "--secondary-foreground": "#5c6773", "--muted": "#f3f4f5", "--muted-foreground": "#828c99", "--accent": "#eaeaea", "--accent-foreground": "#5c6773", "--destructive": "#f51818", "--border": "#eaeaea", "--input": "#eaeaea", "--ring": "#ff9940", "--zt-sub": "#d0d0d0", "--chart-1": "#ff9940", "--chart-2": "#55b4d4", "--chart-3": "#86b300", "--chart-4": "#a37acc", "--chart-5": "#f51818",
+  }),
+  theme("nord_light", "Nord Light", "light", {
+    "--background": "#eceff4", "--foreground": "#2e3440", "--card": "#ffffff", "--popover": "#e5e9f0", "--primary": "#5e81ac", "--primary-foreground": "#eceff4", "--secondary": "#e5e9f0", "--secondary-foreground": "#2e3440", "--muted": "#e5e9f0", "--muted-foreground": "#8a8f98", "--accent": "#d8dee9", "--accent-foreground": "#2e3440", "--destructive": "#bf616a", "--border": "#d8dee9", "--input": "#d8dee9", "--ring": "#5e81ac", "--zt-sub": "#c2c8d1", "--chart-1": "#5e81ac", "--chart-2": "#81a1c1", "--chart-3": "#8fbcbb", "--chart-4": "#ebcb8b", "--chart-5": "#bf616a",
+  }),
+  theme("gruvbox_light", "Gruvbox Light", "light", {
+    "--background": "#fbf1c7", "--foreground": "#3c3836", "--card": "#f9f5d7", "--popover": "#ebdbb2", "--primary": "#427b58", "--primary-foreground": "#fbf1c7", "--secondary": "#ebdbb2", "--secondary-foreground": "#3c3836", "--muted": "#ebdbb2", "--muted-foreground": "#928374", "--accent": "#d5c4a1", "--accent-foreground": "#3c3836", "--destructive": "#9d0006", "--border": "#d5c4a1", "--input": "#d5c4a1", "--ring": "#427b58", "--zt-sub": "#bdae93", "--chart-1": "#427b58", "--chart-2": "#458588", "--chart-3": "#98971a", "--chart-4": "#d65d0e", "--chart-5": "#9d0006",
+  }),
+  theme("everforest_light", "Everforest Light", "light", {
+    "--background": "#fff9e8", "--foreground": "#5c6a72", "--card": "#fdf6e3", "--popover": "#f4f0d9", "--primary": "#8da101", "--primary-foreground": "#fff9e8", "--secondary": "#f4f0d9", "--secondary-foreground": "#5c6a72", "--muted": "#f4f0d9", "--muted-foreground": "#939f91", "--accent": "#e6e2cc", "--accent-foreground": "#5c6a72", "--destructive": "#f85552", "--border": "#e6e2cc", "--input": "#e6e2cc", "--ring": "#8da101", "--zt-sub": "#ddd8be", "--chart-1": "#8da101", "--chart-2": "#35a77c", "--chart-3": "#df69ba", "--chart-4": "#ffb600", "--chart-5": "#f85552",
+  }),
+  theme("material_dark", "Material Dark", "dark", {
+    "--background": "#121212", "--foreground": "#e0e0e0", "--card": "#1e1e1e", "--popover": "#2a2a2a", "--primary": "#bb86fc", "--primary-foreground": "#121212", "--secondary": "#2a2a2a", "--secondary-foreground": "#e0e0e0", "--muted": "#2a2a2a", "--muted-foreground": "#8a8a8a", "--accent": "#333333", "--accent-foreground": "#e0e0e0", "--destructive": "#cf6679", "--border": "#333333", "--input": "#333333", "--ring": "#bb86fc", "--zt-sub": "#444444", "--chart-1": "#bb86fc", "--chart-2": "#03dac6", "--chart-3": "#cf6679", "--chart-4": "#ffbb33", "--chart-5": "#3700b3",
+  }),
+  theme("material_light", "Material Light", "light", {
+    "--background": "#fafafa", "--foreground": "#212121", "--card": "#ffffff", "--popover": "#f5f5f5", "--primary": "#6200ee", "--primary-foreground": "#fafafa", "--secondary": "#f5f5f5", "--secondary-foreground": "#212121", "--muted": "#f5f5f5", "--muted-foreground": "#757575", "--accent": "#eeeeee", "--accent-foreground": "#212121", "--destructive": "#b00020", "--border": "#eeeeee", "--input": "#eeeeee", "--ring": "#6200ee", "--zt-sub": "#e0e0e0", "--chart-1": "#6200ee", "--chart-2": "#03dac6", "--chart-3": "#018786", "--chart-4": "#ffbb33", "--chart-5": "#b00020",
+  }),
 ];
 
 export function getTheme(id: string | undefined | null): ThemePalette {

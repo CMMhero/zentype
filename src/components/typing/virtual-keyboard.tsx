@@ -12,7 +12,7 @@ export function VirtualKeyboard({ activeKey }: { activeKey: string | null }) {
 
   return (
     <div
-      className="mx-auto mt-10 flex w-fit select-none flex-col items-center gap-1.5 pb-8"
+      className="mx-auto mt-3 flex w-fit select-none flex-col items-center gap-1.5"
       aria-hidden
     >
       {ROWS.map((row, i) => (

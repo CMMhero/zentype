@@ -29,6 +29,7 @@ export default function TestPage() {
   const update = useSettingsStore((s) => s.update);
   const paletteOpen = useUiStore((s) => s.paletteOpen);
   const helpOpen = useUiStore((s) => s.helpOpen);
+  const setTestRunning = useUiStore((s) => s.setTestRunning);
 
   const [words, setWords] = useState<string[]>([]);
   const [loadingPrompt, setLoadingPrompt] = useState(true);
@@ -36,6 +37,10 @@ export default function TestPage() {
   const [saveState, setSaveState] = useState<SaveState>("skipped");
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [focused, setFocused] = useState(true);
+  const [isMac, setIsMac] = useState(false);
+  useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
+  }, []);
 
   const soundRef = useRef(settings.sound);
   soundRef.current = settings.sound;
@@ -108,6 +113,10 @@ export default function TestPage() {
     },
     onFinish: (r) => onFinishRef.current(r),
   });
+
+  useEffect(() => {
+    setTestRunning(engine.status === "running");
+  }, [engine.status, setTestRunning]);
 
   onFinishRef.current = (partial) => {
     const full: TestResult = {
@@ -274,7 +283,7 @@ export default function TestPage() {
         onChange={() => {}}
       />
 
-      <div className="pb-4">
+      <div className={`pb-4 transition-all duration-200 ${engine.status === "running" ? "pointer-events-none h-0 overflow-hidden opacity-0 p-0" : "opacity-100"}`}>
         <ConfigBar
           mode={settings.mode}
           duration={settings.duration}
@@ -364,15 +373,17 @@ export default function TestPage() {
             )}
           </div>
 
-          {engine.status === "idle" && !loadingPrompt && (
-            <p className="text-muted-foreground mt-4 text-xs">
-              press any key to start · <Kbd>tab</Kbd> for a new test ·{" "}
-              <Kbd>?</Kbd> shortcuts
-            </p>
-          )}
-
           {settings.showKeyboard && (
             <VirtualKeyboard activeKey={activeKey} />
+          )}
+
+          {engine.status === "idle" && !loadingPrompt && (
+            <div className="mt-6 flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground">
+              <p>press any key to start</p>
+              <p className="flex flex-wrap items-center justify-center gap-1.5">
+                <Kbd>tab</Kbd> new test <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>esc</Kbd> close <span>·</span> <Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> palette
+              </p>
+            </div>
           )}
         </>
       )}

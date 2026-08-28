@@ -1,6 +1,5 @@
 import { IconClock, IconTypography } from "@tabler/icons-react";
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
-import { Kbd } from "~/components/ui/kbd";
 import {
   TIME_OPTIONS,
   WORD_OPTIONS,
@@ -77,9 +76,7 @@ export function ConfigBar({
         </ToggleGroup>
       )}
 
-      <span className="text-muted-foreground ml-1 hidden items-center gap-1 lg:flex">
-        <Kbd>tab</Kbd> new
-      </span>
+
     </div>
   );
 }
