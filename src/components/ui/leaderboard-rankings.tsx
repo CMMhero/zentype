@@ -162,11 +162,14 @@ const LeaderboardRankings = React.forwardRef<
                     : undefined
                 }
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2",
+                  "flex items-center gap-2 px-4 py-2 transition-colors",
                   isCurrentUser &&
-                    "border-primary bg-muted rounded-md border-2",
+                    "border-primary/50 bg-primary/5 rounded-md border-2",
+                  showCrown && ranking.rank === 1 && "bg-gradient-to-r from-yellow-500/10 via-amber-500/5 to-transparent",
+                  showCrown && ranking.rank === 2 && "bg-gradient-to-r from-gray-300/10 via-gray-400/5 to-transparent",
+                  showCrown && ranking.rank === 3 && "bg-gradient-to-r from-orange-400/10 via-orange-500/5 to-transparent",
                   onUserClick &&
-                    "hover:bg-muted/40 cursor-pointer transition-colors"
+                    "hover:bg-muted/40 cursor-pointer"
                 )}
               >
                 <div className="flex w-12 items-center gap-1">

@@ -199,11 +199,11 @@ export default function ProfilePage() {
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
         {/* Level card — 2-row layout: avatar+username, then level/XP */}
-        <Card className="row-span-2 gap-3 py-3">
+        <Card className="row-span-2 gap-3 py-3 bg-gradient-to-br from-card via-card to-primary/5 border-primary/20">
           <CardContent className="px-5 pt-2">
             {/* Row 1: Avatar + Username */}
             <div className="flex items-center gap-4">
-              <Avatar className="size-16 shrink-0 border-2 border-primary/30">
+              <Avatar className="size-16 shrink-0 border-2 border-primary/30 shadow-lg shadow-primary/20">
                 {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
                 <AvatarFallback className="rounded text-xl font-bold uppercase">{user.username.slice(0, 2)}</AvatarFallback>
               </Avatar>
@@ -221,8 +221,8 @@ export default function ProfilePage() {
             {points && points.totalXP > 0 ? (
               <div className="mt-4 flex items-center gap-3">
                 <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-                  <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${points.progress}%` }} />
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
+                  <div className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all shadow-sm shadow-primary/30" style={{ width: `${points.progress}%` }} />
                 </div>
                 <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
               </div>
@@ -254,7 +254,7 @@ export default function ProfilePage() {
                 const wpm = stats?.bestByBoard?.[board];
                 const rank = boardRanks?.[board];
                 return (
-                  <div key={board} className="flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-muted/30 p-3 text-center">
+                  <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
                     <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
                     {loading ? (
                       <Skeleton className="h-7 w-12" />
@@ -567,7 +567,7 @@ export default function ProfilePage() {
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
   return (
-    <Card className="gap-1 py-3">
+    <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
         <span className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
           {icon} {label}
