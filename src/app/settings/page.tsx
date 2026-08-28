@@ -58,7 +58,7 @@ export default function SettingsPage() {
           <Card className="py-4">
             <SectionTitle icon={<IconVolume className="size-4" />} title="sound feedback" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
-              <SettingRow label="enabled" hint="synth keystroke sounds — no assets, pure webaudio">
+              <SettingRow label="enabled" hint="play sounds when you type">
                 <Switch checked={settings.sound.enabled} onCheckedChange={(v) => update({ sound: { ...settings.sound, enabled: v } })} />
               </SettingRow>
               <SettingRow label="volume">
@@ -93,7 +93,7 @@ export default function SettingsPage() {
           <Card className="py-4">
             <SectionTitle icon={<IconDeviceGamepad2 className="size-4" />} title="typing rules" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
-              <SettingRow label="stop on error" hint="incorrect letters block the cursor until fixed">
+              <SettingRow label="stop on error" hint="pause until you fix the wrong letter">
                 <Switch checked={settings.stopOnError} onCheckedChange={(v) => update({ stopOnError: v })} />
               </SettingRow>
               <SettingRow label="strict space" hint="wrong words can't be skipped with space">
@@ -102,10 +102,10 @@ export default function SettingsPage() {
               <SettingRow label="free backspace" hint="backspace at a word start restores the previous word">
                 <Switch checked={settings.freeBackspace} onCheckedChange={(v) => update({ freeBackspace: v })} />
               </SettingRow>
-              <SettingRow label="blind mode" hint="hide error coloring while typing — trust your fingers">
+              <SettingRow label="blind mode" hint="don't show which letters are wrong while typing">
                 <Switch checked={settings.blindMode} onCheckedChange={(v) => update({ blindMode: v })} />
               </SettingRow>
-              <SettingRow label="hide live stats" hint="blank wpm/acc while the test runs (shown after)">
+              <SettingRow label="hide live stats" hint="don't show wpm/accuracy during the test">
                 <Switch checked={settings.hideLiveStats} onCheckedChange={(v) => update({ hideLiveStats: v })} />
               </SettingRow>
             </CardContent>

@@ -31,12 +31,12 @@ const themeBootstrapScript = `
 
 export const metadata: Metadata = {
   title: {
-    default: "Zentype — Free Online Typing Test",
+    default: "Zentype — Typing Test",
     template: "%s | Zentype",
   },
   description:
-    "Improve your typing speed with Zentype. Track WPM, accuracy, and consistency. Compete on global leaderboards, earn achievements, and climb levels. Free, fast, and keyboard-first.",
-  keywords: ["typing test", "typing speed", "wpm", "words per minute", "typing practice", "keyboard test", "typing game", "leaderboard"],
+    "Test your typing speed. See your WPM, accuracy, and consistency. Compete on leaderboards and track your progress over time.",
+  keywords: ["typing test", "typing speed", "wpm", "words per minute", "typing practice", "keyboard test", "leaderboard"],
   authors: [{ name: "CMMhero" }],
   creator: "CMMhero",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.dev"),
@@ -45,23 +45,23 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "/",
     siteName: "Zentype",
-    title: "Zentype — Free Online Typing Test",
+    title: "Zentype — Typing Test",
     description:
-      "Improve your typing speed with Zentype. Track WPM, accuracy, and consistency. Compete on global leaderboards and earn achievements.",
+      "Test your typing speed. See your WPM, accuracy, and consistency. Compete on leaderboards.",
     images: [
       {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "Zentype — Online Typing Test",
+        alt: "Zentype — Typing Test",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zentype — Free Online Typing Test",
+    title: "Zentype — Typing Test",
     description:
-      "Improve your typing speed with Zentype. Track WPM, accuracy, and consistency.",
+      "Test your typing speed. See your WPM, accuracy, and consistency.",
     images: ["/og.png"],
   },
   icons: { icon: "/logo.svg", apple: "/logo.svg" },
