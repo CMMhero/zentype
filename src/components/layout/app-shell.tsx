@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  IconCommand, IconKeyboard, IconLayoutDashboard,
-  IconLogout, IconSettings, IconTrophy, IconUser,
+  IconBolt, IconCommand, IconKeyboard, IconLayoutDashboard,
+  IconLogout, IconPalette, IconSettings, IconTrophy, IconTypography, IconUser,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -45,6 +45,15 @@ export function AppShell({
   const updateSettings = useSettingsStore((s) => s.update);
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
   const isTestRunning = useUiStore((s) => s.isTestRunning);
+  const [userLevel, setUserLevel] = useState<number | null>(null);
+  useEffect(() => {
+    if (!user) { setUserLevel(null); return; }
+    let cancelled = false;
+    void import("~/server/gamification").then(({ getUserPoints }) =>
+      getUserPoints().then((p) => { if (!cancelled && p) setUserLevel(p.level); })
+    );
+    return () => { cancelled = true; };
+  }, [user]);
 
   useGlobalHotkeys();
   useSettingsSync();
@@ -102,6 +111,12 @@ export function AppShell({
               <Kbd>⌘k</Kbd>
             </Button>
 
+            {user && userLevel !== null && (
+              <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold tracking-widest text-primary">
+                <IconBolt className="size-3" /> {userLevel}
+              </span>
+            )}
+
             {user ? (
               <UserMenu user={user} onSignOut={handleSignOut} />
             ) : (
@@ -124,26 +139,43 @@ export function AppShell({
             <span className="text-muted-foreground/50">·</span>
             <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">Privacy</Link>
           </span>
-          <span className="ml-auto flex items-center gap-2">
+          <span className="ml-auto flex items-center gap-1">
             <Select value={themeId} onValueChange={(v) => updateSettings({ themeId: v })}>
-              <SelectTrigger size="sm" className="h-6 w-32 text-[10px]">
+              <SelectTrigger size="sm" className="h-7 w-auto gap-1.5 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]">
+                <IconPalette className="size-3.5 opacity-60" />
+                <span className="hidden sm:inline-flex gap-0.5" aria-hidden>
+                  <span className="size-3 rounded-sm border border-border" style={{ background: getTheme(themeId).vars["--background"] }} />
+                  <span className="size-3 rounded-sm" style={{ background: getTheme(themeId).vars["--primary"] }} />
+                </span>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {THEMES.map((t) => (
-                  <SelectItem key={t.id} value={t.id} className="text-xs">{t.label}</SelectItem>
+                  <SelectItem key={t.id} value={t.id} className="text-xs">
+                    <span className="inline-flex items-center gap-2">
+                      <span className="inline-flex gap-0.5" aria-hidden>
+                        <span className="size-3 rounded-sm border border-border" style={{ background: t.vars["--background"] }} />
+                        <span className="size-3 rounded-sm" style={{ background: t.vars["--primary"] }} />
+                      </span>
+                      {t.label}
+                    </span>
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Select value={fontFamily} onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}>
-              <SelectTrigger size="sm" className="h-6 w-32 text-[10px]">
-                <SelectValue />
+              <SelectTrigger size="sm" className="h-7 w-auto gap-1.5 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]">
+                <IconTypography className="size-3.5 opacity-60" />
+                <span className="hidden sm:inline" style={{ fontFamily: `var(--font-${fontFamily})` }}>{fontFamily}</span>
+                <SelectValue className="sm:hidden" />
               </SelectTrigger>
               <SelectContent>
                 {[
                   "anonymous-pro","barlow","bitter","cabin","cascadia-code","commit-mono","crimson-pro","dm-sans","exo-2","fira-code","geist-mono","ibm-plex-mono","ibm-plex-sans","inconsolata","inter","jetbrains-mono","josefin-sans","lato","lexend","lora","manrope","merriweather","montserrat","noto-sans","noto-serif","nunito-sans","open-sans","oswald","outfit","playfair-display","plus-jakarta-sans","poppins","pt-sans","pt-serif","raleway","roboto-flex","roboto-mono","source-code-pro","space-grotesk","space-mono","titillium-web","ubuntu-mono","victor-mono","work-sans"
                 ].map((f) => (
-                  <SelectItem key={f} value={f} className="text-xs" style={{ fontFamily: `var(--font-${f})` }}>{f}</SelectItem>
+                  <SelectItem key={f} value={f} className="text-xs">
+                    <span style={{ fontFamily: `var(--font-${f})` }}>{f}</span>
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
