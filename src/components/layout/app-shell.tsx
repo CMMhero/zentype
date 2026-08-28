@@ -237,17 +237,17 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
             <AvatarFallback className="rounded text-[10px] uppercase">{user.username.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
+          {userLevel !== null && (
+            <span className="hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+              <IconBolt className="size-2.5" /> {userLevel}
+            </span>
+          )}
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuLabel className="text-xs">
           <div className="flex items-center gap-2">
             <span className="truncate">{user.email}</span>
-            {userLevel !== null && (
-              <span className="ml-auto inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
-                <IconBolt className="size-2.5" /> {userLevel}
-              </span>
-            )}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
