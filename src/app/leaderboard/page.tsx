@@ -120,7 +120,6 @@ export default function LeaderboardPage() {
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconTrophy className="text-primary size-5" />
           Leaderboard
-          <span className="text-xs text-muted-foreground">/ {isLevel ? "Levels" : "Global bests"}</span>
         </h1>
         <div className="flex items-center gap-2">
           {userPoints && (

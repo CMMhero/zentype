@@ -36,6 +36,37 @@ export async function getUserPoints(): Promise<{
   };
 }
 
+/** Get user's points by username (for public profiles) */
+export async function getUserPointsByUsername(
+  username: string,
+): Promise<{
+  totalXP: number;
+  level: number;
+  progress: number;
+} | null> {
+  const supabase = await getSupabaseServerClient();
+  if (!supabase) return null;
+  // First get user_id from username
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id")
+    .ilike("username", username)
+    .maybeSingle();
+  if (!profile) return null;
+  // Then get points
+  const { data } = await supabase
+    .from("user_points")
+    .select("total_xp,level")
+    .eq("user_id", profile.id)
+    .maybeSingle();
+  if (!data) return { totalXP: 0, level: 1, progress: 0 };
+  return {
+    totalXP: data.total_xp,
+    level: data.level,
+    progress: xpProgress(data.total_xp),
+  };
+}
+
 /** Get user's unlocked achievements */
 export async function getUserAchievements(): Promise<
   Array<{
