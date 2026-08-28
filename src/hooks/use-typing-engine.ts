@@ -241,7 +241,37 @@ export function useTypingEngine({
       // alt+number navigation must not type into the test
       if (e.metaKey || (e.ctrlKey && !e.altKey)) return;
       if (e.altKey && !e.ctrlKey) return;
-      if (e.key === "Tab" || e.key === "Escape") return;
+
+      // Escape restarts the test (like Tab)
+      if (e.key === "Escape") {
+        if (status === "running") {
+          e.preventDefault();
+          finishRef.current();
+        }
+        return;
+      }
+
+      if (e.key === "Tab") return;
+
+      // Ctrl+Backspace deletes the whole word
+      if (e.key === "Backspace" && e.ctrlKey) {
+        e.preventDefault();
+        if (current.length > 0) {
+          // Delete back to the last space or beginning of current word
+          const lastSpace = current.lastIndexOf(" ");
+          setCurrent(lastSpace >= 0 ? current.slice(0, lastSpace + 1) : "");
+        } else if (
+          settings.freeBackspace &&
+          history.length > 0 &&
+          status === "running"
+        ) {
+          // restore the last word
+          const prev = history[history.length - 1];
+          setHistory(history.slice(0, -1));
+          setCurrent(prev);
+        }
+        return;
+      }
 
       if (e.key === "Backspace") {
         e.preventDefault();
