@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  IconCommand, IconKeyboard, IconLayoutDashboard,
+  IconCommand, IconKeyboardFilled, IconLayoutDashboard,
   IconLogout, IconPalette, IconSettings, IconTrophy, IconTypography, IconUser,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -26,7 +26,7 @@ import { useUser } from "~/components/user-provider";
 import type { FontFamily, SessionUser } from "~/lib/types";
 
 const NAV = [
-  { to: "/", label: "test", icon: IconKeyboard },
+  { to: "/", label: "test", icon: IconKeyboardFilled },
   { to: "/leaderboard", label: "leaderboard", icon: IconTrophy },
   { to: "/profile", label: "profile", icon: IconLayoutDashboard },
   { to: "/settings", label: "settings", icon: IconSettings },
@@ -92,7 +92,7 @@ export function AppShell({
               }
             }}
           >
-            <IconKeyboard className="text-primary size-5" />
+            <IconKeyboardFilled className="text-primary size-5" />
             <span className="text-sm font-semibold tracking-tight">zentype</span>
           </Link>
 

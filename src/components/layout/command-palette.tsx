@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconArrowRight, IconBlender, IconClock, IconDeviceDesktop,
-  IconEye, IconEyeOff, IconKeyboard, IconLayoutDashboard,
+  IconEye, IconEyeOff, IconKeyboardFilled, IconLayoutDashboard,
   IconLetterT, IconList, IconMoon, IconPlayerPlay, IconRefresh, IconSearch,
   IconSettings, IconSparkles, IconTypography, IconUser, IconVolume, IconVolumeOff,
 } from "@tabler/icons-react";
@@ -203,7 +203,7 @@ export function CommandPalette() {
         {userQuery.trim().length > 0 && <CommandSeparator />}
 
         <CommandGroup heading="navigate">
-          <CommandItem value="navigate test alt+1" keywords={["navigate", "test"]} onSelect={() => go("/")}><IconKeyboard /> test<Shortcut>alt+1</Shortcut></CommandItem>
+          <CommandItem value="navigate test alt+1" keywords={["navigate", "test"]} onSelect={() => go("/")}><IconKeyboardFilled /> test<Shortcut>alt+1</Shortcut></CommandItem>
           <CommandItem value="navigate leaderboard global bests alt+2" keywords={["navigate", "leaderboard"]} onSelect={() => go("/leaderboard")}><IconSparkles /> leaderboard<Shortcut>alt+2</Shortcut></CommandItem>
           <CommandItem value="navigate profile dashboard alt+3" keywords={["navigate", "profile"]} onSelect={() => go("/profile")}><IconLayoutDashboard /> profile<Shortcut>alt+3</Shortcut></CommandItem>
           <CommandItem value="navigate settings config alt+4" keywords={["navigate", "settings"]} onSelect={() => go("/settings")}><IconSettings /> settings<Shortcut>alt+4</Shortcut></CommandItem>
@@ -395,7 +395,7 @@ export function CommandPalette() {
             keywords={["appearance", "keyboard"]}
             onSelect={() => update({ showKeyboard: !settings.showKeyboard })}
           >
-            <IconKeyboard /> virtual keyboard {settings.showKeyboard ? "on" : "off"}<CommandDesc>show key highlighter</CommandDesc>
+            <IconKeyboardFilled /> virtual keyboard {settings.showKeyboard ? "on" : "off"}<CommandDesc>show key highlighter</CommandDesc>
           </CommandItem>
           <CommandItem
             value="appearance smooth caret animate caret movement"

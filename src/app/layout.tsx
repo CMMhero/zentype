@@ -64,7 +64,6 @@ export const metadata: Metadata = {
       "Test your typing speed. See your WPM, accuracy, and consistency.",
     images: ["/og.png"],
   },
-  icons: { icon: "/logo.svg", apple: "/logo.svg" },
   robots: {
     index: true,
     follow: true,
