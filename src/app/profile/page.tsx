@@ -38,6 +38,12 @@ import { modeLabel, type TestResult } from "~/lib/types";
 import { formatDateTime } from "~/lib/utils";
 import { ACHIEVEMENTS } from "~/lib/achievements";
 
+/** All board keys in display order */
+const ALL_BOARDS = [
+  "time:15", "time:30", "time:60", "time:120",
+  "words:10", "words:25", "words:50", "words:100",
+] as const;
+
 const wpmConfig = {
   wpm: { label: "wpm", color: "var(--chart-1)" },
   avg: { label: "avg", color: "var(--chart-2)" },
@@ -239,36 +245,31 @@ export default function ProfilePage() {
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconTrophy className="text-primary size-4" /> personal bests
+            <IconTrophy className="size-4" /> personal bests
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-            {loading ? (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
-              </div>
-            ) : Object.keys(stats!.bestByBoard).length === 0 ? (
-              <span className="text-sm text-muted-foreground">no results yet</span>
-            ) : (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                {Object.entries(stats!.bestByBoard)
-                  .sort((a, b) => a[0].localeCompare(b[0]))
-                  .map(([board, wpm]) => {
-                    const rank = boardRanks?.[board];
-                    return (
-                      <div key={board} className="flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-muted/30 p-3 text-center">
-                        <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
-                        <span className="text-2xl font-bold tabular-nums text-primary">{wpm}</span>
-                        {rank && (
-                          <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
-                            #{rank}
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-              </div>
-            )}
+            <div className="grid grid-cols-4 gap-3">
+              {ALL_BOARDS.map((board) => {
+                const wpm = stats?.bestByBoard?.[board];
+                const rank = boardRanks?.[board];
+                return (
+                  <div key={board} className="flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-muted/30 p-3 text-center">
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                    {loading ? (
+                      <Skeleton className="h-7 w-12" />
+                    ) : (
+                      <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
+                    )}
+                    {rank && (
+                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+                        #{rank}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
         </CardContent>
       </Card>
 
