@@ -36,7 +36,7 @@ export function VirtualKeyboard({ activeKey }: { activeKey: string | null }) {
       <div
         data-active={isActive("space")}
         className={cn(
-          "h-9 w-56 rounded border transition-all duration-75",
+          "h-9 w-64 rounded-md border transition-all duration-75",
           isActive("space")
             ? "border-primary bg-primary scale-x-[0.98]"
             : "border-border bg-card",
