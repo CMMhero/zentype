@@ -48,8 +48,8 @@ export function ConfigBar({
         </ConfigButton>
       </div>
 
-      {/* Variant selector — pill style like Tabs */}
-      <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px]">
+      {/* Variant selector — pill style like Tabs, fixed width */}
+      <div className="bg-muted/80 inline-flex h-9 w-64 items-center justify-center rounded-lg p-[3px]">
         {mode === "time"
           ? TIME_OPTIONS.map((t) => (
               <ConfigButton
