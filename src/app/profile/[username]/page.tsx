@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
-  IconAward, IconClock, IconGauge,
-  IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
+  IconArrowLeft, IconAward, IconClock, IconGauge,
+  IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUser,
 } from "@tabler/icons-react";
+import Link from "next/link";
+import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -70,8 +72,33 @@ export default function PublicProfilePage() {
   if (!profile) {
     if (loading) return <ProfileSkeleton />;
     return (
-      <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 px-4 py-16 text-center">
-        <p className="text-muted-foreground text-sm">user not found</p>
+      <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16">
+        <div className="relative flex flex-col items-center gap-8 text-center">
+          <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2">
+            <div className="size-48 rounded-full bg-primary/5 blur-3xl" />
+          </div>
+          <div className="relative">
+            <div className="bg-muted flex size-16 items-center justify-center rounded-2xl border border-border/50 backdrop-blur-sm">
+              <IconUser className="text-muted-foreground size-8" />
+            </div>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="text-xl font-semibold tracking-tight">user not found</h1>
+            <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
+              there&apos;s no account with that username. double-check the spelling or try searching for them in the command bar.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm" className="gap-2" onClick={() => history.back()}>
+              <IconArrowLeft className="size-4" /> go back
+            </Button>
+            <Button asChild size="sm" className="gap-2">
+              <Link href="/leaderboard">
+                <IconTrophy className="size-4" /> view leaderboard
+              </Link>
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
