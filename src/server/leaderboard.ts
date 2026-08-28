@@ -4,6 +4,78 @@ import { getRedis, lbDecode } from "~/lib/redis";
 import { getSupabaseServerClient } from "~/lib/supabase/server";
 import { boardKey, type GameMode, type LeaderboardEntry } from "~/lib/types";
 
+export interface LevelLeaderboardEntry {
+  rank: number;
+  userId: string;
+  username: string;
+  avatarUrl: string | null;
+  level: number;
+  totalXP: number;
+}
+
+export async function getLevelLeaderboard(limit = 50): Promise<LevelLeaderboardEntry[]> {
+  const supabase = await getSupabaseServerClient();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("user_points")
+    .select("user_id, total_xp, level")
+    .order("total_xp", { ascending: false })
+    .limit(limit);
+  if (error || !data || data.length === 0) return [];
+  const ids = data.map((r) => r.user_id);
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id,username,avatar_url")
+    .in("id", ids);
+  const profileMap = new Map((profiles ?? []).map((p) => [p.id, p]));
+  return data.map((r, i) => {
+    const p = profileMap.get(r.user_id);
+    return {
+      rank: i + 1,
+      userId: r.user_id as string,
+      username: p?.username ?? "anon",
+      avatarUrl: p?.avatar_url ?? null,
+      level: r.level as number,
+      totalXP: r.total_xp as number,
+    };
+  });
+}
+
+export async function getBoardRanks(
+  userId: string,
+  boards: string[],
+): Promise<Record<string, number>> {
+  const supabase = await getSupabaseServerClient();
+  if (!supabase || boards.length === 0) return {};
+  const result: Record<string, number> = {};
+  // For each board, count how many users have a better best than this user
+  // We fetch top 500 per board and compute rank locally (Postgres fallback path is cheap)
+  for (const board of boards) {
+    const [mode, variantStr] = board.split(":");
+    const variant = Number(variantStr);
+    if (!mode || !variant) continue;
+    const { data: rows } = await supabase
+      .from("test_results")
+      .select("user_id,wpm,accuracy")
+      .eq("mode", mode)
+      .eq("variant", variant)
+      .order("wpm", { ascending: false })
+      .limit(500);
+    if (!rows || rows.length === 0) continue;
+    const best = new Map<string, { wpm: number; acc: number }>();
+    for (const r of rows) {
+      const cur = best.get(r.user_id as string);
+      if (!cur || (r.wpm as number) > cur.wpm || ((r.wpm as number) === cur.wpm && (r.accuracy as number) > cur.acc)) {
+        best.set(r.user_id as string, { wpm: r.wpm as number, acc: r.accuracy as number });
+      }
+    }
+    const sorted = [...best.entries()].sort((a, b) => b[1].wpm - a[1].wpm || b[1].acc - a[1].acc);
+    const idx = sorted.findIndex(([id]) => id === userId);
+    if (idx !== -1) result[board] = idx + 1;
+  }
+  return result;
+}
+
 interface MetaValue {
   username: string;
   avatarUrl: string | null;

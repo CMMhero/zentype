@@ -6,12 +6,6 @@ import {
   IconAward, IconClock, IconGauge,
   IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
 } from "@tabler/icons-react";
-import {
-  Area, AreaChart, CartesianGrid, XAxis, YAxis,
-} from "recharts";
-import {
-  ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
-} from "~/components/ui/chart";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -23,18 +17,11 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { getPublicProfile, type PublicProfile } from "~/server/results";
 import { getUserAchievements } from "~/server/gamification";
+import { getBoardRanks } from "~/server/leaderboard";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { AchievementList } from "~/components/ui/achievement-list";
 import { ACHIEVEMENTS } from "~/lib/achievements";
-
-const wpmConfig = {
-  wpm: { label: "wpm", color: "var(--chart-1)" },
-} satisfies ChartConfig;
-
-const accConfig = {
-  accuracy: { label: "accuracy", color: "var(--chart-3)" },
-} satisfies ChartConfig;
 
 export default function PublicProfilePage() {
   const params = useParams();
@@ -48,6 +35,7 @@ export default function PublicProfilePage() {
   const [achOpen, setAchOpen] = useState(false);
   const [achTab, setAchTab] = useState<"all" | "unlocked" | "locked">("all");
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
+  const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -62,6 +50,13 @@ export default function PublicProfilePage() {
     void getUserAchievements().then((a) => {
       if (a && a.length > 0 && a[0].achievedAt !== null) setAchievements(a);
     });
+  }, [profile]);
+
+  useEffect(() => {
+    if (!profile?.stats) return;
+    const boards = Object.keys(profile.stats.bestByBoard);
+    if (boards.length === 0 || !profile.userId) return;
+    void getBoardRanks(profile.userId, boards).then(setBoardRanks);
   }, [profile]);
 
   if (loading) {
@@ -143,7 +138,6 @@ export default function PublicProfilePage() {
 
   const { username: name, avatarUrl, stats, results } = profile;
   const safeResults = results ?? [];
-  const chartData = safeResults.slice(0, 100).reverse();
   const bestBoardEntries = stats?.bestByBoard
     ? Object.entries(stats.bestByBoard).sort((a, b) => a[0].localeCompare(b[0]))
     : [];
@@ -219,56 +213,22 @@ export default function PublicProfilePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-2 px-4">
-            {bestBoardEntries.map(([board, wpm]) => (
-              <Badge key={board} variant="secondary" className="gap-2 py-1.5 text-sm">
-                <span className="text-muted-foreground">{prettyBoard(board)}</span>
-                <span className="text-primary font-bold tabular-nums">{wpm}</span>
-              </Badge>
-            ))}
+            {bestBoardEntries.map(([board, wpm]) => {
+              const rank = boardRanks?.[board];
+              return (
+                <Badge key={board} variant="secondary" className="gap-2 py-1.5 text-sm">
+                  <span className="text-muted-foreground">{prettyBoard(board)}</span>
+                  <span className="text-primary font-bold tabular-nums">{wpm}</span>
+                  {rank && (
+                    <span className="ml-1 rounded bg-primary/10 px-1 py-0 text-[10px] font-bold tracking-widest text-primary">
+                      #{rank}
+                    </span>
+                  )}
+                </Badge>
+              );
+            })}
           </CardContent>
         </Card>
-      )}
-
-      {chartData.length >= 2 && (
-        <div className="grid gap-5 md:grid-cols-2">
-          <Card className="gap-3 py-4">
-            <CardHeader className="px-4">
-              <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-                <IconTrendingUp className="size-4" /> wpm
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-4">
-              <ChartContainer config={wpmConfig} className="h-40 w-full">
-                <AreaChart data={chartData.map((r, i) => ({ n: i + 1, wpm: r.wpm }))}>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                  <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
-                  <YAxis tickLine={false} axisLine={false} width={36} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area dataKey="wpm" type="monotone" stroke="var(--color-wpm)" fill="var(--color-wpm)" fillOpacity={0.1} strokeWidth={2} dot={false} />
-                </AreaChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-
-          <Card className="gap-3 py-4">
-            <CardHeader className="px-4">
-              <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-                <IconTarget className="size-4" /> accuracy
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="px-4">
-              <ChartContainer config={accConfig} className="h-40 w-full">
-                <AreaChart data={chartData.map((r, i) => ({ n: i + 1, accuracy: r.accuracy }))}>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                  <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
-                  <YAxis tickLine={false} axisLine={false} width={36} domain={[70, 100]} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area dataKey="accuracy" type="monotone" stroke="var(--color-accuracy)" fill="var(--color-accuracy)" fillOpacity={0.1} strokeWidth={2} dot={false} />
-                </AreaChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-        </div>
       )}
 
       {/* Top achievements — uses AchievementGrid */}

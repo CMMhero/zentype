@@ -8,7 +8,7 @@ import {
   IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
 } from "@tabler/icons-react";
 import {
-  Area, AreaChart, CartesianGrid, XAxis, YAxis,
+  Area, AreaChart, Bar, BarChart, CartesianGrid, Line, LineChart, XAxis, YAxis,
 } from "recharts";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
@@ -32,6 +32,7 @@ import { AchievementList } from "~/components/ui/achievement-list";
 import { WpmChart } from "~/components/charts/wpm-chart";
 import { getMyJoinDate, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
+import { getBoardRanks } from "~/server/leaderboard";
 import { useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
 import { formatDateTime } from "~/lib/utils";
@@ -43,6 +44,15 @@ const wpmConfig = {
 
 const accConfig = {
   accuracy: { label: "accuracy", color: "var(--chart-3)" },
+} satisfies ChartConfig;
+
+const avgConfig = {
+  wpm: { label: "wpm", color: "var(--chart-1)" },
+  avg: { label: "avg wpm", color: "var(--chart-2)" },
+} satisfies ChartConfig;
+
+const barConfig = {
+  wpm: { label: "wpm", color: "var(--chart-1)" },
 } satisfies ChartConfig;
 
 export default function ProfilePage() {
@@ -61,6 +71,7 @@ export default function ProfilePage() {
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [joinedAt, setJoinedAt] = useState<string | null>(null);
   const [historyCount, setHistoryCount] = useState(10);
+  const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -80,6 +91,13 @@ export default function ProfilePage() {
       if (j) setJoinedAt(j);
     });
   }, [user]);
+
+  useEffect(() => {
+    if (!user || !stats) return;
+    const boards = Object.keys(stats.bestByBoard);
+    if (boards.length === 0) return;
+    void getBoardRanks(user.id, boards).then(setBoardRanks);
+  }, [user, stats]);
 
   if (!user) {
     router.push("/login");
@@ -153,6 +171,18 @@ export default function ProfilePage() {
   })();
   const visibleHistory = (results ?? []).slice(0, historyCount);
 
+  const avgOvertimeData = (() => {
+    let sum = 0;
+    return chartData.map((r, i) => {
+      sum += r.wpm;
+      return { n: i + 1, wpm: r.wpm, avg: Math.round(sum / (i + 1)) };
+    });
+  })();
+  const barData = chartData.slice(-30).map((r, i) => ({
+    name: String(chartData.length - 30 + i + 1),
+    wpm: r.wpm,
+  }));
+
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       {/* Level card + stat cards */}
@@ -208,19 +238,27 @@ export default function ProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2 px-4">
-          {loading ? (
+            {loading ? (
             Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-9 w-28" />)
           ) : Object.keys(stats!.bestByBoard).length === 0 ? (
             <span className="text-sm text-muted-foreground">no results yet</span>
           ) : (
             Object.entries(stats!.bestByBoard)
               .sort((a, b) => a[0].localeCompare(b[0]))
-              .map(([board, wpm]) => (
-                <Badge key={board} variant="secondary" className="gap-2 py-1.5 text-sm">
-                  <span className="text-muted-foreground">{prettyBoard(board)}</span>
-                  <span className="text-primary font-bold tabular-nums">{wpm}</span>
-                </Badge>
-              ))
+              .map(([board, wpm]) => {
+                const rank = boardRanks?.[board];
+                return (
+                  <Badge key={board} variant="secondary" className="gap-2 py-1.5 text-sm">
+                    <span className="text-muted-foreground">{prettyBoard(board)}</span>
+                    <span className="text-primary font-bold tabular-nums">{wpm}</span>
+                    {rank && (
+                      <span className="ml-1 rounded bg-primary/10 px-1 py-0 text-[10px] font-bold tracking-widest text-primary">
+                        #{rank}
+                      </span>
+                    )}
+                  </Badge>
+                );
+              })
           )}
         </CardContent>
       </Card>
@@ -276,6 +314,64 @@ export default function ProfilePage() {
             ) : (
               <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
                 <IconTarget className="mr-2 size-4" /> finish more tests
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Detailed graphs — avg wpm overtime + wpm bar chart */}
+      <div className="grid gap-5 md:grid-cols-2">
+        <Card className="gap-3 py-4">
+          <CardHeader className="px-4">
+            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+              <IconTrendingUp className="size-4" /> avg wpm overtime
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-4">
+            {loading ? (
+              <Skeleton className="h-40 w-full" />
+            ) : avgOvertimeData.length >= 2 ? (
+              <ChartContainer config={avgConfig} className="h-40 w-full">
+                <LineChart data={avgOvertimeData}>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
+                  <YAxis tickLine={false} axisLine={false} width={36} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Line dataKey="wpm" type="monotone" stroke="var(--color-wpm)" strokeWidth={2} dot={false} />
+                  <Line dataKey="avg" type="monotone" stroke="var(--color-avg)" strokeWidth={2} dot={false} strokeDasharray="4 4" />
+                </LineChart>
+              </ChartContainer>
+            ) : (
+              <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+                <IconTrendingUp className="mr-2 size-4" /> not enough data
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="gap-3 py-4">
+          <CardHeader className="px-4">
+            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+              <IconTrophy className="size-4" /> wpm per test
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-4">
+            {loading ? (
+              <Skeleton className="h-40 w-full" />
+            ) : barData.length >= 1 ? (
+              <ChartContainer config={barConfig} className="h-40 w-full">
+                <BarChart data={barData}>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <XAxis dataKey="name" tickLine={false} axisLine={false} minTickGap={10} />
+                  <YAxis tickLine={false} axisLine={false} width={36} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="wpm" fill="var(--color-wpm)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+                <IconTrophy className="mr-2 size-4" /> no tests yet
               </div>
             )}
           </CardContent>
