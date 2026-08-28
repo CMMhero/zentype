@@ -72,7 +72,7 @@ export default function PublicProfilePage() {
   if (!profile) {
     if (loading) return <ProfileSkeleton />;
     return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-16">
+      <div className="flex min-h-full flex-col items-center justify-center px-4">
         <div className="relative flex flex-col items-center gap-8 text-center">
           <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2">
             <div className="size-48 rounded-full bg-primary/5 blur-3xl" />
