@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { IconBrandDiscord, IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { Kbd } from "~/components/ui/kbd";
 import { signInWithProvider, type AuthProvider } from "~/server/auth";
 
 export default function LoginPage() {
@@ -31,11 +31,12 @@ export default function LoginPage() {
     <div className="flex flex-1 items-center justify-center px-4 py-16">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
+          <Image src="/logo.svg" alt="zentype" width={48} height={48} className="mx-auto mb-2" />
           <CardTitle className="text-lg">
             Welcome to zentype
           </CardTitle>
           <CardDescription>
-            Guests can always keep playing — results stay on this device.
+            Sign in to save your progress and appear on leaderboards.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
@@ -51,9 +52,7 @@ export default function LoginPage() {
             <IconBrandDiscord className="size-4" />
             {loading === "discord" ? "Redirecting…" : "Continue with Discord"}
           </Button>
-          <p className="text-muted-foreground mt-2 text-center text-[11px]">
-            Press <Kbd>esc</Kbd> or go back to keep typing as guest
-          </p>
+
         </CardContent>
       </Card>
     </div>
