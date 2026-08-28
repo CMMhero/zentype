@@ -133,7 +133,7 @@ export function AppShell({
               <UserMenu user={user} onSignOut={handleSignOut} userLevel={userLevel} />
             ) : (
               <Button variant="secondary" size="sm" asChild className="text-xs">
-                <Link href="/login">Login</Link>
+                <Link href="/login">login</Link>
               </Button>
             )}
           </div>
