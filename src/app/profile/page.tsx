@@ -291,13 +291,13 @@ export default function ProfilePage() {
               <Skeleton className="h-40 w-full" />
             ) : wpmWithAvgData.length >= 2 ? (
               <ChartContainer config={wpmConfig} className="h-40 w-full">
-                <defs>
-                  <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-wpm)" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="var(--color-wpm)" stopOpacity={0.1} />
-                  </linearGradient>
-                </defs>
                 <ComposedChart data={wpmWithAvgData}>
+                  <defs>
+                    <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-wpm)" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="var(--color-wpm)" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis tickLine={false} axisLine={false} width={36} />
@@ -325,13 +325,13 @@ export default function ProfilePage() {
               <Skeleton className="h-40 w-full" />
             ) : chartData.length >= 2 ? (
               <ChartContainer config={accConfig} className="h-40 w-full">
-                <defs>
-                  <linearGradient id="fillAccuracy" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-accuracy)" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="var(--color-accuracy)" stopOpacity={0.1} />
-                  </linearGradient>
-                </defs>
                 <AreaChart data={chartData.map((r, i) => ({ n: i + 1, accuracy: r.accuracy }))}>
+                  <defs>
+                    <linearGradient id="fillAccuracy" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-accuracy)" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="var(--color-accuracy)" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis tickLine={false} axisLine={false} width={36} domain={[70, 100]} />
@@ -360,13 +360,13 @@ export default function ProfilePage() {
             <Skeleton className="h-40 w-full" />
           ) : distributionData.length >= 1 ? (
             <ChartContainer config={distConfig} className="h-40 w-full">
-              <defs>
-                <linearGradient id="fillCount" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-count)" stopOpacity={0.9} />
-                  <stop offset="95%" stopColor="var(--color-count)" stopOpacity={0.3} />
-                </linearGradient>
-              </defs>
               <BarChart data={distributionData}>
+                <defs>
+                  <linearGradient id="fillCount" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-count)" stopOpacity={0.9} />
+                    <stop offset="95%" stopColor="var(--color-count)" stopOpacity={0.3} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                 <XAxis dataKey="range" tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} width={36} allowDecimals={false} />
