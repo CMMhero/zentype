@@ -15,7 +15,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Kbd } from "~/components/ui/kbd";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useUiStore } from "~/stores/ui-store";
 import { signOutFn } from "~/server/auth";
@@ -44,7 +44,6 @@ export function AppShell({
   const fontFamily = useSettingsStore((s) => s.settings.fontFamily);
   const updateSettings = useSettingsStore((s) => s.update);
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
-  const isTestRunning = useUiStore((s) => s.isTestRunning);
   const [userLevel, setUserLevel] = useState<number | null>(null);
   useEffect(() => {
     if (!user) { setUserLevel(null); return; }
@@ -77,7 +76,7 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className={`border-border/60 bg-background/95 sticky top-0 z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80 transition-all ${isTestRunning ? "h-0 overflow-hidden opacity-0 border-0" : "opacity-100"}`}>
+      <header className={`border-border/60 bg-background/95 sticky top-0 z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80`}>
         <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4">
           <Link href="/" className="group flex shrink-0 items-center gap-2 font-semibold tracking-tight">
             <span className="text-sm">zentype</span>
@@ -111,14 +110,8 @@ export function AppShell({
               <Kbd>⌘k</Kbd>
             </Button>
 
-            {user && userLevel !== null && (
-              <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold tracking-widest text-primary">
-                <IconBolt className="size-3" /> {userLevel}
-              </span>
-            )}
-
             {user ? (
-              <UserMenu user={user} onSignOut={handleSignOut} />
+              <UserMenu user={user} onSignOut={handleSignOut} userLevel={userLevel} />
             ) : (
               <Button variant="secondary" size="sm" asChild className="text-xs">
                 <Link href="/login">login</Link>
@@ -130,10 +123,10 @@ export function AppShell({
 
       <main className="flex flex-1 flex-col">{children}</main>
 
-      <footer className={`border-border/60 bg-secondary/40 text-muted-foreground mt-auto border-t transition-all ${isTestRunning ? "h-0 overflow-hidden opacity-0 border-0 p-0" : "opacity-100"}`}>
+      <footer className={`border-border/60 bg-secondary/40 text-muted-foreground mt-auto border-t`}>
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-[11px]">
           <span className="flex items-center gap-2">
-            <span>Made by <a href="https://github.com/CMMhero" target="_blank" rel="noreferrer" className="hover:text-foreground underline underline-offset-2">CMMhero</a></span>
+            <span>Made by <a href="https://cmmhero.top" target="_blank" rel="noreferrer" className="hover:text-foreground underline underline-offset-2">CMMhero</a></span>
             <span className="text-muted-foreground/50">·</span>
             <Link href="/terms" className="hover:text-foreground underline underline-offset-2">Terms</Link>
             <span className="text-muted-foreground/50">·</span>
@@ -143,14 +136,16 @@ export function AppShell({
             <Select value={themeId} onValueChange={(v) => updateSettings({ themeId: v })}>
               <SelectTrigger size="sm" className="h-7 w-auto gap-1.5 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]">
                 <IconPalette className="size-3.5 opacity-60" />
-                <span className="hidden sm:inline-flex gap-0.5" aria-hidden>
-                  <span className="size-3 rounded-sm border border-border" style={{ background: getTheme(themeId).vars["--background"] }} />
-                  <span className="size-3 rounded-sm" style={{ background: getTheme(themeId).vars["--primary"] }} />
+                <span className="hidden sm:inline-flex items-center gap-1.5">
+                  <span className="inline-flex gap-0.5" aria-hidden>
+                    <span className="size-3 rounded-sm border border-border" style={{ background: getTheme(themeId).vars["--background"] }} />
+                    <span className="size-3 rounded-sm" style={{ background: getTheme(themeId).vars["--primary"] }} />
+                  </span>
+                  {getTheme(themeId).label}
                 </span>
-                <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {THEMES.map((t) => (
+                {[...THEMES].sort((a, b) => a.label.localeCompare(b.label)).map((t) => (
                   <SelectItem key={t.id} value={t.id} className="text-xs">
                     <span className="inline-flex items-center gap-2">
                       <span className="inline-flex gap-0.5" aria-hidden>
@@ -166,15 +161,12 @@ export function AppShell({
             <Select value={fontFamily} onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}>
               <SelectTrigger size="sm" className="h-7 w-auto gap-1.5 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]">
                 <IconTypography className="size-3.5 opacity-60" />
-                <span className="hidden sm:inline" style={{ fontFamily: `var(--font-${fontFamily})` }}>{fontFamily}</span>
-                <SelectValue className="sm:hidden" />
+                <span className="hidden sm:inline" style={{ fontFamily: `var(--font-${fontFamily})` }}>{FONT_LABELS[fontFamily]}</span>
               </SelectTrigger>
               <SelectContent>
-                {[
-                  "anonymous-pro","barlow","bitter","cabin","cascadia-code","commit-mono","crimson-pro","dm-sans","exo-2","fira-code","geist-mono","ibm-plex-mono","ibm-plex-sans","inconsolata","inter","jetbrains-mono","josefin-sans","lato","lexend","lora","manrope","merriweather","montserrat","noto-sans","noto-serif","nunito-sans","open-sans","oswald","outfit","playfair-display","plus-jakarta-sans","poppins","pt-sans","pt-serif","raleway","roboto-flex","roboto-mono","source-code-pro","space-grotesk","space-mono","titillium-web","ubuntu-mono","victor-mono","work-sans"
-                ].map((f) => (
-                  <SelectItem key={f} value={f} className="text-xs">
-                    <span style={{ fontFamily: `var(--font-${f})` }}>{f}</span>
+                {FONT_ENTRIES.map(([slug, name]) => (
+                  <SelectItem key={slug} value={slug} className="text-xs">
+                    <span style={{ fontFamily: `var(--font-${slug})` }}>{name}</span>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -186,7 +178,55 @@ export function AppShell({
   );
 }
 
-function UserMenu({ user, onSignOut }: { user: SessionUser; onSignOut: () => void }) {
+const FONT_LABELS: Record<string, string> = {
+  "anonymous-pro": "Anonymous Pro",
+  "barlow": "Barlow",
+  "bitter": "Bitter",
+  "cabin": "Cabin",
+  "cascadia-code": "Cascadia Code",
+  "commit-mono": "Commit Mono",
+  "crimson-pro": "Crimson Pro",
+  "dm-sans": "DM Sans",
+  "exo-2": "Exo 2",
+  "fira-code": "Fira Code",
+  "geist-mono": "Geist Mono",
+  "ibm-plex-mono": "IBM Plex Mono",
+  "ibm-plex-sans": "IBM Plex Sans",
+  "inconsolata": "Inconsolata",
+  "inter": "Inter",
+  "jetbrains-mono": "JetBrains Mono",
+  "josefin-sans": "Josefin Sans",
+  "lato": "Lato",
+  "lexend": "Lexend",
+  "lora": "Lora",
+  "manrope": "Manrope",
+  "merriweather": "Merriweather",
+  "montserrat": "Montserrat",
+  "noto-sans": "Noto Sans",
+  "noto-serif": "Noto Serif",
+  "nunito-sans": "Nunito Sans",
+  "open-sans": "Open Sans",
+  "oswald": "Oswald",
+  "outfit": "Outfit",
+  "playfair-display": "Playfair Display",
+  "plus-jakarta-sans": "Plus Jakarta Sans",
+  "poppins": "Poppins",
+  "pt-sans": "PT Sans",
+  "pt-serif": "PT Serif",
+  "raleway": "Raleway",
+  "roboto-flex": "Roboto Flex",
+  "roboto-mono": "Roboto Mono",
+  "source-code-pro": "Source Code Pro",
+  "space-grotesk": "Space Grotesk",
+  "space-mono": "Space Mono",
+  "titillium-web": "Titillium Web",
+  "ubuntu-mono": "Ubuntu Mono",
+  "victor-mono": "Victor Mono",
+  "work-sans": "Work Sans",
+} as const;
+const FONT_ENTRIES = Object.entries(FONT_LABELS);
+
+function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut: () => void; userLevel: number | null }) {
   const router = useRouter();
   return (
     <DropdownMenu>
@@ -200,7 +240,16 @@ function UserMenu({ user, onSignOut }: { user: SessionUser; onSignOut: () => voi
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel className="text-xs"><div className="truncate">{user.email}</div></DropdownMenuLabel>
+        <DropdownMenuLabel className="text-xs">
+          <div className="flex items-center gap-2">
+            <span className="truncate">{user.email}</span>
+            {userLevel !== null && (
+              <span className="ml-auto inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+                <IconBolt className="size-2.5" /> {userLevel}
+              </span>
+            )}
+          </div>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/profile")}><IconUser className="size-4" /> profile</DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/settings")}><IconSettings className="size-4" /> settings</DropdownMenuItem>

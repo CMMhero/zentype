@@ -14,7 +14,7 @@ export default function PrivacyPage() {
 
       <div className="prose prose-sm dark:prose-invert mt-8 max-w-none prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm">
         <p>
-          <strong>zentype</strong> is built by <a href="https://github.com/CMMhero" className="underline underline-offset-2">CMMhero</a>. We collect only what is needed to run the Service. This policy explains what we collect, how we use it, and your choices.
+          <strong>zentype</strong> is built by <a href="https://cmmhero.top" className="underline underline-offset-2">CMMhero</a>. We collect only what is needed to run the Service. This policy explains what we collect, how we use it, and your choices.
         </p>
 
         <h2 className="text-base font-semibold mt-6">1. Data we collect</h2>
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
 
         <h2 className="text-base font-semibold mt-6">8. Contact</h2>
         <p>
-          Via <a href="https://github.com/anomalyco/opencode" className="underline underline-offset-2">GitHub</a> or CMMhero on GitHub.
+          Visit <a href="https://cmmhero.top" className="underline underline-offset-2">cmmhero.top</a> or email <a href="mailto:contact@cmmhero.top" className="underline underline-offset-2">contact@cmmhero.top</a>.
         </p>
 
         <p className="mt-8">
