@@ -41,9 +41,25 @@ export default function SettingsPage() {
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconKeyboardFilled className="text-primary size-5" /> settings
         </h1>
-        <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs" onClick={() => { reset(); toast.info("Settings restored to defaults"); }}>
-          <IconRefresh className="size-3.5" /> restore defaults
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs">
+              <IconRefresh className="size-3.5" /> restore defaults
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>restore all settings to defaults?</AlertDialogTitle>
+              <AlertDialogDescription>
+                this will reset your theme, font, sound, and gameplay settings to their original values.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => { reset(); toast.info("Settings restored to defaults"); }}>yes, restore</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </header>
 
       <Tabs defaultValue="gameplay" className="gap-4">
@@ -284,7 +300,23 @@ function GuestDataCard() {
       <SectionTitle icon={<IconAlertTriangle className="size-4" />} title={`local guest queue — ${local.length} result${local.length === 1 ? "" : "s"}`} />
       <CardContent className="mt-3 px-4">
         <p className="text-muted-foreground mb-3 text-sm">these will sync automatically when you log in.</p>
-        <Button variant="destructive" size="sm" onClick={() => clearLocal()}>discard local results</Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm">discard local results</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>discard {local.length} local result{local.length === 1 ? "" : "s"}?</AlertDialogTitle>
+              <AlertDialogDescription>
+                this will permanently delete your local guest results. they cannot be recovered.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>cancel</AlertDialogCancel>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => clearLocal()}>yes, discard</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardContent>
     </Card>
   );
