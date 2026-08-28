@@ -101,8 +101,13 @@ export default function ProfilePage() {
     void getBoardRanks(user.id, boards).then(setBoardRanks);
   }, [user, stats]);
 
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
   if (!user) {
-    router.push("/login");
     return null;
   }
 
