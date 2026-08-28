@@ -76,7 +76,7 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className={`border-border/60 bg-background/95 sticky top-0 z-40 border-b backdrop-blur supports-[backdrop-filter]:bg-background/80`}>
+      <header className="border-border/40 bg-background/80 sticky top-0 z-40 border-b shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4">
           <Link href="/" className="group flex shrink-0 items-center gap-2 font-semibold tracking-tight">
             <span className="text-sm">zentype</span>

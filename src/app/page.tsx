@@ -338,7 +338,7 @@ export default function TestPage() {
 
           <Progress value={engine.progress * 100} className="mb-6" aria-label="test progress" />
 
-          <div className="relative flex-1">
+          <div className="relative flex-1 rounded-xl bg-gradient-to-b from-muted/20 to-transparent p-4">
             {loadingPrompt ? (
               <div className="flex flex-col gap-3 py-2">
                 <Skeleton className="h-7 w-4/5" />
