@@ -40,9 +40,13 @@ export default function PublicProfilePage() {
 
   useEffect(() => {
     let cancelled = false;
-    void getPublicProfile(username).then((p) => {
-      if (!cancelled) { setProfile(p); setLoading(false); }
-    });
+    void getPublicProfile(username)
+      .then((p) => {
+        if (!cancelled) { setProfile(p); setLoading(false); }
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
     return () => { cancelled = true; };
   }, [username]);
 

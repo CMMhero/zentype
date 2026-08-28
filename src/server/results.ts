@@ -295,44 +295,87 @@ export async function getPublicProfile(
   }
   if (!userId) return null;
 
-  // Fetch avatar from auth metadata if not in profiles
-  if (!avatarUrl) {
-    const { data: authUsers } = await supabase.auth.admin.listUsers();
-    const authUser = authUsers?.users?.find((u) => u.id === userId);
-    const meta = authUser?.user_metadata ?? {};
-    avatarUrl = (meta["avatar_url"] as string) || (meta["picture"] as string) || null;
-    if (!username) {
-      username = (meta["user_name"] as string) || (meta["preferred_username"] as string) || "unknown";
-    }
+  // avatar and username come from the profiles table (set on signup)
+  // No auth.admin.listUsers() call — it requires the service role key and
+  // crashes the entire function when using the anon/public client.
+
+  // Try RPC for stats (bypasses RLS)
+  const { data: statsRow, error: statsErr } = await supabase.rpc(
+    "get_public_profile_stats",
+    { p_user_id: userId },
+  );
+  let stats: AggregatedStats | null = null;
+  if (!statsErr && statsRow && statsRow.length > 0) {
+    const s = statsRow[0];
+    const bbb = (typeof s.best_by_board === "string" ? JSON.parse(s.best_by_board) : s.best_by_board ?? {}) as Record<string, number>;
+    stats = {
+      testsCompleted: Number(s.tests_completed ?? 0),
+      timeTypedSeconds: Number(s.time_typed_seconds ?? 0),
+      avgWpm10: Number(s.avg_wpm_10 ?? 0),
+      avgWpmAll: Number(s.avg_wpm_all ?? 0),
+      avgAccuracy: Number(s.avg_accuracy ?? 0),
+      avgConsistency: Number(s.avg_consistency ?? 0),
+      charsTyped: Number(s.chars_typed ?? 0),
+      bestByBoard: bbb,
+    };
   }
 
-  const { data: rows } = await supabase
-    .from("test_results")
-    .select(RESULT_COLUMNS)
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(1000);
-  const results = (rows as unknown as DbResultRow[]).map(mapRow);
-  if (results.length === 0) {
+  // Try RPC for results (bypasses RLS)
+  const { data: rpcResults, error: rpcErr } = await supabase.rpc(
+    "get_user_results_public",
+    { p_user_id: userId, p_limit: 1000 },
+  );
+  let results: TestResult[] = [];
+  if (!rpcErr && rpcResults && rpcResults.length > 0) {
+    results = rpcResults.map((r: Record<string, unknown>) => ({
+      id: r.id as string,
+      createdAt: r.created_at as string,
+      mode: r.mode as GameMode,
+      variant: r.variant as number,
+      source: r.source as TestResult["source"],
+      wpm: r.wpm as number,
+      rawWpm: r.raw_wpm as number,
+      accuracy: r.accuracy as number,
+      consistency: r.consistency as number,
+      chars: r.chars as TestResult["chars"],
+      timeline: r.timeline as TestResult["timeline"],
+    }));
+  } else {
+    // Fallback: direct query
+    const { data: rows } = await supabase
+      .from("test_results")
+      .select(RESULT_COLUMNS)
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1000);
+    results = (rows as unknown as DbResultRow[]).map(mapRow);
+  }
+
+  if (results.length === 0 && !stats) {
     return { userId, username: username ?? "unknown", avatarUrl, joinedAt, stats: null, results: [] };
   }
-  const last10 = results.slice(0, 10);
-  const bestByBoard: Record<string, number> = {};
-  for (const r of results) {
-    const k = boardKey(r.mode, r.variant);
-    if (!bestByBoard[k] || r.wpm > bestByBoard[k]) bestByBoard[k] = r.wpm;
+
+  // Compute stats from results if RPC didn't return them
+  if (!stats && results.length > 0) {
+    const last10 = results.slice(0, 10);
+    const bestByBoard: Record<string, number> = {};
+    for (const r of results) {
+      const k = boardKey(r.mode, r.variant);
+      if (!bestByBoard[k] || r.wpm > bestByBoard[k]) bestByBoard[k] = r.wpm;
+    }
+    const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
+    stats = {
+      testsCompleted: results.length,
+      timeTypedSeconds: sum(results.map((r) => (r.mode === "time" ? r.variant : 8))),
+      avgWpm10: Math.round(sum(last10.map((r) => r.wpm)) / last10.length),
+      avgWpmAll: Math.round(sum(results.map((r) => r.wpm)) / results.length),
+      avgAccuracy: Math.round(sum(results.map((r) => r.accuracy)) / results.length),
+      avgConsistency: Math.round(sum(results.map((r) => r.consistency)) / results.length),
+      charsTyped: sum(results.map((r) => r.chars.correct + r.chars.incorrect + r.chars.extra)),
+      bestByBoard,
+    };
   }
-  const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
-  const stats: AggregatedStats = {
-    testsCompleted: results.length,
-    timeTypedSeconds: sum(results.map((r) => (r.mode === "time" ? r.variant : 8))),
-    avgWpm10: Math.round(sum(last10.map((r) => r.wpm)) / last10.length),
-    avgWpmAll: Math.round(sum(results.map((r) => r.wpm)) / results.length),
-    avgAccuracy: Math.round(sum(results.map((r) => r.accuracy)) / results.length),
-    avgConsistency: Math.round(sum(results.map((r) => r.consistency)) / results.length),
-    charsTyped: sum(results.map((r) => r.chars.correct + r.chars.incorrect + r.chars.extra)),
-    bestByBoard,
-  };
+
   return { userId, username: username ?? "unknown", avatarUrl, joinedAt, stats, results };
 }
 
@@ -342,6 +385,19 @@ export async function searchUsers(
 ): Promise<Array<{ userId: string; username: string; avatarUrl: string | null }>> {
   const supabase = getSupabasePublicClient();
   if (!supabase || !query.trim()) return [];
+  // Try RPC first
+  const { data: rpcData, error: rpcErr } = await supabase.rpc("search_users", {
+    p_query: query.trim(),
+    p_limit: 8,
+  });
+  if (!rpcErr && rpcData && rpcData.length > 0) {
+    return rpcData.map((r: Record<string, unknown>) => ({
+      userId: r.id as string,
+      username: r.username as string,
+      avatarUrl: (r.avatar_url as string) ?? null,
+    }));
+  }
+  // Fallback: direct query
   const { data: profiles } = await supabase
     .from("profiles")
     .select("id,username,avatar_url")

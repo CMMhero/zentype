@@ -49,9 +49,9 @@ export default function SettingsPage() {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>restore all settings to defaults?</AlertDialogTitle>
+              <AlertDialogTitle>Restore all settings to defaults?</AlertDialogTitle>
               <AlertDialogDescription>
-                this will reset your theme, font, sound, and gameplay settings to their original values.
+                This will reset your theme, font, sound, and gameplay settings to their original values.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -306,9 +306,9 @@ function GuestDataCard() {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>discard {local.length} local result{local.length === 1 ? "" : "s"}?</AlertDialogTitle>
+              <AlertDialogTitle>Discard {local.length} local result{local.length === 1 ? "" : "s"}?</AlertDialogTitle>
               <AlertDialogDescription>
-                this will permanently delete your local guest results. they cannot be recovered.
+                This will permanently delete your local guest results. They cannot be recovered.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -334,8 +334,8 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>delete every saved result?</AlertDialogTitle>
-              <AlertDialogDescription>this permanently removes all your test history from the server. this cannot be undone.</AlertDialogDescription>
+              <AlertDialogTitle>Delete every saved result?</AlertDialogTitle>
+              <AlertDialogDescription>This permanently removes all your test history from the server. This cannot be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>cancel</AlertDialogCancel>
