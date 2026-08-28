@@ -81,7 +81,17 @@ export function AppShell({
       </a>
       <header className="border-border/40 bg-background/80 sticky top-0 z-40 border-b shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60" role="banner">
         <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4">
-          <Link href="/" className="group flex shrink-0 items-center gap-2" aria-label="Zentype home">
+          <Link
+            href="/"
+            className="group flex shrink-0 items-center gap-2"
+            aria-label="Zentype home"
+            onClick={(e) => {
+              if (pathname === "/") {
+                e.preventDefault();
+                window.dispatchEvent(new Event("zt:restart"));
+              }
+            }}
+          >
             <IconKeyboard className="text-primary size-5" />
             <span className="text-sm font-semibold tracking-tight">zentype</span>
           </Link>
@@ -95,6 +105,12 @@ export function AppShell({
                     <Link
                       href={item.to}
                       className={`rounded px-2.5 py-1.5 text-xs transition-colors ${active ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+                      onClick={(e) => {
+                        if (pathname === item.to) {
+                          e.preventDefault();
+                          window.dispatchEvent(new Event("zt:restart"));
+                        }
+                      }}
                     >
                       {item.label}
                     </Link>

@@ -18,7 +18,6 @@ const SHORTCUTS: Array<{ keys: string[]; action: string }> = [
   { keys: ["esc"], action: "close dialogs / pause focus" },
   { keys: ["alt", "1..4"], action: "test · leaderboard · profile · settings" },
   { keys: ["backspace"], action: "fix current word" },
-  { keys: ["ctrl", "backspace"], action: "(browser) nothing — we guard it" },
 ];
 
 export function HelpDialog() {

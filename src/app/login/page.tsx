@@ -52,7 +52,7 @@ export default function LoginPage() {
             {loading === "discord" ? "Redirecting…" : "Continue with Discord"}
           </Button>
           <p className="text-muted-foreground mt-2 text-center text-[11px]">
-            Press <Kbd>Esc</Kbd> or go back to keep typing as guest
+            Press <Kbd>esc</Kbd> or go back to keep typing as guest
           </p>
         </CardContent>
       </Card>
