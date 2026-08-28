@@ -84,7 +84,7 @@ export function AppShell({
           <Link
             href="/"
             className="group flex shrink-0 items-center gap-2"
-            aria-label="Zentype home"
+            aria-label="zentype home"
             onClick={(e) => {
               if (pathname === "/") {
                 e.preventDefault();
