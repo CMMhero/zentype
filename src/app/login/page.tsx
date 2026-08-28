@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IconBrandDiscord, IconBrandGithub, IconBrandGoogle, IconKeyboardFilled } from "@tabler/icons-react";
+import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconKeyboardFilled } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
@@ -40,15 +40,15 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           <Button variant="outline" size="lg" onClick={() => signIn("github")} disabled={loading !== null} className="justify-start gap-3">
-            <IconBrandGithub className="size-4" />
+            <IconBrandGithubFilled className="size-4" />
             {loading === "github" ? "Redirecting…" : "Continue with GitHub"}
           </Button>
           <Button variant="outline" size="lg" onClick={() => signIn("google")} disabled={loading !== null} className="justify-start gap-3">
-            <IconBrandGoogle className="size-4" />
+            <IconBrandGoogleFilled className="size-4" />
             {loading === "google" ? "Redirecting…" : "Continue with Google"}
           </Button>
           <Button variant="outline" size="lg" onClick={() => signIn("discord")} disabled={loading !== null} className="justify-start gap-3">
-            <IconBrandDiscord className="size-4" />
+            <IconBrandDiscordFilled className="size-4" />
             {loading === "discord" ? "Redirecting…" : "Continue with Discord"}
           </Button>
 
