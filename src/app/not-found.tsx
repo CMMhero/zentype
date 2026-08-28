@@ -14,16 +14,9 @@ export default function NotFound() {
         </div>
 
         {/* Large 404 */}
-        <div className="relative">
-          <span className="text-[140px] font-bold leading-none tracking-tighter text-primary/10 select-none">
-            404
-          </span>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-primary/10 flex size-16 items-center justify-center rounded-2xl border border-primary/20 backdrop-blur-sm">
-              <IconKeyboardFilled className="text-primary size-8" />
-            </div>
-          </div>
-        </div>
+        <span className="text-[140px] font-bold leading-none tracking-tighter text-primary/10 select-none">
+          404
+        </span>
 
         {/* Text content */}
         <div className="flex flex-col items-center gap-2">
