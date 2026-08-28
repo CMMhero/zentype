@@ -191,7 +191,6 @@ const THEME_FOOTER_ITEMS: ComboboxItem[] = [...THEMES]
 const FONT_FOOTER_ITEMS: ComboboxItem[] = [
   { value: "anonymous-pro", label: "Anonymous Pro", fontCssVar: "var(--font-anonymous-pro)" },
   { value: "barlow", label: "Barlow", fontCssVar: "var(--font-barlow)" },
-  { value: "bebas-neue", label: "Bebas Neue", fontCssVar: "var(--font-bebas-neue)" },
   { value: "bricolage-grotesque", label: "Bricolage Grotesque", fontCssVar: "var(--font-bricolage-grotesque)" },
   { value: "bitter", label: "Bitter", fontCssVar: "var(--font-bitter)" },
   { value: "cal-sans", label: "Cal Sans", fontCssVar: "var(--font-cal-sans)" },

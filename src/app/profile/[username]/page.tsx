@@ -63,80 +63,7 @@ export default function PublicProfilePage() {
     void getBoardRanks(profile.userId, boards).then(setBoardRanks);
   }, [profile]);
 
-  if (loading) {
-    return (
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-        {/* Level card + 2x2 stats — matches loaded layout */}
-        <div className="grid gap-4 md:grid-cols-[1fr_auto]">
-          <Card className="row-span-2 gap-4 py-3">
-            <CardContent className="px-5 pt-2">
-              {/* Row 1: Avatar + Username */}
-              <div className="flex items-center gap-4">
-                <Skeleton className="size-16 shrink-0 rounded-full" />
-                <div className="flex-1 min-w-0">
-                  <Skeleton className="h-5 w-32" />
-                  <Skeleton className="mt-1 h-3 w-20" />
-                  <Skeleton className="mt-1 h-3 w-24" />
-                </div>
-              </div>
-              {/* Row 2: Level/XP bar */}
-              <div className="mt-4 flex items-center gap-3">
-                <Skeleton className="h-5 w-16" />
-                <Skeleton className="h-1.5 flex-1" />
-                <Skeleton className="h-3 w-20" />
-              </div>
-            </CardContent>
-          </Card>
-          <div className="grid grid-cols-2 gap-3 row-span-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Card key={i} className="gap-1 py-3">
-                <CardContent className="flex flex-col gap-1 px-3">
-                  <Skeleton className="h-3 w-20" />
-                  <Skeleton className="mt-1 h-7 w-16" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Personal bests */}
-        <Card className="gap-3 py-4">
-          <CardHeader className="px-4">
-            <Skeleton className="h-3 w-28" />
-          </CardHeader>
-          <CardContent className="px-4">
-            <div className="grid grid-cols-4 gap-3">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="h-20 w-full rounded-xl" />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Top achievements */}
-        <Card className="gap-3 py-4">
-          <CardHeader className="px-4">
-            <Skeleton className="h-3 w-32" />
-          </CardHeader>
-          <CardContent className="px-4">
-            <div className="grid grid-cols-4 gap-2">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-16 w-full rounded-lg" />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Activity */}
-        <Card className="gap-3 py-4">
-          <CardHeader className="px-4"><Skeleton className="h-3 w-20" /></CardHeader>
-          <CardContent className="px-4"><Skeleton className="h-24 w-full" /></CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!profile) {
+  if (!profile && !loading) {
     return (
       <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 px-4 py-16 text-center">
         <p className="text-muted-foreground text-sm">user not found</p>
@@ -144,11 +71,8 @@ export default function PublicProfilePage() {
     );
   }
 
-  const { username: name, avatarUrl, stats, results } = profile;
+  const { username: name, avatarUrl, stats, results } = profile!;
   const safeResults = results ?? [];
-  const bestBoardEntries = stats?.bestByBoard
-    ? Object.entries(stats.bestByBoard).sort((a, b) => a[0].localeCompare(b[0]))
-    : [];
 
   const dayMap = new Map<string, number>();
   for (const r of safeResults) {
@@ -198,15 +122,21 @@ export default function PublicProfilePage() {
               <div className="flex-1 min-w-0">
                 <h1 className="text-lg font-bold truncate">{name}</h1>
                 <Badge variant="outline" className="text-[10px]">public profile</Badge>
-                {profile.joinedAt && (
+                {profile!.joinedAt && (
                   <p className="mt-1 text-[10px] text-muted-foreground/70">
-                    Joined {new Date(profile.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    Joined {new Date(profile!.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                   </p>
                 )}
               </div>
             </div>
             {/* Row 2: Level/XP bar — compact single row */}
-            {points && points.totalXP > 0 ? (
+            {loading ? (
+              <div className="mt-4 flex items-center gap-3">
+                <Skeleton className="h-5 w-16" />
+                <Skeleton className="h-1.5 flex-1" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            ) : points && points.totalXP > 0 ? (
               <div className="mt-4 flex items-center gap-3">
                 <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
                 <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
@@ -221,41 +151,43 @@ export default function PublicProfilePage() {
         </Card>
 
         <div className="grid grid-cols-2 gap-3 row-span-2">
-          <StatCard icon={<IconTrendingUp className="size-4" />} label="avg wpm (last 10)" value={String(stats?.avgWpm10 ?? 0)} />
-          <StatCard icon={<IconGauge className="size-4" />} label="avg wpm (all)" value={String(stats?.avgWpmAll ?? 0)} />
-          <StatCard icon={<IconTarget className="size-4" />} label="avg accuracy" value={`${stats?.avgAccuracy ?? 0}%`} />
-          <StatCard icon={<IconStopwatch className="size-4" />} label="time typed" value={formatDuration(stats?.timeTypedSeconds ?? 0)} />
+          <StatCard icon={<IconTrendingUp className="size-4" />} label="avg wpm (last 10)" value={loading ? null : String(stats?.avgWpm10 ?? 0)} />
+          <StatCard icon={<IconGauge className="size-4" />} label="avg wpm (all)" value={loading ? null : String(stats?.avgWpmAll ?? 0)} />
+          <StatCard icon={<IconTarget className="size-4" />} label="avg accuracy" value={loading ? null : `${stats?.avgAccuracy ?? 0}%`} />
+          <StatCard icon={<IconStopwatch className="size-4" />} label="time typed" value={loading ? null : formatDuration(stats?.timeTypedSeconds ?? 0)} />
         </div>
       </div>
 
-      {bestBoardEntries.length > 0 && (
-        <Card className="gap-3 py-4">
-          <CardHeader className="px-4">
-            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-              <IconTrophy className="size-4" /> personal bests
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4">
-            <div className="grid grid-cols-4 gap-3">
-              {ALL_BOARDS.map((board) => {
-                const wpm = stats?.bestByBoard?.[board];
-                const rank = boardRanks?.[board];
-                return (
-                  <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <IconTrophy className="size-4" /> personal bests
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4">
+          <div className="grid grid-cols-4 gap-3">
+            {ALL_BOARDS.map((board) => {
+              const wpm = loading ? null : stats?.bestByBoard?.[board];
+              const rank = boardRanks?.[board];
+              return (
+                <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                  {loading ? (
+                    <Skeleton className="h-7 w-12" />
+                  ) : (
                     <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
-                    {rank && (
-                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
-                        #{rank}
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+                  )}
+                  {rank && (
+                    <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+                      #{rank}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Top achievements — uses AchievementGrid */}
       <Card className="gap-3 py-4">
@@ -329,9 +261,11 @@ export default function PublicProfilePage() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
             <IconClock className="size-4" /> activity
-            <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
-              {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
-            </span>
+            {!loading && (
+              <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
+                {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
+              </span>
+            )}
             <div className="ml-auto">
               <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
                 <SelectTrigger size="sm" className="h-7 w-36 text-xs">
@@ -348,28 +282,32 @@ export default function PublicProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <StreakCalendar
-            streak={streakPeriods}
-            counts={countsRecord}
-            displayYear={streakYear}
-            view="year"
-            compact
-            className="max-w-none"
-          />
+          {loading ? (
+            <Skeleton className="h-24 w-full" />
+          ) : (
+            <StreakCalendar
+              streak={streakPeriods}
+              counts={countsRecord}
+              displayYear={streakYear}
+              view="year"
+              compact
+              className="max-w-none"
+            />
+          )}
         </CardContent>
       </Card>
     </div>
   );
 }
 
-function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
   return (
     <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
         <span className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
           {icon} {label}
         </span>
-        <span className="text-xl font-bold tabular-nums text-primary">{value}</span>
+        {value === null ? <Skeleton className="mt-1 h-7 w-16" /> : <span className="text-xl font-bold tabular-nums text-primary">{value}</span>}
       </CardContent>
     </Card>
   );
