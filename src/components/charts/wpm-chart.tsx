@@ -52,17 +52,17 @@ export function WpmChart({
   return (
     <ChartContainer config={chartConfig} className={cn("h-56 w-full", className)}>
       <defs>
-        <linearGradient id="wpmGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--color-wpm)" stopOpacity={0.3} />
-          <stop offset="100%" stopColor="var(--color-wpm)" stopOpacity={0.02} />
+        <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="var(--color-wpm)" stopOpacity={0.8} />
+          <stop offset="95%" stopColor="var(--color-wpm)" stopOpacity={0.1} />
         </linearGradient>
-        <linearGradient id="rawGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--color-raw)" stopOpacity={0.15} />
-          <stop offset="100%" stopColor="var(--color-raw)" stopOpacity={0.01} />
+        <linearGradient id="fillRaw" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="var(--color-raw)" stopOpacity={0.3} />
+          <stop offset="95%" stopColor="var(--color-raw)" stopOpacity={0.05} />
         </linearGradient>
-        <linearGradient id="errorsGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--color-errors)" stopOpacity={0.8} />
-          <stop offset="100%" stopColor="var(--color-errors)" stopOpacity={0.4} />
+        <linearGradient id="fillErrors" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="var(--color-errors)" stopOpacity={0.9} />
+          <stop offset="95%" stopColor="var(--color-errors)" stopOpacity={0.3} />
         </linearGradient>
       </defs>
       <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
@@ -80,14 +80,13 @@ export function WpmChart({
           cursor={{ stroke: "var(--border)" }}
           content={<ChartTooltipContent labelKey="t" />}
         />
-        <Bar dataKey="errors" fill="url(#errorsGradient)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
+        <Bar dataKey="errors" fill="url(#fillErrors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
         <Area
           dataKey="raw"
           type="monotone"
           stroke="var(--color-raw)"
-          strokeOpacity={0.55}
           strokeWidth={1.5}
-          fill="url(#rawGradient)"
+          fill="url(#fillRaw)"
           dot={false}
         />
         <Area
@@ -95,7 +94,7 @@ export function WpmChart({
           type="monotone"
           stroke="var(--color-wpm)"
           strokeWidth={2}
-          fill="url(#wpmGradient)"
+          fill="url(#fillWpm)"
           dot={false}
           activeDot={{ r: 3 }}
         />
