@@ -286,12 +286,18 @@ export default function ProfilePage() {
               <Skeleton className="h-40 w-full" />
             ) : wpmWithAvgData.length >= 2 ? (
               <ChartContainer config={wpmConfig} className="h-40 w-full">
+                <defs>
+                  <linearGradient id="wpmProfileGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--color-wpm)" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="var(--color-wpm)" stopOpacity={0.02} />
+                  </linearGradient>
+                </defs>
                 <ComposedChart data={wpmWithAvgData}>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis tickLine={false} axisLine={false} width={36} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area dataKey="wpm" type="monotone" stroke="var(--color-wpm)" fill="var(--color-wpm)" fillOpacity={0.1} strokeWidth={2} dot={false} />
+                  <Area dataKey="wpm" type="monotone" stroke="var(--color-wpm)" fill="url(#wpmProfileGradient)" strokeWidth={2} dot={false} />
                   <Line dataKey="avg" type="monotone" stroke="var(--color-avg)" strokeWidth={1.5} dot={false} strokeDasharray="4 4" />
                 </ComposedChart>
               </ChartContainer>
@@ -314,12 +320,18 @@ export default function ProfilePage() {
               <Skeleton className="h-40 w-full" />
             ) : chartData.length >= 2 ? (
               <ChartContainer config={accConfig} className="h-40 w-full">
+                <defs>
+                  <linearGradient id="accProfileGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--color-accuracy)" stopOpacity={0.25} />
+                    <stop offset="100%" stopColor="var(--color-accuracy)" stopOpacity={0.02} />
+                  </linearGradient>
+                </defs>
                 <AreaChart data={chartData.map((r, i) => ({ n: i + 1, accuracy: r.accuracy }))}>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis tickLine={false} axisLine={false} width={36} domain={[70, 100]} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area dataKey="accuracy" type="monotone" stroke="var(--color-accuracy)" fill="var(--color-accuracy)" fillOpacity={0.1} strokeWidth={2} dot={false} />
+                  <Area dataKey="accuracy" type="monotone" stroke="var(--color-accuracy)" fill="url(#accProfileGradient)" strokeWidth={2} dot={false} />
                 </AreaChart>
               </ChartContainer>
             ) : (
@@ -343,12 +355,18 @@ export default function ProfilePage() {
             <Skeleton className="h-40 w-full" />
           ) : distributionData.length >= 1 ? (
             <ChartContainer config={distConfig} className="h-40 w-full">
+              <defs>
+                <linearGradient id="distGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--color-count)" stopOpacity={0.9} />
+                  <stop offset="100%" stopColor="var(--color-count)" stopOpacity={0.4} />
+                </linearGradient>
+              </defs>
               <BarChart data={distributionData}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                 <XAxis dataKey="range" tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} width={36} allowDecimals={false} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="var(--color-count)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="count" fill="url(#distGradient)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ChartContainer>
           ) : (
