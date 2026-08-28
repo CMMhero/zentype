@@ -16,7 +16,7 @@ import {
 } from "~/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { getPublicProfile, type PublicProfile } from "~/server/results";
-import { getUserAchievements, getUserPointsByUsername } from "~/server/gamification";
+import { getUserAchievementsByUsername, getUserPointsByUsername } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
@@ -52,8 +52,8 @@ export default function PublicProfilePage() {
 
   useEffect(() => {
     if (!profile) return;
-    void getUserAchievements().then((a) => {
-      if (a && a.length > 0 && a[0].achievedAt !== null) setAchievements(a);
+    void getUserAchievementsByUsername(username).then((a) => {
+      setAchievements(a);
     });
     void getUserPointsByUsername(username).then((p) => {
       if (p) setPoints(p);

@@ -138,6 +138,71 @@ export async function getUserAchievements(): Promise<
   });
 }
 
+/** Get achievements for a user by username (public — no auth required) */
+export async function getUserAchievementsByUsername(
+  username: string,
+): Promise<
+  Array<{
+    id: string;
+    name: string;
+    description: string;
+    trigger: "metric" | "streak" | "api";
+    achievedAt: string | null;
+    progress: number;
+    xp: number;
+  }>
+> {
+  const supabase = getSupabasePublicClient();
+  if (!supabase) {
+    return ACHIEVEMENTS.map((a) => ({
+      id: a.id, name: a.name, description: a.description,
+      trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
+    }));
+  }
+  // Look up user_id from username
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id")
+    .ilike("username", username)
+    .maybeSingle();
+  if (!profile) {
+    return ACHIEVEMENTS.map((a) => ({
+      id: a.id, name: a.name, description: a.description,
+      trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
+    }));
+  }
+  // Try RPC first (bypasses RLS)
+  const { data: rpcData, error: rpcErr } = await supabase.rpc(
+    "get_user_achievements_by_id",
+    { p_user_id: profile.id },
+  );
+  let unlockedRows: Array<{ achievement_id: string; unlocked_at: string | null; progress: number }> = [];
+  if (!rpcErr && rpcData && rpcData.length > 0) {
+    unlockedRows = rpcData;
+  } else {
+    // Fallback: direct query (works if RLS policies allow public read)
+    const { data: rows } = await supabase
+      .from("user_achievements")
+      .select("achievement_id,unlocked_at,progress")
+      .eq("user_id", profile.id);
+    unlockedRows = rows ?? [];
+  }
+  const unlockedMap = new Map(unlockedRows.map((r) => [r.achievement_id, r]));
+  return ACHIEVEMENTS.map((a) => {
+    const u = unlockedMap.get(a.id);
+    if (u) {
+      return {
+        id: a.id, name: a.name, description: a.description,
+        trigger: a.trigger, achievedAt: u.unlocked_at, progress: 100, xp: a.xp,
+      };
+    }
+    return {
+      id: a.id, name: a.name, description: a.description,
+      trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
+    };
+  });
+}
+
 /** Get point event history */
 export async function getPointEvents(limit = 50): Promise<
   Array<{
