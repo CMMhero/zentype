@@ -1,6 +1,6 @@
 "use client";
 
-import { IconAlertTriangle, IconRefresh, IconArrowLeft } from "@tabler/icons-react";
+import { IconRefresh, IconArrowLeft } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 
@@ -22,16 +22,9 @@ export default function Error({
         </div>
 
         {/* Large error code */}
-        <div className="relative">
-          <span className="text-[120px] font-bold leading-none tracking-tighter text-destructive/10 select-none">
-            500
-          </span>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-destructive/10 flex size-16 items-center justify-center rounded-2xl border border-destructive/20 backdrop-blur-sm">
-              <IconAlertTriangle className="text-destructive size-8" />
-            </div>
-          </div>
-        </div>
+        <span className="text-[120px] font-bold leading-none tracking-tighter text-destructive/10 select-none">
+          500
+        </span>
 
         {/* Text content */}
         <div className="flex flex-col items-center gap-2">
