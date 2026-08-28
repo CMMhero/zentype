@@ -4,19 +4,23 @@
 -- so the leaderboard and public profiles work correctly.
 -- =============================================================
 
--- Allow all authenticated users to read test_results for leaderboards
+-- Allow all users (anon and authenticated) to read test_results for leaderboards
 -- The existing "users read own results" policy is too restrictive
 -- We replace it with a policy that allows reading all results
 DROP POLICY IF EXISTS "users read own results" ON public.test_results;
+DROP POLICY IF EXISTS "authenticated users can read all test_results" ON public.test_results;
 
--- New policy: all authenticated users can read all test_results
--- This enables leaderboard and public profile functionality
-CREATE POLICY "authenticated users can read all test_results"
+-- New policy: all users can read all test_results for public leaderboards
+CREATE POLICY "public read access for test_results"
   ON public.test_results FOR SELECT
-  USING (auth.role() = 'authenticated');
+  USING (true);
 
--- Also allow reading profiles for public profiles (already exists but let's ensure)
 -- The existing "profiles are readable by everyone" policy should work
+-- but let's ensure it exists
+DROP POLICY IF EXISTS "profiles are readable by everyone" ON public.profiles;
+CREATE POLICY "profiles are readable by everyone"
+  ON public.profiles FOR SELECT
+  USING (true);
 
 -- Create a view for public leaderboard data that doesn't expose sensitive info
 CREATE OR REPLACE VIEW public.leaderboard_view AS
@@ -33,5 +37,6 @@ SELECT
 FROM public.test_results tr
 JOIN public.profiles p ON tr.user_id = p.id;
 
--- Grant select on the view to authenticated users
+-- Grant select on the view to everyone
+GRANT SELECT ON public.leaderboard_view TO anon;
 GRANT SELECT ON public.leaderboard_view TO authenticated;
