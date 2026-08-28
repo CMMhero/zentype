@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
-import { IconBrandDiscord, IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
+import { IconBrandDiscord, IconBrandGithub, IconBrandGoogle, IconKeyboardFilled } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
@@ -31,12 +30,12 @@ export default function LoginPage() {
     <div className="flex flex-1 items-center justify-center px-4 py-16">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <Image src="/logo.svg" alt="zentype" width={48} height={48} className="mx-auto mb-2" />
-          <CardTitle className="text-lg">
-            Welcome to zentype
+          <CardTitle className="flex items-center justify-center gap-2 text-lg">
+            <IconKeyboardFilled className="text-primary size-6" />
+            zentype
           </CardTitle>
           <CardDescription>
-            Sign in to save your progress and appear on leaderboards.
+            Save your results, track progress, and climb the leaderboard.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
