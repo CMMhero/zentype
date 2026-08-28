@@ -1,0 +1,163 @@
+export interface AchievementDef {
+  id: string;
+  name: string;
+  description: string;
+  trigger: "metric" | "streak" | "api";
+  /** XP bonus when unlocked */
+  xp: number;
+  /** Check function: returns progress 0–100 or true if unlocked */
+  check: (stats: AchievementCheckInput) => number | boolean;
+}
+
+export interface AchievementCheckInput {
+  testsCompleted: number;
+  timeTypedSeconds: number;
+  bestWpm: number;
+  bestAccuracy: number;
+  bestConsistency: number;
+  avgWpm: number;
+  avgWpm10: number;
+  avgAccuracy: number;
+  avgConsistency: number;
+  charsTyped: number;
+  currentStreak: number;
+  longestStreak: number;
+  /** Board keys like "time:30" → best WPM */
+  bestByBoard: Record<string, number>;
+  level: number;
+  accountAgeDays: number;
+}
+
+function pct(current: number, target: number): number {
+  return Math.min(100, Math.round((current / target) * 100));
+}
+
+function streakPct(current: number, longest: number, target: number): number {
+  return pct(Math.max(current, longest), target);
+}
+
+export const ACHIEVEMENTS: AchievementDef[] = [
+  // ── Test count milestones ──
+  { id: "first_test", name: "First Steps", description: "Complete your first test", trigger: "api", xp: 10, check: (s) => s.testsCompleted >= 1 },
+  { id: "tests_5", name: "Baby Steps", description: "Complete 5 tests", trigger: "metric", xp: 15, check: (s) => pct(s.testsCompleted, 5) },
+  { id: "tests_10", name: "Getting Started", description: "Complete 10 tests", trigger: "metric", xp: 25, check: (s) => pct(s.testsCompleted, 10) },
+  { id: "tests_25", name: "Quarter Century", description: "Complete 25 tests", trigger: "metric", xp: 35, check: (s) => pct(s.testsCompleted, 25) },
+  { id: "tests_50", name: "Dedicated", description: "Complete 50 tests", trigger: "metric", xp: 50, check: (s) => pct(s.testsCompleted, 50) },
+  { id: "tests_75", name: "Committed", description: "Complete 75 tests", trigger: "metric", xp: 75, check: (s) => pct(s.testsCompleted, 75) },
+  { id: "tests_100", name: "Centurion", description: "Complete 100 tests", trigger: "metric", xp: 100, check: (s) => pct(s.testsCompleted, 100) },
+  { id: "tests_150", name: "One Fifty", description: "Complete 150 tests", trigger: "metric", xp: 125, check: (s) => pct(s.testsCompleted, 150) },
+  { id: "tests_250", name: "Quarter Master", description: "Complete 250 tests", trigger: "metric", xp: 150, check: (s) => pct(s.testsCompleted, 250) },
+  { id: "tests_500", name: "Veteran", description: "Complete 500 tests", trigger: "metric", xp: 200, check: (s) => pct(s.testsCompleted, 500) },
+  { id: "tests_1000", name: "Legend", description: "Complete 1,000 tests", trigger: "metric", xp: 500, check: (s) => pct(s.testsCompleted, 1000) },
+  { id: "tests_2000", name: "Mythic", description: "Complete 2,000 tests", trigger: "metric", xp: 1000, check: (s) => pct(s.testsCompleted, 2000) },
+
+  // ── WPM milestones (based on best single test) ──
+  { id: "wpm_30", name: "Slow & Steady", description: "Reach 30 WPM", trigger: "metric", xp: 15, check: (s) => pct(s.bestWpm, 30) },
+  { id: "wpm_40", name: "Warming Up", description: "Reach 40 WPM", trigger: "metric", xp: 20, check: (s) => pct(s.bestWpm, 40) },
+  { id: "wpm_50", name: "Typist", description: "Reach 50 WPM", trigger: "metric", xp: 30, check: (s) => pct(s.bestWpm, 50) },
+  { id: "wpm_60", name: "Picking Up", description: "Reach 60 WPM", trigger: "metric", xp: 40, check: (s) => pct(s.bestWpm, 60) },
+  { id: "wpm_70", name: "Speed Demon", description: "Reach 70 WPM", trigger: "metric", xp: 75, check: (s) => pct(s.bestWpm, 70) },
+  { id: "wpm_80", name: "Quick Typer", description: "Reach 80 WPM", trigger: "metric", xp: 100, check: (s) => pct(s.bestWpm, 80) },
+  { id: "wpm_90", name: "Blazing Fingers", description: "Reach 90 WPM", trigger: "metric", xp: 120, check: (s) => pct(s.bestWpm, 90) },
+  { id: "wpm_100", name: "Century", description: "Reach 100 WPM", trigger: "metric", xp: 150, check: (s) => pct(s.bestWpm, 100) },
+  { id: "wpm_110", name: "Triple Digits+", description: "Reach 110 WPM", trigger: "metric", xp: 180, check: (s) => pct(s.bestWpm, 110) },
+  { id: "wpm_120", name: "Blazing", description: "Reach 120 WPM", trigger: "metric", xp: 250, check: (s) => pct(s.bestWpm, 120) },
+  { id: "wpm_130", name: "Velocity", description: "Reach 130 WPM", trigger: "metric", xp: 300, check: (s) => pct(s.bestWpm, 130) },
+  { id: "wpm_140", name: "Supersonic", description: "Reach 140 WPM", trigger: "metric", xp: 400, check: (s) => pct(s.bestWpm, 140) },
+  { id: "wpm_150", name: "Lightning Fingers", description: "Reach 150 WPM", trigger: "metric", xp: 500, check: (s) => pct(s.bestWpm, 150) },
+  { id: "wpm_160", name: "Warp Speed", description: "Reach 160 WPM", trigger: "metric", xp: 650, check: (s) => pct(s.bestWpm, 160) },
+  { id: "wpm_180", name: "Turbo", description: "Reach 180 WPM", trigger: "metric", xp: 800, check: (s) => pct(s.bestWpm, 180) },
+  { id: "wpm_200", name: "Inhuman", description: "Reach 200 WPM", trigger: "metric", xp: 1000, check: (s) => pct(s.bestWpm, 200) },
+
+  // ── Accuracy milestones (best single test) ──
+  { id: "acc_85", name: "Steady", description: "Get 85%+ accuracy on a test", trigger: "metric", xp: 10, check: (s) => pct(s.bestAccuracy, 85) },
+  { id: "acc_90", name: "Sharpshooter", description: "Get 90%+ accuracy on a test", trigger: "metric", xp: 20, check: (s) => pct(s.bestAccuracy, 90) },
+  { id: "acc_95", name: "Precision", description: "Get 95%+ accuracy on a test", trigger: "metric", xp: 50, check: (s) => pct(s.bestAccuracy, 95) },
+  { id: "acc_97", name: "Eagle Eye", description: "Get 97%+ accuracy on a test", trigger: "metric", xp: 100, check: (s) => pct(s.bestAccuracy, 97) },
+  { id: "acc_99", name: "Perfectionist", description: "Get 99%+ accuracy on a test", trigger: "metric", xp: 200, check: (s) => pct(s.bestAccuracy, 99) },
+  { id: "acc_100", name: "Flawless", description: "Get 100% accuracy on a test", trigger: "api", xp: 500, check: (s) => s.bestAccuracy >= 100 },
+
+  // ── Consistency milestones (best single test) ──
+  { id: "cons_70", name: "Getting Stable", description: "Reach 70%+ consistency", trigger: "metric", xp: 15, check: (s) => pct(s.bestConsistency, 70) },
+  { id: "cons_80", name: "Steady Hand", description: "Reach 80%+ consistency", trigger: "metric", xp: 25, check: (s) => pct(s.bestConsistency, 80) },
+  { id: "cons_85", name: "Balanced", description: "Reach 85%+ consistency", trigger: "metric", xp: 40, check: (s) => pct(s.bestConsistency, 85) },
+  { id: "cons_90", name: "Rock Solid", description: "Reach 90%+ consistency", trigger: "metric", xp: 75, check: (s) => pct(s.bestConsistency, 90) },
+  { id: "cons_95", name: "Machine", description: "Reach 95%+ consistency", trigger: "metric", xp: 200, check: (s) => pct(s.bestConsistency, 95) },
+  { id: "cons_98", name: "Clockwork", description: "Reach 98%+ consistency", trigger: "metric", xp: 350, check: (s) => pct(s.bestConsistency, 98) },
+
+  // ── Streak milestones (progress based on longest/current) ──
+  { id: "streak_2", name: "Back-to-Back", description: "Type for 2 days in a row", trigger: "streak", xp: 15, check: (s) => streakPct(s.currentStreak, s.longestStreak, 2) },
+  { id: "streak_3", name: "On a Roll", description: "Type for 3 days in a row", trigger: "streak", xp: 30, check: (s) => streakPct(s.currentStreak, s.longestStreak, 3) },
+  { id: "streak_5", name: "Five Alive", description: "Type for 5 days in a row", trigger: "streak", xp: 50, check: (s) => streakPct(s.currentStreak, s.longestStreak, 5) },
+  { id: "streak_7", name: "Week Warrior", description: "Type for 7 days in a row", trigger: "streak", xp: 75, check: (s) => streakPct(s.currentStreak, s.longestStreak, 7) },
+  { id: "streak_14", name: "Fortnight Focus", description: "Type for 14 days in a row", trigger: "streak", xp: 150, check: (s) => streakPct(s.currentStreak, s.longestStreak, 14) },
+  { id: "streak_21", name: "Three Week Titan", description: "Type for 21 days in a row", trigger: "streak", xp: 225, check: (s) => streakPct(s.currentStreak, s.longestStreak, 21) },
+  { id: "streak_30", name: "Monthly Master", description: "Type for 30 days in a row", trigger: "streak", xp: 300, check: (s) => streakPct(s.currentStreak, s.longestStreak, 30) },
+  { id: "streak_50", name: "Half Century Streak", description: "Type for 50 days in a row", trigger: "streak", xp: 600, check: (s) => streakPct(s.currentStreak, s.longestStreak, 50) },
+  { id: "streak_60", name: "Two Months", description: "Type for 60 days in a row", trigger: "streak", xp: 750, check: (s) => streakPct(s.currentStreak, s.longestStreak, 60) },
+  { id: "streak_100", name: "Daily Legend", description: "Type for 100 days in a row", trigger: "streak", xp: 1000, check: (s) => streakPct(s.currentStreak, s.longestStreak, 100) },
+
+  // ── Time milestones ──
+  { id: "time_30m", name: "Half Hour", description: "Type for 30 minutes total", trigger: "metric", xp: 15, check: (s) => pct(s.timeTypedSeconds, 1800) },
+  { id: "time_1h", name: "Dedicated Hour", description: "Type for 1 hour total", trigger: "metric", xp: 30, check: (s) => pct(s.timeTypedSeconds, 3600) },
+  { id: "time_2h", name: "Double Down", description: "Type for 2 hours total", trigger: "metric", xp: 50, check: (s) => pct(s.timeTypedSeconds, 7200) },
+  { id: "time_5h", name: "Half Day Grind", description: "Type for 5 hours total", trigger: "metric", xp: 75, check: (s) => pct(s.timeTypedSeconds, 18000) },
+  { id: "time_10h", name: "Marathon Runner", description: "Type for 10 hours total", trigger: "metric", xp: 100, check: (s) => pct(s.timeTypedSeconds, 36000) },
+  { id: "time_25h", name: "Day of Typing", description: "Type for 25 hours total", trigger: "metric", xp: 200, check: (s) => pct(s.timeTypedSeconds, 90000) },
+  { id: "time_50h", name: "Work Week", description: "Type for 50 hours total", trigger: "metric", xp: 300, check: (s) => pct(s.timeTypedSeconds, 180000) },
+  { id: "time_100h", name: "Typing Addict", description: "Type for 100 hours total", trigger: "metric", xp: 500, check: (s) => pct(s.timeTypedSeconds, 360000) },
+
+  // ── Characters milestones ──
+  { id: "chars_5k", name: "First Words", description: "Type 5,000 characters", trigger: "metric", xp: 15, check: (s) => pct(s.charsTyped, 5000) },
+  { id: "chars_10k", name: "Wordsmith", description: "Type 10,000 characters", trigger: "metric", xp: 25, check: (s) => pct(s.charsTyped, 10000) },
+  { id: "chars_50k", name: "Page Turner", description: "Type 50,000 characters", trigger: "metric", xp: 50, check: (s) => pct(s.charsTyped, 50000) },
+  { id: "chars_100k", name: "Prolific", description: "Type 100,000 characters", trigger: "metric", xp: 100, check: (s) => pct(s.charsTyped, 100000) },
+  { id: "chars_250k", name: "Author", description: "Type 250,000 characters", trigger: "metric", xp: 200, check: (s) => pct(s.charsTyped, 250000) },
+  { id: "chars_500k", name: "Bestseller", description: "Type 500,000 characters", trigger: "metric", xp: 350, check: (s) => pct(s.charsTyped, 500000) },
+  { id: "chars_1m", name: "Novelist", description: "Type 1,000,000 characters", trigger: "metric", xp: 500, check: (s) => pct(s.charsTyped, 1000000) },
+
+  // ── Board-specific ──
+  { id: "board_time15_80", name: "Quick Sprint", description: "Reach 80 WPM on 15s time", trigger: "metric", xp: 50, check: (s) => pct(s.bestByBoard["time:15"] ?? 0, 80) },
+  { id: "board_time15_100", name: "Sprint Master", description: "Reach 100 WPM on 15s time", trigger: "metric", xp: 100, check: (s) => pct(s.bestByBoard["time:15"] ?? 0, 100) },
+  { id: "board_time15_120", name: "Sprint Demon", description: "Reach 120 WPM on 15s time", trigger: "metric", xp: 250, check: (s) => pct(s.bestByBoard["time:15"] ?? 0, 120) },
+  { id: "board_time30_90", name: "Time 30 Pro", description: "Reach 90 WPM on 30s time", trigger: "metric", xp: 75, check: (s) => pct(s.bestByBoard["time:30"] ?? 0, 90) },
+  { id: "board_time30_110", name: "Time 30 Elite", description: "Reach 110 WPM on 30s time", trigger: "metric", xp: 200, check: (s) => pct(s.bestByBoard["time:30"] ?? 0, 110) },
+  { id: "board_time60_80", name: "Endurance", description: "Reach 80 WPM on 60s time", trigger: "metric", xp: 100, check: (s) => pct(s.bestByBoard["time:60"] ?? 0, 80) },
+  { id: "board_time60_100", name: "Endurance Pro", description: "Reach 100 WPM on 60s time", trigger: "metric", xp: 250, check: (s) => pct(s.bestByBoard["time:60"] ?? 0, 100) },
+  { id: "board_time120_70", name: "Long Haul", description: "Reach 70 WPM on 120s time", trigger: "metric", xp: 100, check: (s) => pct(s.bestByBoard["time:120"] ?? 0, 70) },
+  { id: "board_time120_90", name: "Long Haul Pro", description: "Reach 90 WPM on 120s time", trigger: "metric", xp: 250, check: (s) => pct(s.bestByBoard["time:120"] ?? 0, 90) },
+  { id: "board_words10_90", name: "Quick Fingers", description: "Reach 90 WPM on 10 words", trigger: "metric", xp: 75, check: (s) => pct(s.bestByBoard["words:10"] ?? 0, 90) },
+  { id: "board_words10_110", name: "10 Words Demon", description: "Reach 110 WPM on 10 words", trigger: "metric", xp: 200, check: (s) => pct(s.bestByBoard["words:10"] ?? 0, 110) },
+  { id: "board_words25_90", name: "Words 25 Pro", description: "Reach 90 WPM on 25 words", trigger: "metric", xp: 75, check: (s) => pct(s.bestByBoard["words:25"] ?? 0, 90) },
+  { id: "board_words25_110", name: "Words 25 Elite", description: "Reach 110 WPM on 25 words", trigger: "metric", xp: 200, check: (s) => pct(s.bestByBoard["words:25"] ?? 0, 110) },
+  { id: "board_words50_90", name: "Words 50 Pro", description: "Reach 90 WPM on 50 words", trigger: "metric", xp: 75, check: (s) => pct(s.bestByBoard["words:50"] ?? 0, 90) },
+  { id: "board_words100_70", name: "Marathon Typist", description: "Reach 70 WPM on 100 words", trigger: "metric", xp: 100, check: (s) => pct(s.bestByBoard["words:100"] ?? 0, 70) },
+  { id: "board_words100_90", name: "Words 100 Pro", description: "Reach 90 WPM on 100 words", trigger: "metric", xp: 250, check: (s) => pct(s.bestByBoard["words:100"] ?? 0, 90) },
+
+  // ── Averages ──
+  { id: "avg_60", name: "Getting Consistent", description: "Maintain 60+ avg WPM", trigger: "metric", xp: 50, check: (s) => pct(s.avgWpm, 60) },
+  { id: "avg_80", name: "Consistent Performer", description: "Maintain 80+ avg WPM", trigger: "metric", xp: 150, check: (s) => pct(s.avgWpm, 80) },
+  { id: "avg_90", name: "Steady Elite", description: "Maintain 90+ avg WPM", trigger: "metric", xp: 250, check: (s) => pct(s.avgWpm, 90) },
+  { id: "avg_100", name: "Elite Typist", description: "Maintain 100+ avg WPM", trigger: "metric", xp: 500, check: (s) => pct(s.avgWpm, 100) },
+  { id: "avg_110", name: "Top 1%", description: "Maintain 110+ avg WPM", trigger: "metric", xp: 750, check: (s) => pct(s.avgWpm, 110) },
+
+  // ── Level milestones ──
+  { id: "level_5", name: "Rising Star", description: "Reach level 5", trigger: "metric", xp: 50, check: (s) => pct(s.level, 5) },
+  { id: "level_10", name: "Seasoned", description: "Reach level 10", trigger: "metric", xp: 100, check: (s) => pct(s.level, 10) },
+  { id: "level_25", name: "Veteran Status", description: "Reach level 25", trigger: "metric", xp: 250, check: (s) => pct(s.level, 25) },
+  { id: "level_50", name: "Master", description: "Reach level 50", trigger: "metric", xp: 500, check: (s) => pct(s.level, 50) },
+  { id: "level_75", name: "Grandmaster", description: "Reach level 75", trigger: "metric", xp: 750, check: (s) => pct(s.level, 75) },
+  { id: "level_100", name: "Transcendent", description: "Reach level 100", trigger: "metric", xp: 1500, check: (s) => pct(s.level, 100) },
+
+  // ── Account age milestones ──
+  { id: "age_7", name: "Week Old", description: "Account age 7 days", trigger: "metric", xp: 20, check: (s) => pct(s.accountAgeDays, 7) },
+  { id: "age_30", name: "Monthly Member", description: "Account age 30 days", trigger: "metric", xp: 50, check: (s) => pct(s.accountAgeDays, 30) },
+  { id: "age_90", name: "Quarter Keeper", description: "Account age 90 days", trigger: "metric", xp: 100, check: (s) => pct(s.accountAgeDays, 90) },
+  { id: "age_180", name: "Half-Year Hero", description: "Account age 180 days", trigger: "metric", xp: 200, check: (s) => pct(s.accountAgeDays, 180) },
+  { id: "age_365", name: "Annual", description: "Account age 365 days", trigger: "metric", xp: 500, check: (s) => pct(s.accountAgeDays, 365) },
+  { id: "age_730", name: "Two-Year Legend", description: "Account age 730 days", trigger: "metric", xp: 1000, check: (s) => pct(s.accountAgeDays, 730) },
+];
+
+export function getAchievementById(id: string): AchievementDef | undefined {
+  return ACHIEVEMENTS.find((a) => a.id === id);
+}

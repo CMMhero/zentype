@@ -1,0 +1,69 @@
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { GameSettings } from "~/lib/types";
+import { DEFAULT_THEME_ID } from "~/lib/themes";
+
+const DEFAULT_SETTINGS: GameSettings = {
+  mode: "time",
+  duration: 30,
+  wordCount: 25,
+  source: "words",
+  blindMode: false,
+  stopOnError: false,
+  strictSpace: false,
+  freeBackspace: true,
+  sound: { enabled: false, volume: 0.5, variant: "click" },
+  soundOnError: true,
+  themeId: DEFAULT_THEME_ID,
+  caretStyle: "block",
+  smoothCaret: true,
+  fontSize: "lg",
+  fontFamily: "geist-mono",
+  showKeyboard: false,
+  visibleLines: 3,
+  hideLiveStats: false,
+};
+
+interface SettingsState {
+  settings: GameSettings;
+  update: (patch: Partial<GameSettings>) => void;
+  reset: () => void;
+}
+
+export const useSettingsStore = create<SettingsState>()(
+  persist(
+    (set) => ({
+      settings: DEFAULT_SETTINGS,
+      update: (patch) =>
+        set((s) => ({ settings: { ...s.settings, ...patch } })),
+      reset: () => set({ settings: DEFAULT_SETTINGS }),
+    }),
+    {
+      name: "zentype-settings",
+      version: 4,
+      migrate: (persistedState) => {
+        // persistedState may be { settings: {...} } or legacy flat shape
+        const raw = (persistedState ?? {}) as Record<string, unknown>;
+        const p = (raw.settings as Partial<GameSettings> | undefined) ?? (raw as Partial<GameSettings>);
+        const legacy = p as Partial<GameSettings> & { soundVolume?: number; settings?: unknown };
+        // unwrap nested settings if previous buggy migration stored { settings: { settings: {...} } }
+        const actual = (legacy.settings && typeof legacy.settings === "object" && !Array.isArray(legacy.settings)
+          ? (legacy.settings as Partial<GameSettings>)
+          : p) as Partial<GameSettings> & { soundVolume?: number };
+        return {
+          settings: {
+            ...DEFAULT_SETTINGS,
+            ...actual,
+            sound: {
+              ...DEFAULT_SETTINGS.sound,
+              ...(actual.sound ?? {}),
+              volume: actual.sound?.volume ?? legacy.soundVolume ?? DEFAULT_SETTINGS.sound.volume,
+            },
+          },
+        } as SettingsState;
+      },
+    },
+  ),
+);
+
+export const DEFAULTS = DEFAULT_SETTINGS;
