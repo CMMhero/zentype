@@ -14,7 +14,7 @@ export default function TermsPage() {
 
       <div className="prose prose-sm dark:prose-invert mt-8 max-w-none prose-p:text-sm prose-p:leading-relaxed prose-li:text-sm">
         <p>
-          Welcome to <strong>zentype</strong> (“Service”), operated by <a href="https://github.com/CMMhero" className="underline underline-offset-2">CMMhero</a>. By accessing or using zentype, you agree to these Terms. If you do not agree, do not use the Service.
+          Welcome to <strong>zentype</strong> (“Service”), operated by <a href="https://cmmhero.top" className="underline underline-offset-2">CMMhero</a>. By accessing or using zentype, you agree to these Terms. If you do not agree, do not use the Service.
         </p>
 
         <h2 className="text-base font-semibold mt-6">1. Use of the Service</h2>
@@ -54,7 +54,7 @@ export default function TermsPage() {
 
         <h2 className="text-base font-semibold mt-6">7. Contact</h2>
         <p>
-          Questions? Open an issue at <a href="https://github.com/anomalyco/opencode" className="underline underline-offset-2">github.com/anomalyco/opencode</a> or contact CMMhero via GitHub.
+          Questions? Visit <a href="https://cmmhero.top" className="underline underline-offset-2">cmmhero.top</a> or email <a href="mailto:contact@cmmhero.top" className="underline underline-offset-2">contact@cmmhero.top</a>.
         </p>
 
         <p className="mt-8">
