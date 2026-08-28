@@ -51,6 +51,20 @@ export function WpmChart({
 
   return (
     <ChartContainer config={chartConfig} className={cn("h-56 w-full", className)}>
+      <defs>
+        <linearGradient id="wpmGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-wpm)" stopOpacity={0.3} />
+          <stop offset="100%" stopColor="var(--color-wpm)" stopOpacity={0.02} />
+        </linearGradient>
+        <linearGradient id="rawGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-raw)" stopOpacity={0.15} />
+          <stop offset="100%" stopColor="var(--color-raw)" stopOpacity={0.01} />
+        </linearGradient>
+        <linearGradient id="errorsGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-errors)" stopOpacity={0.8} />
+          <stop offset="100%" stopColor="var(--color-errors)" stopOpacity={0.4} />
+        </linearGradient>
+      </defs>
       <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
         <CartesianGrid vertical={false} strokeDasharray="3 3" />
         <XAxis
@@ -66,15 +80,14 @@ export function WpmChart({
           cursor={{ stroke: "var(--border)" }}
           content={<ChartTooltipContent labelKey="t" />}
         />
-        <Bar dataKey="errors" fill="var(--color-errors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
+        <Bar dataKey="errors" fill="url(#errorsGradient)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
         <Area
           dataKey="raw"
           type="monotone"
           stroke="var(--color-raw)"
           strokeOpacity={0.55}
           strokeWidth={1.5}
-          fill="var(--color-raw)"
-          fillOpacity={0.06}
+          fill="url(#rawGradient)"
           dot={false}
         />
         <Area
@@ -82,8 +95,7 @@ export function WpmChart({
           type="monotone"
           stroke="var(--color-wpm)"
           strokeWidth={2}
-          fill="var(--color-wpm)"
-          fillOpacity={0.12}
+          fill="url(#wpmGradient)"
           dot={false}
           activeDot={{ r: 3 }}
         />
