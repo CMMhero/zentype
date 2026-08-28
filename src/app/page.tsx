@@ -6,7 +6,6 @@ import { ConfigBar } from "~/components/typing/config-bar";
 import { TypingDisplay } from "~/components/typing/typing-display";
 import { VirtualKeyboard } from "~/components/typing/virtual-keyboard";
 import { ResultView, type SaveState } from "~/components/typing/result-view";
-import { AchievementUnlocked, type Achievement } from "~/components/ui/achievement-unlocked";
 import { Progress } from "~/components/ui/progress";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Kbd } from "~/components/ui/kbd";
@@ -37,7 +36,6 @@ export default function TestPage() {
   const [saveState, setSaveState] = useState<SaveState>("skipped");
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [focused, setFocused] = useState(true);
-  const [unlockAchievement, setUnlockAchievement] = useState<Achievement | null>(null);
 
   const soundRef = useRef(settings.sound);
   soundRef.current = settings.sound;
@@ -130,25 +128,8 @@ export default function TestPage() {
         if (res.saved) {
           removeLocal(full.id);
           setSaveState("cloud");
-          // Process gamification (XP + achievements)
-          void processTestResult(full).then((g) => {
-            if (g.xpEarned > 0) {
-              toast.success(`+${g.xpEarned} XP`, {
-                description: g.newAchievements.length > 0 ? `+ ${g.newAchievements.map((a) => a.name).join(", ")}` : undefined,
-                duration: 3000,
-              });
-            }
-            if (g.newAchievements.length > 0) {
-              // Show first new achievement unlock
-              const first = g.newAchievements[0];
-              setUnlockAchievement({
-                id: first.id,
-                name: first.name,
-                description: first.description,
-                unlockedAt: new Date().toISOString(),
-              });
-            }
-          }).catch((err) => console.error("[zentype] processTestResult failed:", err));
+          // Process gamification (XP + achievements) silently - no popup/sonner to avoid interrupting chained tests
+          void processTestResult(full).catch((err) => console.error("[zentype] processTestResult failed:", err));
         } else if (res.reason === "guest") {
           setSaveState("guest");
         } else {
@@ -396,11 +377,6 @@ export default function TestPage() {
         </>
       )}
 
-      <AchievementUnlocked
-        achievement={unlockAchievement ?? { id: "", name: "", description: "" }}
-        open={unlockAchievement !== null}
-        onOpenChange={(open) => { if (!open) setUnlockAchievement(null); }}
-      />
     </div>
   );
 }
