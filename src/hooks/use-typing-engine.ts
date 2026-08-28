@@ -238,7 +238,9 @@ export function useTypingEngine({
       if (status === "finished") return;
 
       // never hijack browser/global shortcuts; AltGr (ctrl+alt) stays allowed
+      // alt+number navigation must not type into the test
       if (e.metaKey || (e.ctrlKey && !e.altKey)) return;
+      if (e.altKey && !e.ctrlKey) return;
       if (e.key === "Tab" || e.key === "Escape") return;
 
       if (e.key === "Backspace") {
@@ -277,7 +279,7 @@ export function useTypingEngine({
         return;
       }
 
-      if (e.key.length !== 1 || e.ctrlKey || e.metaKey) return;
+      if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey) return;
 
       e.preventDefault();
       if (status === "idle") start();

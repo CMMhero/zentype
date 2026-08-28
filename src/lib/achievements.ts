@@ -24,6 +24,8 @@ export interface AchievementCheckInput {
   longestStreak: number;
   /** Board keys like "time:30" → best WPM */
   bestByBoard: Record<string, number>;
+  level: number;
+  accountAgeDays: number;
 }
 
 function pct(current: number, target: number): number {
@@ -138,6 +140,22 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: "avg_90", name: "Steady Elite", description: "Maintain 90+ avg WPM", trigger: "metric", xp: 250, check: (s) => pct(s.avgWpm, 90) },
   { id: "avg_100", name: "Elite Typist", description: "Maintain 100+ avg WPM", trigger: "metric", xp: 500, check: (s) => pct(s.avgWpm, 100) },
   { id: "avg_110", name: "Top 1%", description: "Maintain 110+ avg WPM", trigger: "metric", xp: 750, check: (s) => pct(s.avgWpm, 110) },
+
+  // ── Level milestones ──
+  { id: "level_5", name: "Rising Star", description: "Reach level 5", trigger: "metric", xp: 50, check: (s) => pct(s.level, 5) },
+  { id: "level_10", name: "Seasoned", description: "Reach level 10", trigger: "metric", xp: 100, check: (s) => pct(s.level, 10) },
+  { id: "level_25", name: "Veteran Status", description: "Reach level 25", trigger: "metric", xp: 250, check: (s) => pct(s.level, 25) },
+  { id: "level_50", name: "Master", description: "Reach level 50", trigger: "metric", xp: 500, check: (s) => pct(s.level, 50) },
+  { id: "level_75", name: "Grandmaster", description: "Reach level 75", trigger: "metric", xp: 750, check: (s) => pct(s.level, 75) },
+  { id: "level_100", name: "Transcendent", description: "Reach level 100", trigger: "metric", xp: 1500, check: (s) => pct(s.level, 100) },
+
+  // ── Account age milestones ──
+  { id: "age_7", name: "Week Old", description: "Account age 7 days", trigger: "metric", xp: 20, check: (s) => pct(s.accountAgeDays, 7) },
+  { id: "age_30", name: "Monthly Member", description: "Account age 30 days", trigger: "metric", xp: 50, check: (s) => pct(s.accountAgeDays, 30) },
+  { id: "age_90", name: "Quarter Keeper", description: "Account age 90 days", trigger: "metric", xp: 100, check: (s) => pct(s.accountAgeDays, 90) },
+  { id: "age_180", name: "Half-Year Hero", description: "Account age 180 days", trigger: "metric", xp: 200, check: (s) => pct(s.accountAgeDays, 180) },
+  { id: "age_365", name: "Annual", description: "Account age 365 days", trigger: "metric", xp: 500, check: (s) => pct(s.accountAgeDays, 365) },
+  { id: "age_730", name: "Two-Year Legend", description: "Account age 730 days", trigger: "metric", xp: 1000, check: (s) => pct(s.accountAgeDays, 730) },
 ];
 
 export function getAchievementById(id: string): AchievementDef | undefined {

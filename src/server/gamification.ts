@@ -5,7 +5,7 @@ import {
   ACHIEVEMENTS,
   type AchievementCheckInput,
 } from "~/lib/achievements";
-import { calculateTestXP, xpProgress } from "~/lib/xp";
+import { calculateTestXP, levelFromXP, xpProgress } from "~/lib/xp";
 import type { TestResult } from "~/lib/types";
 
 async function requireUser() {
@@ -215,6 +215,16 @@ async function buildAchievementStats(
     .order("created_at", { ascending: false })
     .limit(2000);
 
+  // fetch level and account age in parallel
+  const [{ data: pointsRow }, { data: profileRow }] = await Promise.all([
+    supabase.from("user_points").select("total_xp").eq("user_id", userId).maybeSingle(),
+    supabase.from("profiles").select("created_at").eq("id", userId).maybeSingle(),
+  ]);
+  const level = pointsRow?.total_xp != null ? levelFromXP(pointsRow.total_xp as number) : 1;
+  const accountAgeDays = profileRow?.created_at
+    ? Math.max(0, Math.floor((Date.now() - new Date(profileRow.created_at as string).getTime()) / 86400000))
+    : 0;
+
   const results = (rows as Array<{
     created_at: string; mode: string; variant: number; wpm: number;
     accuracy: number; consistency: number; chars?: { correct?: number; incorrect?: number; extra?: number };
@@ -234,6 +244,8 @@ async function buildAchievementStats(
       currentStreak: 0,
       longestStreak: 0,
       bestByBoard: {},
+      level,
+      accountAgeDays,
     };
   }
 
@@ -306,5 +318,7 @@ async function buildAchievementStats(
     currentStreak,
     longestStreak,
     bestByBoard,
+    level,
+    accountAgeDays,
   };
 }

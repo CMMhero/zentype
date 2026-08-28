@@ -1,35 +1,35 @@
 import { Skeleton } from "~/components/ui/skeleton";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "~/components/ui/table";
 
 export function LeaderboardSkeleton() {
   return (
-    <div className="border-border/60 overflow-hidden rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="w-14">#</TableHead>
-            <TableHead>typist</TableHead>
-            <TableHead className="text-right">wpm</TableHead>
-            <TableHead className="text-right">accuracy</TableHead>
-            <TableHead className="hidden text-right sm:table-cell">consistency</TableHead>
-            <TableHead className="hidden text-right md:table-cell">date</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <TableRow key={i}>
-              <TableCell><Skeleton className="h-5 w-6" /></TableCell>
-              <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-              <TableCell className="text-right"><Skeleton className="ml-auto h-5 w-10" /></TableCell>
-              <TableCell className="text-right"><Skeleton className="ml-auto h-5 w-12" /></TableCell>
-              <TableCell className="hidden text-right sm:table-cell"><Skeleton className="ml-auto h-5 w-12" /></TableCell>
-              <TableCell className="hidden text-right md:table-cell"><Skeleton className="ml-auto h-5 w-20" /></TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="bg-card w-full rounded-xl border">
+      <div className="divide-border divide-y">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-2 px-4 py-2">
+            <div className="flex w-12 items-center gap-1">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-5 w-5 rounded-full" />
+            </div>
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <div className="min-w-0 flex-1 space-y-1.5">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-24" />
+            </div>
+            <Skeleton className="h-4 w-12" />
+          </div>
+        ))}
+      </div>
+      <div className="flex items-center justify-between gap-3 border-t px-4 py-2">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-10" />
+          <Skeleton className="h-8 w-16 rounded-md" />
+        </div>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-8 rounded-md" />
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-8 w-8 rounded-md" />
+        </div>
+      </div>
     </div>
   );
 }
