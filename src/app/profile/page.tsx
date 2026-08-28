@@ -242,29 +242,33 @@ export default function ProfilePage() {
             <IconTrophy className="text-primary size-4" /> personal bests
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-2 px-4">
+        <CardContent className="px-4">
             {loading ? (
-            Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-9 w-28" />)
-          ) : Object.keys(stats!.bestByBoard).length === 0 ? (
-            <span className="text-sm text-muted-foreground">no results yet</span>
-          ) : (
-            Object.entries(stats!.bestByBoard)
-              .sort((a, b) => a[0].localeCompare(b[0]))
-              .map(([board, wpm]) => {
-                const rank = boardRanks?.[board];
-                return (
-                  <Badge key={board} variant="secondary" className="gap-2 py-1.5 text-sm">
-                    <span className="text-muted-foreground">{prettyBoard(board)}</span>
-                    <span className="text-primary font-bold tabular-nums">{wpm}</span>
-                    {rank && (
-                      <span className="ml-1 rounded bg-primary/10 px-1 py-0 text-[10px] font-bold tracking-widest text-primary">
-                        #{rank}
-                      </span>
-                    )}
-                  </Badge>
-                );
-              })
-          )}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
+              </div>
+            ) : Object.keys(stats!.bestByBoard).length === 0 ? (
+              <span className="text-sm text-muted-foreground">no results yet</span>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {Object.entries(stats!.bestByBoard)
+                  .sort((a, b) => a[0].localeCompare(b[0]))
+                  .map(([board, wpm]) => {
+                    const rank = boardRanks?.[board];
+                    return (
+                      <div key={board} className="flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-muted/30 p-3 text-center">
+                        <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                        <span className="text-2xl font-bold tabular-nums text-primary">{wpm}</span>
+                        {rank && (
+                          <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+                            #{rank}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
         </CardContent>
       </Card>
 
