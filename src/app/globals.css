@@ -300,3 +300,23 @@ html[data-font="work-sans"] { font-family: var(--font-work-sans); }
     transform: none;
   }
 }
+
+/* Smooth transitions for theme changes */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Prevent layout shift in tabs */
+[data-slot="tabs-content"] {
+  animation: zt-tab-fade 0.2s ease-out;
+}
+@keyframes zt-tab-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
