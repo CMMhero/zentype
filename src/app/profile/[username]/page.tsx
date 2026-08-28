@@ -191,7 +191,7 @@ export default function PublicProfilePage() {
           <CardContent className="px-5 pt-2">
             {/* Row 1: Avatar + Username */}
             <div className="flex items-center gap-4">
-              <Avatar className="size-16 shrink-0 border-2 border-primary/30 shadow-lg shadow-primary/20">
+              <Avatar className="size-16 shrink-0 border-2 border-primary/30">
                 {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}
                 <AvatarFallback className="rounded text-xl font-bold uppercase">{name.slice(0, 2)}</AvatarFallback>
               </Avatar>

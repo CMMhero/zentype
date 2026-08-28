@@ -4,13 +4,15 @@ export type CaretStyle = "line" | "block" | "underline" | "off";
 export type FontSizeKey = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type SoundVariant = "click" | "thock" | "beep";
 export type FontFamily =
-  | "anonymous-pro" | "barlow" | "bitter" | "cabin" | "cascadia-code" | "commit-mono"
-  | "crimson-pro" | "dm-sans" | "exo-2" | "fira-code" | "geist-mono" | "ibm-plex-mono"
-  | "ibm-plex-sans" | "inconsolata" | "inter" | "jetbrains-mono" | "josefin-sans"
-  | "lato" | "lexend" | "lora" | "manrope" | "merriweather" | "montserrat"
-  | "noto-sans" | "noto-serif" | "nunito-sans" | "open-sans" | "oswald" | "outfit"
-  | "playfair-display" | "plus-jakarta-sans" | "poppins" | "pt-sans" | "pt-serif"
-  | "raleway" | "roboto-flex" | "roboto-mono" | "source-code-pro" | "space-grotesk"
+  | "anonymous-pro" | "barlow" | "bebas-neue" | "bricolage-grotesque" | "bitter"
+  | "cal-sans" | "cabin" | "cascadia-code" | "comic-neue" | "commit-mono"
+  | "crimson-pro" | "dm-sans" | "exo-2" | "fira-code" | "geist" | "geist-mono"
+  | "google-sans" | "ibm-plex-mono" | "ibm-plex-sans" | "inconsolata" | "inter"
+  | "jetbrains-mono" | "josefin-sans" | "lato" | "lexend" | "lora" | "manrope"
+  | "merriweather" | "mona-sans" | "montserrat" | "noto-sans" | "noto-serif"
+  | "nunito-sans" | "open-sans" | "oswald" | "outfit" | "playfair-display"
+  | "plus-jakarta-sans" | "poppins" | "pt-sans" | "pt-serif" | "raleway"
+  | "roboto-flex" | "roboto-mono" | "source-code-pro" | "space-grotesk"
   | "space-mono" | "titillium-web" | "ubuntu-mono" | "victor-mono" | "work-sans";
 
 export interface SoundSettings {

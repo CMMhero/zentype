@@ -69,7 +69,8 @@ export default function LeaderboardPage() {
         startTransition(() => setEntries(data));
         setLoaded(true);
       }
-    }).catch(() => {
+    }).catch((err) => {
+      console.error("[zentype] leaderboard load failed:", err);
       if (!cancelled) setLoaded(true);
     });
     return () => { cancelled = true; };
