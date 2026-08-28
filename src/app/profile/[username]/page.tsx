@@ -16,7 +16,7 @@ import {
 } from "~/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { getPublicProfile, type PublicProfile } from "~/server/results";
-import { getUserAchievements } from "~/server/gamification";
+import { getUserAchievements, getUserPointsByUsername } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
@@ -28,6 +28,7 @@ export default function PublicProfilePage() {
   const username = params.username as string;
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [points, setPoints] = useState<{ totalXP: number; level: number; progress: number } | null>(null);
   const [achievements, setAchievements] = useState<Array<{
     id: string; name: string; description: string; trigger: "metric" | "streak" | "api";
     achievedAt: string | null; progress: number; xp: number;
@@ -50,7 +51,10 @@ export default function PublicProfilePage() {
     void getUserAchievements().then((a) => {
       if (a && a.length > 0 && a[0].achievedAt !== null) setAchievements(a);
     });
-  }, [profile]);
+    void getUserPointsByUsername(username).then((p) => {
+      if (p) setPoints(p);
+    });
+  }, [profile, username]);
 
   useEffect(() => {
     if (!profile?.stats) return;
@@ -64,14 +68,26 @@ export default function PublicProfilePage() {
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
         {/* Level card + 2x2 stats — matches loaded layout */}
         <div className="grid gap-4 md:grid-cols-[1fr_auto]">
-          <Card className="row-span-2 gap-3 py-4">
-            <CardContent className="flex flex-col items-center gap-4 px-6 pt-2">
-              <Skeleton className="size-20 rounded-full" />
-              <Skeleton className="h-6 w-32" />
-              <Skeleton className="h-3 w-24" />
+          <Card className="row-span-2 gap-4 py-3">
+            <CardContent className="px-5 pt-2">
+              {/* Row 1: Avatar + Username */}
+              <div className="flex items-center gap-4">
+                <Skeleton className="size-16 shrink-0 rounded-full" />
+                <div className="flex-1 min-w-0">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="mt-1 h-3 w-20" />
+                  <Skeleton className="mt-1 h-3 w-24" />
+                </div>
+              </div>
+              {/* Row 2: Level/XP bar */}
+              <div className="mt-4 flex items-center gap-3">
+                <Skeleton className="h-5 w-16" />
+                <Skeleton className="h-1.5 flex-1" />
+                <Skeleton className="h-3 w-20" />
+              </div>
             </CardContent>
           </Card>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 row-span-2">
             {Array.from({ length: 4 }).map((_, i) => (
               <Card key={i} className="gap-1 py-3">
                 <CardContent className="flex flex-col gap-1 px-3">
@@ -88,32 +104,24 @@ export default function PublicProfilePage() {
           <CardHeader className="px-4">
             <Skeleton className="h-3 w-28" />
           </CardHeader>
-          <CardContent className="flex gap-2 px-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-9 w-20" />
-            ))}
+          <CardContent className="px-4">
+            <div className="grid grid-cols-4 gap-3">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-20 w-full rounded-xl" />
+              ))}
+            </div>
           </CardContent>
         </Card>
 
-        {/* Charts — side by side */}
-        <div className="grid gap-5 md:grid-cols-2">
-          <Card className="gap-3 py-4">
-            <CardHeader className="px-4"><Skeleton className="h-3 w-16" /></CardHeader>
-            <CardContent className="px-4"><Skeleton className="h-40 w-full" /></CardContent>
-          </Card>
-          <Card className="gap-3 py-4">
-            <CardHeader className="px-4"><Skeleton className="h-3 w-20" /></CardHeader>
-            <CardContent className="px-4"><Skeleton className="h-40 w-full" /></CardContent>
-          </Card>
-        </div>
-
         {/* Top achievements */}
         <Card className="gap-3 py-4">
-          <CardHeader className="px-4"><Skeleton className="h-3 w-32" /></CardHeader>
+          <CardHeader className="px-4">
+            <Skeleton className="h-3 w-32" />
+          </CardHeader>
           <CardContent className="px-4">
-            <div className="flex gap-2">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} className="h-16 w-32" />
+            <div className="grid grid-cols-4 gap-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 w-full rounded-lg" />
               ))}
             </div>
           </CardContent>
@@ -179,11 +187,11 @@ export default function PublicProfilePage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
-        <Card className="row-span-2 gap-4 py-4">
-          <CardContent className="px-6 pt-2">
+        <Card className="row-span-2 gap-3 py-3 bg-gradient-to-br from-card via-card to-primary/5 border-primary/20">
+          <CardContent className="px-5 pt-2">
             {/* Row 1: Avatar + Username */}
             <div className="flex items-center gap-4">
-              <Avatar className="size-16 shrink-0 border-2 border-primary/30">
+              <Avatar className="size-16 shrink-0 border-2 border-primary/30 shadow-lg shadow-primary/20">
                 {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}
                 <AvatarFallback className="rounded text-xl font-bold uppercase">{name.slice(0, 2)}</AvatarFallback>
               </Avatar>
@@ -197,10 +205,22 @@ export default function PublicProfilePage() {
                 )}
               </div>
             </div>
+            {/* Row 2: Level/XP bar — compact single row */}
+            {points && points.totalXP > 0 ? (
+              <div className="mt-4 flex items-center gap-3">
+                <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
+                  <div className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all shadow-sm shadow-primary/30" style={{ width: `${points.progress}%` }} />
+                </div>
+                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
+              </div>
+            ) : (
+              <p className="mt-4 text-[10px] text-muted-foreground">No XP yet</p>
+            )}
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 row-span-2">
           <StatCard icon={<IconTrendingUp className="size-4" />} label="avg wpm (last 10)" value={String(stats?.avgWpm10 ?? 0)} />
           <StatCard icon={<IconGauge className="size-4" />} label="avg wpm (all)" value={String(stats?.avgWpmAll ?? 0)} />
           <StatCard icon={<IconTarget className="size-4" />} label="avg accuracy" value={`${stats?.avgAccuracy ?? 0}%`} />
@@ -212,24 +232,27 @@ export default function PublicProfilePage() {
         <Card className="gap-3 py-4">
           <CardHeader className="px-4">
             <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-              <IconTrophy className="text-primary size-4" /> personal bests
+              <IconTrophy className="size-4" /> personal bests
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-wrap gap-2 px-4">
-            {bestBoardEntries.map(([board, wpm]) => {
-              const rank = boardRanks?.[board];
-              return (
-                <Badge key={board} variant="secondary" className="gap-2 py-1.5 text-sm">
-                  <span className="text-muted-foreground">{prettyBoard(board)}</span>
-                  <span className="text-primary font-bold tabular-nums">{wpm}</span>
-                  {rank && (
-                    <span className="ml-1 rounded bg-primary/10 px-1 py-0 text-[10px] font-bold tracking-widest text-primary">
-                      #{rank}
-                    </span>
-                  )}
-                </Badge>
-              );
-            })}
+          <CardContent className="px-4">
+            <div className="grid grid-cols-4 gap-3">
+              {ALL_BOARDS.map((board) => {
+                const wpm = stats?.bestByBoard?.[board];
+                const rank = boardRanks?.[board];
+                return (
+                  <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                    <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
+                    {rank && (
+                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+                        #{rank}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </CardContent>
         </Card>
       )}
@@ -239,7 +262,7 @@ export default function PublicProfilePage() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
             <IconAward className="size-4" /> achievements
-            <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+            <Badge variant="secondary" className="text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
@@ -341,7 +364,7 @@ export default function PublicProfilePage() {
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <Card className="gap-1 py-3">
+    <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
         <span className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
           {icon} {label}
@@ -363,3 +386,8 @@ function formatDuration(seconds: number): string {
   if (m < 60) return `${m}m`;
   return `${Math.floor(m / 60)}h ${m % 60}m`;
 }
+
+const ALL_BOARDS = [
+  "time:15", "time:30", "time:60", "time:120",
+  "words:10", "words:25", "words:50", "words:100",
+] as const;
