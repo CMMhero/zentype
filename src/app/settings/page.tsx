@@ -41,7 +41,7 @@ export default function SettingsPage() {
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconKeyboard className="text-primary size-5" /> settings
         </h1>
-        <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs" onClick={() => { reset(); toast.info("settings restored to defaults"); }}>
+        <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs" onClick={() => { reset(); toast.info("Settings restored to defaults"); }}>
           <IconRefresh className="size-3.5" /> restore defaults
         </Button>
       </header>
@@ -235,8 +235,8 @@ export default function SettingsPage() {
             <Card className="py-6">
               <CardContent className="flex flex-col items-center gap-3 px-4 text-center">
                 <IconUser className="text-muted-foreground size-6" />
-                <p className="text-muted-foreground text-sm">you&apos;re typing as a guest. results live in this browser only.</p>
-                <Button asChild size="sm"><a href="/login">login / sign up →</a></Button>
+                <p className="text-muted-foreground text-sm">You're typing as a guest. Results live in this browser only.</p>
+                <Button asChild size="sm"><a href="/login">Login / Sign up →</a></Button>
               </CardContent>
             </Card>
           )}
@@ -279,7 +279,7 @@ function AccountCard({ username, email }: { username: string; email: string }) {
     try {
       const res = await updateUsername(value);
       if (res.error) toast.error(res.error);
-      else { toast.success("username updated"); setTimeout(() => window.location.reload(), 400); }
+      else { toast.success("Username updated"); setTimeout(() => window.location.reload(), 400); }
     } finally { setSaving(false); }
   }
 
