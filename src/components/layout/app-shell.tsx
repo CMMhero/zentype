@@ -78,8 +78,11 @@ export function AppShell({
     <div className="flex min-h-screen flex-col">
       <header className="border-border/40 bg-background/80 sticky top-0 z-40 border-b shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4">
-          <Link href="/" className="group flex shrink-0 items-center gap-2 font-semibold tracking-tight">
-            <span className="text-sm">zentype</span>
+          <Link href="/" className="group flex shrink-0 items-center gap-2" aria-label="Zentype home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="text-primary size-5">
+              <path fill="currentColor" d="M20 5a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3zM6 13a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V14a1 1 0 0 0-1-1m12 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V14a1 1 0 0 0-1-1m-7.998 0a1 1 0 0 0-.004 2l4 .01a1 1 0 0 0 .005-2zM6 9a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1m4 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1m4 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1m4 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1" />
+            </svg>
+            <span className="text-sm font-semibold tracking-tight">zentype</span>
           </Link>
 
           <nav className="ml-4 hidden items-center gap-0.5 md:flex" aria-label="Primary">
