@@ -73,12 +73,6 @@ export default function LoginPage() {
             ))}
           </div>
 
-          {/* Footer hint */}
-          <p className="text-muted-foreground/60 text-center text-[11px] leading-relaxed">
-            guest results stay on this device.<br />
-            signing in lets you pick up where you left off.
-          </p>
-
           {/* Back link */}
           <Link
             href="/"
