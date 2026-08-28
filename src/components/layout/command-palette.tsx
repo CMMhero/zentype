@@ -135,7 +135,7 @@ export function CommandPalette() {
   const close = () => setOpen(false);
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen} className="sm:max-w-xl" data-command-overlay="">
+    <CommandDialog open={open} onOpenChange={setOpen} className="sm:max-w-2xl max-h-[80vh]" data-command-overlay="">
       <CommandInput placeholder="search users, settings, or commands…" onValueChange={setUserQuery} />
       <CommandList>
         <CommandEmpty>no matching command</CommandEmpty>
