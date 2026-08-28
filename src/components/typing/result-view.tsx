@@ -16,7 +16,7 @@ interface ResultViewProps {
 
 export function ResultView({ result, saveState, onNext }: ResultViewProps) {
   return (
-    <div className="zt-fade-in mx-auto flex w-full max-w-4xl flex-col gap-6 py-6">
+    <div className="zt-fade-in mx-auto flex w-full max-w-4xl flex-col gap-6 py-6" role="region" aria-label="Test results">
       <div className="flex items-end justify-between">
         <div className="flex items-baseline gap-8">
           <div>

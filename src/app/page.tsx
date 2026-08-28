@@ -273,7 +273,7 @@ export default function TestPage() {
   const runningOrIdle = engine.status !== "finished";
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6" role="region" aria-label="Typing test">
       <input
         ref={inputEl}
         className="pointer-events-none absolute size-0 opacity-0"
@@ -307,6 +307,8 @@ export default function TestPage() {
             className={`mb-4 flex items-end justify-between transition-opacity duration-300 ${
               settings.hideLiveStats && engine.status === "running" ? "opacity-50" : "opacity-100"
             }`}
+            aria-live="polite"
+            aria-atomic="true"
           >
             <div className="flex items-baseline gap-5">
               <div>

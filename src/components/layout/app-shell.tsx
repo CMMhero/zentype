@@ -76,7 +76,10 @@ export function AppShell({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="border-border/40 bg-background/80 sticky top-0 z-40 border-b shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground">
+        Skip to content
+      </a>
+      <header className="border-border/40 bg-background/80 sticky top-0 z-40 border-b shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60" role="banner">
         <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4">
           <Link href="/" className="group flex shrink-0 items-center gap-2" aria-label="Zentype home">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" className="text-primary size-5">
@@ -124,9 +127,9 @@ export function AppShell({
         </div>
       </header>
 
-      <main className="flex flex-1 flex-col">{children}</main>
+      <main id="main-content" className="flex flex-1 flex-col" role="main">{children}</main>
 
-      <footer className="text-muted-foreground mt-auto">
+      <footer className="text-muted-foreground mt-auto" role="contentinfo">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-[11px]">
           <span className="flex items-center gap-2">
             <span>Made by <a href="https://cmmhero.top" target="_blank" rel="noreferrer" className="hover:text-foreground underline underline-offset-2">CMMhero</a></span>
