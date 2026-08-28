@@ -167,6 +167,18 @@ export default function SettingsPage() {
                     <SelectItem value="crimson-pro" style={{ fontFamily: "var(--font-crimson-pro)" }}>Crimson Pro</SelectItem>
                     <SelectItem value="roboto-flex" style={{ fontFamily: "var(--font-roboto-flex)" }}>Roboto Flex</SelectItem>
                     <SelectItem value="ibm-plex-sans" style={{ fontFamily: "var(--font-ibm-plex-sans)" }}>IBM Plex Sans</SelectItem>
+                    <SelectItem value="roboto-mono" style={{ fontFamily: "var(--font-roboto-mono)" }}>Roboto Mono</SelectItem>
+                    <SelectItem value="source-code-pro" style={{ fontFamily: "var(--font-source-code-pro)" }}>Source Code Pro</SelectItem>
+                    <SelectItem value="ibm-plex-mono" style={{ fontFamily: "var(--font-ibm-plex-mono)" }}>IBM Plex Mono</SelectItem>
+                    <SelectItem value="space-mono" style={{ fontFamily: "var(--font-space-mono)" }}>Space Mono</SelectItem>
+                    <SelectItem value="anonymous-pro" style={{ fontFamily: "var(--font-anonymous-pro)" }}>Anonymous Pro</SelectItem>
+                    <SelectItem value="ubuntu-mono" style={{ fontFamily: "var(--font-ubuntu-mono)" }}>Ubuntu Mono</SelectItem>
+                    <SelectItem value="victor-mono" style={{ fontFamily: "var(--font-victor-mono)" }}>Victor Mono</SelectItem>
+                    <SelectItem value="inconsolata" style={{ fontFamily: "var(--font-inconsolata)" }}>Inconsolata</SelectItem>
+                    <SelectItem value="lexend" style={{ fontFamily: "var(--font-lexend)" }}>Lexend</SelectItem>
+                    <SelectItem value="outfit" style={{ fontFamily: "var(--font-outfit)" }}>Outfit</SelectItem>
+                    <SelectItem value="cascadia-code" style={{ fontFamily: "var(--font-cascadia-code)" }}>Cascadia Code</SelectItem>
+                    <SelectItem value="commit-mono" style={{ fontFamily: "var(--font-commit-mono)" }}>Commit Mono</SelectItem>
                   </SelectContent>
                 </Select>
               </SettingRow>

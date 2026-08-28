@@ -15,6 +15,18 @@
 @import "@fontsource-variable/crimson-pro";
 @import "@fontsource-variable/roboto-flex";
 @import "@fontsource-variable/ibm-plex-sans";
+@import "@fontsource-variable/roboto-mono";
+@import "@fontsource-variable/source-code-pro";
+@import "@fontsource/ibm-plex-mono";
+@import "@fontsource/space-mono";
+@import "@fontsource/anonymous-pro";
+@import "@fontsource/ubuntu-mono";
+@import "@fontsource-variable/victor-mono";
+@import "@fontsource-variable/inconsolata";
+@import "@fontsource-variable/lexend";
+@import "@fontsource-variable/outfit";
+@import "@fontsource/cascadia-code";
+@import "@fontsource/commit-mono";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -72,6 +84,18 @@
   --font-crimson-pro: "Crimson Pro Variable", Georgia, "Times New Roman", serif;
   --font-roboto-flex: "Roboto Flex Variable", ui-sans-serif, system-ui, sans-serif;
   --font-ibm-plex-sans: "IBM Plex Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-roboto-mono: "Roboto Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-source-code-pro: "Source Code Pro Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-ibm-plex-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-space-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-anonymous-pro: "Anonymous Pro", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-ubuntu-mono: "Ubuntu Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-victor-mono: "Victor Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-inconsolata: "Inconsolata Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-lexend: "Lexend Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-outfit: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-cascadia-code: "Cascadia Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-commit-mono: "CommitMono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
@@ -164,6 +188,18 @@ html[data-font="bitter"] { font-family: var(--font-bitter); }
 html[data-font="crimson-pro"] { font-family: var(--font-crimson-pro); }
 html[data-font="roboto-flex"] { font-family: var(--font-roboto-flex); }
 html[data-font="ibm-plex-sans"] { font-family: var(--font-ibm-plex-sans); }
+html[data-font="roboto-mono"] { font-family: var(--font-roboto-mono); }
+html[data-font="source-code-pro"] { font-family: var(--font-source-code-pro); }
+html[data-font="ibm-plex-mono"] { font-family: var(--font-ibm-plex-mono); }
+html[data-font="space-mono"] { font-family: var(--font-space-mono); }
+html[data-font="anonymous-pro"] { font-family: var(--font-anonymous-pro); }
+html[data-font="ubuntu-mono"] { font-family: var(--font-ubuntu-mono); }
+html[data-font="victor-mono"] { font-family: var(--font-victor-mono); }
+html[data-font="inconsolata"] { font-family: var(--font-inconsolata); }
+html[data-font="lexend"] { font-family: var(--font-lexend); }
+html[data-font="outfit"] { font-family: var(--font-outfit); }
+html[data-font="cascadia-code"] { font-family: var(--font-cascadia-code); }
+html[data-font="commit-mono"] { font-family: var(--font-commit-mono); }
 
 .zt-caret-blink {
   animation: zt-blink 1s step-end infinite;

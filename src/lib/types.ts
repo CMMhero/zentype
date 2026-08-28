@@ -8,7 +8,10 @@ export type FontFamily =
   | "dm-sans" | "space-grotesk" | "nunito-sans" | "work-sans"
   | "playfair-display" | "lora" | "merriweather"
   | "fira-code" | "cabin" | "josefin-sans" | "bitter"
-  | "crimson-pro" | "roboto-flex" | "ibm-plex-sans";
+  | "crimson-pro" | "roboto-flex" | "ibm-plex-sans"
+  | "roboto-mono" | "source-code-pro" | "ibm-plex-mono" | "space-mono"
+  | "anonymous-pro" | "ubuntu-mono" | "victor-mono" | "inconsolata"
+  | "lexend" | "outfit" | "cascadia-code" | "commit-mono";
 
 export interface SoundSettings {
   enabled: boolean;

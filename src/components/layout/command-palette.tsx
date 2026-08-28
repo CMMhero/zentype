@@ -60,6 +60,18 @@ const FONT_FAMILIES: { value: FontFamily; label: string; desc: string; cssVar: s
   { value: "crimson-pro", label: "Crimson Pro", desc: "old-style serif", cssVar: "var(--font-crimson-pro)" },
   { value: "roboto-flex", label: "Roboto Flex", desc: "superfamily variable", cssVar: "var(--font-roboto-flex)" },
   { value: "ibm-plex-sans", label: "IBM Plex Sans", desc: "corporate sans-serif", cssVar: "var(--font-ibm-plex-sans)" },
+  { value: "roboto-mono", label: "Roboto Mono", desc: "classic monospace", cssVar: "var(--font-roboto-mono)" },
+  { value: "source-code-pro", label: "Source Code Pro", desc: "adobe monospace", cssVar: "var(--font-source-code-pro)" },
+  { value: "ibm-plex-mono", label: "IBM Plex Mono", desc: "ibm monospace", cssVar: "var(--font-ibm-plex-mono)" },
+  { value: "space-mono", label: "Space Mono", desc: "geometric mono", cssVar: "var(--font-space-mono)" },
+  { value: "anonymous-pro", label: "Anonymous Pro", desc: "typewriter mono", cssVar: "var(--font-anonymous-pro)" },
+  { value: "ubuntu-mono", label: "Ubuntu Mono", desc: "ubuntu mono", cssVar: "var(--font-ubuntu-mono)" },
+  { value: "victor-mono", label: "Victor Mono", desc: "cursive mono", cssVar: "var(--font-victor-mono)" },
+  { value: "inconsolata", label: "Inconsolata", desc: "humanist mono", cssVar: "var(--font-inconsolata)" },
+  { value: "lexend", label: "Lexend", desc: "readable sans", cssVar: "var(--font-lexend)" },
+  { value: "outfit", label: "Outfit", desc: "geometric sans", cssVar: "var(--font-outfit)" },
+  { value: "cascadia-code", label: "Cascadia Code", desc: "microsoft mono", cssVar: "var(--font-cascadia-code)" },
+  { value: "commit-mono", label: "Commit Mono", desc: "neutral mono", cssVar: "var(--font-commit-mono)" },
 ];
 
 interface UserResult {
