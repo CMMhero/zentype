@@ -1,5 +1,5 @@
 import { IconClock, IconTypography } from "@tabler/icons-react";
-import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group";
+import { cn } from "~/lib/utils";
 import {
   TIME_OPTIONS,
   WORD_OPTIONS,
@@ -23,60 +23,79 @@ export function ConfigBar({
 }: ConfigBarProps) {
   return (
     <div
-      className={`border-border bg-secondary/30 mx-auto flex w-fit flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-md border px-4 py-2 text-sm transition-opacity ${
-        locked ? "pointer-events-none opacity-15" : "opacity-100"
-      }`}
+      className={cn(
+        "mx-auto flex w-fit flex-wrap items-center justify-center gap-2 text-sm transition-all duration-300",
+        locked ? "pointer-events-none opacity-40" : "opacity-100"
+      )}
       role="toolbar"
       aria-label="test configuration"
     >
-      <ToggleGroup
-        type="single"
-        size="sm"
-        value={mode}
-        onValueChange={(v) => v && onChange({ mode: v as GameMode })}
-        aria-label="game mode"
-      >
-        <ToggleGroupItem value="time" className="gap-1.5" aria-label="time mode">
+      {/* Mode selector — pill style like Tabs */}
+      <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px]">
+        <ConfigButton
+          active={mode === "time"}
+          onClick={() => onChange({ mode: "time" })}
+          aria-label="time mode"
+        >
           <IconClock className="size-3.5" /> time
-        </ToggleGroupItem>
-        <ToggleGroupItem value="words" className="gap-1.5" aria-label="words mode">
+        </ConfigButton>
+        <ConfigButton
+          active={mode === "words"}
+          onClick={() => onChange({ mode: "words" })}
+          aria-label="words mode"
+        >
           <IconTypography className="size-3.5" /> words
-        </ToggleGroupItem>
-      </ToggleGroup>
+        </ConfigButton>
+      </div>
 
-      <span className="bg-border h-4 w-px" aria-hidden />
-
-      {mode === "time" ? (
-        <ToggleGroup
-          type="single"
-          size="sm"
-          value={String(duration)}
-          onValueChange={(v) => v && onChange({ duration: Number(v) })}
-          aria-label="duration"
-        >
-          {TIME_OPTIONS.map((t) => (
-            <ToggleGroupItem key={t} value={String(t)}>
-              {t}s
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-      ) : (
-        <ToggleGroup
-          type="single"
-          size="sm"
-          value={String(wordCount)}
-          onValueChange={(v) => v && onChange({ wordCount: Number(v) })}
-          aria-label="word count"
-        >
-          {WORD_OPTIONS.map((w) => (
-            <ToggleGroupItem key={w} value={String(w)}>
-              {w}w
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-      )}
-
-
+      {/* Variant selector — pill style like Tabs */}
+      <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px]">
+        {mode === "time"
+          ? TIME_OPTIONS.map((t) => (
+              <ConfigButton
+                key={t}
+                active={duration === t}
+                onClick={() => onChange({ duration: t })}
+                aria-label={`${t} seconds`}
+              >
+                {t}s
+              </ConfigButton>
+            ))
+          : WORD_OPTIONS.map((w) => (
+              <ConfigButton
+                key={w}
+                active={wordCount === w}
+                onClick={() => onChange({ wordCount: w })}
+                aria-label={`${w} words`}
+              >
+                {w}w
+              </ConfigButton>
+            ))}
+      </div>
     </div>
+  );
+}
+
+function ConfigButton({
+  active,
+  onClick,
+  children,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { active: boolean }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "inline-flex h-[calc(100%-2px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 text-sm font-medium transition-all duration-200",
+        active
+          ? "bg-background text-foreground shadow-sm"
+          : "text-muted-foreground hover:text-foreground",
+        props.className
+      )}
+      {...props}
+    >
+      {children}
+    </button>
   );
 }
