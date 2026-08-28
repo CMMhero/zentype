@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
   IconArrowLeft, IconAward, IconClock, IconGauge,
-  IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUser,
+  IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
@@ -77,11 +77,9 @@ export default function PublicProfilePage() {
           <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2">
             <div className="size-48 rounded-full bg-primary/5 blur-3xl" />
           </div>
-          <div className="relative">
-            <div className="bg-muted flex size-16 items-center justify-center rounded-2xl border border-border/50 backdrop-blur-sm">
-              <IconUser className="text-muted-foreground size-8" />
-            </div>
-          </div>
+          <span className="text-[120px] font-bold leading-none tracking-tighter text-muted/30 select-none">
+            ?
+          </span>
           <div className="flex flex-col items-center gap-2">
             <h1 className="text-xl font-semibold tracking-tight">user not found</h1>
             <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
