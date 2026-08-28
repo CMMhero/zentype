@@ -1,4 +1,4 @@
-# Zentype UI Style Guide
+# zentype UI Style Guide
 
 This document defines the consistent design patterns used across the zentype codebase. Follow these conventions when creating or modifying components.
 

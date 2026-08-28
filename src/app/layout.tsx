@@ -31,8 +31,8 @@ const themeBootstrapScript = `
 
 export const metadata: Metadata = {
   title: {
-    default: "Zentype — Typing Test",
-    template: "%s | Zentype",
+    default: "zentype — Typing Test",
+    template: "%s | zentype",
   },
   description:
     "Test your typing speed. See your WPM, accuracy, and consistency. Compete on leaderboards and track your progress over time.",
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "/",
-    siteName: "Zentype",
-    title: "Zentype — Typing Test",
+    siteName: "zentype",
+    title: "zentype — Typing Test",
     description:
       "Test your typing speed. See your WPM, accuracy, and consistency. Compete on leaderboards.",
     images: [
@@ -53,13 +53,13 @@ export const metadata: Metadata = {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "Zentype — Typing Test",
+        alt: "zentype — Typing Test",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zentype — Typing Test",
+    title: "zentype — Typing Test",
     description:
       "Test your typing speed. See your WPM, accuracy, and consistency.",
     images: ["/og.png"],
