@@ -30,10 +30,52 @@ const themeBootstrapScript = `
 `;
 
 export const metadata: Metadata = {
-  title: "zentype",
+  title: {
+    default: "Zentype — Free Online Typing Test",
+    template: "%s | Zentype",
+  },
   description:
-    "A minimal typing test. Track stats and climb leaderboards.",
-  icons: { icon: "/logo.svg" },
+    "Improve your typing speed with Zentype. Track WPM, accuracy, and consistency. Compete on global leaderboards, earn achievements, and climb levels. Free, fast, and keyboard-first.",
+  keywords: ["typing test", "typing speed", "wpm", "words per minute", "typing practice", "keyboard test", "typing game", "leaderboard"],
+  authors: [{ name: "CMMhero" }],
+  creator: "CMMhero",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.dev"),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "Zentype",
+    title: "Zentype — Free Online Typing Test",
+    description:
+      "Improve your typing speed with Zentype. Track WPM, accuracy, and consistency. Compete on global leaderboards and earn achievements.",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Zentype — Online Typing Test",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Zentype — Free Online Typing Test",
+    description:
+      "Improve your typing speed with Zentype. Track WPM, accuracy, and consistency.",
+    images: ["/og.png"],
+  },
+  icons: { icon: "/logo.svg", apple: "/logo.svg" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -42,10 +84,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="theme-color" content="#282828" />
+        <meta name="color-scheme" content="dark light" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <style dangerouslySetInnerHTML={{ __html: themeStyleSheet() }} id="zt-theme-vars" />
       </head>
-      <body>
+      <body className="antialiased">
         <TooltipProvider>
           <DynamicFavicon />
           <UserProvider user={user}>
