@@ -1,4 +1,4 @@
-import { IconTypography, IconClock, IconNumbers, IconAt } from "@tabler/icons-react";
+import { IconTypography, IconClock, IconHash, IconAt } from "@tabler/icons-react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import {
@@ -94,7 +94,7 @@ export function ConfigBar({
           onClick={() => onChange({ numbers: !numbers })}
           aria-label="toggle numbers"
         >
-          <IconNumbers className="size-3.5" /> nums
+          <IconHash className="size-3.5" /> nums
         </ConfigButton>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { IconPlayerSkipForward, IconAt, IconNumbers } from "@tabler/icons-react";
+import { IconPlayerSkipForward, IconAt, IconHash } from "@tabler/icons-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { WpmChart } from "~/components/charts/wpm-chart";
@@ -57,7 +57,7 @@ export function ResultView({ result, saveState, onNext }: ResultViewProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
-                <IconNumbers className="size-3" />
+                <IconHash className="size-3" />
               </Badge>
             </TooltipTrigger>
             <TooltipContent>numbers</TooltipContent>
