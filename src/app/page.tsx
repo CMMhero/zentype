@@ -312,15 +312,15 @@ export default function TestPage() {
             aria-live="polite"
             aria-atomic="true"
           >
-            <div className="flex items-baseline gap-5">
+            <div className="flex items-baseline gap-3 sm:gap-5">
               <div>
-                <span className="text-primary text-3xl font-bold tabular-nums">
+                <span className="text-primary text-2xl font-bold tabular-nums sm:text-3xl">
                   {engine.liveWpm}
                 </span>
                 <span className="text-muted-foreground ml-1 text-xs font-medium">wpm</span>
               </div>
               <div>
-                <span className="text-xl font-semibold tabular-nums">{engine.liveAcc}%</span>
+                <span className="text-lg font-semibold tabular-nums sm:text-xl">{engine.liveAcc}%</span>
                 <span className="text-muted-foreground ml-1 text-xs font-medium">acc</span>
               </div>
             </div>
@@ -385,8 +385,8 @@ export default function TestPage() {
 
           <div className={`mt-auto flex flex-col items-center gap-1.5 pt-4 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
             <p>press any key to start</p>
-            <p className="flex flex-wrap items-center justify-center gap-1.5">
-              <Kbd>tab</Kbd> new test <span>·</span> <Kbd>esc</Kbd> restart <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> command
+            <p className="flex flex-wrap items-center justify-center gap-1.5 px-2 text-center">
+              <Kbd>tab</Kbd> new test <span className="hidden sm:inline">·</span> <Kbd className="hidden sm:inline-flex">esc</Kbd><span className="hidden sm:inline"> restart</span> <span className="hidden sm:inline">·</span> <Kbd className="hidden sm:inline-flex">?</Kbd><span className="hidden sm:inline"> shortcuts</span> <span className="hidden sm:inline">·</span> <Kbd className="hidden sm:inline-flex">{isMac ? "cmd" : "ctrl"}+k</Kbd><span className="hidden sm:inline"> command</span>
             </p>
           </div>
         </>

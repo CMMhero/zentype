@@ -123,10 +123,10 @@ export default function LeaderboardPage() {
       </header>
 
       {!isLevel && (
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
             <Select value={mode} onValueChange={(v) => setParam("mode", v)}>
-              <SelectTrigger size="sm" className="w-28">
+              <SelectTrigger size="sm" className="w-24 sm:w-28">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -147,11 +147,11 @@ export default function LeaderboardPage() {
               </SelectContent>
             </Select>
           </div>
-          <Tabs value={period} onValueChange={(v) => setParam("period", v)}>
-            <TabsList>
-              <TabsTrigger value="all" className="gap-1.5"><IconCalendarMonth className="size-3.5" /> all time</TabsTrigger>
-              <TabsTrigger value="week" className="gap-1.5"><IconCalendar className="size-3.5" /> this week</TabsTrigger>
-              <TabsTrigger value="today" className="gap-1.5"><IconCalendar className="size-3.5" /> today</TabsTrigger>
+          <Tabs value={period} onValueChange={(v) => setParam("period", v)} className="w-full sm:w-auto">
+            <TabsList className="w-full sm:w-auto">
+              <TabsTrigger value="all" className="flex-1 gap-1.5 sm:flex-none"><IconCalendarMonth className="size-3.5" /> <span className="hidden xs:inline">all time</span><span className="xs:hidden">all</span></TabsTrigger>
+              <TabsTrigger value="week" className="flex-1 gap-1.5 sm:flex-none"><IconCalendar className="size-3.5" /> <span className="hidden xs:inline">this week</span><span className="xs:hidden">week</span></TabsTrigger>
+              <TabsTrigger value="today" className="flex-1 gap-1.5 sm:flex-none"><IconCalendar className="size-3.5" /> today</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>

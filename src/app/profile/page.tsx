@@ -210,7 +210,7 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
-      <header className="flex items-center justify-between">
+      <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconUserFilled className="text-primary size-5" /> profile
         </h1>
@@ -223,7 +223,7 @@ export default function ProfilePage() {
               asChild
             >
               <Link href={`/profile/${user.username}`}>
-                <IconExternalLink className="size-3.5" /> view public profile
+                <IconExternalLink className="size-3.5" /> <span className="hidden sm:inline">view public profile</span><span className="sm:hidden">profile</span>
               </Link>
             </Button>
             <Button
@@ -240,7 +240,7 @@ export default function ProfilePage() {
                 }
               }}
             >
-              <IconLink className="size-3.5" /> copy link
+              <IconLink className="size-3.5" /> <span className="hidden sm:inline">copy link</span><span className="sm:hidden">copy</span>
             </Button>
           </div>
         )}
@@ -304,7 +304,7 @@ export default function ProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {ALL_BOARDS.map((board) => {
                 const wpm = stats?.bestByBoard?.[board];
                 const rank = boardRanks?.[board];
@@ -449,7 +449,7 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="px-4">
           {achievements === null ? (
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {Array.from({ length: 8 }).map((_, i) => (
                 <Skeleton key={i} className="h-28 w-full rounded-lg" />
               ))}

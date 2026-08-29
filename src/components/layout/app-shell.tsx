@@ -75,7 +75,7 @@ export function AppShell({
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col pb-14 md:pb-0">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground">
         Skip to content
       </a>
@@ -144,8 +144,28 @@ export function AppShell({
 
       <main id="main-content" className="flex flex-1 flex-col" role="main">{children}</main>
 
-      <footer className="text-muted-foreground mt-auto" role="contentinfo">
-        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-[11px]">
+      {/* Mobile bottom nav */}
+      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation">
+        <div className="flex h-14 items-center justify-around">
+          {NAV.map((item) => {
+            const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+            return (
+              <Link
+                key={item.to}
+                href={item.to}
+                aria-label={item.label}
+                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 transition-colors ${active ? "text-primary" : "text-muted-foreground"}`}
+              >
+                <item.icon className="size-5" stroke={active ? 2 : 1.5} />
+                <span className="text-[10px]">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+
+      <footer className="text-muted-foreground mt-auto hidden md:block" role="contentinfo">
+        <div className="mx-auto flex w-full max-w-5xl items-center gap-x-4 gap-y-2 px-4 py-3 text-[11px]">
           <span className="flex items-center gap-2">
             <span>Made by <a href="https://cmmhero.top" target="_blank" rel="noreferrer" className="hover:text-foreground underline underline-offset-2">CMMhero</a></span>
             <span className="text-muted-foreground/50">·</span>

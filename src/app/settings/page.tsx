@@ -78,7 +78,7 @@ export default function SettingsPage() {
                 <Switch checked={settings.sound.enabled} onCheckedChange={(v) => update({ sound: { ...settings.sound, enabled: v } })} />
               </SettingRow>
               <SettingRow label="volume">
-                <Slider className="w-40" min={0} max={100} value={[Math.round(settings.sound.volume * 100)]} onValueChange={([v]) => update({ sound: { ...settings.sound, volume: v / 100 } })} />
+                <Slider className="w-32 sm:w-40" min={0} max={100} value={[Math.round(settings.sound.volume * 100)]} onValueChange={([v]) => update({ sound: { ...settings.sound, volume: v / 100 } })} />
               </SettingRow>
               <SettingRow label="variant">
                 <div className="flex items-center gap-2">
