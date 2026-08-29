@@ -79,7 +79,7 @@ export function AppShell({
   }
 
   return (
-    <div className="flex min-h-screen flex-col pb-14 md:pb-0">
+    <div className="flex min-h-dvh flex-col md:min-h-screen">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground">
         Skip to content
       </a>
@@ -146,13 +146,13 @@ export function AppShell({
         </div>
       </header>
 
-      <main id="main-content" className="flex flex-1 flex-col" role="main">{children}</main>
+      <main id="main-content" className="flex flex-1 flex-col pb-14 md:pb-0" role="main">{children}</main>
 
       <CommandPalette />
       <HelpDialog />
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation">
+      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <div className="flex h-14 items-center justify-around">
           {NAV.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
