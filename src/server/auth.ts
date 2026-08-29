@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { getSupabaseServerClient } from "~/lib/supabase/server";
 import type { SessionUser } from "~/lib/types";
 
@@ -45,6 +46,20 @@ export async function getSessionUser(): Promise<SessionUser | null> {
 
 export type AuthProvider = "github" | "google" | "discord";
 
+async function getOrigin(): Promise<string> {
+  // 1. Explicit env var (set in Vercel dashboard)
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  // 2. Derive from request headers (works on Vercel, Railway, etc.)
+  try {
+    const h = await headers();
+    const host = h.get("host") ?? "localhost:3000";
+    const proto = h.get("x-forwarded-proto") ?? "https";
+    return `${proto}://${host}`;
+  } catch {
+    return "http://localhost:3123";
+  }
+}
+
 export async function signInWithProvider(
   provider: AuthProvider,
 ): Promise<{ url: string | null; error: string | null }> {
@@ -55,7 +70,7 @@ export async function signInWithProvider(
   const { data: res, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3123"}/auth/callback`,
+      redirectTo: `${await getOrigin()}/auth/callback`,
       skipBrowserRedirect: true,
     },
   });
