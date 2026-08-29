@@ -59,7 +59,7 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconKeyboard className="size-5" />}
               title="typing modes"
-              description="Time-based (15s to 120s) and word-count modes with configurable options like blind mode, stop on error, and strict space."
+              description="Time-based (15s to 120s) and word-count modes with configurable options like blind mode, stop on error, and strict space. Mobile-first responsive design."
             />
             <FeatureCard
               icon={<IconChartBar className="size-5" />}
@@ -79,7 +79,7 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconPalette className="size-5" />}
               title="customization"
-              description="81 themes, 50 fonts, multiple caret styles, virtual keyboard, and sound effects. Make it yours."
+              description="81 themes, 50 fonts, multiple caret styles, virtual keyboard, sound effects, and a command palette. Make it yours."
             />
             <FeatureCard
               icon={<IconBrandGithub className="size-5" />}

@@ -7,7 +7,7 @@
 └──────────────────────────────────────────────┘
 ```
 
-A full-stack typing test built on **Next.js** — customizable, clean, and gamified. Inspired by monkeytype. 81 themes, 50 fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
+A full-stack typing test built on **Next.js** — customizable, clean, and gamified. Inspired by monkeytype. Mobile-first design with 81 themes, 50 fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
 
 [![Discord](https://img.shields.io/discord/YOUR_SERVER_ID?label=discord&logo=discord&logoColor=white)](https://discord.gg/zentype)
 [![GitHub](https://img.shields.io/github/stars/CMMhero/zentype?logo=github)](https://github.com/CMMhero/zentype)
@@ -20,12 +20,13 @@ A full-stack typing test built on **Next.js** — customizable, clean, and gamif
 - monkeytype-accurate math: net/raw WPM, keystroke accuracy, kogasa consistency, per-second timeline
 - `stopOnError`, `strictSpace`, `freeBackspace`, `blindMode`, `hideLiveStats`
 - WebAudio keystroke sounds (click / thock / beep) with volume + error sound — no assets
-- virtual keyboard, 4 caret styles + smooth caret, 1–3 visible lines, 17 font families
+- virtual keyboard, 4 caret styles + smooth caret, 1–3 visible lines, 50 fonts
 - live WPM/acc, progress bar, word history + current input with per-char coloring
+- **mobile-first** responsive design with bottom navigation, optimized touch targets
 
 **Gamification**
 - **XP & levels**: `wpm * 0.5 * accuracy * mode bonus * streak bonus` (+20 perfect bonus), 500 XP per level
-- **90+ achievements** in tiers: tests, WPM, accuracy, consistency, streak, time, chars, per-board, averages, level, account age
+- **110+ achievements** in tiers: tests, WPM, accuracy, consistency, streak, time, chars, per-board, averages, level, account age
 - every achievement shows real progress (`pct(current/target)`) — streak `max(current,longest)/target`, boards via `bestByBoard`, accuracy/consistency via best single test
 - Trophy UI (`achievement-grid` for cards, `achievement-list` for the see-all dialog) with clear unlocked (primary + check) vs locked (muted + grayscale) styling
 - XP awarded silently in background via `processTestResult` — no toast/popup blocking chained tests
@@ -69,6 +70,7 @@ A full-stack typing test built on **Next.js** — customizable, clean, and gamif
 - 81 themes via `[data-theme]` CSS vars — gruvbox, nord, dracula, tokyo night, catppuccin mocha/latte, everforest, rosé pine/moon/dawn, serika dark, matrix, amber terminal, paper, one dark, monokai, kanagawa, github dark, solarized dark, cyberpunk, ayu mirage, tokyo night storm, cobalt, mocha light, jellybeans, and 58 more
 - 50 fonts (`data-font` on `<html>`, `@fontsource-variable/*`): geist-mono, inter, jetbrains-mono, dm-sans, space-grotesk, nunito-sans, work-sans, playfair-display, lora, merriweather, fira-code, cabin, josefin, bitter, crimson-pro, roboto-flex, ibm-plex-sans, cascadia-code, commit-mono, victor-mono, and 30 more
 - Tailwind CSS v4, shadcn/ui, Recharts 3, Tabler icons
+- Dynamic favicon with theme colors
 
 ## Stack
 
@@ -121,10 +123,14 @@ UPSTASH_REDIS_REST_TOKEN=
 src/
 ├── app/
 │   ├── page.tsx                 # test engine + config bar + result
+│   ├── about/page.tsx           # about page with stats and features
 │   ├── leaderboard/page.tsx     # filters (mode/variant/period) + rankings
 │   ├── profile/page.tsx         # own dashboard (level, stats, bests, charts, achievements, streak, history)
 │   ├── profile/[username]/      # public profile (same cards + join date)
 │   ├── settings/page.tsx        # sound, typing rules, theme/font/display, account
+│   ├── terms/page.tsx           # terms of service
+│   ├── privacy/page.tsx         # privacy policy
+│   ├── sitemap.ts               # dynamic sitemap generation
 │   └── auth/callback/route.ts   # PKCE exchange
 ├── components/
 │   ├── ui/                      # shadcn primitives + Trophy: achievement-{grid,list,badge,unlocked}, streak-{calendar,card}, leaderboard-*
@@ -154,6 +160,9 @@ src/
 │   ├── results-store.ts         # guest queue
 │   └── ui-store.ts              # palette/help open
 └── styles/                      # app/globals.css (+ [data-font] + [data-theme] vars)
+public/
+├── robots.txt               # crawler rules for search engines and AI bots
+└── og.png                   # open graph image
 supabase/migrations/
 ├── 0001_init.sql        # profiles, test_results, RLS, handle_new_user trigger
 ├── 0002_user_settings.sql

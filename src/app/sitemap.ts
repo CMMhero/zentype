@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.dev";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.cmmhero.top";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [

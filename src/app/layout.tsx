@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   authors: [{ name: "CMMhero", url: "https://cmmhero.top" }],
   creator: "CMMhero",
   publisher: "zentype",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.dev"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.cmmhero.top"),
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -102,7 +102,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     "@type": "WebApplication",
     name: "zentype",
     description: "A customizable, clean typing test with leaderboards, achievements, and progress tracking.",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.dev",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.cmmhero.top",
     applicationCategory: "GameApplication",
     operatingSystem: "Web",
     offers: {
