@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IconKeyboardFilled, IconTrophy, IconAward, IconChartBar, IconPalette, IconBrandGithub } from "@tabler/icons-react";
+import { IconInfoCircleFilled, IconKeyboard, IconKeyboardFilled, IconTrophy, IconAward, IconChartBar, IconPalette, IconBrandGithub } from "@tabler/icons-react";
 import { getPublicStats } from "~/server/results";
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default async function AboutPage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <ZentypeIcon className="text-primary size-5" /> about zentype
+          <IconInfoCircleFilled className="text-primary size-5" /> about zentype
         </h1>
       </header>
 
@@ -42,7 +42,7 @@ export default async function AboutPage() {
             <StatCard label="users" value={stats?.totalUsers ?? 0} />
             <StatCard label="tests typed" value={stats?.totalTests ?? 0} />
             <StatCard label="hours typed" value={stats?.totalHours ?? 0} />
-            <StatCard label="xp earned" value={stats?.totalAchievements ?? 0} />
+            <StatCard label="xp earned" value={stats?.totalXpEarned ?? 0} />
           </div>
         </section>
 
@@ -50,7 +50,7 @@ export default async function AboutPage() {
           <h2 className="text-base font-semibold">features</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <FeatureCard
-              icon={<IconKeyboardFilled className="size-5" />}
+              icon={<IconKeyboard className="size-5" />}
               title="typing modes"
               description="Time-based (15s to 120s) and word-count modes with configurable options like blind mode, stop on error, and strict space."
             />
@@ -116,7 +116,7 @@ function StatCard({ label, value }: { label: string; value: number }) {
       <div className="text-xl font-bold tabular-nums text-primary">
         {value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toLocaleString()}
       </div>
-      <div className="text-muted-foreground mt-1 text-[10px] tracking-wider uppercase">{label}</div>
+      <div className="text-muted-foreground mt-1 text-[10px] tracking-wider">{label}</div>
     </div>
   );
 }
