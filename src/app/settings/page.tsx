@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-  IconAlertTriangle, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboardFilled,
+  IconAlertTriangle, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboard, IconSettingsFilled,
   IconPalette, IconPlayerPlay, IconRefresh, IconUser, IconVolume,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -39,7 +39,7 @@ export default function SettingsPage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconKeyboardFilled className="text-primary size-5" /> settings
+          <IconSettingsFilled className="text-primary size-5" /> settings
         </h1>
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -62,16 +62,16 @@ export default function SettingsPage() {
         </AlertDialog>
       </header>
 
-      <Tabs defaultValue="gameplay" className="gap-4">
+      <Tabs defaultValue="gameplay" className="w-full min-w-0 gap-4">
         <TabsList className="w-full sm:w-fit">
           <TabsTrigger value="gameplay" className="flex-1 sm:flex-none"><IconDeviceGamepad2 className="size-4" /> gameplay</TabsTrigger>
           <TabsTrigger value="appearance" className="flex-1 sm:flex-none"><IconPalette className="size-4" /> appearance</TabsTrigger>
           <TabsTrigger value="account" className="flex-1 sm:flex-none"><IconUser className="size-4" /> account</TabsTrigger>
-          <TabsTrigger value="keybinds" className="flex-1 sm:flex-none"><IconKeyboardFilled className="size-4" /> keybinds</TabsTrigger>
+          <TabsTrigger value="keybinds" className="flex-1 sm:flex-none"><IconKeyboard className="size-4" /> keybinds</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="gameplay" className="flex flex-col gap-4 outline-none">
-          <Card className="py-4">
+        <TabsContent value="gameplay" className="flex w-full flex-col gap-4 outline-none">
+          <Card className="w-full py-4">
             <SectionTitle icon={<IconVolume className="size-4" />} title="sound feedback" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
               <SettingRow label="enabled" hint="play sounds when you type">
@@ -106,7 +106,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="py-4">
+          <Card className="mt-4 w-full py-4">
             <SectionTitle icon={<IconDeviceGamepad2 className="size-4" />} title="typing rules" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
               <SettingRow label="stop on error" hint="pause until you fix the wrong letter">
@@ -128,24 +128,24 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="appearance" className="flex flex-col gap-4 outline-none">
-          <Card className="py-4">
+        <TabsContent value="appearance" className="flex min-w-0 flex-col gap-4 outline-none">
+          <Card className="w-full min-w-0 py-4">
             <SectionTitle icon={<IconPalette className="size-4" />} title="theme" />
             <CardContent className="grid grid-cols-2 gap-2 px-4 sm:grid-cols-3 md:grid-cols-4">
               {[...THEMES].sort((a, b) => a.label.localeCompare(b.label)).map((t) => (
-                <button key={t.id} onClick={() => update({ themeId: t.id })} className={`border-border hover:border-primary flex items-center gap-2 rounded-md border p-2 text-left transition-colors ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : ""}`}>
+                <Button key={t.id} variant="outline" onClick={() => update({ themeId: t.id })} className={`h-auto w-full min-w-0 justify-start gap-2 rounded-md border-border bg-transparent p-2 text-left shadow-none hover:bg-transparent ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : "hover:border-primary"}`}>
                   <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
                     <span className="size-5" style={{ background: t.vars["--background"] }} />
                     <span className="size-5" style={{ background: t.vars["--primary"] }} />
                     <span className="size-5" style={{ background: t.vars["--zt-sub"] }} />
                   </span>
-                  <span className="truncate text-xs">{t.label}</span>
-                </button>
+                  <span className="min-w-0 flex-1 truncate text-xs">{t.label}</span>
+                </Button>
               ))}
             </CardContent>
           </Card>
 
-          <Card className="py-4">
+          <Card className="w-full py-4">
             <SectionTitle icon={<IconEye className="size-4" />} title="display" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
               <SettingRow label="caret style">
@@ -191,14 +191,14 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="account" className="flex flex-col gap-4 outline-none">
+        <TabsContent value="account" className="flex w-full flex-col gap-4 outline-none">
           {user ? (
             <>
               <AccountCard username={user.username} email={user.email} />
               <DataCard signedIn />
             </>
           ) : (
-            <Card className="py-6">
+            <Card className="w-full py-6">
               <CardContent className="flex flex-col items-center gap-3 px-4 text-center">
                 <IconUser className="text-muted-foreground size-6" />
                 <p className="text-muted-foreground text-sm">You're typing as a guest. Results live in this browser only.</p>
@@ -210,8 +210,8 @@ export default function SettingsPage() {
           {!user && <GuestDataCard />}
         </TabsContent>
 
-        <TabsContent value="keybinds" className="outline-none">
-          <Card className="py-4">
+        <TabsContent value="keybinds" className="w-full outline-none">
+          <Card className="w-full py-4">
             <CardContent className="px-4">
               <div className="grid gap-x-8 gap-y-1 sm:grid-cols-2">
                 {KEYBINDS.map(([keys, action]) => (
@@ -250,13 +250,13 @@ function AccountCard({ username, email }: { username: string; email: string }) {
   }
 
   return (
-    <Card className="py-4">
+    <Card className="w-full py-4">
       <SectionTitle icon={<IconUser className="size-4" />} title="profile" />
       <CardContent className="mt-3 flex flex-col gap-3 px-4">
         <div className="grid gap-1">
           <Label htmlFor="username" className="text-xs">display name</Label>
           <div className="flex gap-2">
-            <Input id="username" value={value} onChange={(e) => setValue(e.target.value)} maxLength={24} className="max-w-64 font-mono" />
+            <Input id="username" value={value} onChange={(e) => setValue(e.target.value)} maxLength={24} className="max-w-64" />
             <Button size="sm" onClick={save} disabled={saving || value === username}>{saving ? "saving…" : "save"}</Button>
           </div>
           <p className="text-muted-foreground mt-1 text-[11px]">3–24 characters · letters, numbers and underscores · shown on leaderboards</p>
@@ -281,7 +281,7 @@ function DataExportCard() {
     URL.revokeObjectURL(url);
   }
   return (
-    <Card className="py-4">
+    <Card className="w-full py-4">
       <SectionTitle icon={<IconDownload className="size-4" />} title="your data" />
       <CardContent className="mt-3 px-4">
         <p className="text-muted-foreground mb-3 text-sm">download everything stored for you</p>
@@ -296,7 +296,7 @@ function GuestDataCard() {
   const clearLocal = useResultsStore((s) => s.clearLocal);
   if (local.length === 0) return null;
   return (
-    <Card className="py-4">
+    <Card className="w-full py-4">
       <SectionTitle icon={<IconAlertTriangle className="size-4" />} title={`local guest queue (${local.length} result${local.length === 1 ? "" : "s"})`} />
       <CardContent className="mt-3 px-4">
         <p className="text-muted-foreground mb-3 text-sm">these will sync automatically when you log in.</p>
@@ -325,7 +325,7 @@ function GuestDataCard() {
 function DataCard({ signedIn }: { signedIn: boolean }) {
   if (!signedIn) return null;
   return (
-    <Card className="border-destructive/40 py-4">
+    <Card className="w-full border-destructive/40 py-4">
       <SectionTitle icon={<IconAlertTriangle className="size-4 text-destructive" />} title="danger zone" />
       <CardContent className="mt-3 px-4">
         <AlertDialog>
