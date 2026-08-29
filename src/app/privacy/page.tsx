@@ -30,7 +30,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-base font-semibold">1. data we collect</h2>
           <ul className="text-muted-foreground mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed">
-            <li><strong>Account</strong>: email, username, avatar URL via Supabase Auth (GitHub/Google OAuth). Stored in <code>profiles</code>.</li>
+            <li><strong>Account</strong>: email, username, avatar URL via Supabase Auth (GitHub/Google/Discord OAuth). Stored in <code>profiles</code>.</li>
             <li><strong>Typing results</strong>: WPM, accuracy, consistency, chars, timeline, mode/variant, timestamp in <code>test_results</code>.</li>
             <li><strong>Gamification</strong>: XP, level, achievements, streaks in <code>user_points</code>/<code>point_events</code>/<code>user_achievements</code>.</li>
             <li><strong>Settings</strong>: theme, font, gameplay prefs in <code>user_settings</code> (jsonb).</li>
