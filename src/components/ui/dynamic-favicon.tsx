@@ -16,6 +16,19 @@ function hexToRgb(hex: string): string {
   return `rgb(${r},${g},${b})`;
 }
 
+function cleanForFavicon(raw: string): string {
+  // Strip XML declaration, DOCTYPE, and convert width/height to fixed 32px
+  return raw
+    .replace(/<\?xml[\s\S]*?\?>\s*/gi, "")
+    .replace(/<!DOCTYPE[\s\S]*?>\s*/gi, "")
+    .replace(/xmlns:serif="[^"]*"\s*/g, "")
+    .replace(/xml:space="[^"]*"\s*/g, "")
+    .replace(/xmlns:xlink="[^"]*"\s*/g, "")
+    .replace(/width="100%"/g, 'width="32"')
+    .replace(/height="100%"/g, 'height="32"')
+    .trim();
+}
+
 export function DynamicFavicon() {
   const themeId = useSettingsStore((s) => s.settings.themeId);
   const prevUrlRef = useRef<string | null>(null);
@@ -25,11 +38,12 @@ export function DynamicFavicon() {
     let cancelled = false;
 
     async function run() {
-      // Fetch logo.svg once, cache the raw text
+      // Fetch logo.svg once, cache the cleaned text
       if (!svgCacheRef.current) {
         try {
           const res = await fetch("/logo.svg");
-          svgCacheRef.current = await res.text();
+          const raw = await res.text();
+          svgCacheRef.current = cleanForFavicon(raw);
         } catch {
           return;
         }
