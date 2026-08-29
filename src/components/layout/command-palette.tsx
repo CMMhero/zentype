@@ -51,7 +51,6 @@ const FONT_FAMILIES: { value: FontFamily; label: string; desc: string; cssVar: s
   { value: "anonymous-pro", label: "Anonymous Pro", desc: "typewriter mono", cssVar: "var(--font-anonymous-pro)" },
   { value: "archivo", label: "Archivo", desc: "grotesque sans", cssVar: "var(--font-archivo)" },
   { value: "barlow", label: "Barlow", desc: "neo-grotesk sans", cssVar: "var(--font-barlow)" },
-  { value: "bebas-neue", label: "Bebas Neue", desc: "condensed display", cssVar: "var(--font-bebas-neue)" },
   { value: "bricolage-grotesque", label: "Bricolage Grotesque", desc: "variable grotesk", cssVar: "var(--font-bricolage-grotesque)" },
   { value: "bitter", label: "Bitter", desc: "slab serif", cssVar: "var(--font-bitter)" },
   { value: "cal-sans", label: "Cal Sans", desc: "geometric display", cssVar: "var(--font-cal-sans)" },
