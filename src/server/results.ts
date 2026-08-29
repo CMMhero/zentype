@@ -414,7 +414,7 @@ export async function searchUsers(
 export async function getPublicStats(): Promise<{
   totalUsers: number;
   totalTests: number;
-  totalHours: number;
+  totalSeconds: number;
   totalXpEarned: number;
 } | null> {
   const supabase = await getSupabasePublicClient();
@@ -458,7 +458,7 @@ export async function getPublicStats(): Promise<{
     return {
       totalUsers: totalUsers ?? 0,
       totalTests: totalTests ?? 0,
-      totalHours: Math.round(totalSeconds / 3600),
+      totalSeconds,
       totalXpEarned,
     };
   } catch {

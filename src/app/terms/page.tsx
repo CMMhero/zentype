@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IconFileTextFilled } from "@tabler/icons-react";
+import { IconFileTextFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "Terms of Service | zentype",
