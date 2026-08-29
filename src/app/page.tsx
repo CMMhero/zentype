@@ -22,6 +22,18 @@ import { mergeLocalResults, saveResult } from "~/server/results";
 import { processTestResult } from "~/server/gamification";
 import { useUser } from "~/components/user-provider";
 import type { GameSettings, TestResult } from "~/lib/types";
+import { lcGet } from "~/lib/client-cache";
+import type { AggregatedStats } from "~/server/results";
+
+/** Check if a result is a personal best by comparing against cached stats */
+function isResultPB(result: TestResult): boolean {
+  const stats = lcGet<AggregatedStats>("profile-stats", 5 * 60 * 1000);
+  if (!stats) return false;
+  const board = `${result.mode}:${result.variant}`;
+  const best = stats.bestByBoard[board];
+  if (best === undefined) return true; // no previous result on this board
+  return result.wpm > best;
+}
 
 export default function TestPage() {
   const user = useUser();
@@ -304,6 +316,7 @@ export default function TestPage() {
             <ResultView
               result={result}
               saveState={saveState}
+              isPB={isResultPB(result)}
               onNext={() => restartRef.current()}
             />
           </div>

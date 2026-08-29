@@ -689,7 +689,7 @@ export default function ProfilePage() {
                   </span>
                 </DialogTitle>
                 <DialogDescription>
-                  <div className="flex items-center justify-between gap-2">
+                  <span className="flex items-center justify-between gap-2">
                     <span className="inline-flex items-center gap-1.5">
                       <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
                         {modeLabel(selected)}
@@ -716,7 +716,7 @@ export default function ProfilePage() {
                       )}
                     </span>
                     <span className="shrink-0 text-xs text-muted-foreground">{new Date(selected.createdAt).toLocaleString()}</span>
-                  </div>
+                  </span>
                 </DialogDescription>
               </DialogHeader>
               <WpmChart timeline={selected.timeline} compact />
