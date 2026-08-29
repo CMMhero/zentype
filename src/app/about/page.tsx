@@ -74,12 +74,12 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconAward className="size-5" />}
               title="achievements"
-              description="110+ achievements across categories like speed, accuracy, consistency, streaks, and more. Earn XP and level up."
+              description="100+ achievements across categories like speed, accuracy, consistency, streaks, and more. Earn XP and level up."
             />
             <FeatureCard
               icon={<IconPalette className="size-5" />}
               title="customization"
-              description="81 themes, 50 fonts, multiple caret styles, virtual keyboard, sound effects, and a command palette. Make it yours."
+              description="80+ themes, 50+ fonts, multiple caret styles, virtual keyboard, sound effects, and a command palette. Make it yours."
             />
             <FeatureCard
               icon={<IconBrandGithub className="size-5" />}
