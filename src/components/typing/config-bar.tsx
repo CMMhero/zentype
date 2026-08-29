@@ -37,7 +37,7 @@ export function ConfigBar({
     >
       <div className="grid w-full grid-cols-[1fr_2fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
         {/* Mode selector — pill style like Tabs */}
-        <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px] sm:w-auto">
+        <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-px rounded-lg p-[3px] sm:w-auto">
           <ConfigButton
             active={mode === "time"}
             onClick={() => onChange({ mode: "time" })}
@@ -55,7 +55,7 @@ export function ConfigBar({
         </div>
 
         {/* Variant selector — pill style like Tabs, responsive width */}
-        <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px] sm:w-64">
+        <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-px rounded-lg p-[3px] sm:w-64">
           {mode === "time"
             ? TIME_OPTIONS.map((t) => (
                 <ConfigButton
@@ -81,7 +81,7 @@ export function ConfigBar({
       </div>
 
       {/* Punctuation & numbers toggles */}
-      <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px]">
+      <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-px rounded-lg p-[3px]">
         <ConfigButton
           active={punctuation}
           onClick={() => onChange({ punctuation: !punctuation })}
