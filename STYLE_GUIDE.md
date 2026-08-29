@@ -35,10 +35,12 @@ This document defines the consistent design patterns used across the zentype cod
 - **Normal for descriptions**: `font-normal` — Secondary info
 
 ### Typography Patterns
-- **Section headers**: `text-xs font-semibold tracking-widest uppercase text-muted-foreground`
+- **Card titles**: `text-sm font-semibold tracking-wider` (lowercase)
+- **Section headers**: `text-sm font-semibold tracking-wider` (lowercase)
 - **Stats values**: `text-xl font-bold tabular-nums text-primary`
-- **Badges/labels**: `text-[10px] font-bold tracking-widest uppercase`
-- **Small labels**: `text-[10px] tracking-wider uppercase text-muted-foreground`
+- **Stat card labels**: `text-sm font-semibold tracking-wider` (lowercase)
+- **Badges/labels**: `text-[10px] font-bold tracking-widest`
+- **Small labels**: `text-[10px] tracking-wider text-muted-foreground`
 
 ## Spacing & Layout
 
@@ -150,16 +152,25 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 
 ### Header
 - **Height**: `h-12`
-- **Background**: `bg-background/95` with `backdrop-blur`
-- **Border**: `border-b border-border/60`
+- **Background**: `bg-background/80` with `backdrop-blur-xl`
+- **Border**: none (removed for cleaner look)
 - **Max width**: `max-w-5xl`
 
-### Footer
-- **Background**: `bg-secondary/40`
-- **Border**: `border-t border-border/60`
-- **Text size**: `text-[11px]`
+### Mobile Bottom Nav
+- **Fixed**: `fixed inset-x-0 bottom-0 z-50`
+- **Height**: `h-14`
+- **Background**: `bg-background/95` with `backdrop-blur-xl`
+- **Border**: `border-t border-border/40`
+- **Items**: Icon + label, `flex-col items-center gap-0.5`
+- **Active**: `text-primary`
 
-### Navigation Links
+### Footer
+- **Background**: `bg-background`
+- **Text size**: `text-[11px]`
+- **Centered on mobile**: `justify-center sm:justify-start`
+- **Theme/font pickers**: hidden on mobile
+
+### Navigation Links (Desktop)
 - **Active**: `text-primary`
 - **Inactive**: `text-muted-foreground hover:text-foreground hover:bg-muted`
 - **Padding**: `p-1.5`
