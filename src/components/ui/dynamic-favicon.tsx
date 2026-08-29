@@ -42,7 +42,7 @@ export function DynamicFavicon() {
       const bg = hexToRgb(theme.vars["--background"]);
 
       // Replace original colors with theme colors
-      let svg = svgCacheRef.current!
+      const svg = svgCacheRef.current!
         .replaceAll(ORIGINAL_BG, bg)
         .replaceAll(ORIGINAL_FG, fg);
 
