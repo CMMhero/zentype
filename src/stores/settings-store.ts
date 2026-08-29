@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS: GameSettings = {
   caretStyle: "block",
   smoothCaret: true,
   fontSize: "lg",
-  fontFamily: "geist-mono",
+  fontFamily: "work-sans",
   showKeyboard: false,
   visibleLines: 3,
   hideLiveStats: false,
