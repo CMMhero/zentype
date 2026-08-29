@@ -149,15 +149,18 @@ export default function SettingsPage() {
             <SectionTitle icon={<IconEye className="size-4" />} title="display" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
               <SettingRow label="caret style">
-                <Select value={settings.caretStyle} onValueChange={(v) => update({ caretStyle: v as CaretStyle })}>
-                  <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="line">line</SelectItem>
-                    <SelectItem value="block">block</SelectItem>
-                    <SelectItem value="underline">underline</SelectItem>
-                    <SelectItem value="off">off</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center gap-3">
+                  <CaretPreview style={settings.caretStyle} />
+                  <Select value={settings.caretStyle} onValueChange={(v) => update({ caretStyle: v as CaretStyle })}>
+                    <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="line">line</SelectItem>
+                      <SelectItem value="block">block</SelectItem>
+                      <SelectItem value="underline">underline</SelectItem>
+                      <SelectItem value="off">off</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </SettingRow>
               <SettingRow label="smooth caret" hint="animate caret movement between chars">
                 <Switch checked={settings.smoothCaret} onCheckedChange={(v) => update({ smoothCaret: v })} />
@@ -367,6 +370,29 @@ function SettingRow({ label, hint, children }: { label: string; hint?: string; c
         {hint && <p className="text-muted-foreground text-xs leading-snug">{hint}</p>}
       </div>
       <div className="shrink-0">{children}</div>
+    </div>
+  );
+}
+
+function CaretPreview({ style }: { style: CaretStyle }) {
+  return (
+    <div className="bg-muted/50 flex h-9 w-16 items-center justify-center rounded border border-border/50">
+      {style === "off" ? (
+        <span className="text-muted-foreground text-[10px]">none</span>
+      ) : (
+        <div className="relative">
+          <span className="text-sm font-medium">Aa</span>
+          {style === "line" && (
+            <div className="zt-caret-blink bg-primary absolute top-0 h-4 w-0.5 rounded-full" style={{ left: "50%" }} />
+          )}
+          {style === "block" && (
+            <div className="zt-caret-blink bg-primary/40 absolute inset-0 rounded-sm" />
+          )}
+          {style === "underline" && (
+            <div className="zt-caret-blink bg-primary absolute bottom-0 h-0.5 w-full rounded-full" />
+          )}
+        </div>
+      )}
     </div>
   );
 }
