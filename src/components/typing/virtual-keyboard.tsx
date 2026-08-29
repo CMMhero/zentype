@@ -11,41 +11,68 @@ const ALL_KEYS = new Set([
   " ",
 ]);
 
+const ACTIVE_CLASSES = ["border-primary", "bg-primary", "text-primary-foreground", "scale-95"];
+const INACTIVE_CLASSES = ["border-border", "bg-card", "text-muted-foreground"];
+
+function activateEl(el: HTMLElement | null) {
+  if (!el) return;
+  el.dataset.active = "true";
+  el.classList.add(...ACTIVE_CLASSES);
+  el.classList.remove(...INACTIVE_CLASSES);
+}
+
+function deactivateEl(el: HTMLElement | null) {
+  if (!el) return;
+  el.dataset.active = "false";
+  el.classList.remove(...ACTIVE_CLASSES);
+  el.classList.add(...INACTIVE_CLASSES);
+}
+
+function clearAllKeys(container: HTMLDivElement | null, active: Set<string>) {
+  if (!container || active.size === 0) return;
+  for (const key of active) {
+    const sel = key === " " ? "[data-key=\"space\"]" : `[data-key="${key}"]`;
+    deactivateEl(container.querySelector<HTMLElement>(sel));
+  }
+  active.clear();
+}
+
 export function VirtualKeyboard() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const activeRef = useRef<string | null>(null);
+  const activeRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const onDown = (e: KeyboardEvent) => {
       const key = e.key === " " ? " " : e.key.toLowerCase();
       if (!ALL_KEYS.has(key)) return;
-      if (activeRef.current === key) return; // already highlighted
-      activeRef.current = key;
-      const el = containerRef.current?.querySelector<HTMLElement>(`[data-key="${key === " " ? "space" : key}"]`);
-      if (el) {
-        el.dataset.active = "true";
-        el.classList.add("border-primary", "bg-primary", "text-primary-foreground", "scale-95");
-        el.classList.remove("border-border", "bg-card", "text-muted-foreground");
-      }
+      if (activeRef.current.has(key)) return;
+      activeRef.current.add(key);
+      const sel = key === " " ? "[data-key=\"space\"]" : `[data-key="${key}"]`;
+      activateEl(containerRef.current?.querySelector<HTMLElement>(sel) ?? null);
     };
 
     const onUp = (e: KeyboardEvent) => {
       const key = e.key === " " ? " " : e.key.toLowerCase();
-      if (activeRef.current !== key) return;
-      activeRef.current = null;
-      const el = containerRef.current?.querySelector<HTMLElement>(`[data-key="${key === " " ? "space" : key}"]`);
-      if (el) {
-        el.dataset.active = "false";
-        el.classList.remove("border-primary", "bg-primary", "text-primary-foreground", "scale-95");
-        el.classList.add("border-border", "bg-card", "text-muted-foreground");
-      }
+      if (!activeRef.current.has(key)) return;
+      activeRef.current.delete(key);
+      const sel = key === " " ? "[data-key=\"space\"]" : `[data-key="${key}"]`;
+      deactivateEl(containerRef.current?.querySelector<HTMLElement>(sel) ?? null);
     };
+
+    const onBlur = () => clearAllKeys(containerRef.current, activeRef.current);
 
     window.addEventListener("keydown", onDown);
     window.addEventListener("keyup", onUp);
+    window.addEventListener("blur", onBlur);
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) clearAllKeys(containerRef.current, activeRef.current);
+    });
+
     return () => {
       window.removeEventListener("keydown", onDown);
       window.removeEventListener("keyup", onUp);
+      window.removeEventListener("blur", onBlur);
+      clearAllKeys(containerRef.current, activeRef.current);
     };
   }, []);
 
