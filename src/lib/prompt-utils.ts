@@ -126,11 +126,9 @@ function applyPunctuation(words: string[]): string[] {
       } else if (roll < 0.88) {
         word = word + "!";
         capitalizeNext = true;
-      } else if (roll < 0.96) {
+      } else {
         word = word + "?";
         capitalizeNext = true;
-      } else {
-        word = word + " —";
       }
     }
 
