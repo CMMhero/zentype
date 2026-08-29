@@ -31,9 +31,9 @@ export function ConfigBar({
       role="toolbar"
       aria-label="test configuration"
     >
-      <div className="flex w-full gap-2 sm:w-auto sm:gap-2">
+      <div className="grid w-full grid-cols-2 gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
         {/* Mode selector — pill style like Tabs */}
-        <div className="bg-muted/80 inline-flex h-9 flex-1 items-center justify-center rounded-lg p-[3px] sm:flex-none sm:w-auto">
+        <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px] sm:w-auto">
           <ConfigButton
             active={mode === "time"}
             onClick={() => onChange({ mode: "time" })}
@@ -51,7 +51,7 @@ export function ConfigBar({
         </div>
 
         {/* Variant selector — pill style like Tabs, responsive width */}
-        <div className="bg-muted/80 inline-flex h-9 flex-1 items-center justify-center rounded-lg p-[3px] sm:flex-none sm:w-64">
+        <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px] sm:w-64">
           {mode === "time"
             ? TIME_OPTIONS.map((t) => (
                 <ConfigButton
