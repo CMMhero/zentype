@@ -4,9 +4,8 @@ import { useEffect, useRef } from "react";
 import { useSettingsStore } from "~/stores/settings-store";
 import { getTheme } from "~/lib/themes";
 
-// Tabler KeyboardFilled icon path
-const KEYBOARD_PATH =
-  'M20 5a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H4a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3zm-8 8a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V14a1 1 0 0 0-1-1zm-6 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V14a1 1 0 0 0-1-1zm12 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V14a1 1 0 0 0-1-1zm-4-5a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1zm-6 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1zm12 0a1 1 0 0 0-1 1v.01a1 1 0 0 0 2 0V10a1 1 0 0 0-1-1z';
+// Letter "Z" path (drawn as geometry — no font dependency)
+const Z_PATH = 'M5 6h14v2.5L9.5 17H19v2.5H5V17l9.5-8.5H5Z';
 
 export function DynamicFavicon() {
   const themeId = useSettingsStore((s) => s.settings.themeId);
@@ -20,7 +19,7 @@ export function DynamicFavicon() {
     const svg = [
       '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">',
       `<rect width="24" height="24" rx="4" fill="${bg}"/>`,
-      `<path fill="${fg}" d="${KEYBOARD_PATH}"/>`,
+      `<path fill="${fg}" d="${Z_PATH}"/>`,
       '</svg>',
     ].join('');
 
