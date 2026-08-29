@@ -101,7 +101,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: "zentype",
-    description: "A customizable, clean typing test with leaderboards, achievements, and progress tracking.",
+    description: "A customizable typing test with leaderboards, achievements, and stats.",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.cmmhero.top",
     applicationCategory: "GameApplication",
     operatingSystem: "Web",

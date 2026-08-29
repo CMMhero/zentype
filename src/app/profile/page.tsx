@@ -262,7 +262,7 @@ export default function ProfilePage() {
                 <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                 {joinedAt && (
                   <p className="text-[10px] text-muted-foreground/70">
-                    Joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                   </p>
                 )}
               </div>
@@ -539,7 +539,7 @@ export default function ProfilePage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="last12">Last 12 months</SelectItem>
+                    <SelectItem value="last12">last 12 months</SelectItem>
                     {availableYears.map((y) => (
                       <SelectItem key={y} value={String(y)}>{y}</SelectItem>
                     ))}
@@ -581,8 +581,8 @@ export default function ProfilePage() {
           ) : (results ?? []).length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-12 text-center">
               <IconHistory className="size-8 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">No tests recorded yet</p>
-              <Link href="/" className="text-sm text-primary hover:underline">Start typing →</Link>
+              <p className="text-sm text-muted-foreground">no tests recorded yet</p>
+              <Link href="/" className="text-sm text-primary hover:underline">start typing →</Link>
             </div>
           ) : (
             <div className="overflow-x-auto">
