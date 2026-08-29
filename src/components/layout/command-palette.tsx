@@ -8,7 +8,7 @@ import {
   IconCursorText, IconEye, IconEyeOff, IconKeyboardFilled,
   IconLetterT, IconList, IconMoon, IconMusic, IconPointer, IconPlayerStop,
   IconRefresh, IconSearch, IconSettings, IconSpace, IconTextResize,
-  IconTrophy, IconUser, IconVolume, IconVolumeOff,
+  IconTrophy, IconTypography, IconUser, IconVolume, IconVolumeOff,
 } from "@tabler/icons-react";
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator,

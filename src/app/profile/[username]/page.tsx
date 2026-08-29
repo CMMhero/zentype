@@ -200,7 +200,7 @@ export default function PublicProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {ALL_BOARDS.map((board) => {
               const wpm = loading ? null : stats?.bestByBoard?.[board];
               const rank = boardRanks?.[board];
@@ -240,7 +240,7 @@ export default function PublicProfilePage() {
         </CardHeader>
         <CardContent className="px-4">
           {achievements === null ? (
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {Array.from({ length: 8 }).map((_, i) => (
                 <Skeleton key={i} className="h-28 w-full rounded-lg" />
               ))}
@@ -442,7 +442,7 @@ function ProfileSkeleton() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {ALL_BOARDS.map((board) => (
               <div key={board} className="flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-muted/20 p-3 text-center">
                 <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
@@ -465,7 +465,7 @@ function ProfileSkeleton() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {Array.from({ length: 8 }).map((_, i) => (
               <Skeleton key={i} className="h-28 w-full rounded-lg" />
             ))}

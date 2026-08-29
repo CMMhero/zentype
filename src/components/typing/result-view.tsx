@@ -26,13 +26,13 @@ export function ResultView({ result, saveState, onNext }: ResultViewProps) {
   return (
     <div className="zt-fade-in mx-auto flex w-full max-w-4xl flex-col gap-6 py-6" role="region" aria-label="Test results">
       {/* Header — WPM and acc (labels below numbers), no separator */}
-      <div className="flex items-end gap-8">
+      <div className="flex items-end gap-6 sm:gap-8">
         <div className="flex flex-col">
-          <span className="text-primary text-5xl leading-none font-bold tabular-nums">{result.wpm}</span>
+          <span className="text-primary text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.wpm}</span>
           <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">wpm</span>
         </div>
         <div className="flex flex-col">
-          <span className="text-5xl leading-none font-bold tabular-nums">{result.accuracy}%</span>
+          <span className="text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.accuracy}%</span>
           <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">acc</span>
         </div>
       </div>
