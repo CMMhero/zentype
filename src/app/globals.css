@@ -62,6 +62,19 @@
 @import "@fontsource-variable/bricolage-grotesque";
 @import "@fontsource/cal-sans";
 @import "@fontsource/comic-neue";
+@import "@fontsource-variable/sora";
+@import "@fontsource-variable/domine";
+@import "@fontsource/fira-sans";
+@import "@fontsource-variable/rubik";
+@import "@fontsource-variable/nunito";
+@import "@fontsource-variable/karla";
+@import "@fontsource-variable/archivo";
+@import "@fontsource-variable/urbanist";
+@import "@fontsource-variable/figtree";
+@import "@fontsource-variable/quicksand";
+@import "@fontsource-variable/red-hat-display";
+@import "@fontsource-variable/red-hat-mono";
+@import "@fontsource/bebas-neue";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -166,6 +179,19 @@
   --font-bricolage-grotesque: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
   --font-cal-sans: "Cal Sans", ui-sans-serif, system-ui, sans-serif;
   --font-comic-neue: "Comic Neue", cursive, ui-sans-serif, system-ui, sans-serif;
+  --font-sora: "Sora Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-domine: "Domine Variable", Georgia, "Times New Roman", serif;
+  --font-fira-sans: "Fira Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-rubik: "Rubik Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-nunito: "Nunito Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-karla: "Karla Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-archivo: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-urbanist: "Urbanist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-figtree: "Figtree Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-quicksand: "Quicksand Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-red-hat-display: "Red Hat Display Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-red-hat-mono: "Red Hat Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-bebas-neue: "Bebas Neue", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
@@ -306,6 +332,19 @@ html[data-font="google-sans"] { font-family: var(--font-google-sans); }
 html[data-font="bricolage-grotesque"] { font-family: var(--font-bricolage-grotesque); }
 html[data-font="cal-sans"] { font-family: var(--font-cal-sans); }
 html[data-font="comic-neue"] { font-family: var(--font-comic-neue); }
+html[data-font="sora"] { font-family: var(--font-sora); }
+html[data-font="domine"] { font-family: var(--font-domine); }
+html[data-font="fira-sans"] { font-family: var(--font-fira-sans); }
+html[data-font="rubik"] { font-family: var(--font-rubik); }
+html[data-font="nunito"] { font-family: var(--font-nunito); }
+html[data-font="karla"] { font-family: var(--font-karla); }
+html[data-font="archivo"] { font-family: var(--font-archivo); }
+html[data-font="urbanist"] { font-family: var(--font-urbanist); }
+html[data-font="figtree"] { font-family: var(--font-figtree); }
+html[data-font="quicksand"] { font-family: var(--font-quicksand); }
+html[data-font="red-hat-display"] { font-family: var(--font-red-hat-display); }
+html[data-font="red-hat-mono"] { font-family: var(--font-red-hat-mono); }
+html[data-font="bebas-neue"] { font-family: var(--font-bebas-neue); }
 
 .zt-caret-blink {
   animation: zt-blink 1s ease-in-out infinite;
