@@ -634,7 +634,7 @@ export default function ProfilePage() {
 
       {/* Test detail dialog */}
       <Dialog open={selected !== null} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] sm:max-w-2xl sm:w-full max-h-[90vh] overflow-y-auto overflow-x-hidden">
           {selected && (
             <>
               <DialogHeader>
