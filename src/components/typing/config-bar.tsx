@@ -1,4 +1,4 @@
-import { IconClock, IconNumbers, IconAt } from "@tabler/icons-react";
+import { IconTypography, IconClock, IconNumbers, IconAt } from "@tabler/icons-react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import {
