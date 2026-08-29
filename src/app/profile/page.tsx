@@ -299,7 +299,7 @@ export default function ProfilePage() {
       {/* Personal bests */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconTrophy className="size-4" /> personal bests
           </CardTitle>
         </CardHeader>
@@ -334,7 +334,7 @@ export default function ProfilePage() {
       <div className="grid gap-5 md:grid-cols-2">
         <Card className="gap-3 py-4">
           <CardHeader className="px-4">
-            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
               <IconTrendingUp className="size-4" /> wpm
             </CardTitle>
           </CardHeader>
@@ -368,7 +368,7 @@ export default function ProfilePage() {
 
         <Card className="gap-3 py-4">
           <CardHeader className="px-4">
-            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
               <IconTarget className="size-4" /> accuracy
             </CardTitle>
           </CardHeader>
@@ -404,7 +404,7 @@ export default function ProfilePage() {
       {/* WPM distribution — full width */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconChartBar className="size-4" /> wpm distribution
           </CardTitle>
         </CardHeader>
@@ -438,7 +438,7 @@ export default function ProfilePage() {
       {/* Top achievements — uses AchievementGrid */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
             {achievements === null ? (
               <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
@@ -520,7 +520,7 @@ export default function ProfilePage() {
       {/* Activity — last 12 months / by year with totals */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconClock className="size-4" /> activity
             {loading ? (
               <Skeleton className="ml-2 h-3 w-28" />
@@ -567,7 +567,7 @@ export default function ProfilePage() {
       {/* Test history */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconHistory className="size-4" /> test history
             <Badge variant="secondary" className="ml-auto text-[10px]">{results?.length ?? 0} tests</Badge>
           </CardTitle>
@@ -678,7 +678,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   return (
     <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
-        <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest">
+        <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
           {icon} {label}
         </span>
         {value === null ? (
