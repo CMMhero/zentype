@@ -35,6 +35,7 @@ import { WpmChart } from "~/components/charts/wpm-chart";
 import { getMyJoinDate, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
+import { lcGet, lcSet } from "~/lib/client-cache";
 import { useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
 import { formatDateTime } from "~/lib/utils";
@@ -78,25 +79,45 @@ export default function ProfilePage() {
   const [historyCount, setHistoryCount] = useState(10);
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
 
+  // Stale-while-revalidate: show cached data instantly, fetch fresh in background
   useEffect(() => {
     let cancelled = false;
-    void Promise.all([getUserStats(), getUserResults({ limit: 200 })]).then(([s, r]) => {
-      if (cancelled) return;
-      setStats(s);
-      setResults(r);
-    });
-    return () => { cancelled = true; };
-  }, []);
+    const FIVE_MIN = 5 * 60 * 1000;
+    const ONE_MIN = 60 * 1000;
 
-  useEffect(() => {
-    if (!user) return;
-    void Promise.all([getUserPoints(), getUserAchievements(), getMyJoinDate()]).then(([p, a, j]) => {
-      if (p) setPoints(p);
-      if (a) setAchievements(a);
-      if (j) setJoinedAt(j);
+    // Load cached data immediately (no loading state)
+    const cStats = lcGet<AggregatedStats>("profile-stats", FIVE_MIN);
+    const cResults = lcGet<TestResult[]>("profile-results", FIVE_MIN);
+    const cPoints = lcGet<{ totalXP: number; level: number; progress: number }>("profile-points", ONE_MIN);
+    const cAchievements = lcGet<Array<{ id: string; name: string; description: string; trigger: "metric" | "streak" | "api"; achievedAt: string | null; progress: number; xp: number }>>("profile-achievements", FIVE_MIN);
+    const cJoinDate = lcGet<string>("profile-join-date", FIVE_MIN);
+
+    if (cStats) setStats(cStats);
+    if (cResults) setResults(cResults);
+    if (cPoints) setPoints(cPoints);
+    if (cAchievements) setAchievements(cAchievements);
+    if (cJoinDate) setJoinedAt(cJoinDate);
+
+    // Fetch all data in parallel (single round-trip for everything)
+    void Promise.all([
+      getUserStats(),
+      getUserResults({ limit: 200 }),
+      user ? getUserPoints() : Promise.resolve(null),
+      user ? getUserAchievements() : Promise.resolve(null),
+      user ? getMyJoinDate() : Promise.resolve(null),
+    ]).then(([s, r, p, a, j]) => {
+      if (cancelled) return;
+      if (s) { setStats(s); lcSet("profile-stats", s); }
+      if (r) { setResults(r); lcSet("profile-results", r); }
+      if (p) { setPoints(p); lcSet("profile-points", p); }
+      if (a) { setAchievements(a); lcSet("profile-achievements", a); }
+      if (j) { setJoinedAt(j); lcSet("profile-join-date", j); }
     });
+
+    return () => { cancelled = true; };
   }, [user]);
 
+  // Board ranks depend on stats (use latest from state, whether cached or fresh)
   useEffect(() => {
     if (!user || !stats) return;
     const boards = Object.keys(stats.bestByBoard);
