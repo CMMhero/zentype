@@ -167,11 +167,11 @@ export function AppShell({
       <footer className="text-muted-foreground mt-auto" role="contentinfo">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
           <span className="flex items-center gap-2">
-            <span>Made by <a href="https://cmmhero.top" target="_blank" rel="noreferrer" className="hover:text-foreground underline underline-offset-2">CMMhero</a></span>
+            <Link href="/about" className="hover:text-foreground underline underline-offset-2">about</Link>
             <span className="text-muted-foreground/50">·</span>
-            <Link href="/terms" className="hover:text-foreground underline underline-offset-2">Terms</Link>
+            <Link href="/terms" className="hover:text-foreground underline underline-offset-2">terms</Link>
             <span className="text-muted-foreground/50">·</span>
-            <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">Privacy</Link>
+            <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">privacy</Link>
           </span>
           <span className="ml-auto hidden items-center gap-1 sm:flex">
             <Combobox
