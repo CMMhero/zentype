@@ -52,6 +52,7 @@ const wpmConfig = {
 
 const accConfig = {
   accuracy: { label: "accuracy", color: "var(--chart-3)" },
+  avgAcc: { label: "avg", color: "var(--chart-2)" },
 } satisfies ChartConfig;
 
 const distConfig = {
@@ -184,6 +185,13 @@ export default function ProfilePage() {
     return chartData.map((r, i) => {
       sum += r.wpm;
       return { n: i + 1, wpm: r.wpm, avg: Math.round(sum / (i + 1)) };
+    });
+  })();
+  const accWithAvgData = (() => {
+    let sum = 0;
+    return chartData.map((r, i) => {
+      sum += r.accuracy;
+      return { n: i + 1, accuracy: r.accuracy, avgAcc: Math.round(sum / (i + 1)) };
     });
   })();
   const distributionData = (() => {
@@ -369,7 +377,7 @@ export default function ProfilePage() {
               <Skeleton className="h-40 w-full" />
             ) : chartData.length >= 2 ? (
               <ChartContainer config={accConfig} className="h-40 w-full">
-                <AreaChart data={chartData.map((r, i) => ({ n: i + 1, accuracy: r.accuracy }))}>
+                <ComposedChart data={accWithAvgData}>
                   <defs>
                     <linearGradient id="fillAccuracy" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="var(--color-accuracy)" stopOpacity={0.8} />
@@ -381,7 +389,8 @@ export default function ProfilePage() {
                   <YAxis tickLine={false} axisLine={false} width={36} domain={[70, 100]} />
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <Area dataKey="accuracy" type="monotone" stroke="var(--color-accuracy)" fill="url(#fillAccuracy)" strokeWidth={2} dot={false} />
-                </AreaChart>
+                  <Line dataKey="avgAcc" type="monotone" stroke="var(--color-avgAcc)" strokeWidth={1.5} dot={false} strokeDasharray="4 4" />
+                </ComposedChart>
               </ChartContainer>
             ) : (
               <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">

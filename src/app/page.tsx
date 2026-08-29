@@ -340,9 +340,9 @@ export default function TestPage() {
             </div>
           </div>
 
-          <Progress value={engine.progress * 100} className="mb-6" aria-label="test progress" />
+          <Progress value={engine.progress * 100} className="mb-3" aria-label="test progress" />
 
-          <div className="relative flex-1 p-4">
+          <div className="relative w-full p-4">
             {loadingPrompt ? (
               <div className="flex flex-col gap-3 py-2">
                 <Skeleton className="h-7 w-4/5" />
@@ -368,7 +368,7 @@ export default function TestPage() {
             {!focused && runningOrIdle && !loadingPrompt && (
               <button
                 onClick={() => inputEl.current?.focus()}
-                className="bg-background/60 absolute inset-0 z-10 flex items-center justify-center backdrop-blur-[2px]"
+                className="bg-background/60 absolute inset-0 z-10 flex items-center justify-center rounded-xl backdrop-blur-[2px]"
               >
                 <span className="border-border bg-card animate-pulse rounded border px-3 py-1.5 text-xs">
                   click here or press any key to focus
@@ -381,7 +381,7 @@ export default function TestPage() {
             <VirtualKeyboard activeKey={activeKey} />
           )}
 
-          <div className={`mt-6 flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+          <div className={`mt-4 flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
             <p>press any key to start</p>
             <p className="flex flex-wrap items-center justify-center gap-1.5">
               <Kbd>tab</Kbd> new test <span>·</span> <Kbd>esc</Kbd> restart <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> command
