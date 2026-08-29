@@ -378,10 +378,12 @@ export default function TestPage() {
           </div>
 
           {settings.showKeyboard && (
-            <VirtualKeyboard activeKey={activeKey} />
+            <div className="my-4">
+              <VirtualKeyboard activeKey={activeKey} />
+            </div>
           )}
 
-          <div className={`mt-4 flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+          <div className={`mt-auto flex flex-col items-center gap-1.5 pt-4 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
             <p>press any key to start</p>
             <p className="flex flex-wrap items-center justify-center gap-1.5">
               <Kbd>tab</Kbd> new test <span>·</span> <Kbd>esc</Kbd> restart <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> command
