@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const CommandPalette = dynamic(() => import("~/components/layout/command-palette").then(m => m.CommandPalette), { ssr: false });
+const HelpDialog = dynamic(() => import("~/components/layout/help-dialog").then(m => m.HelpDialog), { ssr: false });
 import {
   IconCommand, IconKeyboardFilled, IconLogout,
   IconSettingsFilled, IconTrophyFilled, IconUserFilled,
@@ -143,6 +147,9 @@ export function AppShell({
       </header>
 
       <main id="main-content" className="flex flex-1 flex-col" role="main">{children}</main>
+
+      <CommandPalette />
+      <HelpDialog />
 
       {/* Mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation">
