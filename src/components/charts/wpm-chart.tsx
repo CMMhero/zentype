@@ -51,7 +51,7 @@ export function WpmChart({
 
   return (
     <ChartContainer config={chartConfig} className={cn("h-56 w-full", className)}>
-      <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
+      <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
         <defs>
           <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="var(--color-wpm)" stopOpacity={0.8} />
@@ -75,10 +75,12 @@ export function WpmChart({
           minTickGap={24}
           tickFormatter={(v: number) => `${v}s`}
         />
-        <YAxis tickLine={false} axisLine={false} width={40} domain={[0, "auto"]} />
+        <YAxis tickLine={false} axisLine={false} width={44} tickMargin={8} domain={[0, "auto"]} />
+        {/* Hidden right axis so the error bars scale independent of the wpm axis */}
+        <YAxis yAxisId="right" orientation="right" hide domain={[0, "auto"]} />
         <ChartTooltip
           cursor={{ stroke: "var(--border)" }}
-          content={<ChartTooltipContent labelKey="t" />}
+          content={<ChartTooltipContent labelFormatter={(l) => `${l}s`} indicator="dot" />}
         />
         <Bar dataKey="errors" fill="url(#fillErrors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
         <Area
