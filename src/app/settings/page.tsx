@@ -51,7 +51,7 @@ export default function SettingsPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>Restore all settings to defaults?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will reset your theme, font, sound, and gameplay settings to their original values.
+                Resets your theme, font, sound, and gameplay settings.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -311,7 +311,7 @@ function GuestDataCard() {
             <AlertDialogHeader>
               <AlertDialogTitle>Discard {local.length} local result{local.length === 1 ? "" : "s"}?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will permanently delete your local guest results. They cannot be recovered.
+                Permanently deletes your local guest results. Cannot be recovered.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -338,7 +338,7 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Delete every saved result?</AlertDialogTitle>
-              <AlertDialogDescription>This permanently removes all your test history from the server. This cannot be undone.</AlertDialogDescription>
+              <AlertDialogDescription>Permanently removes all test history from the server. Cannot be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>cancel</AlertDialogCancel>

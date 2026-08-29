@@ -156,7 +156,7 @@ export default function PublicProfilePage() {
                 <Badge variant="outline" className="text-[10px]">public profile</Badge>
                 {profile!.joinedAt && (
                   <p className="mt-1 text-[10px] text-muted-foreground/70">
-                    Joined {new Date(profile!.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    joined {new Date(profile!.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                   </p>
                 )}
               </div>
@@ -177,7 +177,7 @@ export default function PublicProfilePage() {
                 <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
               </div>
             ) : (
-              <p className="mt-4 text-[10px] text-muted-foreground">No XP yet</p>
+              <p className="mt-4 text-[10px] text-muted-foreground">no xp yet</p>
             )}
           </CardContent>
         </Card>
@@ -289,7 +289,7 @@ export default function PublicProfilePage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="last12">Last 12 months</SelectItem>
+                    <SelectItem value="last12">last 12 months</SelectItem>
                     {availableYears.map((y) => (
                       <SelectItem key={y} value={String(y)}>{y}</SelectItem>
                     ))}

@@ -1,6 +1,6 @@
 # zentype UI Style Guide
 
-This document defines the consistent design patterns used across the zentype codebase. Follow these conventions when creating or modifying components.
+Design patterns for the zentype codebase. Follow these when creating or modifying components.
 
 ## Design Principles
 
@@ -357,10 +357,10 @@ className="pointer-events-none opacity-0"
 ## Key Principles
 
 1. **Lowercase everywhere**: All UI text is lowercase
-2. **Filled icons for headers**: Use filled variants in page headers and navigation
-3. **Outline icons for content**: Use outline variants in cards, sections, features
-4. **Mobile-first responsive**: Design for mobile, enhance for desktop
-5. **Consistent spacing**: Use standard gap and padding values
+2. **Filled icons for headers**: Page headers and navigation get filled variants
+3. **Outline icons for content**: Cards, sections, features get outline variants
+4. **Mobile-first**: Design for mobile, enhance for desktop
+5. **Consistent spacing**: Standard gap and padding values
 6. **Subtle gradients**: Cards use `bg-gradient-to-br from-card to-muted/30`
 7. **Tabular nums**: Always use `tabular-nums` for numbers
 8. **Truncation**: Use `truncate` for overflow text
