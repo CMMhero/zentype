@@ -4,8 +4,11 @@ import { useEffect, useRef } from "react";
 import { useSettingsStore } from "~/stores/settings-store";
 import { getTheme } from "~/lib/themes";
 
-// Letter "Z" path (drawn as geometry — no font dependency)
-const Z_PATH = 'M5 6h14v2.5L9.5 17H19v2.5H5V17l9.5-8.5H5Z';
+// "zt" letter paths (drawn as geometry — no font dependency)
+const ZT_PATHS = [
+  'M2 5h10v3L6 15H12v2H2V15l6-7H2z',  // Z
+  'M13 5h9v3h-3v9h-3V8h-3V5z',          // T
+];
 
 export function DynamicFavicon() {
   const themeId = useSettingsStore((s) => s.settings.themeId);
@@ -19,7 +22,7 @@ export function DynamicFavicon() {
     const svg = [
       '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">',
       `<rect width="24" height="24" rx="4" fill="${bg}"/>`,
-      `<path fill="${fg}" d="${Z_PATH}"/>`,
+      `${ZT_PATHS.map((d) => `<path fill="${fg}" d="${d}"/>`).join('')}`,
       '</svg>',
     ].join('');
 
