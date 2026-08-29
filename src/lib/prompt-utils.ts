@@ -52,6 +52,11 @@ export function randomWordSlice(count: number, opts?: WordOptions): string[] {
         ? NUMBERS[Math.floor(Math.random() * NUMBERS.length)]
         : w,
     );
+    // Ensure at least one number appears
+    if (!words.some((w) => /^[\d]+$/.test(w))) {
+      const idx = Math.floor(Math.random() * words.length);
+      words[idx] = NUMBERS[Math.floor(Math.random() * NUMBERS.length)];
+    }
   }
 
   if (opts?.punctuation) {
