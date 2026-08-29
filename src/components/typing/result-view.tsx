@@ -1,4 +1,4 @@
-import { IconPlayerSkipForward, IconAt, IconHash } from "@tabler/icons-react";
+import { IconPlayerSkipForward, IconAt, IconHash, IconCrown } from "@tabler/icons-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { WpmChart } from "~/components/charts/wpm-chart";
@@ -11,6 +11,7 @@ export type SaveState = "cloud" | "guest" | "failed" | "skipped";
 interface ResultViewProps {
   result: TestResult;
   saveState: SaveState;
+  isPB?: boolean;
   onNext: () => void;
 }
 
@@ -21,7 +22,7 @@ const SAVE_BADGE: Record<SaveState, { label: string; variant: "default" | "secon
   skipped: { label: "not saved", variant: "secondary" },
 };
 
-export function ResultView({ result, saveState, onNext }: ResultViewProps) {
+export function ResultView({ result, saveState, isPB, onNext }: ResultViewProps) {
   const { label, variant } = SAVE_BADGE[saveState];
 
   return (
@@ -29,7 +30,14 @@ export function ResultView({ result, saveState, onNext }: ResultViewProps) {
       {/* Header — WPM and acc (labels below numbers), no separator */}
       <div className="flex items-end gap-6 sm:gap-8">
         <div className="flex flex-col">
-          <span className="text-primary text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.wpm}</span>
+          <span className="flex items-center gap-2">
+            <span className="text-primary text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.wpm}</span>
+            {isPB && (
+              <span className="inline-flex items-center gap-0.5 rounded bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+                <IconCrown className="size-3" /> PB
+              </span>
+            )}
+          </span>
           <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">wpm</span>
         </div>
         <div className="flex flex-col">
