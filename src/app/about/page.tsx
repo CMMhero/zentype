@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { IconInfoCircleFilled, IconKeyboard, IconKeyboardFilled, IconTrophy, IconAward, IconChartBar, IconPalette, IconBrandGithub } from "@tabler/icons-react";
 import { getPublicStats } from "~/server/results";
+import { Skeleton } from "~/components/ui/skeleton";
 
 export const metadata: Metadata = {
   title: "About",
@@ -19,9 +21,32 @@ function formatTime(seconds: number): string {
   return `${Math.floor(seconds / 86400)}d`;
 }
 
-export default async function AboutPage() {
+async function CommunityStats() {
   const stats = await getPublicStats();
+  return (
+    <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <StatCard label="users" value={stats?.totalUsers ?? 0} />
+      <StatCard label="tests typed" value={stats?.totalTests ?? 0} />
+      <StatCard label="time typed" value={formatTime(stats?.totalSeconds ?? 0)} />
+      <StatCard label="xp earned" value={stats?.totalXpEarned ?? 0} />
+    </div>
+  );
+}
 
+function CommunityStatsSkeleton() {
+  return (
+    <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className="rounded-lg border border-border/30 bg-card p-3 text-center">
+          <Skeleton className="mx-auto h-7 w-16" />
+          <Skeleton className="mx-auto mt-1 h-3 w-12" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default async function AboutPage() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8" role="main" aria-label="About zentype">
       <header className="flex items-center justify-between">
@@ -44,12 +69,9 @@ export default async function AboutPage() {
 
         <section>
           <h2 className="text-base font-semibold">community stats</h2>
-          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <StatCard label="users" value={stats?.totalUsers ?? 0} />
-            <StatCard label="tests typed" value={stats?.totalTests ?? 0} />
-            <StatCard label="time typed" value={formatTime(stats?.totalSeconds ?? 0)} />
-            <StatCard label="xp earned" value={stats?.totalXpEarned ?? 0} />
-          </div>
+          <Suspense fallback={<CommunityStatsSkeleton />}>
+            <CommunityStats />
+          </Suspense>
         </section>
 
         <section>
