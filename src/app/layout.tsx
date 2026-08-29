@@ -4,8 +4,6 @@ import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toaster } from "~/components/ui/sonner";
 import { DynamicFavicon } from "~/components/ui/dynamic-favicon";
 import { AppShell } from "~/components/layout/app-shell";
-import { CommandPalette } from "~/components/layout/command-palette";
-import { HelpDialog } from "~/components/layout/help-dialog";
 import { UserProvider } from "~/components/user-provider";
 import { getSessionUser } from "~/server/auth";
 import { themeStyleSheet, THEMES, DEFAULT_THEME_ID } from "~/lib/themes";
@@ -141,8 +139,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               {children}
             </AppShell>
           </UserProvider>
-          <CommandPalette />
-          <HelpDialog />
           <Toaster position="bottom-right" />
         </TooltipProvider>
       </body>

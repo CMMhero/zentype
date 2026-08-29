@@ -1,10 +1,15 @@
+"use client";
+
 import { IconPlayerSkipForward, IconAt, IconHash, IconCrown } from "@tabler/icons-react";
+import dynamic from "next/dynamic";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { WpmChart } from "~/components/charts/wpm-chart";
+import { Skeleton } from "~/components/ui/skeleton";
 import { Kbd } from "~/components/ui/kbd";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { modeLabel, type TestResult } from "~/lib/types";
+
+const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-40 w-full" /> });
 
 export type SaveState = "cloud" | "guest" | "failed" | "skipped";
 
@@ -74,7 +79,7 @@ export function ResultView({ result, saveState, isPB, onNext }: ResultViewProps)
         <Badge variant={variant} className="text-[9px]">{label}</Badge>
       </p>
 
-      {/* Chart — identical to history detail (no wrapper) */}
+      {/* Chart — lazy-loaded recharts */}
       <WpmChart timeline={result.timeline} />
 
       {/* Mini grid — identical to history detail */}
