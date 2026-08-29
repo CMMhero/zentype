@@ -52,12 +52,12 @@ export default function TestPage() {
   const prefetchedRef = useRef<string[] | null>(null);
 
   const fetchWords = useCallback(
-    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source">) => {
+    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">) => {
       const want =
         cfg.mode === "time"
           ? Math.min(220, Math.ceil(cfg.duration * 3.2))
           : cfg.wordCount + 10;
-      if (cfg.source === "words") return randomWordSlice(want);
+      if (cfg.source === "words") return randomWordSlice(want, { punctuation: cfg.punctuation, numbers: cfg.numbers });
       try {
         const res = await getPrompt(cfg.source, want);
         const w = res.text.split(/\s+/).filter(Boolean);
@@ -75,7 +75,7 @@ export default function TestPage() {
   );
 
   const loadPrompt = useCallback(
-    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source">) => {
+    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">) => {
       setLoadingPrompt(true);
       if (prefetchedRef.current) {
         setWords(prefetchedRef.current);
@@ -185,7 +185,7 @@ export default function TestPage() {
     engineRef.current.reset();
     setResult(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.source]);
+  }, [settings.source, settings.punctuation, settings.numbers]);
 
   /* ---------- extend words during long time-mode tests ---------- */
 
@@ -288,6 +288,8 @@ export default function TestPage() {
           mode={settings.mode}
           duration={settings.duration}
           wordCount={settings.wordCount}
+          punctuation={settings.punctuation}
+          numbers={settings.numbers}
           locked={engine.status === "running"}
           onChange={applyConfig}
         />

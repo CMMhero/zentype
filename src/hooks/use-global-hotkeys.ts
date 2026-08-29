@@ -9,6 +9,7 @@ export function useGlobalHotkeys() {
   const router = useRouter();
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
   const setHelpOpen = useUiStore((s) => s.setHelpOpen);
+  const isTestRunning = useUiStore((s) => s.isTestRunning);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -38,7 +39,8 @@ export function useGlobalHotkeys() {
 
       if (typing || e.ctrlKey || e.metaKey || e.altKey) return;
 
-      if (e.key === "?") {
+      // Don't open help dialog while a test is active (prevents ? from stealing input)
+      if (e.key === "?" && !isTestRunning) {
         e.preventDefault();
         setHelpOpen(true);
         return;
@@ -46,5 +48,5 @@ export function useGlobalHotkeys() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [router, setPaletteOpen, setHelpOpen]);
+  }, [router, setPaletteOpen, setHelpOpen, isTestRunning]);
 }

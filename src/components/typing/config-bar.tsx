@@ -12,7 +12,9 @@ interface ConfigBarProps {
   duration: number;
   wordCount: number;
   locked: boolean;
-  onChange: (patch: { mode?: GameMode; duration?: number; wordCount?: number }) => void;
+  punctuation: boolean;
+  numbers: boolean;
+  onChange: (patch: { mode?: GameMode; duration?: number; wordCount?: number; punctuation?: boolean; numbers?: boolean }) => void;
 }
 
 export function ConfigBar({
@@ -20,6 +22,8 @@ export function ConfigBar({
   duration,
   wordCount,
   locked,
+  punctuation,
+  numbers,
   onChange,
 }: ConfigBarProps) {
   return (
@@ -74,6 +78,24 @@ export function ConfigBar({
                 </ConfigButton>
               ))}
         </div>
+      </div>
+
+      {/* Punctuation & numbers toggles */}
+      <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px]">
+        <ConfigButton
+          active={punctuation}
+          onClick={() => onChange({ punctuation: !punctuation })}
+          aria-label="toggle punctuation"
+        >
+          !?.
+        </ConfigButton>
+        <ConfigButton
+          active={numbers}
+          onClick={() => onChange({ numbers: !numbers })}
+          aria-label="toggle numbers"
+        >
+          123
+        </ConfigButton>
       </div>
     </div>
   );
