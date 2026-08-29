@@ -42,37 +42,43 @@ export function VirtualKeyboard() {
   const activeRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
+    const container = containerRef.current;
+    const active = activeRef.current;
+
     const onDown = (e: KeyboardEvent) => {
       const key = e.key === " " ? " " : e.key.toLowerCase();
       if (!ALL_KEYS.has(key)) return;
-      if (activeRef.current.has(key)) return;
-      activeRef.current.add(key);
+      if (active.has(key)) return;
+      active.add(key);
       const sel = key === " " ? "[data-key=\"space\"]" : `[data-key="${key}"]`;
-      activateEl(containerRef.current?.querySelector<HTMLElement>(sel) ?? null);
+      activateEl(container?.querySelector<HTMLElement>(sel) ?? null);
     };
 
     const onUp = (e: KeyboardEvent) => {
       const key = e.key === " " ? " " : e.key.toLowerCase();
-      if (!activeRef.current.has(key)) return;
-      activeRef.current.delete(key);
+      if (!active.has(key)) return;
+      active.delete(key);
       const sel = key === " " ? "[data-key=\"space\"]" : `[data-key="${key}"]`;
-      deactivateEl(containerRef.current?.querySelector<HTMLElement>(sel) ?? null);
+      deactivateEl(container?.querySelector<HTMLElement>(sel) ?? null);
     };
 
-    const onBlur = () => clearAllKeys(containerRef.current, activeRef.current);
+    const onBlur = () => clearAllKeys(container, active);
+
+    const onVisibilityChange = () => {
+      if (document.hidden) clearAllKeys(container, active);
+    };
 
     window.addEventListener("keydown", onDown);
     window.addEventListener("keyup", onUp);
     window.addEventListener("blur", onBlur);
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) clearAllKeys(containerRef.current, activeRef.current);
-    });
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     return () => {
       window.removeEventListener("keydown", onDown);
       window.removeEventListener("keyup", onUp);
       window.removeEventListener("blur", onBlur);
-      clearAllKeys(containerRef.current, activeRef.current);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      clearAllKeys(container, active);
     };
   }, []);
 
