@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
+import { Toaster } from "~/components/ui/sonner";
 import { DynamicFavicon } from "~/components/ui/dynamic-favicon";
 import { AppShell } from "~/components/layout/app-shell";
 import { CommandPalette } from "~/components/layout/command-palette";
