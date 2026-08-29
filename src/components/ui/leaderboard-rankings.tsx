@@ -11,7 +11,9 @@ import {
 } from "@tabler/icons-react"
 
 import { cn } from "~/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import { Button } from "~/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 
 interface LeaderboardRankingItem {
   userId: string
@@ -133,7 +135,7 @@ const LeaderboardRankings = React.forwardRef<
                   aria-label="Collapsed leaderboard rows"
                   className="text-muted-foreground flex items-center justify-center px-4 py-2"
                 >
-                    <IconDots className="h-5 w-5" />
+                    <IconDots className="size-5" />
                 </div>
               )
             }
@@ -162,11 +164,14 @@ const LeaderboardRankings = React.forwardRef<
                     : undefined
                 }
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2",
+                  "flex items-center gap-2 px-4 py-2 transition-colors",
                   isCurrentUser &&
-                    "border-primary bg-muted rounded-md border-2",
+                    "border-primary/50 bg-primary/5 rounded-md border-2",
+                  showCrown && ranking.rank === 1 && "bg-gradient-to-r from-yellow-500/10 via-amber-500/5 to-transparent",
+                  showCrown && ranking.rank === 2 && "bg-gradient-to-r from-gray-300/10 via-gray-400/5 to-transparent",
+                  showCrown && ranking.rank === 3 && "bg-gradient-to-r from-orange-400/10 via-orange-500/5 to-transparent",
                   onUserClick &&
-                    "hover:bg-muted/40 cursor-pointer transition-colors"
+                    "hover:bg-muted/40 cursor-pointer"
                 )}
               >
                 <div className="flex w-12 items-center gap-1">
@@ -175,26 +180,18 @@ const LeaderboardRankings = React.forwardRef<
                   </span>
                   {showCrown ? (
                     <IconCrown
-                      className={cn("h-5 w-5", crownColor)}
+                      className={cn("size-5", crownColor)}
                       aria-hidden="true"
                     />
                   ) : null}
                 </div>
 
-                {ranking.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={ranking.avatarUrl}
-                    alt={`${displayName} avatar`}
-                    className="h-10 w-10 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="bg-muted text-muted-foreground flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium">
-                    {(ranking.userName ?? ranking.userId)
-                      .charAt(0)
-                      .toUpperCase()}
-                  </div>
-                )}
+                <Avatar className="size-10">
+                  {ranking.avatarUrl && <AvatarImage src={ranking.avatarUrl} alt={`${displayName} avatar`} />}
+                  <AvatarFallback className="rounded-full text-sm font-medium">
+                    {(ranking.userName ?? ranking.userId).charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
 
                 <div className="min-w-0 flex-1">
                   <p className="text-foreground truncate font-medium">
@@ -220,12 +217,12 @@ const LeaderboardRankings = React.forwardRef<
                     >
                       {ranking.rankChange > 0 ? (
                         <IconTrendingUp
-                          className="h-3.5 w-3.5"
+                          className="size-3.5"
                           aria-hidden="true"
                         />
                       ) : (
                         <IconTrendingDown
-                          className="h-3.5 w-3.5"
+                          className="size-3.5"
                           aria-hidden="true"
                         />
                       )}
@@ -244,26 +241,24 @@ const LeaderboardRankings = React.forwardRef<
         {showPagination ? (
           <div className="flex items-center justify-between gap-3 border-t px-4 py-2">
             <div className="flex items-center gap-2">
-              <label
-                htmlFor="leaderboard-page-size"
-                className="text-muted-foreground text-sm"
-              >
-                Show
-              </label>
-              <select
-                id="leaderboard-page-size"
-                value={pageSize}
-                onChange={(e) =>
-                  setPageSize(Number(e.target.value) as 10 | 25 | 50 | 100)
+              <span className="text-muted-foreground text-sm">Show</span>
+              <Select
+                value={String(pageSize)}
+                onValueChange={(v) =>
+                  setPageSize(Number(v) as 10 | 25 | 50 | 100)
                 }
-                className="bg-background text-muted-foreground rounded-md border px-2 py-1 text-sm"
               >
-                {pageSizeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
+                <SelectTrigger size="sm" className="w-16">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {pageSizeOptions.map((option) => (
+                    <SelectItem key={option} value={String(option)}>
+                      {option}
+                  </SelectItem>
                 ))}
-              </select>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex items-center gap-2">
@@ -274,7 +269,7 @@ const LeaderboardRankings = React.forwardRef<
                 disabled={currentPage === 1}
                 className="hover:bg-muted rounded-md border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <IconChevronLeft className="h-4 w-4" />
+                <IconChevronLeft className="size-4" />
               </Button>
 
               <span className="text-muted-foreground text-sm">
@@ -290,7 +285,7 @@ const LeaderboardRankings = React.forwardRef<
                 disabled={currentPage === totalPages}
                 className="hover:bg-muted rounded-md border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <IconChevronRight className="h-4 w-4" />
+                <IconChevronRight className="size-4" />
               </Button>
             </div>
           </div>

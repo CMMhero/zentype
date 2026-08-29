@@ -1,8 +1,7 @@
-import { IconRefresh } from "@tabler/icons-react";
+import { IconPlayerSkipForward } from "@tabler/icons-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Separator } from "~/components/ui/separator";
 import { WpmChart } from "~/components/charts/wpm-chart";
 import { Kbd } from "~/components/ui/kbd";
 import { modeLabel, type TestResult } from "~/lib/types";
@@ -17,7 +16,7 @@ interface ResultViewProps {
 
 export function ResultView({ result, saveState, onNext }: ResultViewProps) {
   return (
-    <div className="zt-fade-in mx-auto flex w-full max-w-4xl flex-col gap-6 py-6">
+    <div className="zt-fade-in mx-auto flex w-full max-w-4xl flex-col gap-6 py-6" role="region" aria-label="Test results">
       <div className="flex items-end justify-between">
         <div className="flex items-baseline gap-8">
           <div>
@@ -40,7 +39,7 @@ export function ResultView({ result, saveState, onNext }: ResultViewProps) {
               : saveState === "guest"
                 ? "saved locally (guest)"
                 : saveState === "failed"
-                  ? "sync failed — kept locally"
+                  ? "sync failed, kept locally"
                   : "not saved"}
           </Badge>
           <span className="text-muted-foreground font-mono text-xs">
@@ -71,18 +70,13 @@ export function ResultView({ result, saveState, onNext }: ResultViewProps) {
         </CardContent>
       </Card>
 
-      <Separator />
-
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-end">
         <Button size="lg" onClick={onNext} className="gap-2.5">
-          <IconRefresh /> next test{" "}
+          <IconPlayerSkipForward /> next test{" "}
           <Kbd className="ml-1 border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground">
             tab
           </Kbd>
         </Button>
-        <span className="text-muted-foreground hidden text-xs sm:block">
-          results auto-save · press <Kbd>tab</Kbd> anytime to restart
-        </span>
       </div>
     </div>
   );

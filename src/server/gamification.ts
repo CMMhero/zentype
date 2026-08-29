@@ -1,6 +1,6 @@
 "use server";
 
-import { getSupabaseServerClient } from "~/lib/supabase/server";
+import { getSupabaseServerClient, getSupabasePublicClient } from "~/lib/supabase/server";
 import {
   ACHIEVEMENTS,
   type AchievementCheckInput,
@@ -27,6 +27,45 @@ export async function getUserPoints(): Promise<{
     .from("user_points")
     .select("total_xp,level")
     .eq("user_id", ctx.user.id)
+    .maybeSingle();
+  if (!data) return { totalXP: 0, level: 1, progress: 0 };
+  return {
+    totalXP: data.total_xp,
+    level: data.level,
+    progress: xpProgress(data.total_xp),
+  };
+}
+
+/** Get user's points by username (for public profiles) */
+export async function getUserPointsByUsername(
+  username: string,
+): Promise<{
+  totalXP: number;
+  level: number;
+  progress: number;
+} | null> {
+  const supabase = getSupabasePublicClient();
+  if (!supabase) return null;
+  // First get user_id from username
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id")
+    .ilike("username", username)
+    .maybeSingle();
+  if (!profile) return null;
+  // Try RPC first (bypasses RLS)
+  const { data: rpcData, error: rpcErr } = await supabase.rpc("get_user_points_by_id", {
+    p_user_id: profile.id,
+  });
+  if (!rpcErr && rpcData && rpcData.length > 0) {
+    const d = rpcData[0];
+    return { totalXP: d.total_xp, level: d.level, progress: xpProgress(d.total_xp) };
+  }
+  // Fallback: direct query
+  const { data } = await supabase
+    .from("user_points")
+    .select("total_xp,level")
+    .eq("user_id", profile.id)
     .maybeSingle();
   if (!data) return { totalXP: 0, level: 1, progress: 0 };
   return {
@@ -95,6 +134,71 @@ export async function getUserAchievements(): Promise<
       achievedAt: null,
       progress,
       xp: a.xp,
+    };
+  });
+}
+
+/** Get achievements for a user by username (public — no auth required) */
+export async function getUserAchievementsByUsername(
+  username: string,
+): Promise<
+  Array<{
+    id: string;
+    name: string;
+    description: string;
+    trigger: "metric" | "streak" | "api";
+    achievedAt: string | null;
+    progress: number;
+    xp: number;
+  }>
+> {
+  const supabase = getSupabasePublicClient();
+  if (!supabase) {
+    return ACHIEVEMENTS.map((a) => ({
+      id: a.id, name: a.name, description: a.description,
+      trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
+    }));
+  }
+  // Look up user_id from username
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id")
+    .ilike("username", username)
+    .maybeSingle();
+  if (!profile) {
+    return ACHIEVEMENTS.map((a) => ({
+      id: a.id, name: a.name, description: a.description,
+      trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
+    }));
+  }
+  // Try RPC first (bypasses RLS)
+  const { data: rpcData, error: rpcErr } = await supabase.rpc(
+    "get_user_achievements_by_id",
+    { p_user_id: profile.id },
+  );
+  let unlockedRows: Array<{ achievement_id: string; unlocked_at: string | null; progress: number }> = [];
+  if (!rpcErr && rpcData && rpcData.length > 0) {
+    unlockedRows = rpcData;
+  } else {
+    // Fallback: direct query (works if RLS policies allow public read)
+    const { data: rows } = await supabase
+      .from("user_achievements")
+      .select("achievement_id,unlocked_at,progress")
+      .eq("user_id", profile.id);
+    unlockedRows = rows ?? [];
+  }
+  const unlockedMap = new Map(unlockedRows.map((r) => [r.achievement_id, r]));
+  return ACHIEVEMENTS.map((a) => {
+    const u = unlockedMap.get(a.id);
+    if (u) {
+      return {
+        id: a.id, name: a.name, description: a.description,
+        trigger: a.trigger, achievedAt: u.unlocked_at, progress: 100, xp: a.xp,
+      };
+    }
+    return {
+      id: a.id, name: a.name, description: a.description,
+      trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
     };
   });
 }
@@ -246,6 +350,15 @@ async function buildAchievementStats(
       bestByBoard: {},
       level,
       accountAgeDays,
+      testsAbove60Wpm: 0,
+      testsAbove80Wpm: 0,
+      testsAbove90Wpm: 0,
+      testsAbove100Wpm: 0,
+      testsAbove120Wpm: 0,
+      testsAbove95Acc: 0,
+      testsAbove98Acc: 0,
+      testsAbove99Acc: 0,
+      testsAbove90Acc: 0,
     };
   }
 
@@ -259,6 +372,15 @@ async function buildAchievementStats(
   let totalCons = 0;
   let totalChars = 0;
   let totalTime = 0;
+  let testsAbove60Wpm = 0;
+  let testsAbove80Wpm = 0;
+  let testsAbove90Wpm = 0;
+  let testsAbove100Wpm = 0;
+  let testsAbove120Wpm = 0;
+  let testsAbove95Acc = 0;
+  let testsAbove98Acc = 0;
+  let testsAbove99Acc = 0;
+  let testsAbove90Acc = 0;
 
   for (const r of results) {
     if (r.wpm > bestWpm) bestWpm = r.wpm;
@@ -268,6 +390,15 @@ async function buildAchievementStats(
     totalAcc += r.accuracy;
     totalCons += r.consistency;
     totalChars += (r.chars?.correct ?? 0) + (r.chars?.incorrect ?? 0) + (r.chars?.extra ?? 0);
+    if (r.wpm >= 60) testsAbove60Wpm++;
+    if (r.wpm >= 80) testsAbove80Wpm++;
+    if (r.wpm >= 90) testsAbove90Wpm++;
+    if (r.wpm >= 100) testsAbove100Wpm++;
+    if (r.wpm >= 120) testsAbove120Wpm++;
+    if (r.accuracy >= 95) testsAbove95Acc++;
+    if (r.accuracy >= 98) testsAbove98Acc++;
+    if (r.accuracy >= 99) testsAbove99Acc++;
+    if (r.accuracy >= 90) testsAbove90Acc++;
     if (r.mode === "time") {
       totalTime += r.variant;
     } else {
@@ -320,5 +451,14 @@ async function buildAchievementStats(
     bestByBoard,
     level,
     accountAgeDays,
+    testsAbove60Wpm,
+    testsAbove80Wpm,
+    testsAbove90Wpm,
+    testsAbove100Wpm,
+    testsAbove120Wpm,
+    testsAbove95Acc,
+    testsAbove98Acc,
+    testsAbove99Acc,
+    testsAbove90Acc,
   };
 }

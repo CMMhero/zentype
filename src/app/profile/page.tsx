@@ -4,17 +4,18 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconAward, IconClock, IconGauge, IconHistory,
+  IconAward, IconClock, IconCrown, IconGauge, IconHistory,
   IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
 } from "@tabler/icons-react";
 import {
-  Area, AreaChart, CartesianGrid, XAxis, YAxis,
+  Area, AreaChart, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis,
 } from "recharts";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
 } from "~/components/ui/chart";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import {
@@ -31,17 +32,29 @@ import { AchievementList } from "~/components/ui/achievement-list";
 import { WpmChart } from "~/components/charts/wpm-chart";
 import { getMyJoinDate, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
+import { getBoardRanks } from "~/server/leaderboard";
 import { useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
 import { formatDateTime } from "~/lib/utils";
 import { ACHIEVEMENTS } from "~/lib/achievements";
 
+/** All board keys in display order */
+const ALL_BOARDS = [
+  "time:15", "time:30", "time:60", "time:120",
+  "words:10", "words:25", "words:50", "words:100",
+] as const;
+
 const wpmConfig = {
   wpm: { label: "wpm", color: "var(--chart-1)" },
+  avg: { label: "avg", color: "var(--chart-2)" },
 } satisfies ChartConfig;
 
 const accConfig = {
   accuracy: { label: "accuracy", color: "var(--chart-3)" },
+} satisfies ChartConfig;
+
+const distConfig = {
+  count: { label: "tests", color: "var(--chart-1)" },
 } satisfies ChartConfig;
 
 export default function ProfilePage() {
@@ -59,6 +72,8 @@ export default function ProfilePage() {
   const [achTab, setAchTab] = useState<"all" | "unlocked" | "locked">("all");
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [joinedAt, setJoinedAt] = useState<string | null>(null);
+  const [historyCount, setHistoryCount] = useState(10);
+  const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,8 +94,20 @@ export default function ProfilePage() {
     });
   }, [user]);
 
+  useEffect(() => {
+    if (!user || !stats) return;
+    const boards = Object.keys(stats.bestByBoard);
+    if (boards.length === 0) return;
+    void getBoardRanks(user.id, boards).then(setBoardRanks);
+  }, [user, stats]);
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
   if (!user) {
-    router.push("/login");
     return null;
   }
 
@@ -138,46 +165,80 @@ export default function ProfilePage() {
   })));
   const filteredAch = achTab === "unlocked" ? allAch.filter((a) => a.achievedAt !== null) : achTab === "locked" ? allAch.filter((a) => a.achievedAt === null) : allAch;
 
+  const pbIds = (() => {
+    const best = new Map<string, { id: string; wpm: number; acc: number }>();
+    for (const r of results ?? []) {
+      const k = `${r.mode}:${r.variant}`;
+      const cur = best.get(k);
+      if (!cur || r.wpm > cur.wpm || (r.wpm === cur.wpm && r.accuracy > cur.acc)) {
+        best.set(k, { id: r.id, wpm: r.wpm, acc: r.accuracy });
+      }
+    }
+    return new Set(Array.from(best.values()).map((v) => v.id));
+  })();
+  const visibleHistory = (results ?? []).slice(0, historyCount);
+
+  const wpmWithAvgData = (() => {
+    let sum = 0;
+    return chartData.map((r, i) => {
+      sum += r.wpm;
+      return { n: i + 1, wpm: r.wpm, avg: Math.round(sum / (i + 1)) };
+    });
+  })();
+  const distributionData = (() => {
+    const buckets = new Map<string, number>();
+    const BUCKET = 10;
+    for (const r of chartData) {
+      const start = Math.floor(r.wpm / BUCKET) * BUCKET;
+      const label = `${start}-${start + BUCKET - 1}`;
+      buckets.set(label, (buckets.get(label) ?? 0) + 1);
+    }
+    return Array.from(buckets.entries())
+      .map(([range, count]) => ({ range, count, start: Number(range.split("-")[0]) }))
+      .sort((a, b) => a.start - b.start)
+      .map(({ range, count }) => ({ range, count }));
+  })();
+
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
-        {/* Level card — avatar + level info side by side */}
-        <Card className="row-span-2 gap-3 py-4">
-          <CardContent className="flex items-center gap-5 px-6 pt-2">
-            <Avatar className="size-16 shrink-0 border-2 border-primary/30">
-              {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-              <AvatarFallback className="rounded text-xl font-bold uppercase">{user.username.slice(0, 2)}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-bold truncate">{user.username}</h1>
-              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-              {joinedAt && (
-                <p className="text-[10px] text-muted-foreground/70">
-                  Joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-                </p>
-              )}
-              {points && points.totalXP > 0 ? (
-                <div className="mt-2 flex flex-col gap-1.5">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold tabular-nums text-primary">{points.level}</span>
-                    <span className="text-[10px] text-muted-foreground">level</span>
-                    <span className="ml-auto text-xs font-bold tabular-nums">{points.totalXP.toLocaleString()} <span className="text-muted-foreground">xp</span></span>
-                  </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                    <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${points.progress}%` }} />
-                  </div>
-                  <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.progress}%</span>
-                </div>
-              ) : (
-                <p className="mt-2 text-[10px] text-muted-foreground">finish tests to earn xp</p>
-              )}
+        {/* Level card — 2-row layout: avatar+username, then level/XP */}
+        <Card className="row-span-2 gap-3 py-3 bg-gradient-to-br from-card via-card to-primary/5 border-primary/20">
+          <CardContent className="px-5 pt-2">
+            {/* Row 1: Avatar + Username */}
+            <div className="flex items-center gap-4">
+              <Avatar className="size-16 shrink-0 border-2 border-primary/30">
+                {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+                <AvatarFallback className="rounded text-xl font-bold uppercase">{user.username.slice(0, 2)}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-lg font-bold truncate">{user.username}</h1>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                {joinedAt && (
+                  <p className="text-[10px] text-muted-foreground/70">
+                    Joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                  </p>
+                )}
+              </div>
             </div>
+            {/* Row 2: Level/XP bar — compact single row */}
+            {points && points.totalXP > 0 ? (
+              <div className="mt-4 flex items-center gap-3">
+                <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
+                  <div className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all shadow-sm shadow-primary/30" style={{ width: `${points.progress}%` }} />
+                </div>
+                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
+              </div>
+            ) : (
+              <p className="mt-4 text-[10px] text-muted-foreground">finish tests to earn xp</p>
+            )}
           </CardContent>
         </Card>
 
-        {/* 2x2 stat grid */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* 2x2 stat grid — same height as profile card */}
+        <div className="grid grid-cols-2 gap-3 row-span-2">
           <StatCard icon={<IconTrendingUp className="size-4" />} label="avg wpm (last 10)" value={loading ? null : String(stats!.avgWpm10)} />
           <StatCard icon={<IconGauge className="size-4" />} label="avg wpm (all)" value={loading ? null : String(stats!.avgWpmAll)} />
           <StatCard icon={<IconTarget className="size-4" />} label="avg accuracy" value={loading ? null : `${stats!.avgAccuracy}%`} />
@@ -189,28 +250,35 @@ export default function ProfilePage() {
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconTrophy className="text-primary size-4" /> personal bests
+            <IconTrophy className="size-4" /> personal bests
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-2 px-4">
-          {loading ? (
-            Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-9 w-28" />)
-          ) : Object.keys(stats!.bestByBoard).length === 0 ? (
-            <span className="text-sm text-muted-foreground">no results yet</span>
-          ) : (
-            Object.entries(stats!.bestByBoard)
-              .sort((a, b) => a[0].localeCompare(b[0]))
-              .map(([board, wpm]) => (
-                <Badge key={board} variant="secondary" className="gap-2 py-1.5 text-sm">
-                  <span className="text-muted-foreground">{prettyBoard(board)}</span>
-                  <span className="text-primary font-bold tabular-nums">{wpm}</span>
-                </Badge>
-              ))
-          )}
+        <CardContent className="px-4">
+            <div className="grid grid-cols-4 gap-3">
+              {ALL_BOARDS.map((board) => {
+                const wpm = stats?.bestByBoard?.[board];
+                const rank = boardRanks?.[board];
+                return (
+                  <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                    {loading ? (
+                      <Skeleton className="h-7 w-12" />
+                    ) : (
+                      <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
+                    )}
+                    {rank && (
+                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+                        #{rank}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
         </CardContent>
       </Card>
 
-      {/* Trend charts — side by side */}
+      {/* Trend charts — side by side, wpm with avg dotted */}
       <div className="grid gap-5 md:grid-cols-2">
         <Card className="gap-3 py-4">
           <CardHeader className="px-4">
@@ -221,15 +289,22 @@ export default function ProfilePage() {
           <CardContent className="px-4">
             {loading ? (
               <Skeleton className="h-40 w-full" />
-            ) : chartData.length >= 2 ? (
+            ) : wpmWithAvgData.length >= 2 ? (
               <ChartContainer config={wpmConfig} className="h-40 w-full">
-                <AreaChart data={chartData.map((r, i) => ({ n: i + 1, wpm: r.wpm }))}>
+                <ComposedChart data={wpmWithAvgData}>
+                  <defs>
+                    <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-wpm)" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="var(--color-wpm)" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis tickLine={false} axisLine={false} width={36} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area dataKey="wpm" type="monotone" stroke="var(--color-wpm)" fill="var(--color-wpm)" fillOpacity={0.1} strokeWidth={2} dot={false} />
-                </AreaChart>
+                  <Area dataKey="wpm" type="monotone" stroke="var(--color-wpm)" fill="url(#fillWpm)" strokeWidth={2} dot={false} />
+                  <Line dataKey="avg" type="monotone" stroke="var(--color-avg)" strokeWidth={1.5} dot={false} strokeDasharray="4 4" />
+                </ComposedChart>
               </ChartContainer>
             ) : (
               <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
@@ -251,11 +326,17 @@ export default function ProfilePage() {
             ) : chartData.length >= 2 ? (
               <ChartContainer config={accConfig} className="h-40 w-full">
                 <AreaChart data={chartData.map((r, i) => ({ n: i + 1, accuracy: r.accuracy }))}>
+                  <defs>
+                    <linearGradient id="fillAccuracy" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-accuracy)" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="var(--color-accuracy)" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis tickLine={false} axisLine={false} width={36} domain={[70, 100]} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area dataKey="accuracy" type="monotone" stroke="var(--color-accuracy)" fill="var(--color-accuracy)" fillOpacity={0.1} strokeWidth={2} dot={false} />
+                  <Area dataKey="accuracy" type="monotone" stroke="var(--color-accuracy)" fill="url(#fillAccuracy)" strokeWidth={2} dot={false} />
                 </AreaChart>
               </ChartContainer>
             ) : (
@@ -266,6 +347,40 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* WPM distribution — full width */}
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <IconTrophy className="size-4" /> wpm distribution
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4">
+          {loading ? (
+            <Skeleton className="h-40 w-full" />
+          ) : distributionData.length >= 1 ? (
+            <ChartContainer config={distConfig} className="h-40 w-full">
+              <BarChart data={distributionData}>
+                <defs>
+                  <linearGradient id="fillCount" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-count)" stopOpacity={0.9} />
+                    <stop offset="95%" stopColor="var(--color-count)" stopOpacity={0.3} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="range" tickLine={false} axisLine={false} />
+                <YAxis tickLine={false} axisLine={false} width={36} allowDecimals={false} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="count" fill="url(#fillCount)" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ChartContainer>
+          ) : (
+            <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+              <IconTrophy className="mr-2 size-4" /> no tests yet
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Top achievements — uses AchievementGrid */}
       <Card className="gap-3 py-4">
@@ -295,7 +410,7 @@ export default function ProfilePage() {
               badgeSize="sm"
             />
           ) : (
-            <p className="text-xs text-muted-foreground">no achievements yet — finish tests to earn badges</p>
+            <p className="text-xs text-muted-foreground">no achievements yet. finish tests to earn badges.</p>
           )}
           <button onClick={() => setAchOpen(true)} className="mt-3 text-xs text-primary hover:underline">
             view all achievements →
@@ -306,10 +421,10 @@ export default function ProfilePage() {
       {/* All achievements modal — uses AchievementList with progress */}
       <Dialog open={achOpen} onOpenChange={setAchOpen}>
         <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-hidden flex flex-col">
-          <DialogHeader>
+          <DialogHeader className="pr-8">
             <DialogTitle className="flex items-center gap-2">
               <IconAward className="size-4" /> achievements
-              <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+              <Badge variant="secondary" className="text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
             </DialogTitle>
           </DialogHeader>
           <Tabs value={achTab} onValueChange={(v) => setAchTab(v as "all" | "unlocked" | "locked")}>
@@ -335,11 +450,11 @@ export default function ProfilePage() {
         </DialogContent>
       </Dialog>
 
-      {/* Streak — last 12 months / by year with totals */}
+      {/* Activity — last 12 months / by year with totals */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconClock className="size-4" /> streak
+            <IconClock className="size-4" /> activity
             <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
               {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
             </span>
@@ -386,8 +501,8 @@ export default function ProfilePage() {
           ) : (results ?? []).length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-12 text-center">
               <IconHistory className="size-8 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">no tests recorded yet</p>
-              <Link href="/" className="text-sm text-primary hover:underline">start typing →</Link>
+              <p className="text-sm text-muted-foreground">No tests recorded yet</p>
+              <Link href="/" className="text-sm text-primary hover:underline">Start typing →</Link>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -403,10 +518,19 @@ export default function ProfilePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {(results ?? []).map((r) => (
+                  {visibleHistory.map((r) => (
                     <TableRow key={r.id} onClick={() => setSelected(r)} className="cursor-pointer">
                       <TableCell className="text-xs text-muted-foreground">{formatDateTime(r.createdAt)}</TableCell>
-                      <TableCell className="text-right font-bold tabular-nums text-primary">{r.wpm}</TableCell>
+                      <TableCell className="text-right font-bold tabular-nums text-primary">
+                        <span className="inline-flex items-center justify-end gap-1.5">
+                          {pbIds.has(r.id) && (
+                            <span className="inline-flex items-center gap-0.5 rounded bg-primary/10 px-1 py-0 text-[9px] font-bold tracking-widest uppercase text-primary">
+                              <IconCrown className="size-3" /> PB
+                            </span>
+                          )}
+                          {r.wpm}
+                        </span>
+                      </TableCell>
                       <TableCell className="text-right tabular-nums text-muted-foreground">{r.rawWpm}</TableCell>
                       <AccCell value={r.accuracy} />
                       <TableCell className="hidden text-right tabular-nums sm:table-cell">{r.consistency}%</TableCell>
@@ -417,6 +541,13 @@ export default function ProfilePage() {
                   ))}
                 </TableBody>
               </Table>
+              {(results?.length ?? 0) > historyCount && (
+                <div className="mt-3 flex justify-center">
+                  <Button variant="outline" size="sm" onClick={() => setHistoryCount((c) => Math.min(c + 10, results?.length ?? c))}>
+                    load more ({(results?.length ?? 0) - historyCount} remaining)
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </CardContent>
@@ -459,7 +590,7 @@ export default function ProfilePage() {
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
   return (
-    <Card className="gap-1 py-3">
+    <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
         <span className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
           {icon} {label}

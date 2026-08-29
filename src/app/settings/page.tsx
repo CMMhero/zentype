@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-  IconAlertTriangle, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboard,
+  IconAlertTriangle, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboardFilled,
   IconPalette, IconPlayerPlay, IconRefresh, IconUser, IconVolume,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ import { Slider } from "~/components/ui/slider";
 import { Switch } from "~/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { THEMES } from "~/lib/themes";
-import type { CaretStyle, FontFamily, FontSizeKey, SoundVariant } from "~/lib/types";
+import type { CaretStyle, FontSizeKey, SoundVariant } from "~/lib/types";
 import { useResultsStore } from "~/stores/results-store";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useUser } from "~/components/user-provider";
@@ -39,11 +39,27 @@ export default function SettingsPage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconKeyboard className="text-primary size-5" /> settings
+          <IconKeyboardFilled className="text-primary size-5" /> settings
         </h1>
-        <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs" onClick={() => { reset(); toast.info("settings restored to defaults"); }}>
-          <IconRefresh className="size-3.5" /> restore defaults
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs">
+              <IconRefresh className="size-3.5" /> restore defaults
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Restore all settings to defaults?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will reset your theme, font, sound, and gameplay settings to their original values.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => { reset(); toast.info("Settings restored to defaults"); }}>yes, restore</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </header>
 
       <Tabs defaultValue="gameplay" className="gap-4">
@@ -51,14 +67,14 @@ export default function SettingsPage() {
           <TabsTrigger value="gameplay" className="flex-1 sm:flex-none"><IconDeviceGamepad2 className="size-4" /> gameplay</TabsTrigger>
           <TabsTrigger value="appearance" className="flex-1 sm:flex-none"><IconPalette className="size-4" /> appearance</TabsTrigger>
           <TabsTrigger value="account" className="flex-1 sm:flex-none"><IconUser className="size-4" /> account</TabsTrigger>
-          <TabsTrigger value="keybinds" className="flex-1 sm:flex-none"><IconKeyboard className="size-4" /> keybinds</TabsTrigger>
+          <TabsTrigger value="keybinds" className="flex-1 sm:flex-none"><IconKeyboardFilled className="size-4" /> keybinds</TabsTrigger>
         </TabsList>
 
         <TabsContent value="gameplay" className="flex flex-col gap-4 outline-none">
           <Card className="py-4">
             <SectionTitle icon={<IconVolume className="size-4" />} title="sound feedback" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
-              <SettingRow label="enabled" hint="synth keystroke sounds — no assets, pure webaudio">
+              <SettingRow label="enabled" hint="play sounds when you type">
                 <Switch checked={settings.sound.enabled} onCheckedChange={(v) => update({ sound: { ...settings.sound, enabled: v } })} />
               </SettingRow>
               <SettingRow label="volume">
@@ -93,7 +109,7 @@ export default function SettingsPage() {
           <Card className="py-4">
             <SectionTitle icon={<IconDeviceGamepad2 className="size-4" />} title="typing rules" />
             <CardContent className="mt-3 flex flex-col gap-4 px-4">
-              <SettingRow label="stop on error" hint="incorrect letters block the cursor until fixed">
+              <SettingRow label="stop on error" hint="pause until you fix the wrong letter">
                 <Switch checked={settings.stopOnError} onCheckedChange={(v) => update({ stopOnError: v })} />
               </SettingRow>
               <SettingRow label="strict space" hint="wrong words can't be skipped with space">
@@ -102,10 +118,10 @@ export default function SettingsPage() {
               <SettingRow label="free backspace" hint="backspace at a word start restores the previous word">
                 <Switch checked={settings.freeBackspace} onCheckedChange={(v) => update({ freeBackspace: v })} />
               </SettingRow>
-              <SettingRow label="blind mode" hint="hide error coloring while typing — trust your fingers">
+              <SettingRow label="blind mode" hint="don't show which letters are wrong while typing">
                 <Switch checked={settings.blindMode} onCheckedChange={(v) => update({ blindMode: v })} />
               </SettingRow>
-              <SettingRow label="hide live stats" hint="blank wpm/acc while the test runs (shown after)">
+              <SettingRow label="hide live stats" hint="don't show wpm/accuracy during the test">
                 <Switch checked={settings.hideLiveStats} onCheckedChange={(v) => update({ hideLiveStats: v })} />
               </SettingRow>
             </CardContent>
@@ -116,7 +132,7 @@ export default function SettingsPage() {
           <Card className="py-4">
             <SectionTitle icon={<IconPalette className="size-4" />} title="theme" />
             <CardContent className="grid grid-cols-2 gap-2 px-4 sm:grid-cols-3 md:grid-cols-4">
-              {THEMES.map((t) => (
+              {[...THEMES].sort((a, b) => a.label.localeCompare(b.label)).map((t) => (
                 <button key={t.id} onClick={() => update({ themeId: t.id })} className={`border-border hover:border-primary flex items-center gap-2 rounded-md border p-2 text-left transition-colors ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : ""}`}>
                   <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
                     <span className="size-5" style={{ background: t.vars["--background"] }} />
@@ -146,30 +162,7 @@ export default function SettingsPage() {
               <SettingRow label="smooth caret" hint="animate caret movement between chars">
                 <Switch checked={settings.smoothCaret} onCheckedChange={(v) => update({ smoothCaret: v })} />
               </SettingRow>
-              <SettingRow label="font family">
-                <Select value={settings.fontFamily} onValueChange={(v) => update({ fontFamily: v as FontFamily })}>
-                  <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="geist-mono" style={{ fontFamily: "var(--font-geist-mono)" }}>Geist Mono</SelectItem>
-                    <SelectItem value="inter" style={{ fontFamily: "var(--font-inter)" }}>Inter</SelectItem>
-                    <SelectItem value="jetbrains-mono" style={{ fontFamily: "var(--font-jetbrains-mono)" }}>JetBrains Mono</SelectItem>
-                    <SelectItem value="dm-sans" style={{ fontFamily: "var(--font-dm-sans)" }}>DM Sans</SelectItem>
-                    <SelectItem value="space-grotesk" style={{ fontFamily: "var(--font-space-grotesk)" }}>Space Grotesk</SelectItem>
-                    <SelectItem value="nunito-sans" style={{ fontFamily: "var(--font-nunito-sans)" }}>Nunito Sans</SelectItem>
-                    <SelectItem value="work-sans" style={{ fontFamily: "var(--font-work-sans)" }}>Work Sans</SelectItem>
-                    <SelectItem value="playfair-display" style={{ fontFamily: "var(--font-playfair-display)" }}>Playfair Display</SelectItem>
-                    <SelectItem value="lora" style={{ fontFamily: "var(--font-lora)" }}>Lora</SelectItem>
-                    <SelectItem value="merriweather" style={{ fontFamily: "var(--font-merriweather)" }}>Merriweather</SelectItem>
-                    <SelectItem value="fira-code" style={{ fontFamily: "var(--font-fira-code)" }}>Fira Code</SelectItem>
-                    <SelectItem value="cabin" style={{ fontFamily: "var(--font-cabin)" }}>Cabin</SelectItem>
-                    <SelectItem value="josefin-sans" style={{ fontFamily: "var(--font-josefin-sans)" }}>Josefin Sans</SelectItem>
-                    <SelectItem value="bitter" style={{ fontFamily: "var(--font-bitter)" }}>Bitter</SelectItem>
-                    <SelectItem value="crimson-pro" style={{ fontFamily: "var(--font-crimson-pro)" }}>Crimson Pro</SelectItem>
-                    <SelectItem value="roboto-flex" style={{ fontFamily: "var(--font-roboto-flex)" }}>Roboto Flex</SelectItem>
-                    <SelectItem value="ibm-plex-sans" style={{ fontFamily: "var(--font-ibm-plex-sans)" }}>IBM Plex Sans</SelectItem>
-                  </SelectContent>
-                </Select>
-              </SettingRow>
+
               <SettingRow label="font size">
                 <Select value={settings.fontSize} onValueChange={(v) => update({ fontSize: v as FontSizeKey })}>
                   <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
@@ -208,8 +201,8 @@ export default function SettingsPage() {
             <Card className="py-6">
               <CardContent className="flex flex-col items-center gap-3 px-4 text-center">
                 <IconUser className="text-muted-foreground size-6" />
-                <p className="text-muted-foreground text-sm">you&apos;re typing as a guest. results live in this browser only.</p>
-                <Button asChild size="sm"><a href="/login">login / sign up →</a></Button>
+                <p className="text-muted-foreground text-sm">You're typing as a guest. Results live in this browser only.</p>
+                <Button asChild size="sm"><a href="/login">login / Sign up →</a></Button>
               </CardContent>
             </Card>
           )}
@@ -252,7 +245,7 @@ function AccountCard({ username, email }: { username: string; email: string }) {
     try {
       const res = await updateUsername(value);
       if (res.error) toast.error(res.error);
-      else { toast.success("username updated"); setTimeout(() => window.location.reload(), 400); }
+      else { toast.success("Username updated"); setTimeout(() => window.location.reload(), 400); }
     } finally { setSaving(false); }
   }
 
@@ -304,10 +297,26 @@ function GuestDataCard() {
   if (local.length === 0) return null;
   return (
     <Card className="py-4">
-      <SectionTitle icon={<IconAlertTriangle className="size-4" />} title={`local guest queue — ${local.length} result${local.length === 1 ? "" : "s"}`} />
+      <SectionTitle icon={<IconAlertTriangle className="size-4" />} title={`local guest queue (${local.length} result${local.length === 1 ? "" : "s"})`} />
       <CardContent className="mt-3 px-4">
         <p className="text-muted-foreground mb-3 text-sm">these will sync automatically when you log in.</p>
-        <Button variant="destructive" size="sm" onClick={() => clearLocal()}>discard local results</Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm">discard local results</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Discard {local.length} local result{local.length === 1 ? "" : "s"}?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete your local guest results. They cannot be recovered.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>cancel</AlertDialogCancel>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => clearLocal()}>yes, discard</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardContent>
     </Card>
   );
@@ -325,8 +334,8 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>delete every saved result?</AlertDialogTitle>
-              <AlertDialogDescription>this permanently removes all your test history from the server. this cannot be undone.</AlertDialogDescription>
+              <AlertDialogTitle>Delete every saved result?</AlertDialogTitle>
+              <AlertDialogDescription>This permanently removes all your test history from the server. This cannot be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>cancel</AlertDialogCancel>

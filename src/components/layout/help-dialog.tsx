@@ -18,7 +18,6 @@ const SHORTCUTS: Array<{ keys: string[]; action: string }> = [
   { keys: ["esc"], action: "close dialogs / pause focus" },
   { keys: ["alt", "1..4"], action: "test · leaderboard · profile · settings" },
   { keys: ["backspace"], action: "fix current word" },
-  { keys: ["ctrl", "backspace"], action: "(browser) nothing — we guard it" },
 ];
 
 export function HelpDialog() {
@@ -31,7 +30,7 @@ export function HelpDialog() {
         <DialogHeader>
           <DialogTitle>keyboard shortcuts</DialogTitle>
           <DialogDescription>
-            keyboard-first by design. every action is reachable without a mouse.
+            Shortcuts for navigating and controlling tests.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-1">

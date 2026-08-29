@@ -36,7 +36,7 @@ export function WpmChart({
           className,
         )}
       >
-        not enough data for a graph — run a longer test
+        not enough data for a graph. run a longer test.
       </div>
     );
   }
@@ -52,6 +52,20 @@ export function WpmChart({
   return (
     <ChartContainer config={chartConfig} className={cn("h-56 w-full", className)}>
       <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
+        <defs>
+          <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-wpm)" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="var(--color-wpm)" stopOpacity={0.1} />
+          </linearGradient>
+          <linearGradient id="fillRaw" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-raw)" stopOpacity={0.3} />
+            <stop offset="95%" stopColor="var(--color-raw)" stopOpacity={0.05} />
+          </linearGradient>
+          <linearGradient id="fillErrors" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-errors)" stopOpacity={0.9} />
+            <stop offset="95%" stopColor="var(--color-errors)" stopOpacity={0.3} />
+          </linearGradient>
+        </defs>
         <CartesianGrid vertical={false} strokeDasharray="3 3" />
         <XAxis
           dataKey="Second"
@@ -66,15 +80,13 @@ export function WpmChart({
           cursor={{ stroke: "var(--border)" }}
           content={<ChartTooltipContent labelKey="t" />}
         />
-        <Bar dataKey="errors" fill="var(--color-errors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
+        <Bar dataKey="errors" fill="url(#fillErrors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
         <Area
           dataKey="raw"
           type="monotone"
           stroke="var(--color-raw)"
-          strokeOpacity={0.55}
           strokeWidth={1.5}
-          fill="var(--color-raw)"
-          fillOpacity={0.06}
+          fill="url(#fillRaw)"
           dot={false}
         />
         <Area
@@ -82,8 +94,7 @@ export function WpmChart({
           type="monotone"
           stroke="var(--color-wpm)"
           strokeWidth={2}
-          fill="var(--color-wpm)"
-          fillOpacity={0.12}
+          fill="url(#fillWpm)"
           dot={false}
           activeDot={{ r: 3 }}
         />

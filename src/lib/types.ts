@@ -1,14 +1,19 @@
 export type GameMode = "time" | "words";
 export type PromptSource = "words";
 export type CaretStyle = "line" | "block" | "underline" | "off";
-export type FontSizeKey = "sm" | "md" | "lg" | "xl";
+export type FontSizeKey = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type SoundVariant = "click" | "thock" | "beep";
 export type FontFamily =
-  | "geist-mono" | "inter" | "jetbrains-mono"
-  | "dm-sans" | "space-grotesk" | "nunito-sans" | "work-sans"
-  | "playfair-display" | "lora" | "merriweather"
-  | "fira-code" | "cabin" | "josefin-sans" | "bitter"
-  | "crimson-pro" | "roboto-flex" | "ibm-plex-sans";
+  | "anonymous-pro" | "barlow" | "bricolage-grotesque" | "bitter"
+  | "cal-sans" | "cabin" | "cascadia-code" | "comic-neue" | "commit-mono"
+  | "crimson-pro" | "dm-sans" | "exo-2" | "fira-code" | "geist" | "geist-mono"
+  | "google-sans" | "ibm-plex-mono" | "ibm-plex-sans" | "inconsolata" | "inter"
+  | "jetbrains-mono" | "josefin-sans" | "lato" | "lexend" | "lora" | "manrope"
+  | "merriweather" | "mona-sans" | "montserrat" | "noto-sans" | "noto-serif"
+  | "nunito-sans" | "open-sans" | "oswald" | "outfit" | "playfair-display"
+  | "plus-jakarta-sans" | "poppins" | "pt-sans" | "pt-serif" | "raleway"
+  | "roboto-flex" | "roboto-mono" | "source-code-pro" | "space-grotesk"
+  | "space-mono" | "titillium-web" | "ubuntu-mono" | "victor-mono" | "work-sans";
 
 export interface SoundSettings {
   enabled: boolean;

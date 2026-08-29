@@ -43,8 +43,10 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   }
 }
 
+export type AuthProvider = "github" | "google" | "discord";
+
 export async function signInWithProvider(
-  provider: "github" | "google",
+  provider: AuthProvider,
 ): Promise<{ url: string | null; error: string | null }> {
   const supabase = await getSupabaseServerClient();
   if (!supabase) {
@@ -53,7 +55,7 @@ export async function signInWithProvider(
   const { data: res, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/auth/callback`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3123"}/auth/callback`,
       skipBrowserRedirect: true,
     },
   });

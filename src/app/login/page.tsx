@@ -1,59 +1,88 @@
 "use client";
 
 import { useState } from "react";
-import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
+import Link from "next/link";
+import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconKeyboardFilled, IconArrowLeft } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { Kbd } from "~/components/ui/kbd";
-import { signInWithProvider } from "~/server/auth";
+import { signInWithProvider, type AuthProvider } from "~/server/auth";
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState<"github" | "google" | null>(null);
+  const [loading, setLoading] = useState<AuthProvider | null>(null);
 
-  async function signIn(provider: "github" | "google") {
+  async function signIn(provider: AuthProvider) {
     setLoading(provider);
     try {
       const res = await signInWithProvider(provider);
       if (!res.url) {
-        toast.error(res.error ?? "auth unavailable");
+        toast.error(res.error ?? "Auth unavailable");
         setLoading(null);
         return;
       }
       window.location.href = res.url;
     } catch {
-      toast.error("failed to start sign-in");
+      toast.error("Failed to start sign-in");
       setLoading(null);
     }
   }
 
+  const providers: { id: AuthProvider; label: string; icon: typeof IconBrandGithubFilled }[] = [
+    { id: "github", label: "Continue with GitHub", icon: IconBrandGithubFilled },
+    { id: "google", label: "Continue with Google", icon: IconBrandGoogleFilled },
+    { id: "discord", label: "Continue with Discord", icon: IconBrandDiscordFilled },
+  ];
+
   return (
     <div className="flex flex-1 items-center justify-center px-4 py-16">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="text-center">
-          <CardTitle className="text-lg">
-            zentype login
-          </CardTitle>
-          <CardDescription>
-            sync stats across devices · climb global leaderboards.
-            <br />
-            guests can always keep playing — results stay on this device.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          <Button variant="outline" size="lg" onClick={() => signIn("github")} disabled={loading !== null} className="justify-start gap-3">
-            <IconBrandGithub className="size-4" />
-            {loading === "github" ? "redirecting…" : "continue with github"}
-          </Button>
-          <Button variant="outline" size="lg" onClick={() => signIn("google")} disabled={loading !== null} className="justify-start gap-3">
-            <IconBrandGoogle className="size-4" />
-            {loading === "google" ? "redirecting…" : "continue with google"}
-          </Button>
-          <p className="text-muted-foreground mt-2 text-center text-[11px]">
-            press <Kbd>esc</Kbd> or go back to keep typing as guest
-          </p>
-        </CardContent>
-      </Card>
+      <div className="relative w-full max-w-sm">
+        {/* Background glow */}
+        <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2">
+          <div className="size-64 rounded-full bg-primary/5 blur-3xl" />
+        </div>
+
+        <div className="relative flex flex-col items-center gap-8">
+          {/* Logo + heading */}
+          <div className="flex flex-col items-center gap-3 text-center">
+            <div className="flex flex-col gap-1">
+              <p className="text-muted-foreground text-sm">welcome to</p>
+              <h1 className="flex items-center justify-center gap-2 text-xl font-semibold tracking-tight">
+                <IconKeyboardFilled className="text-primary size-6" />
+                zentype
+              </h1>
+            </div>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              keep your stats across devices.<br />
+              sign in to sync, or keep playing as a guest.
+            </p>
+          </div>
+
+          {/* Sign in buttons */}
+          <div className="flex w-full flex-col gap-2.5">
+            {providers.map(({ id, label, icon: Icon }) => (
+              <Button
+                key={id}
+                variant="outline"
+                size="lg"
+                onClick={() => signIn(id)}
+                disabled={loading !== null}
+                className="w-full justify-center gap-3 text-sm"
+              >
+                <Icon className="size-4" />
+                {loading === id ? "Redirecting…" : label}
+              </Button>
+            ))}
+          </div>
+
+          {/* Back link */}
+          <Link
+            href="/"
+            className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-xs transition-colors"
+          >
+            <IconArrowLeft className="size-3" />
+            back to typing
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

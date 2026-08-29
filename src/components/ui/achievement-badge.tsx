@@ -101,12 +101,12 @@ const AchievementBadge = React.forwardRef<
             : undefined
         }
         className={cn(
-          "relative flex flex-col items-center justify-center gap-1 rounded-lg border bg-card",
+          "relative flex flex-col items-center justify-center gap-1 rounded-lg border bg-card transition-all duration-200",
           badgeSize === "xs" ? "p-2 gap-1" : "gap-2 p-4",
-          onAchievementClick && "cursor-pointer",
+          onAchievementClick && "cursor-pointer hover:scale-105",
           isUnlocked
-            ? "border-primary/40 bg-card shadow-sm"
-            : "border-border/30 bg-muted/20 opacity-60",
+            ? "border-primary/40 bg-gradient-to-b from-card to-primary/5 shadow-sm hover:shadow-md hover:border-primary/60"
+            : "border-border/30 bg-muted/20 opacity-60 grayscale hover:opacity-80",
           className
         )}
         {...props}

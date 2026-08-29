@@ -7,11 +7,22 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & build
 node_modules
 .next
 out
 dist
 *.local
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# TypeScript incremental build
+*.tsbuildinfo
+
+# Next.js auto-generated
+types-env.d.ts
+next-env.d.ts
 
 # env & secrets
 .env
