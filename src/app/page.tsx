@@ -273,7 +273,7 @@ export default function TestPage() {
   const runningOrIdle = engine.status !== "finished";
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6" role="region" aria-label="Typing test">
+    <div className={`mx-auto flex w-full ${!runningOrIdle ? "flex-1 flex-col items-center" : "max-w-5xl flex-1 flex-col"} px-4 py-6`} role="region" aria-label="Typing test">
       <input
         ref={inputEl}
         className="pointer-events-none absolute size-0 opacity-0"
@@ -295,11 +295,13 @@ export default function TestPage() {
 
       {!runningOrIdle ? (
         result ? (
-          <ResultView
-            result={result}
-            saveState={saveState}
-            onNext={() => restartRef.current()}
-          />
+          <div className="zt-fade-in flex w-full max-w-4xl flex-1 flex-col items-center justify-center">
+            <ResultView
+              result={result}
+              saveState={saveState}
+              onNext={() => restartRef.current()}
+            />
+          </div>
         ) : null
       ) : (
         <>
@@ -310,15 +312,15 @@ export default function TestPage() {
             aria-live="polite"
             aria-atomic="true"
           >
-            <div className="flex items-baseline gap-5">
+            <div className="flex items-baseline gap-3 sm:gap-5">
               <div>
-                <span className="text-primary text-3xl font-bold tabular-nums">
+                <span className="text-primary text-2xl font-bold tabular-nums sm:text-3xl">
                   {engine.liveWpm}
                 </span>
                 <span className="text-muted-foreground ml-1 text-xs font-medium">wpm</span>
               </div>
               <div>
-                <span className="text-xl font-semibold tabular-nums">{engine.liveAcc}%</span>
+                <span className="text-lg font-semibold tabular-nums sm:text-xl">{engine.liveAcc}%</span>
                 <span className="text-muted-foreground ml-1 text-xs font-medium">acc</span>
               </div>
             </div>
@@ -338,9 +340,9 @@ export default function TestPage() {
             </div>
           </div>
 
-          <Progress value={engine.progress * 100} className="mb-6" aria-label="test progress" />
+          <Progress value={engine.progress * 100} className="mb-3" aria-label="test progress" />
 
-          <div className="relative flex-1 p-4">
+          <div className="relative w-full p-4">
             {loadingPrompt ? (
               <div className="flex flex-col gap-3 py-2">
                 <Skeleton className="h-7 w-4/5" />
@@ -366,7 +368,7 @@ export default function TestPage() {
             {!focused && runningOrIdle && !loadingPrompt && (
               <button
                 onClick={() => inputEl.current?.focus()}
-                className="bg-background/60 absolute inset-0 z-10 flex items-center justify-center backdrop-blur-[2px]"
+                className="bg-background/60 absolute inset-0 z-10 flex items-center justify-center rounded-xl backdrop-blur-[2px]"
               >
                 <span className="border-border bg-card animate-pulse rounded border px-3 py-1.5 text-xs">
                   click here or press any key to focus
@@ -376,13 +378,15 @@ export default function TestPage() {
           </div>
 
           {settings.showKeyboard && (
-            <VirtualKeyboard activeKey={activeKey} />
+            <div className="flex flex-1 items-center justify-center py-2">
+              <VirtualKeyboard activeKey={activeKey} />
+            </div>
           )}
 
-          <div className={`mt-6 flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+          <div className={`mt-auto flex flex-col items-center gap-1.5 pt-4 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
             <p>press any key to start</p>
-            <p className="flex flex-wrap items-center justify-center gap-1.5">
-              <Kbd>tab</Kbd> new test <span>·</span> <Kbd>esc</Kbd> restart <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> command
+            <p className="flex flex-wrap items-center justify-center gap-1.5 px-2 text-center">
+              <Kbd>tab</Kbd> new test <span className="hidden sm:inline">·</span> <Kbd className="hidden sm:inline-flex">esc</Kbd><span className="hidden sm:inline"> restart</span> <span className="hidden sm:inline">·</span> <Kbd className="hidden sm:inline-flex">?</Kbd><span className="hidden sm:inline"> shortcuts</span> <span className="hidden sm:inline">·</span> <Kbd className="hidden sm:inline-flex">{isMac ? "cmd" : "ctrl"}+k</Kbd><span className="hidden sm:inline"> command</span>
             </p>
           </div>
         </>

@@ -57,10 +57,18 @@ export async function getUserPointsByUsername(
   const { data: rpcData, error: rpcErr } = await supabase.rpc("get_user_points_by_id", {
     p_user_id: profile.id,
   });
-  if (!rpcErr && rpcData && rpcData.length > 0) {
-    const d = rpcData[0];
-    return { totalXP: d.total_xp, level: d.level, progress: xpProgress(d.total_xp) };
+  if (!rpcErr && rpcData) {
+    if (rpcData.length > 0) {
+      const d = rpcData[0];
+      return { totalXP: d.total_xp, level: d.level, progress: xpProgress(d.total_xp) };
+    }
+    // RPC succeeded but user has no points row yet
+    return { totalXP: 0, level: 1, progress: 0 };
   }
+  console.error(
+    "[zentype] get_user_points_by_id RPC failed — did you apply supabase/migrations/0006_leaderboard_rpc.sql?",
+    rpcErr?.message,
+  );
   // Fallback: direct query
   const { data } = await supabase
     .from("user_points")
@@ -177,9 +185,13 @@ export async function getUserAchievementsByUsername(
     { p_user_id: profile.id },
   );
   let unlockedRows: Array<{ achievement_id: string; unlocked_at: string | null; progress: number }> = [];
-  if (!rpcErr && rpcData && rpcData.length > 0) {
+  if (!rpcErr && rpcData) {
     unlockedRows = rpcData;
   } else {
+    console.error(
+      "[zentype] get_user_achievements_by_id RPC failed — did you apply supabase/migrations/0006_leaderboard_rpc.sql?",
+      rpcErr?.message,
+    );
     // Fallback: direct query (works if RLS policies allow public read)
     const { data: rows } = await supabase
       .from("user_achievements")

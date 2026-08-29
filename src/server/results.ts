@@ -410,3 +410,58 @@ export async function searchUsers(
     avatarUrl: p.avatar_url,
   }));
 }
+
+export async function getPublicStats(): Promise<{
+  totalUsers: number;
+  totalTests: number;
+  totalSeconds: number;
+  totalXpEarned: number;
+} | null> {
+  const supabase = await getSupabasePublicClient();
+  if (!supabase) return null;
+
+  try {
+    // Get total users
+    const { count: totalUsers } = await supabase
+      .from("profiles")
+      .select("id", { count: "exact", head: true });
+
+    // Get total tests
+    const { count: totalTests } = await supabase
+      .from("test_results")
+      .select("id", { count: "exact", head: true });
+
+    // Get total XP earned from user_points
+    const { data: xpData } = await supabase
+      .from("user_points")
+      .select("total_xp");
+    const totalXpEarned = xpData?.reduce((sum, r) => sum + (r.total_xp ?? 0), 0) ?? 0;
+
+    // Calculate total hours from test durations
+    // time mode: variant seconds; words mode: estimated from words typed
+    const { data: tests } = await supabase
+      .from("test_results")
+      .select("variant,mode");
+
+    let totalSeconds = 0;
+    if (tests) {
+      for (const r of tests) {
+        if (r.mode === "time") {
+          totalSeconds += r.variant;
+        } else {
+          // Estimate: ~50 wpm average, each word ~5 chars + space
+          totalSeconds += Math.round((r.variant * 60) / 50);
+        }
+      }
+    }
+
+    return {
+      totalUsers: totalUsers ?? 0,
+      totalTests: totalTests ?? 0,
+      totalSeconds,
+      totalXpEarned,
+    };
+  } catch {
+    return null;
+  }
+}

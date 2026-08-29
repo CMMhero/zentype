@@ -111,8 +111,8 @@ export const SOURCE_LABELS: Record<PromptSource, string> = {
 
 export function modeLabel(result: Pick<TestResult, "mode" | "variant">) {
   return result.mode === "time"
-    ? `${result.variant}s`
-    : `${result.variant}w`;
+    ? `time ${result.variant}`
+    : `words ${result.variant}`;
 }
 
 export function boardKey(mode: GameMode, variant: number) {
