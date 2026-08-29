@@ -7,7 +7,7 @@
 └──────────────────────────────────────────────┘
 ```
 
-A full-stack typing test built on **Next.js** — customizable, clean, and gamified. Inspired by monkeytype. Mobile-first design with 81 themes, 50 fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
+A full-stack typing test built on **Next.js** — customizable, clean, and gamified. Inspired by monkeytype. Mobile-first design with 80+ themes, 50+ fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
 
 [![Discord](https://img.shields.io/discord/YOUR_SERVER_ID?label=discord&logo=discord&logoColor=white)](https://discord.gg/zentype)
 [![GitHub](https://img.shields.io/github/stars/CMMhero/zentype?logo=github)](https://github.com/CMMhero/zentype)
@@ -20,7 +20,7 @@ A full-stack typing test built on **Next.js** — customizable, clean, and gamif
 - monkeytype-accurate math: net/raw WPM, keystroke accuracy, kogasa consistency, per-second timeline
 - `stopOnError`, `strictSpace`, `freeBackspace`, `blindMode`, `hideLiveStats`
 - WebAudio keystroke sounds (click / thock / beep) with volume + error sound — no assets
-- virtual keyboard, 4 caret styles + smooth caret, 1–3 visible lines, 50 fonts
+- virtual keyboard, 4 caret styles + smooth caret, 1–3 visible lines, 50+ fonts
 - live WPM/acc, progress bar, word history + current input with per-char coloring
 - **mobile-first** responsive design with bottom navigation, optimized touch targets
 
@@ -64,11 +64,11 @@ A full-stack typing test built on **Next.js** — customizable, clean, and gamif
 
 **Command palette** (`cmdk`)
 - fuzzy search across **category + label + description** (`value` + `keywords` on every `CommandItem`), hover highlights via `data-[selected=true]:bg-accent`, user search debounced to `searchUsers` (Supabase `ilike`)
-- groups: navigate, actions, mode, theme (81), sound, caret, font size/family (50), visible lines, gameplay, appearance
+- groups: navigate, actions, mode, theme (80+), sound, caret, font size/family (50+), visible lines, gameplay, appearance
 
 **Appearance**
-- 81 themes via `[data-theme]` CSS vars — gruvbox, nord, dracula, tokyo night, catppuccin mocha/latte, everforest, rosé pine/moon/dawn, serika dark, matrix, amber terminal, paper, one dark, monokai, kanagawa, github dark, solarized dark, cyberpunk, ayu mirage, tokyo night storm, cobalt, mocha light, jellybeans, and 58 more
-- 50 fonts (`data-font` on `<html>`, `@fontsource-variable/*`): geist-mono, inter, jetbrains-mono, dm-sans, space-grotesk, nunito-sans, work-sans, playfair-display, lora, merriweather, fira-code, cabin, josefin, bitter, crimson-pro, roboto-flex, ibm-plex-sans, cascadia-code, commit-mono, victor-mono, and 30 more
+- 80+ themes via `[data-theme]` CSS vars — gruvbox, nord, dracula, tokyo night, catppuccin mocha/latte, everforest, rosé pine/moon/dawn, serika dark, matrix, amber terminal, paper, one dark, monokai, kanagawa, github dark, solarized dark, cyberpunk, ayu mirage, tokyo night storm, cobalt, mocha light, jellybeans, and more
+- 50+ fonts (`data-font` on `<html>`, `@fontsource-variable/*`): geist-mono, inter, jetbrains-mono, dm-sans, space-grotesk, nunito-sans, work-sans, playfair-display, lora, merriweather, fira-code, cabin, josefin, bitter, crimson-pro, roboto-flex, ibm-plex-sans, cascadia-code, commit-mono, victor-mono, and more
 - Tailwind CSS v4, shadcn/ui, Recharts 3, Tabler icons
 - Dynamic favicon with theme colors
 
@@ -142,7 +142,7 @@ src/
 │   ├── use-global-hotkeys.ts    # ctrl/cmd+k, ?, tab, alt+1..4
 │   └── use-settings-sync.ts     # per-user DB load (once) + debounced save + flush
 ├── lib/
-│   ├── achievements.ts          # 90+ defs with pct/streakPct + real progress, level + account age tiers
+│   ├── achievements.ts          # 100+ defs with pct/streakPct + real progress, level + account age tiers
 │   ├── xp.ts                    # calculateTestXP, levelFromXP (500/level), xpProgress
 │   ├── stats.ts                 # wpm/accuracy/consistency, charBreakdown, plausibility gate
 │   ├── themes.ts                # 27 palettes + themeStyleSheet()

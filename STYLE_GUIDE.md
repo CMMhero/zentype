@@ -12,7 +12,7 @@ This document defines the consistent design patterns used across the zentype cod
 
 ## Color System
 
-### Theme Colors (81 themes)
+### Theme Colors (80+ themes)
 - **Primary**: `text-primary` / `bg-primary` — Main actions, highlights, important values
 - **Muted**: `text-muted-foreground` / `bg-muted` — Secondary text, labels, descriptions
 - **Destructive**: `text-destructive` — Error states, incorrect inputs
@@ -31,7 +31,7 @@ This document defines the consistent design patterns used across the zentype cod
 
 ## Typography
 
-### Font Families (50 fonts)
+### Font Families (50+ fonts)
 - Default: `geist-mono` (monospace)
 - Sans options: inter, dm-sans, space-grotesk, work-sans, etc.
 - Serif options: lora, merriweather, crimson-pro, etc.
@@ -372,4 +372,4 @@ className="pointer-events-none opacity-0"
 - **Pages**: `src/app/` for route-based pages
 - **Types**: `src/lib/types.ts` for shared TypeScript types
 - **Utils**: `src/lib/utils.ts` for helper functions
-- **Themes**: `src/lib/themes.ts` for 81 color palettes
+- **Themes**: `src/lib/themes.ts` for 80+ color palettes
