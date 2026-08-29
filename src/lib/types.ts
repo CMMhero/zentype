@@ -40,6 +40,8 @@ export interface GameSettings {
   showKeyboard: boolean;
   visibleLines: 1 | 2 | 3;
   hideLiveStats: boolean;
+  punctuation: boolean;
+  numbers: boolean;
 }
 
 export interface CharCounts {
@@ -64,6 +66,8 @@ export interface TestResult {
   /** seconds (time mode) or word count (words mode) */
   variant: number;
   source: PromptSource;
+  punctuation: boolean;
+  numbers: boolean;
   wpm: number;
   rawWpm: number;
   accuracy: number;
@@ -109,10 +113,14 @@ export const SOURCE_LABELS: Record<PromptSource, string> = {
   words: "english",
 };
 
-export function modeLabel(result: Pick<TestResult, "mode" | "variant">) {
-  return result.mode === "time"
+export function modeLabel(result: Pick<TestResult, "mode" | "variant" | "punctuation" | "numbers">) {
+  const base = result.mode === "time"
     ? `time ${result.variant}`
     : `words ${result.variant}`;
+  const extras: string[] = [];
+  if (result.punctuation) extras.push("punct");
+  if (result.numbers) extras.push("nums");
+  return extras.length > 0 ? `${base} · ${extras.join(" · ")}` : base;
 }
 
 export function boardKey(mode: GameMode, variant: number) {

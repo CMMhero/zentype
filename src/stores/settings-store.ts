@@ -22,6 +22,8 @@ const DEFAULT_SETTINGS: GameSettings = {
   showKeyboard: false,
   visibleLines: 3,
   hideLiveStats: false,
+  punctuation: false,
+  numbers: false,
 };
 
 interface SettingsState {
@@ -40,7 +42,7 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: "zentype-settings",
-      version: 4,
+      version: 5,
       migrate: (persistedState) => {
         // persistedState may be { settings: {...} } or legacy flat shape
         const raw = (persistedState ?? {}) as Record<string, unknown>;

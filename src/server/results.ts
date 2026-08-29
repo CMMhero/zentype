@@ -28,6 +28,8 @@ export async function saveResult(
     mode: data.mode,
     variant: data.variant,
     source: data.source,
+    punctuation: data.punctuation ?? false,
+    numbers: data.numbers ?? false,
     wpm: data.wpm,
     raw_wpm: data.rawWpm,
     accuracy: data.accuracy,
@@ -90,6 +92,8 @@ interface DbResultRow {
   mode: GameMode;
   variant: number;
   source: TestResult["source"];
+  punctuation: boolean;
+  numbers: boolean;
   wpm: number;
   raw_wpm: number;
   accuracy: number;
@@ -105,6 +109,8 @@ function mapRow(r: DbResultRow): TestResult {
     mode: r.mode,
     variant: r.variant,
     source: r.source,
+    punctuation: r.punctuation ?? false,
+    numbers: r.numbers ?? false,
     wpm: r.wpm,
     rawWpm: r.raw_wpm,
     accuracy: r.accuracy,
@@ -115,7 +121,7 @@ function mapRow(r: DbResultRow): TestResult {
 }
 
 const RESULT_COLUMNS =
-  "id,created_at,mode,variant,source,wpm,raw_wpm,accuracy,consistency,chars,timeline";
+  "id,created_at,mode,variant,source,punctuation,numbers,wpm,raw_wpm,accuracy,consistency,chars,timeline";
 
 export async function getUserResults(opts?: {
   limit?: number;
@@ -208,6 +214,8 @@ export async function mergeLocalResults(
       mode: r.mode,
       variant: r.variant,
       source: r.source,
+      punctuation: r.punctuation ?? false,
+      numbers: r.numbers ?? false,
       wpm: r.wpm,
       raw_wpm: r.rawWpm,
       accuracy: r.accuracy,
@@ -333,6 +341,8 @@ export async function getPublicProfile(
       mode: r.mode as GameMode,
       variant: r.variant as number,
       source: r.source as TestResult["source"],
+      punctuation: (r.punctuation as boolean) ?? false,
+      numbers: (r.numbers as boolean) ?? false,
       wpm: r.wpm as number,
       rawWpm: r.raw_wpm as number,
       accuracy: r.accuracy as number,
