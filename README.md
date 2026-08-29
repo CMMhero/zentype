@@ -7,7 +7,7 @@
 └──────────────────────────────────────────────┘
 ```
 
-A full-stack typing test built on **Next.js 15** — fast, keyboard-first, and gamified. Clean terminal-inspired UI, 27 themes, 17 fonts, cloud-synced stats, XP/levels, 90+ achievements, streak heatmaps, and global leaderboards.
+A full-stack typing test built on **Next.js 15** — fast, keyboard-first, and gamified. Clean terminal-inspired UI, 81 themes, 50 fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
 
 ## Features
 
@@ -33,6 +33,7 @@ A full-stack typing test built on **Next.js 15** — fast, keyboard-first, and g
 - personal bests per `mode:variant`, separate WPM + accuracy area charts
 - top 8 achievements (value-sorted) + “view all” dialog with tabs (all/unlocked/locked)
 - **streak calendar** — GitHub-style heatmap with per-day test counts, intensity (1: 40%, 2–3: 70%, 4+: solid), tooltip (`3 tests on …`), and dropdown `Last 12 months` vs dynamic year (from results) with total `N tests in …` header
+- **public profile page** — same cards with skeleton loading, personal bests with rank badges, achievement grid, activity calendar; copy profile link button
 
 **Account & data**
 - GitHub / Google OAuth via Supabase Auth (PKCE, httpOnly cookies)
@@ -59,11 +60,11 @@ A full-stack typing test built on **Next.js 15** — fast, keyboard-first, and g
 
 **Command palette** (`cmdk`)
 - fuzzy search across **category + label + description** (`value` + `keywords` on every `CommandItem`), hover highlights via `data-[selected=true]:bg-accent`, user search debounced to `searchUsers` (Supabase `ilike`)
-- groups: navigate, actions, mode, theme (27), sound, caret, font size/family (17), visible lines, gameplay, appearance
+- groups: navigate, actions, mode, theme (81), sound, caret, font size/family (50), visible lines, gameplay, appearance
 
 **Appearance**
-- 27 themes (gruvbox, nord, dracula, tokyo night, catppuccin mocha/latte, everforest, rosé pine/moon/dawn, serika dark, matrix, amber terminal, paper, one dark, monokai, kanagawa, github dark, solarized dark, cyberpunk, ayu mirage, tokyo night storm, cobalt, mocha light, jellybeans) via `[data-theme]` CSS vars
-- 17 fonts (`data-font` on `<html>`, `@fontsource-variable/*`): geist-mono, inter, jetbrains-mono, dm-sans, space-grotesk, nunito-sans, work-sans, playfair/display, lora, merriweather, fira-code, cabin, josefin, bitter, crimson-pro, roboto-flex, ibm-plex-sans
+- 81 themes via `[data-theme]` CSS vars — gruvbox, nord, dracula, tokyo night, catppuccin mocha/latte, everforest, rosé pine/moon/dawn, serika dark, matrix, amber terminal, paper, one dark, monokai, kanagawa, github dark, solarized dark, cyberpunk, ayu mirage, tokyo night storm, cobalt, mocha light, jellybeans, and 58 more
+- 50 fonts (`data-font` on `<html>`, `@fontsource-variable/*`): geist-mono, inter, jetbrains-mono, dm-sans, space-grotesk, nunito-sans, work-sans, playfair-display, lora, merriweather, fira-code, cabin, josefin, bitter, crimson-pro, roboto-flex, ibm-plex-sans, cascadia-code, commit-mono, victor-mono, and 30 more
 - Tailwind CSS v4 (`@theme inline`), shadcn/ui, Recharts 3, Tabler icons
 
 ## Stack
@@ -71,7 +72,7 @@ A full-stack typing test built on **Next.js 15** — fast, keyboard-first, and g
 | layer | tech |
 |---|---|
 | framework | [Next.js 15](https://nextjs.org/) App Router + Server Actions, React 19 |
-| UI | shadcn/ui · Tailwind v4 · Recharts 3 · Trophy UI · Sonner |
+| UI | shadcn/ui · Tailwind v4 · Recharts 3 · Tabler icons · Sonner |
 | auth + db | Supabase (OAuth, Postgres, RLS) |
 | cache/leaderboards | Upstash Redis (REST + `zrange`/`hmget` pipeline) |
 | state | Zustand (settings persisted + guest results, ui) |
@@ -91,7 +92,7 @@ Runs **fully without backend keys** — guest mode, local results, english promp
 ### Supabase setup (one-time)
 
 1. Create project at [supabase.com](https://supabase.com) → copy URL + anon key from *Project Settings → API* into `.env`.
-2. **SQL Editor** → run `supabase/migrations/0001_init.sql`, then `0002_user_settings.sql`, then `0003_gamification.sql` (or `supabase link && supabase db push`).
+2. **SQL Editor** → run migrations `0001` through `0007` in order (or `supabase link && supabase db push`).
 3. *Auth → Providers*: enable **GitHub** + **Google**.
    - GitHub: OAuth app at `github.com/settings/developers` → callback `https://<ref>.supabase.co/auth/v1/callback`
    - Google: credentials in Google Cloud Console → same callback.
@@ -153,7 +154,11 @@ src/
 supabase/migrations/
 ├── 0001_init.sql        # profiles, test_results, RLS, handle_new_user trigger
 ├── 0002_user_settings.sql
-└── 0003_gamification.sql # user_points, point_events, user_achievements + upsert/record/unlock RPCs
+├── 0003_gamification.sql # user_points, point_events, user_achievements + upsert/record/unlock RPCs
+├── 0004_leaderboard_rls.sql
+├── 0005_leaderboard_rls_user_points.sql
+├── 0006_leaderboard_rpc.sql # public leaderboard + achievement RPCs
+└── 0007_public_profile_fixes.sql
 ```
 
 ## Stats methodology

@@ -79,12 +79,18 @@ This document defines the consistent design patterns used across the zentype cod
 ```tsx
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
   return (
-    <Card className="gap-1 py-3">
+    <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
-        <span className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
+        <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase">
           {icon} {label}
         </span>
-        {value === null ? <Skeleton className="mt-1 h-7 w-16" /> : <span className="text-xl font-bold tabular-nums text-primary">{value}</span>}
+        {value === null ? (
+          <div className="flex h-7 items-center">
+            <Skeleton className="h-4 w-20" />
+          </div>
+        ) : (
+          <span className="text-xl font-bold tabular-nums text-primary">{value}</span>
+        )}
       </CardContent>
     </Card>
   );
@@ -154,9 +160,11 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 - **Text size**: `text-[11px]`
 
 ### Navigation Links
-- **Active**: `text-primary font-medium`
+- **Active**: `text-primary`
 - **Inactive**: `text-muted-foreground hover:text-foreground hover:bg-muted`
-- **Padding**: `px-2.5 py-1.5`
+- **Padding**: `p-1.5`
+- **Style**: Icon-only with filled Tabler icons (`size-5 stroke-1`), tooltip shows label + keyboard shortcut
+- **Gap**: `gap-2.5` between nav items
 
 ## Dialogs & Modals
 
@@ -228,8 +236,8 @@ className="pointer-events-none opacity-0"
 
 ### Standard Structure (2-row layout)
 ```tsx
-<Card className="row-span-2 gap-4 py-4">
-  <CardContent className="px-6 pt-2">
+<Card className="row-span-2 gap-3 py-3">
+  <CardContent className="px-5 pt-2">
     {/* Row 1: Avatar + Username */}
     <div className="flex items-center gap-4">
       <Avatar className="size-16 shrink-0 border-2 border-primary/30">
@@ -239,21 +247,25 @@ className="pointer-events-none opacity-0"
       <div className="flex-1 min-w-0">
         <h1 className="text-lg font-bold truncate">{username}</h1>
         <p className="text-xs text-muted-foreground truncate">{email}</p>
-        {/* Optional: join date */}
+        {joinedAt && (
+          <p className="text-[10px] text-muted-foreground/70">
+            Joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+          </p>
+        )}
       </div>
     </div>
-    {/* Row 2: Level/XP bar */}
-    <div className="mt-4 flex flex-col gap-1.5">
-      <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold tabular-nums text-primary">{level}</span>
-        <span className="text-[10px] text-muted-foreground">level</span>
-        <span className="ml-auto text-xs font-bold tabular-nums">{xp} <span className="text-muted-foreground">xp</span></span>
+    {/* Row 2: Level/XP bar — compact single row */}
+    {points && points.totalXP > 0 ? (
+      <div className="mt-4 flex items-center gap-3">
+        <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
+          <div className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all shadow-sm shadow-primary/30" style={{ width: `${points.progress}%` }} />
+        </div>
+        <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
       </div>
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-        <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${progress}%` }} />
-      </div>
-      <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{progress}%</span>
-    </div>
+    ) : (
+      <p className="mt-4 text-[10px] text-muted-foreground">finish tests to earn xp</p>
+    )}
   </CardContent>
 </Card>
 ```
@@ -284,6 +296,16 @@ className="pointer-events-none opacity-0"
   </TooltipContent>
 </Tooltip>
 ```
+
+## Chart Tooltip Indicator
+
+Charts use `ChartTooltipContent` with `indicator="dot"` to show colored dots matching the legend:
+
+```tsx
+<ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
+```
+
+The dot uses `h-2.5 w-2.5` with background color from the chart config.
 
 ## Key Principles
 
