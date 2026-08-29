@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconExternalLink, IconGauge, IconHistory,
-  IconLink, IconNumbers, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
+  IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconExternalLink, IconGauge, IconHash, IconHistory,
+  IconLink, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import {
@@ -628,7 +628,7 @@ export default function ProfilePage() {
                           {r.numbers && (
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <IconNumbers className="size-3 text-muted-foreground/70" />
+                                <IconHash className="size-3 text-muted-foreground/70" />
                               </TooltipTrigger>
                               <TooltipContent>numbers</TooltipContent>
                             </Tooltip>
@@ -668,30 +668,33 @@ export default function ProfilePage() {
                   </span>
                 </DialogTitle>
                 <DialogDescription>
-                  <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
-                    {modeLabel(selected)}
-                  </Badge>
-                  {selected.punctuation && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
-                          <IconAt className="size-3" />
-                        </Badge>
-                      </TooltipTrigger>
-                      <TooltipContent>punctuation</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {selected.numbers && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
-                          <IconNumbers className="size-3" />
-                        </Badge>
-                      </TooltipTrigger>
-                      <TooltipContent>numbers</TooltipContent>
-                    </Tooltip>
-                  )}
-                  {" · "}{new Date(selected.createdAt).toLocaleString()}
+                  <span className="inline-flex items-center gap-1.5">
+                    <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
+                      {modeLabel(selected)}
+                    </Badge>
+                    {selected.punctuation && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
+                            <IconAt className="size-3" />
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>punctuation</TooltipContent>
+                      </Tooltip>
+                    )}
+                    {selected.numbers && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
+                            <IconHash className="size-3" />
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>numbers</TooltipContent>
+                      </Tooltip>
+                    )}
+                    <span className="text-muted-foreground">·</span>
+                    <span>{new Date(selected.createdAt).toLocaleString()}</span>
+                  </span>
                 </DialogDescription>
               </DialogHeader>
               <WpmChart timeline={selected.timeline} compact />
