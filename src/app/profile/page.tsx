@@ -668,33 +668,34 @@ export default function ProfilePage() {
                   </span>
                 </DialogTitle>
                 <DialogDescription>
-                  <span className="inline-flex items-center gap-1.5">
-                    <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
-                      {modeLabel(selected)}
-                    </Badge>
-                    {selected.punctuation && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
-                            <IconAt className="size-3" />
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>punctuation</TooltipContent>
-                      </Tooltip>
-                    )}
-                    {selected.numbers && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
-                            <IconHash className="size-3" />
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>numbers</TooltipContent>
-                      </Tooltip>
-                    )}
-                    <span className="text-muted-foreground">·</span>
-                    <span>{new Date(selected.createdAt).toLocaleString()}</span>
-                  </span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
+                        {modeLabel(selected)}
+                      </Badge>
+                      {selected.punctuation && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
+                              <IconAt className="size-3" />
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>punctuation</TooltipContent>
+                        </Tooltip>
+                      )}
+                      {selected.numbers && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
+                              <IconHash className="size-3" />
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>numbers</TooltipContent>
+                        </Tooltip>
+                      )}
+                    </span>
+                    <span className="shrink-0 text-xs text-muted-foreground">{new Date(selected.createdAt).toLocaleString()}</span>
+                  </div>
                 </DialogDescription>
               </DialogHeader>
               <WpmChart timeline={selected.timeline} compact />
