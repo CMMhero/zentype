@@ -9,7 +9,7 @@ import {
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import {
-  Area, AreaChart, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis,
+  Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis,
 } from "recharts";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
