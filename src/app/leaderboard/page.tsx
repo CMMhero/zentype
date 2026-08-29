@@ -2,7 +2,7 @@
 
 import { useEffect, useTransition, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { IconBolt, IconCalendar, IconCalendarMonth, IconTrophy } from "@tabler/icons-react";
+import { IconBolt, IconCalendar, IconCalendarMonth, IconTrophy, IconTrophyFilled } from "@tabler/icons-react";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -109,8 +109,8 @@ export default function LeaderboardPage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconTrophy className="text-primary size-5" />
-          Leaderboard
+          <IconTrophyFilled className="text-primary size-5" />
+          leaderboard
         </h1>
         <div className="flex items-center gap-2">
           <Tabs value={boardTab} onValueChange={(v) => setParam("board", v)}>

@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  IconCommand, IconKeyboardFilled, IconLayoutDashboard,
-  IconLogout, IconSettings, IconTrophy, IconUser,
+  IconCommand, IconKeyboardFilled, IconLogout,
+  IconSettingsFilled, IconTrophyFilled, IconUser, IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -27,9 +27,9 @@ import type { FontFamily, SessionUser } from "~/lib/types";
 
 const NAV = [
   { to: "/", label: "test", icon: IconKeyboardFilled },
-  { to: "/leaderboard", label: "leaderboard", icon: IconTrophy },
-  { to: "/profile", label: "profile", icon: IconLayoutDashboard },
-  { to: "/settings", label: "settings", icon: IconSettings },
+  { to: "/leaderboard", label: "leaderboard", icon: IconTrophyFilled },
+  { to: "/profile", label: "profile", icon: IconUserFilled },
+  { to: "/settings", label: "settings", icon: IconSettingsFilled },
 ] as const;
 
 export function AppShell({
@@ -96,7 +96,7 @@ export function AppShell({
             <span className="text-sm font-semibold tracking-tight">zentype</span>
           </Link>
 
-          <nav className="ml-4 hidden items-center gap-0.5 md:flex" aria-label="Primary">
+          <nav className="ml-4 hidden items-center gap-2.5 md:flex" aria-label="Primary">
             {NAV.map((item, i) => {
               const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
               return (
@@ -104,7 +104,8 @@ export function AppShell({
                   <TooltipTrigger asChild>
                     <Link
                       href={item.to}
-                      className={`rounded px-2.5 py-1.5 text-xs transition-colors ${active ? "text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+                      aria-label={item.label}
+                      className={`rounded p-1.5 transition-colors ${active ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
                       onClick={(e) => {
                         if (pathname === item.to) {
                           e.preventDefault();
@@ -112,10 +113,11 @@ export function AppShell({
                         }
                       }}
                     >
-                      {item.label}
+                      <item.icon className="size-5" stroke={1} />
                     </Link>
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="flex items-center gap-1.5">
+                    {item.label}
                     <Kbd>alt</Kbd>+<Kbd>{i + 1}</Kbd>
                   </TooltipContent>
                 </Tooltip>
@@ -246,7 +248,7 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="hover:bg-muted flex items-center gap-2 rounded-md px-1 py-1 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50" aria-label="Account menu">
+        <Button variant="ghost" className="hover:bg-muted h-auto gap-2 rounded-md px-1 py-1 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50" aria-label="Account menu">
           <Avatar className="size-6">
             {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
             <AvatarFallback className="rounded text-[10px] uppercase">{user.username.slice(0, 2)}</AvatarFallback>
@@ -257,7 +259,7 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
               {userLevel}
             </span>
           )}
-        </button>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuLabel className="text-xs">
@@ -267,7 +269,7 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/profile")}><IconUser className="size-4" /> profile</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings")}><IconSettings className="size-4" /> settings</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/settings")}><IconSettingsFilled className="size-4" /> settings</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={onSignOut}><IconLogout className="size-4" /> sign out</DropdownMenuItem>
       </DropdownMenuContent>
