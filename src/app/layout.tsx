@@ -20,7 +20,7 @@ const themeBootstrapScript = `
     var raw = localStorage.getItem('zentype-settings');
     var st = raw ? (JSON.parse(raw).state||{}).settings : null;
     var t = (st && st.themeId) || '${DEFAULT_THEME_ID}';
-    var f = (st && st.fontFamily) || 'geist-mono';
+    var f = (st && st.fontFamily) || 'work-sans';
     var map = ${JSON.stringify(appearanceMap)};
     document.documentElement.setAttribute('data-theme', t);
     document.documentElement.setAttribute('data-appearance', map[t] || 'dark');
@@ -126,6 +126,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="application-name" content="zentype" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
