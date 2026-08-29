@@ -1,4 +1,4 @@
-import { IconClock, IconTypography } from "@tabler/icons-react";
+import { IconTypography, IconClock, IconHash, IconAt } from "@tabler/icons-react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import {
@@ -12,7 +12,9 @@ interface ConfigBarProps {
   duration: number;
   wordCount: number;
   locked: boolean;
-  onChange: (patch: { mode?: GameMode; duration?: number; wordCount?: number }) => void;
+  punctuation: boolean;
+  numbers: boolean;
+  onChange: (patch: { mode?: GameMode; duration?: number; wordCount?: number; punctuation?: boolean; numbers?: boolean }) => void;
 }
 
 export function ConfigBar({
@@ -20,20 +22,22 @@ export function ConfigBar({
   duration,
   wordCount,
   locked,
+  punctuation,
+  numbers,
   onChange,
 }: ConfigBarProps) {
   return (
     <div
       className={cn(
-        "mx-auto flex w-fit flex-wrap items-center justify-center gap-2 text-sm transition-all duration-300",
+        "mx-auto flex w-fit flex-wrap items-center justify-center gap-2 text-sm transition-all duration-300 sm:gap-3",
         locked ? "pointer-events-none opacity-40" : "opacity-100"
       )}
       role="toolbar"
       aria-label="test configuration"
     >
-      <div className="grid w-full grid-cols-2 gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
+      <div className="grid w-full grid-cols-[1fr_2fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
         {/* Mode selector — pill style like Tabs */}
-        <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px] sm:w-auto">
+        <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-1 rounded-lg p-[3px] sm:w-auto">
           <ConfigButton
             active={mode === "time"}
             onClick={() => onChange({ mode: "time" })}
@@ -51,7 +55,7 @@ export function ConfigBar({
         </div>
 
         {/* Variant selector — pill style like Tabs, responsive width */}
-        <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px] sm:w-64">
+        <div className="bg-muted/80 inline-flex h-9 min-w-0 items-center justify-center gap-1 overflow-hidden rounded-lg p-[3px] sm:w-64">
           {mode === "time"
             ? TIME_OPTIONS.map((t) => (
                 <ConfigButton
@@ -70,10 +74,28 @@ export function ConfigBar({
                   onClick={() => onChange({ wordCount: w })}
                   aria-label={`${w} words`}
                 >
-                  {w}w
+                  {w}
                 </ConfigButton>
               ))}
         </div>
+      </div>
+
+      {/* Punctuation & numbers toggles */}
+      <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-1 rounded-lg p-[3px]">
+        <ConfigButton
+          active={punctuation}
+          onClick={() => onChange({ punctuation: !punctuation })}
+          aria-label="toggle punctuation"
+        >
+          <IconAt className="size-3.5" /> punct
+        </ConfigButton>
+        <ConfigButton
+          active={numbers}
+          onClick={() => onChange({ numbers: !numbers })}
+          aria-label="toggle numbers"
+        >
+          <IconHash className="size-3.5" /> nums
+        </ConfigButton>
       </div>
     </div>
   );

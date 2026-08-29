@@ -1,63 +1,135 @@
 # zentype UI Style Guide
 
-This document defines the consistent design patterns used across the zentype codebase. Follow these conventions when creating or modifying components.
+Design patterns for the zentype codebase. Follow these when creating or modifying components.
+
+## Design Principles
+
+1. **Mobile-first**: Design for mobile first, enhance for larger screens
+2. **Lowercase**: All UI text uses lowercase (headings, labels, buttons)
+3. **Consistency**: Use the same patterns across all components
+4. **Accessibility**: Include proper ARIA labels and semantic HTML
+5. **Clean**: Minimal borders, subtle gradients, clear hierarchy
 
 ## Color System
 
-### Primary Colors
-- **Primary**: `text-primary` / `bg-primary` — Used for main actions, highlights, and important values (WPM, level numbers)
+### Theme Colors (80+ themes)
+- **Primary**: `text-primary` / `bg-primary` — Main actions, highlights, important values
 - **Muted**: `text-muted-foreground` / `bg-muted` — Secondary text, labels, descriptions
 - **Destructive**: `text-destructive` — Error states, incorrect inputs
 - **Chart colors**: `text-chart-1` through `text-chart-5` — Data visualization
+- **Card**: `bg-card` — Card backgrounds
+- **Border**: `border-border` — Subtle borders
 
 ### Color Usage
 - **Active/highlighted items**: `text-primary font-medium`
 - **Inactive items**: `text-muted-foreground hover:text-foreground hover:bg-muted`
 - **Disabled/muted state**: `opacity-50 pointer-events-none`
-- **Cards**: `bg-card` with `border border-border/30` or `border-primary/20` for highlighted
+- **Cards**: `bg-card` with `border border-border/30` or gradient `bg-gradient-to-br from-card to-muted/30`
 - **Badges**: `bg-primary/10 text-primary` for level/XP indicators
 - **Success states**: `text-chart-3` (green)
-- **Warning states**: `text-foreground` (neutral)
 - **Error states**: `text-destructive`
 
 ## Typography
 
+### Font Families (50+ fonts)
+- Default: `geist-mono` (monospace)
+- Sans options: inter, dm-sans, space-grotesk, work-sans, etc.
+- Serif options: lora, merriweather, crimson-pro, etc.
+- Mono options: jetbrains-mono, fira-code, cascadia-code, etc.
+- Applied via `data-font` attribute on `<html>`
+
 ### Font Sizes (Tailwind classes)
 - **Extra small labels**: `text-[10px]` or `text-[9px]` — Tracking badges, stats labels
 - **Small text**: `text-xs` — Secondary info, descriptions
-- **Body text**: `text-sm` — Normal content
-- **Large headings**: `text-lg` — Page titles
-- **Extra large numbers**: `text-2xl` to `text-7xl` — Stats, WPM displays
-
-### Font Weights
-- **Bold for values**: `font-bold` — Numbers, important text
-- **Medium for labels**: `font-medium` — Section headers
-- **Normal for descriptions**: `font-normal` — Secondary info
+- **Body text**: `text-sm` — Normal content, card titles
+- **Large headings**: `text-lg` — Page titles with icons
+- **Section headings**: `text-base` — Subsection titles
+- **Extra large numbers**: `text-2xl` to `text-5xl` — Stats, WPM displays
 
 ### Typography Patterns
-- **Section headers**: `text-xs font-semibold tracking-widest uppercase text-muted-foreground`
+- **Page titles**: `text-lg font-semibold` with icon, lowercase
+- **Card titles**: `text-sm font-semibold tracking-wider` with icon, lowercase
+- **Section headings**: `text-base font-semibold` lowercase
 - **Stats values**: `text-xl font-bold tabular-nums text-primary`
-- **Badges/labels**: `text-[10px] font-bold tracking-widest uppercase`
-- **Small labels**: `text-[10px] tracking-wider uppercase text-muted-foreground`
+- **Stat card labels**: `text-sm font-semibold tracking-wider` lowercase
+- **Badges/labels**: `text-[10px] font-bold tracking-widest`
+- **Small labels**: `text-[10px] tracking-wider text-muted-foreground`
 
-## Spacing & Layout
+### Lowercase Convention
+All user-facing text uses lowercase:
+- Page titles: "settings", "profile", "leaderboard", "about zentype"
+- Card titles: "personal bests", "achievements", "activity"
+- Section headings: "community stats", "features", "credits"
+- Button labels: "restore defaults", "view public profile"
+- Tab labels: "gameplay", "appearance", "account", "keybinds"
 
-### Page Layout
-- **Max width**: `max-w-4xl` (profile, settings) or `max-w-5xl` (test page)
-- **Horizontal padding**: `px-4`
-- **Vertical padding**: `py-6` to `py-8`
-- **Gap between sections**: `gap-5` or `gap-6`
+## Icon System
 
-### Card Layout
-- **Card padding**: `py-4` (vertical), `px-4` or `px-6` (horizontal)
-- **Gap inside cards**: `gap-3` (between header/content)
-- **Card header padding**: `px-4`
-- **Card content padding**: `px-4`
+### Library
+- **Package**: `@tabler/icons-react`
+- **Usage**: Named imports from the package
 
-### Grid Systems
-- **2-column stat grid**: `grid grid-cols-2 gap-3`
-- **3-column grid**: `grid grid-cols-3 gap-3`
-- **Responsive grid**: `md:grid-cols-2` or `md:grid-cols-[1fr_auto]`
+### Icon Sizes
+- **Page header icons**: `size-5` (20px) — Filled variant
+- **Card/section icons**: `size-4` (16px) — Outline variant
+- **Small inline icons**: `size-3.5` (14px) — Inline with text
+- **Tiny icons**: `size-3` (12px) — Very compact spaces
+
+### Filled vs Outline Icons
+**Filled icons** (use for primary/emphasis):
+- Page headers: `IconKeyboardFilled`, `IconTrophyFilled`, `IconUserFilled`, `IconSettingsFilled`, `IconInfoCircleFilled`, `IconFileTextFilled`, `IconLockFilled`
+- Logo: `IconKeyboardFilled`
+- Navigation: All nav icons are filled
+- User dropdown menu items: `IconUserFilled`, `IconSettingsFilled`
+- Inline zentype mentions: `IconKeyboardFilled` with `size-3.5`
+
+**Outline icons** (use for secondary/content):
+- Feature cards: `IconKeyboard`, `IconTrophy`, `IconAward`, `IconChartBar`, `IconPalette`, `IconBrandGithub`
+- Stat card icons: `IconTrendingUp`, `IconGauge`, `IconTarget`, `IconStopwatch`
+- Card section icons: `IconClock`, `IconAward`, `IconTrophy`
+- Settings tabs: `IconDeviceGamepad2`, `IconPalette`, `IconUser`, `IconKeyboard`
+- Settings section icons: `IconVolume`, `IconEye`, `IconDownload`
+- Command palette items: Various outline icons
+
+### Icon + Text Patterns
+```tsx
+// Page header (filled, size-5)
+<IconNameFilled className="text-primary size-5" /> page title
+
+// Card/section title (outline, size-4)
+<IconName className="size-4" /> section title
+
+// Inline with text (size-3.5)
+<IconKeyboardFilled className="text-primary size-3.5 inline" /> zentype
+
+// Stat card (outline, size-4)
+<IconName className="size-4" /> stat label
+```
+
+## Layout System
+
+### Page Container
+```tsx
+<div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+  <header className="flex items-center justify-between">
+    <h1 className="flex items-center gap-2 text-lg font-semibold">
+      <IconFilled className="text-primary size-5" /> page title
+    </h1>
+  </header>
+  {/* content */}
+</div>
+```
+
+### Standard Widths
+- **Main content**: `max-w-4xl` (profile, settings, leaderboard, about, terms, privacy)
+- **Test page**: `max-w-5xl` (during test), full width (idle/results)
+- **Dialogs**: `sm:max-w-xl` or `sm:max-w-2xl`
+
+### Spacing
+- **Page padding**: `px-4 py-8`
+- **Section gap**: `gap-6`
+- **Card gap**: `gap-3` or `gap-4`
+- **Internal card padding**: `px-4` or `px-5`
 
 ## Component Patterns
 
@@ -65,7 +137,7 @@ This document defines the consistent design patterns used across the zentype cod
 ```tsx
 <Card className="gap-3 py-4">
   <CardHeader className="px-4">
-    <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+    <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
       <IconName className="size-4" /> section title
     </CardTitle>
   </CardHeader>
@@ -81,7 +153,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   return (
     <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
-        <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase">
+        <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
           {icon} {label}
         </span>
         {value === null ? (
@@ -97,39 +169,32 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 }
 ```
 
+### Buttons
+- **Primary action**: `variant="default"` or `variant="secondary"`
+- **Outline action**: `variant="outline"`
+- **Ghost action**: `variant="ghost"`
+- **Link action**: `variant="link"` with `className="h-auto p-0"`
+- **Small buttons**: `size="sm"`
+
 ### Badges
 ```tsx
 // Level/XP badge
 <Badge variant="secondary" className="text-[10px]">Lv. {level}</Badge>
 
 // Rank badge
-<span className="ml-1 rounded bg-primary/10 px-1 py-0 text-[10px] font-bold tracking-widest text-primary">
+<span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
   #{rank}
 </span>
 
 // Status badge
-<Badge variant={saveState === "cloud" ? "default" : "secondary"} className="text-[10px]">
-  {statusText}
-</Badge>
+<Badge variant={variant} className="text-[9px]">{label}</Badge>
 ```
-
-### Buttons
-- **Primary action**: `variant="default"` or `variant="secondary"`
-- **Outline action**: `variant="outline"`
-- **Link action**: `variant="link"` or `className="text-xs text-primary hover:underline"`
-- **Small buttons**: `size="sm"`
-- **Icon buttons**: `size="icon"`
-
-### Icons
-- **Library**: `@tabler/icons-react`
-- **Standard size**: `className="size-4"` (16px)
-- **Small icons**: `className="size-3"` (12px)
-- **Icon + text gap**: `gap-2` or `gap-1.5`
 
 ### Progress Bars
 ```tsx
-<div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-  <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${progress}%` }} />
+<div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/80">
+  <div className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all shadow-sm shadow-primary/30" 
+       style={{ width: `${progress}%` }} />
 </div>
 ```
 
@@ -142,79 +207,84 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 
 ### Loading States
 ```tsx
-<Skeleton className="h-7 w-4/5" />
-<Skeleton className="h-40 w-full" />
+// Skeleton with gradient background
+<Skeleton className="h-4 w-20" />
+
+// Card skeleton
+<Skeleton className="h-28 w-full rounded-lg" />
 ```
 
-## Navigation & Layout
+## Navigation
 
-### Header
+### Desktop Header
 - **Height**: `h-12`
-- **Background**: `bg-background/95` with `backdrop-blur`
-- **Border**: `border-b border-border/60`
+- **Background**: `bg-background/80` with `backdrop-blur-xl`
+- **Border**: none (clean look)
 - **Max width**: `max-w-5xl`
+- **Logo**: `IconKeyboardFilled` + "zentype" text
+- **Nav**: Icon-only with tooltips, `gap-2.5`
+
+### Mobile Bottom Nav
+- **Fixed**: `fixed inset-x-0 bottom-0 z-50`
+- **Height**: `h-14`
+- **Background**: `bg-background/95` with `backdrop-blur-xl`
+- **Border**: `border-t border-border/40`
+- **Items**: Icon + label in column layout
+- **Active**: `text-primary`
+- **Inactive**: `text-muted-foreground`
 
 ### Footer
-- **Background**: `bg-secondary/40`
-- **Border**: `border-t border-border/60`
 - **Text size**: `text-[11px]`
+- **Centered on mobile**: `justify-center sm:justify-start`
+- **Theme/font pickers**: hidden on mobile (`hidden sm:flex`)
 
-### Navigation Links
-- **Active**: `text-primary`
-- **Inactive**: `text-muted-foreground hover:text-foreground hover:bg-muted`
-- **Padding**: `p-1.5`
-- **Style**: Icon-only with filled Tabler icons (`size-5 stroke-1`), tooltip shows label + keyboard shortcut
-- **Gap**: `gap-2.5` between nav items
+### Navigation Links (Desktop)
+```tsx
+<Link
+  href={item.to}
+  aria-label={item.label}
+  className={`rounded p-1.5 transition-colors ${active ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+>
+  <item.icon className="size-5" stroke={1} />
+</Link>
+```
 
 ## Dialogs & Modals
 
 ### Dialog Structure
 ```tsx
-<DialogContent className="sm:max-w-xl max-h-[80vh] overflow-hidden flex flex-col">
-  <DialogHeader className="pr-8">
+<DialogContent className="sm:max-w-xl max-h-[80vh] overflow-y-auto p-4 sm:p-6">
+  <DialogHeader>
     <DialogTitle className="flex items-center gap-2">
       <IconName className="size-4" /> title
-      <Badge variant="secondary" className="text-[10px]">count</Badge>
     </DialogTitle>
   </DialogHeader>
   {/* content */}
 </DialogContent>
 ```
 
-**Note**: Add `pr-8` to DialogHeader to prevent overlap with close button.
-
-## Tables
-
-### Table Structure
-```tsx
-<Table>
-  <TableHeader>
-    <TableRow className="hover:bg-transparent">
-      <TableHead>column</TableHead>
-      <TableHead className="text-right">right-aligned</TableHead>
-    </TableRow>
-  </TableHeader>
-  <TableBody>
-    <TableRow className="cursor-pointer">
-      <TableCell className="text-xs text-muted-foreground">data</TableCell>
-      <TableCell className="text-right font-bold tabular-nums text-primary">value</TableCell>
-    </TableRow>
-  </TableBody>
-</Table>
-```
+### Command Palette
+- Uses `CommandDialog` with `className="sm:max-w-2xl max-h-[80vh]"`
+- Icons: Outline variants with `size-4`
+- Keyboard shortcuts: `<Kbd>` component
 
 ## Responsive Design
 
 ### Breakpoints
 - **Mobile first**: Default styles
-- **sm**: `640px` — Hide/show elements
-- **md**: `768px` — Grid layouts, navigation
-- **lg**: `1024px` — Larger grids
+- **min-[480px]**: Show tab labels on settings
+- **sm** (640px): Show/hide elements, footer pickers
+- **md** (768px): Grid layouts, hide mobile nav
 
 ### Common Patterns
 - **Hide on mobile**: `hidden sm:inline`
 - **Show on mobile only**: `sm:hidden`
-- **Responsive grid**: `grid-cols-2 md:grid-cols-3 lg:grid-cols-4`
+- **Mobile full width**: `w-full sm:w-auto`
+- **Equal width on mobile**: `grid grid-cols-2 sm:grid-cols-none sm:flex`
+
+### Config Bar (Mobile)
+- Uses CSS grid for equal-width selectors
+- Mode and amount selectors always same width on mobile
 
 ## Animation & Transitions
 
@@ -247,73 +317,53 @@ className="pointer-events-none opacity-0"
       <div className="flex-1 min-w-0">
         <h1 className="text-lg font-bold truncate">{username}</h1>
         <p className="text-xs text-muted-foreground truncate">{email}</p>
-        {joinedAt && (
-          <p className="text-[10px] text-muted-foreground/70">
-            Joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-          </p>
-        )}
       </div>
     </div>
     {/* Row 2: Level/XP bar — compact single row */}
-    {points && points.totalXP > 0 ? (
-      <div className="mt-4 flex items-center gap-3">
-        <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
-          <div className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all shadow-sm shadow-primary/30" style={{ width: `${points.progress}%` }} />
-        </div>
-        <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
+    <div className="mt-4 flex items-center gap-3">
+      <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
+      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
+        <div className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all" style={{ width: `${points.progress}%` }} />
       </div>
-    ) : (
-      <p className="mt-4 text-[10px] text-muted-foreground">finish tests to earn xp</p>
-    )}
+      <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
+    </div>
   </CardContent>
 </Card>
 ```
 
-## Level Pill (Navbar)
+## Achievement Grid
 
-```tsx
-<span className="hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
-  Lv. {level}
-</span>
-```
+### Grid Layout
+- **Desktop**: 4 columns (`grid-cols-4`)
+- **Mobile**: 2 columns (`grid-cols-2`)
+- **Gap**: `gap-2` (sm) or `gap-3` (default)
 
-## Achievement Grid Tooltips
+### Achievement Badge Sizes
+- **xs**: `h-20 w-20`
+- **sm**: `h-28 w-full` (used in profile grids)
+- **default**: `h-32 w-full`
 
-```tsx
-<Tooltip key={achievement.id}>
-  <TooltipTrigger asChild>
-    <div>
-      <AchievementBadge ... />
-    </div>
-  </TooltipTrigger>
-  <TooltipContent side="top" className="max-w-[200px] text-center">
-    <p className="font-medium">{achievement.name}</p>
-    <p className="text-muted-foreground">{description}</p>
-    {rarity != null && (
-      <p className="text-muted-foreground">{rarity}% of users</p>
-    )}
-  </TooltipContent>
-</Tooltip>
-```
+## Charts
 
-## Chart Tooltip Indicator
+### WPM Chart
+- Height: `h-56` (default) or `h-40 sm:h-56` (compact)
+- Uses `ComposedChart` with Area + Bar
+- Tooltip: `<ChartTooltipContent indicator="dot" />`
 
-Charts use `ChartTooltipContent` with `indicator="dot"` to show colored dots matching the legend:
-
-```tsx
-<ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
-```
-
-The dot uses `h-2.5 w-2.5` with background color from the chart config.
+### Chart Tooltip
+- Shows colored dot matching legend
+- Label formatter for time: `labelFormatter={(l) => \`${l}s\`}`
 
 ## Key Principles
 
-1. **Consistency**: Use the same patterns across all components
-2. **Accessibility**: Include proper ARIA labels and semantic HTML
-3. **Responsiveness**: Design mobile-first, enhance for larger screens
-4. **Performance**: Use opacity transitions instead of DOM removal for layout stability
-5. **Clarity**: Use clear labels and consistent terminology
+1. **Lowercase everywhere**: All UI text is lowercase
+2. **Filled icons for headers**: Page headers and navigation get filled variants
+3. **Outline icons for content**: Cards, sections, features get outline variants
+4. **Mobile-first**: Design for mobile, enhance for desktop
+5. **Consistent spacing**: Standard gap and padding values
+6. **Subtle gradients**: Cards use `bg-gradient-to-br from-card to-muted/30`
+7. **Tabular nums**: Always use `tabular-nums` for numbers
+8. **Truncation**: Use `truncate` for overflow text
 
 ## File Organization
 
@@ -322,3 +372,4 @@ The dot uses `h-2.5 w-2.5` with background color from the chart config.
 - **Pages**: `src/app/` for route-based pages
 - **Types**: `src/lib/types.ts` for shared TypeScript types
 - **Utils**: `src/lib/utils.ts` for helper functions
+- **Themes**: `src/lib/themes.ts` for 80+ color palettes
