@@ -42,6 +42,21 @@ export function Combobox({
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const selected = items.find((i) => i.value === value);
+  const listRef = React.useRef<HTMLDivElement>(null);
+
+  // Scroll to selected item when popover opens
+  React.useEffect(() => {
+    if (open && listRef.current) {
+      // Small delay to let the list render
+      const timer = setTimeout(() => {
+        const selectedItem = listRef.current?.querySelector('[data-selected="true"]');
+        if (selectedItem) {
+          selectedItem.scrollIntoView({ block: "nearest" });
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -68,12 +83,13 @@ export function Combobox({
       <PopoverContent className="min-w-64 p-0" align="start">
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
-          <CommandList>
+          <CommandList ref={listRef}>
             <CommandEmpty>{emptyMessage}</CommandEmpty>
             {items.map((item) => (
               <CommandItem
                 key={item.value}
                 value={item.value}
+                data-selected={value === item.value ? "true" : undefined}
                 onSelect={() => {
                   onValueChange(item.value);
                   setOpen(false);
