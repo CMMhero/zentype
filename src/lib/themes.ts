@@ -53,7 +53,7 @@ function theme(
   };
 }
 
-export const DEFAULT_THEME_ID = "gruvbox";
+export const DEFAULT_THEME_ID = "terra";
 
 export const THEMES: ThemePalette[] = [
   theme("gruvbox", "Gruvbox Dark", "dark", {
