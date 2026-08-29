@@ -31,7 +31,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { AchievementList } from "~/components/ui/achievement-list";
-import { WpmChart } from "~/components/charts/wpm-chart";
+import dynamic from "next/dynamic";
+const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-40 w-full" /> });
 import { getMyJoinDate, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
