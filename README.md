@@ -185,7 +185,6 @@ supabase/migrations/
 
 ## Community
 
-- [Discord](https://discord.gg/zentype) -- join the community for discussions, feedback, and support
 - [GitHub](https://github.com/CMMhero/zentype) -- report issues, contribute, or star the project
 
 ## Credits
