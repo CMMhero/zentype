@@ -36,8 +36,8 @@ export default async function AboutPage() {
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard label="users" value={stats?.totalUsers ?? 0} />
             <StatCard label="tests typed" value={stats?.totalTests ?? 0} />
-            <StatCard label="hours tracked" value={stats?.totalHours ?? 0} />
-            <StatCard label="achievements earned" value={stats?.totalAchievements ?? 0} />
+            <StatCard label="hours typed" value={stats?.totalHours ?? 0} />
+            <StatCard label="xp earned" value={stats?.totalAchievements ?? 0} />
           </div>
         </section>
 
