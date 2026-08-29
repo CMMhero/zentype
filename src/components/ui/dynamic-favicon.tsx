@@ -4,10 +4,10 @@ import { useEffect, useRef } from "react";
 import { useSettingsStore } from "~/stores/settings-store";
 import { getTheme } from "~/lib/themes";
 
-// "zt" letter paths (drawn as geometry — no font dependency)
+// "zt" lowercase letter paths (drawn as geometry — no font dependency)
 const ZT_PATHS = [
-  'M2 5h10v3L6 15H12v2H2V15l6-7H2z',  // Z
-  'M13 5h9v3h-3v9h-3V8h-3V5z',          // T
+  'M3 7h8v2.5L5 14.5h6v2.5H3v-2.5l6-5H3z',  // z
+  'M15.5 4h3v3h2.5v2.5h-2.5v7.5h-3v-7.5h-2.5V7h2.5V4z',  // t
 ];
 
 export function DynamicFavicon() {
