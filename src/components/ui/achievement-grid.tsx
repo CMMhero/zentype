@@ -5,10 +5,12 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "~/lib/utils"
 import { AchievementBadge } from "~/components/ui/achievement-badge"
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip"
 
 interface Achievement {
   id: string
   name: string
+  description?: string | null
   trigger: "metric" | "api" | "streak"
   badgeUrl?: string | null
   progress?: number
@@ -70,13 +72,26 @@ const AchievementGrid = React.forwardRef<HTMLDivElement, AchievementGridProps>(
         {...props}
       >
         {achievements.map((achievement) => {
+          const tooltipContent = achievement.description || (achievement.achievedAt ? "Earned" : "Locked")
           return (
-            <AchievementBadge
-              key={achievement.id}
-              achievement={achievement}
-              badgeSize={badgeSize}
-              onAchievementClick={onAchievementClick}
-            />
+            <Tooltip key={achievement.id}>
+              <TooltipTrigger asChild>
+                <div>
+                  <AchievementBadge
+                    achievement={achievement}
+                    badgeSize={badgeSize}
+                    onAchievementClick={onAchievementClick}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[200px] text-center">
+                <p className="font-medium">{achievement.name}</p>
+                <p className="text-muted-foreground">{tooltipContent}</p>
+                {achievement.rarity != null && (
+                  <p className="text-muted-foreground">{achievement.rarity}% of users</p>
+                )}
+              </TooltipContent>
+            </Tooltip>
           )
         })}
       </div>

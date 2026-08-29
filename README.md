@@ -7,114 +7,164 @@
 └──────────────────────────────────────────────┘
 ```
 
-A full-stack typing test built on **Next.js** with a clean, modern interface, Geist Mono everywhere, cloud-synced stats, global leaderboards, and
-prompts pulled live from the real world — quotes, anime synopses, Wikipedia
-extracts and dictionary definitions.
+A full-stack typing test built on **Next.js 15** — fast, keyboard-first, and gamified. Clean terminal-inspired UI, 27 themes, 17 fonts, cloud-synced stats, XP/levels, 90+ achievements, streak heatmaps, and global leaderboards.
 
 ## Features
 
 **Typing**
-- time mode (15/30/60/120s) and words mode (10/25/50/100)
-- five prompt sources: `english` (offline word pool), `quotes`, `anime`, `wiki`, `dictionary`
-- monkeytype-accurate math: net/raw WPM, keystroke-level accuracy, kogasa consistency,
-  per-second timeline with error markers
-- stop-on-error, strict space, free backspace, blind mode
-- WebAudio keystroke sounds (click / thock / beep) — no assets
-- virtual keyboard, 4 caret styles, 1–3 visible lines, multiple font families
-- five font options: Geist Mono, Inter, JetBrains Mono, System Sans, Serif
+- **time** (15/30/60/120s) and **words** (10/25/50/100) modes — switch mid-session from config bar or command palette
+- english word pool (offline, pluggable via `getPrompt`)
+- monkeytype-accurate math: net/raw WPM, keystroke accuracy, kogasa consistency, per-second timeline
+- `stopOnError`, `strictSpace`, `freeBackspace`, `blindMode`, `hideLiveStats`
+- WebAudio keystroke sounds (click / thock / beep) with volume + error sound — no assets
+- virtual keyboard, 4 caret styles + smooth caret, 1–3 visible lines, 17 font families
+- live WPM/acc, progress bar, word history + current input with per-char coloring
+
+**Gamification**
+- **XP & levels**: `wpm * 0.5 * accuracy * mode bonus * streak bonus` (+20 perfect bonus), 500 XP per level
+- **90+ achievements** in tiers: tests, WPM, accuracy, consistency, streak, time, chars, per-board, averages, level, account age
+- every achievement shows real progress (`pct(current/target)`) — streak `max(current,longest)/target`, boards via `bestByBoard`, accuracy/consistency via best single test
+- Trophy UI (`achievement-grid` for cards, `achievement-list` for the see-all dialog) with clear unlocked (primary + check) vs locked (muted + grayscale) styling
+- XP awarded silently in background via `processTestResult` — no toast/popup blocking chained tests
+
+**Profile & streak**
+- header card: avatar, username, email, join date (`profiles.created_at`), level + XP bar
+- 2×2 stats: avg WPM (last 10 / all), avg accuracy, time typed
+- personal bests per `mode:variant`, separate WPM + accuracy area charts
+- top 8 achievements (value-sorted) + “view all” dialog with tabs (all/unlocked/locked)
+- **streak calendar** — GitHub-style heatmap with per-day test counts, intensity (1: 40%, 2–3: 70%, 4+: solid), tooltip (`3 tests on …`), and dropdown `Last 12 months` vs dynamic year (from results) with total `N tests in …` header
 
 **Account & data**
-- GitHub / Google OAuth via Supabase Auth (PKCE, httpOnly cookie sessions)
-- guests can type immediately; results queue locally and **merge on first login**
-- profile dashboard: averages, personal bests per board, wpm/accuracy trend charts,
-  12-week activity strip
-- full history with per-test detail dialogs
-- global leaderboards per mode+variant (Upstash sorted sets, accuracy tie-break,
-  80% accuracy floor)
-- JSON data export, one-click result wipe
+- GitHub / Google OAuth via Supabase Auth (PKCE, httpOnly cookies)
+- guests type immediately; results queue in `zustand` + `localStorage` and **merge on first login** (`mergeLocalResults`)
+- `user_settings` jsonb sync for every `GameSettings` field (theme, font, caret, sound, gameplay) with per-user load, 600 ms debounce, flush on `visibilitychange`/`beforeunload`
+- public profiles at `/profile/[username]` — same cards, avatar, bests, charts, achievements, activity; searchable via command palette
+- full history table + per-test detail dialog with timeline chart
+- JSON export, one-click wipe
+
+**Leaderboards**
+- Upstash Redis sorted sets (`lb:{mode:variant}`) with `lbScore(wpm, accuracy)` and `hset` meta (`username`, `avatarUrl`, accuracy tie-break); 80% accuracy floor, auto-expire 1y, fallback to Postgres aggregate when Redis empty
+- `LeaderboardRankings` (Trophy) cards with rank/crown, pagination (10/25/50/100), current-user highlight; skeleton matches card layout
 
 **Keyboard-first**
 | keys | action |
 |---|---|
 | `tab` | restart / new test |
 | `enter` | next test (results screen) |
-| `ctrl/cmd + k` | command palette (navigate, themes, modes, sources) |
-| `?` | shortcut reference |
-| `alt + 1..5` | test · leaderboard · profile · history · settings |
+| `ctrl/cmd + k` | command palette |
+| `?` | shortcuts reference |
+| `alt + 1..4` | test · leaderboard · profile · settings (never inserts digits) |
 | `esc` | close dialogs |
+| `space` / `backspace` | word commit / free backspace |
 
-12 built-in terminal themes: gruvbox, nord, dracula, tokyo night, catppuccin
-(mocha/latte), everforest, rosé pine, serika dark, matrix, amber terminal, paper white.
+**Command palette** (`cmdk`)
+- fuzzy search across **category + label + description** (`value` + `keywords` on every `CommandItem`), hover highlights via `data-[selected=true]:bg-accent`, user search debounced to `searchUsers` (Supabase `ilike`)
+- groups: navigate, actions, mode, theme (27), sound, caret, font size/family (17), visible lines, gameplay, appearance
+
+**Appearance**
+- 27 themes (gruvbox, nord, dracula, tokyo night, catppuccin mocha/latte, everforest, rosé pine/moon/dawn, serika dark, matrix, amber terminal, paper, one dark, monokai, kanagawa, github dark, solarized dark, cyberpunk, ayu mirage, tokyo night storm, cobalt, mocha light, jellybeans) via `[data-theme]` CSS vars
+- 17 fonts (`data-font` on `<html>`, `@fontsource-variable/*`): geist-mono, inter, jetbrains-mono, dm-sans, space-grotesk, nunito-sans, work-sans, playfair/display, lora, merriweather, fira-code, cabin, josefin, bitter, crimson-pro, roboto-flex, ibm-plex-sans
+- Tailwind CSS v4 (`@theme inline`), shadcn/ui, Recharts 3, Tabler icons
 
 ## Stack
 
 | layer | tech |
 |---|---|
-| framework | [Next.js 15](https://nextjs.org/) (App Router, Server Actions) |
-| UI | shadcn/ui + Tailwind CSS v4 + Recharts, Geist Mono |
+| framework | [Next.js 15](https://nextjs.org/) App Router + Server Actions, React 19 |
+| UI | shadcn/ui · Tailwind v4 · Recharts 3 · Trophy UI · Sonner |
 | auth + db | Supabase (OAuth, Postgres, RLS) |
-| cache/leaderboards | Upstash Redis (REST) |
-| package manager | bun |
+| cache/leaderboards | Upstash Redis (REST + `zrange`/`hmget` pipeline) |
+| state | Zustand (settings persisted + guest results, ui) |
+| package manager | bun · Node 22+ |
+| types/lint | TypeScript 5.9 · eslint 9 · `typescript-eslint` |
 
 ## Getting started
 
 ```bash
 bun install
-cp .env.example .env        # fill in your keys
+cp .env.example .env        # fill in keys
 bun run dev                 # http://localhost:3123
 ```
 
-The app **runs fully without any backend keys** — guest mode, local results,
-english prompts, Postgres-fallback leaderboards. Adding keys unlocks sync,
-OAuth, external prompt sources and Redis leaderboards.
+Runs **fully without backend keys** — guest mode, local results, english prompts, Postgres-fallback leaderboards. Add keys to unlock sync, OAuth, and Redis leaderboards.
 
 ### Supabase setup (one-time)
 
-1. Create a project at [supabase.com](https://supabase.com) → copy the URL +
-   anon key from *Project Settings → API* into `.env`.
-2. Open *SQL Editor* and run [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql)
-   (or `supabase link && supabase db push` with the CLI). This creates
-   `profiles` + `test_results`, RLS policies, and the signup trigger.
-3. *Authentication → Providers*: enable **GitHub** and **Google**.
-   - GitHub: create an OAuth app at github.com/developers → callback URL
-     `https://bqtzmtodygwpbqlqqqgz.supabase.co/auth/v1/callback`
-   - Google: create OAuth credentials in Google Cloud Console → same callback.
-4. *Authentication → URL Configuration*: add your dev/deploy URLs
-   (e.g. `http://localhost:3123/auth/callback`).
+1. Create project at [supabase.com](https://supabase.com) → copy URL + anon key from *Project Settings → API* into `.env`.
+2. **SQL Editor** → run `supabase/migrations/0001_init.sql`, then `0002_user_settings.sql`, then `0003_gamification.sql` (or `supabase link && supabase db push`).
+3. *Auth → Providers*: enable **GitHub** + **Google**.
+   - GitHub: OAuth app at `github.com/settings/developers` → callback `https://<ref>.supabase.co/auth/v1/callback`
+   - Google: credentials in Google Cloud Console → same callback.
+4. *Auth → URL Configuration*: add `http://localhost:3123/auth/callback` (and prod URL).
 
 ### Upstash setup (optional but recommended)
 
-1. Create a free database at [console.upstash.com](https://console.upstash.com).
-2. Copy the **REST** URL + token into `.env`.
-3. Done — leaderboards get fast sorted-set reads, prompt sources get cached
-   pools and per-IP rate limiting.
+1. DB at [console.upstash.com](https://console.upstash.com) → copy **REST** URL + token into `.env`.
+2. Done — leaderboards get `ZADD`/`ZSCORE`/`HMGET` pipelines + 365-day TTL; prompts get per-IP pools.
+
+### Env
+
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+```
 
 ## Project structure
 
 ```
 src/
-├── app/                # Next.js App Router pages
+├── app/
+│   ├── page.tsx                 # test engine + config bar + result
+│   ├── leaderboard/page.tsx     # filters (mode/variant/period) + rankings
+│   ├── profile/page.tsx         # own dashboard (level, stats, bests, charts, achievements, streak, history)
+│   ├── profile/[username]/      # public profile (same cards + join date)
+│   ├── settings/page.tsx        # sound, typing rules, theme/font/display, account
+│   └── auth/callback/route.ts   # PKCE exchange
 ├── components/
-│   ├── ui/            # shadcn/ui primitives
-│   ├── layout/        # app shell, command palette, help dialog
-│   ├── typing/        # config bar, display, caret, virtual keyboard, results
-│   └── charts/        # wpm timeline chart
-├── hooks/             # use-typing-engine (the game), use-global-hotkeys
-├── lib/               # stats math, themes, words, sound, supabase/redis clients
-├── server/            # server actions: auth, results, leaderboard, prompts
-├── stores/            # zustand: settings (persisted), guest results, ui state
-└── styles/            # (unused — CSS is in app/globals.css)
-supabase/migrations/   # SQL schema
+│   ├── ui/                      # shadcn primitives + Trophy: achievement-{grid,list,badge,unlocked}, streak-{calendar,card}, leaderboard-*
+│   ├── layout/                  # app-shell (data-theme/data-font), command-palette (searchable), help
+│   ├── typing/                  # config-bar, typing-display, caret, virtual-keyboard, result-view
+│   └── charts/                  # wpm timeline
+├── hooks/
+│   ├── use-typing-engine.ts     # core game loop (ignores alt to avoid digit insertion)
+│   ├── use-global-hotkeys.ts    # ctrl/cmd+k, ?, tab, alt+1..4
+│   └── use-settings-sync.ts     # per-user DB load (once) + debounced save + flush
+├── lib/
+│   ├── achievements.ts          # 90+ defs with pct/streakPct + real progress, level + account age tiers
+│   ├── xp.ts                    # calculateTestXP, levelFromXP (500/level), xpProgress
+│   ├── stats.ts                 # wpm/accuracy/consistency, charBreakdown, plausibility gate
+│   ├── themes.ts                # 27 palettes + themeStyleSheet()
+│   ├── words.ts / prompt-utils  # offline pool + randomWordSlice
+│   ├── sound.ts / supabase/ / redis.ts
+│   └── types.ts                 # GameSettings (mode/duration/wordCount/source + 10 gameplay + 7 appearance)
+├── server/
+│   ├── auth.ts / results.ts     # saveResult, getUserResults/Stats, getMyJoinDate, getPublicProfile, searchUsers, mergeLocalResults
+│   ├── leaderboard.ts           # getLeaderboard (Redis fast path → Postgres fallback)
+│   ├── gamification.ts          # getUserPoints/Achievements, processTestResult, buildAchievementStats (bestAccuracy/bestConsistency/level/age)
+│   ├── settings.ts              # load/save user_settings jsonb
+│   └── prompts.ts               # getPrompt
+├── stores/
+│   ├── settings-store.ts        # zustand persist v4 (migrates legacy {settings:{}} shape, soundVolume → sound.volume)
+│   ├── results-store.ts         # guest queue
+│   └── ui-store.ts              # palette/help open
+└── styles/                      # app/globals.css (+ [data-font] + [data-theme] vars)
+supabase/migrations/
+├── 0001_init.sql        # profiles, test_results, RLS, handle_new_user trigger
+├── 0002_user_settings.sql
+└── 0003_gamification.sql # user_points, point_events, user_achievements + upsert/record/unlock RPCs
 ```
 
 ## Stats methodology
 
-- **net wpm** = (correct chars incl. correct spaces) / 5 / minutes
-- **raw wpm** = (all typed chars incl. incorrect + spaces) / 5 / minutes — backspaces never count
+- **net wpm** = correct chars (incl. correct spaces) / 5 / minutes
+- **raw wpm** = all typed chars (incl. incorrect + extra) / 5 / minutes — backspaces never count
 - **accuracy** = correct keystrokes / total non-backspace keystrokes
-- **consistency** = monkeytype's *kogasa* function over per-second raw-wpm samples
-- results pass a server-side plausibility gate before touching the database
+- **consistency** = kogasa (`1 - stddev/mean` of per-second raw WPM)
+- **time typed**: `time` mode = variant seconds; `words` mode = `round(variant*60 / wpm)` capped 5–600s (used for time achievements)
+- plausibility gate (`isPlausible`) before any `test_results` insert
 
 ## Credits
 
-Built by [CMMhero](https://github.com/CMMhero). v1 was a Vite SPA; v2 is the full-stack rebuild.
+Built by [CMMhero](https://github.com/CMMhero). v1 was a Vite SPA; v2 is the full-stack rebuild. Trophy UI by [trophyso/ui](https://ui.trophy.so).

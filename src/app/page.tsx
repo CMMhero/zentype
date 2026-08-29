@@ -29,6 +29,7 @@ export default function TestPage() {
   const update = useSettingsStore((s) => s.update);
   const paletteOpen = useUiStore((s) => s.paletteOpen);
   const helpOpen = useUiStore((s) => s.helpOpen);
+  const setTestRunning = useUiStore((s) => s.setTestRunning);
 
   const [words, setWords] = useState<string[]>([]);
   const [loadingPrompt, setLoadingPrompt] = useState(true);
@@ -36,6 +37,10 @@ export default function TestPage() {
   const [saveState, setSaveState] = useState<SaveState>("skipped");
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const [focused, setFocused] = useState(true);
+  const [isMac, setIsMac] = useState(false);
+  useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
+  }, []);
 
   const soundRef = useRef(settings.sound);
   soundRef.current = settings.sound;
@@ -58,11 +63,11 @@ export default function TestPage() {
         const w = res.text.split(/\s+/).filter(Boolean);
         if (w.length === 0) throw new Error("empty prompt");
         if (res.fallback) {
-          toast.info(`${cfg.source} unavailable — using english words`);
+          toast.info(`${cfg.source} unavailable, using English words`);
         }
         return w;
       } catch {
-        toast.warning(`couldn't fetch ${cfg.source} — fell back to words`);
+        toast.warning(`Couldn't fetch ${cfg.source}, fell back to words`);
         return randomWordSlice(want);
       }
     },
@@ -109,6 +114,10 @@ export default function TestPage() {
     onFinish: (r) => onFinishRef.current(r),
   });
 
+  useEffect(() => {
+    setTestRunning(engine.status === "running");
+  }, [engine.status, setTestRunning]);
+
   onFinishRef.current = (partial) => {
     const full: TestResult = {
       id: cryptoUuid(),
@@ -147,7 +156,7 @@ export default function TestPage() {
     if (locals.length === 0) return;
     void mergeLocalResults(locals)
       .then((r) => {
-        if (r.merged > 0) toast.success(`synced ${r.merged} local test(s) to your account`);
+        if (r.merged > 0) toast.success(`Synced ${r.merged} local test(s) to your account`);
         useResultsStore.getState().clearLocal();
       })
       .catch(() => {});
@@ -264,7 +273,7 @@ export default function TestPage() {
   const runningOrIdle = engine.status !== "finished";
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6" role="region" aria-label="Typing test">
       <input
         ref={inputEl}
         className="pointer-events-none absolute size-0 opacity-0"
@@ -274,7 +283,7 @@ export default function TestPage() {
         onChange={() => {}}
       />
 
-      <div className="pb-4">
+      <div className={`pb-4 transition-all duration-200 ${engine.status === "running" ? "pointer-events-none opacity-50" : "opacity-100"}`}>
         <ConfigBar
           mode={settings.mode}
           duration={settings.duration}
@@ -296,8 +305,10 @@ export default function TestPage() {
         <>
           <div
             className={`mb-4 flex items-end justify-between transition-opacity duration-300 ${
-              settings.hideLiveStats && engine.status === "running" ? "opacity-0" : "opacity-100"
+              settings.hideLiveStats && engine.status === "running" ? "opacity-50" : "opacity-100"
             }`}
+            aria-live="polite"
+            aria-atomic="true"
           >
             <div className="flex items-baseline gap-5">
               <div>
@@ -329,7 +340,7 @@ export default function TestPage() {
 
           <Progress value={engine.progress * 100} className="mb-6" aria-label="test progress" />
 
-          <div className="relative flex-1">
+          <div className="relative flex-1 p-4">
             {loadingPrompt ? (
               <div className="flex flex-col gap-3 py-2">
                 <Skeleton className="h-7 w-4/5" />
@@ -364,16 +375,16 @@ export default function TestPage() {
             )}
           </div>
 
-          {engine.status === "idle" && !loadingPrompt && (
-            <p className="text-muted-foreground mt-4 text-xs">
-              press any key to start · <Kbd>tab</Kbd> for a new test ·{" "}
-              <Kbd>?</Kbd> shortcuts
-            </p>
-          )}
-
           {settings.showKeyboard && (
             <VirtualKeyboard activeKey={activeKey} />
           )}
+
+          <div className={`mt-6 flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+            <p>press any key to start</p>
+            <p className="flex flex-wrap items-center justify-center gap-1.5">
+              <Kbd>tab</Kbd> new test <span>·</span> <Kbd>esc</Kbd> restart <span>·</span> <Kbd>?</Kbd> shortcuts <span>·</span> <Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> command
+            </p>
+          </div>
         </>
       )}
 

@@ -12,9 +12,56 @@
 @import "@fontsource-variable/cabin";
 @import "@fontsource-variable/josefin-sans";
 @import "@fontsource-variable/bitter";
+@import "@fontsource/anonymous-pro";
+@import "@fontsource/barlow";
+@import "@fontsource-variable/bitter";
+@import "@fontsource-variable/cabin";
+@import "@fontsource/cascadia-code";
+@import "@fontsource/commit-mono";
 @import "@fontsource-variable/crimson-pro";
-@import "@fontsource-variable/roboto-flex";
+@import "@fontsource-variable/dm-sans";
+@import "@fontsource-variable/exo-2";
+@import "@fontsource-variable/fira-code";
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource/ibm-plex-mono";
 @import "@fontsource-variable/ibm-plex-sans";
+@import "@fontsource-variable/inconsolata";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource-variable/josefin-sans";
+@import "@fontsource/lato";
+@import "@fontsource-variable/lexend";
+@import "@fontsource-variable/lora";
+@import "@fontsource-variable/manrope";
+@import "@fontsource-variable/merriweather";
+@import "@fontsource-variable/montserrat";
+@import "@fontsource-variable/noto-sans";
+@import "@fontsource-variable/noto-serif";
+@import "@fontsource-variable/nunito-sans";
+@import "@fontsource-variable/open-sans";
+@import "@fontsource-variable/oswald";
+@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/playfair-display";
+@import "@fontsource-variable/plus-jakarta-sans";
+@import "@fontsource/poppins";
+@import "@fontsource/pt-sans";
+@import "@fontsource/pt-serif";
+@import "@fontsource-variable/raleway";
+@import "@fontsource-variable/roboto-flex";
+@import "@fontsource-variable/roboto-mono";
+@import "@fontsource-variable/source-code-pro";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource/space-mono";
+@import "@fontsource/titillium-web";
+@import "@fontsource/ubuntu-mono";
+@import "@fontsource-variable/victor-mono";
+@import "@fontsource-variable/work-sans";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/mona-sans";
+@import "@fontsource-variable/google-sans";
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource/cal-sans";
+@import "@fontsource/comic-neue";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -69,9 +116,56 @@
   --font-cabin: "Cabin Variable", ui-sans-serif, system-ui, sans-serif;
   --font-josefin-sans: "Josefin Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-bitter: "Bitter Variable", Georgia, "Times New Roman", serif;
+  --font-anonymous-pro: "Anonymous Pro", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-barlow: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --font-bitter: "Bitter Variable", Georgia, "Times New Roman", serif;
+  --font-cabin: "Cabin Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-cascadia-code: "Cascadia Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-commit-mono: "CommitMono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-crimson-pro: "Crimson Pro Variable", Georgia, "Times New Roman", serif;
-  --font-roboto-flex: "Roboto Flex Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-dm-sans: "DM Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-exo-2: "Exo 2 Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-fira-code: "Fira Code Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-geist-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-ibm-plex-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-ibm-plex-sans: "IBM Plex Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-inconsolata: "Inconsolata Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-inter: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-jetbrains-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-josefin-sans: "Josefin Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-lato: "Lato", ui-sans-serif, system-ui, sans-serif;
+  --font-lexend: "Lexend Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-lora: "Lora Variable", Georgia, "Times New Roman", serif;
+  --font-manrope: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-merriweather: "Merriweather Variable", Georgia, "Times New Roman", serif;
+  --font-montserrat: "Montserrat Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-noto-sans: "Noto Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-noto-serif: "Noto Serif Variable", Georgia, "Times New Roman", serif;
+  --font-nunito-sans: "Nunito Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-open-sans: "Open Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-oswald: "Oswald Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-outfit: "Outfit Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-playfair-display: "Playfair Display Variable", Georgia, "Times New Roman", serif;
+  --font-plus-jakarta-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-poppins: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-pt-sans: "PT Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-pt-serif: "PT Serif", Georgia, "Times New Roman", serif;
+  --font-raleway: "Raleway Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-roboto-flex: "Roboto Flex Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-roboto-mono: "Roboto Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-source-code-pro: "Source Code Pro Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-space-grotesk: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-space-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-titillium-web: "Titillium Web", ui-sans-serif, system-ui, sans-serif;
+  --font-ubuntu-mono: "Ubuntu Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-victor-mono: "Victor Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-work-sans: "Work Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-geist: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mona-sans: "Mona Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-google-sans: "Google Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-bricolage-grotesque: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-cal-sans: "Cal Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-comic-neue: "Comic Neue", cursive, ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
@@ -123,7 +217,9 @@
     color-scheme: light;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply text-foreground antialiased;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--background) 100%, transparent) 0%, color-mix(in srgb, var(--background) 95%, var(--primary) 5%) 50%, color-mix(in srgb, var(--background) 100%, transparent) 100%);
+    background-attachment: fixed;
     font-feature-settings: "zero" 1, "ss01" 1;
   }
   ::selection {
@@ -147,26 +243,59 @@
 }
 
 /* Font family — outside @layer base so Tailwind utilities don't override */
+html[data-font="anonymous-pro"] { font-family: var(--font-anonymous-pro); }
+html[data-font="barlow"] { font-family: var(--font-barlow); }
+html[data-font="bitter"] { font-family: var(--font-bitter); }
+html[data-font="cabin"] { font-family: var(--font-cabin); }
+html[data-font="cascadia-code"] { font-family: var(--font-cascadia-code); }
+html[data-font="commit-mono"] { font-family: var(--font-commit-mono); }
+html[data-font="crimson-pro"] { font-family: var(--font-crimson-pro); }
+html[data-font="dm-sans"] { font-family: var(--font-dm-sans); }
+html[data-font="exo-2"] { font-family: var(--font-exo-2); }
+html[data-font="fira-code"] { font-family: var(--font-fira-code); }
 html[data-font="geist-mono"] { font-family: var(--font-geist-mono); }
+html[data-font="ibm-plex-mono"] { font-family: var(--font-ibm-plex-mono); }
+html[data-font="ibm-plex-sans"] { font-family: var(--font-ibm-plex-sans); }
+html[data-font="inconsolata"] { font-family: var(--font-inconsolata); }
 html[data-font="inter"] { font-family: var(--font-inter); }
 html[data-font="jetbrains-mono"] { font-family: var(--font-jetbrains-mono); }
-html[data-font="dm-sans"] { font-family: var(--font-dm-sans); }
-html[data-font="space-grotesk"] { font-family: var(--font-space-grotesk); }
-html[data-font="nunito-sans"] { font-family: var(--font-nunito-sans); }
-html[data-font="work-sans"] { font-family: var(--font-work-sans); }
-html[data-font="playfair-display"] { font-family: var(--font-playfair-display); }
-html[data-font="lora"] { font-family: var(--font-lora); }
-html[data-font="merriweather"] { font-family: var(--font-merriweather); }
-html[data-font="fira-code"] { font-family: var(--font-fira-code); }
-html[data-font="cabin"] { font-family: var(--font-cabin); }
 html[data-font="josefin-sans"] { font-family: var(--font-josefin-sans); }
-html[data-font="bitter"] { font-family: var(--font-bitter); }
-html[data-font="crimson-pro"] { font-family: var(--font-crimson-pro); }
+html[data-font="lato"] { font-family: var(--font-lato); }
+html[data-font="lexend"] { font-family: var(--font-lexend); }
+html[data-font="lora"] { font-family: var(--font-lora); }
+html[data-font="manrope"] { font-family: var(--font-manrope); }
+html[data-font="merriweather"] { font-family: var(--font-merriweather); }
+html[data-font="montserrat"] { font-family: var(--font-montserrat); }
+html[data-font="noto-sans"] { font-family: var(--font-noto-sans); }
+html[data-font="noto-serif"] { font-family: var(--font-noto-serif); }
+html[data-font="nunito-sans"] { font-family: var(--font-nunito-sans); }
+html[data-font="open-sans"] { font-family: var(--font-open-sans); }
+html[data-font="oswald"] { font-family: var(--font-oswald); }
+html[data-font="outfit"] { font-family: var(--font-outfit); }
+html[data-font="playfair-display"] { font-family: var(--font-playfair-display); }
+html[data-font="plus-jakarta-sans"] { font-family: var(--font-plus-jakarta-sans); }
+html[data-font="poppins"] { font-family: var(--font-poppins); }
+html[data-font="pt-sans"] { font-family: var(--font-pt-sans); }
+html[data-font="pt-serif"] { font-family: var(--font-pt-serif); }
+html[data-font="raleway"] { font-family: var(--font-raleway); }
 html[data-font="roboto-flex"] { font-family: var(--font-roboto-flex); }
-html[data-font="ibm-plex-sans"] { font-family: var(--font-ibm-plex-sans); }
+html[data-font="roboto-mono"] { font-family: var(--font-roboto-mono); }
+html[data-font="source-code-pro"] { font-family: var(--font-source-code-pro); }
+html[data-font="space-grotesk"] { font-family: var(--font-space-grotesk); }
+html[data-font="space-mono"] { font-family: var(--font-space-mono); }
+html[data-font="titillium-web"] { font-family: var(--font-titillium-web); }
+html[data-font="ubuntu-mono"] { font-family: var(--font-ubuntu-mono); }
+html[data-font="victor-mono"] { font-family: var(--font-victor-mono); }
+html[data-font="work-sans"] { font-family: var(--font-work-sans); }
+html[data-font="geist"] { font-family: var(--font-geist); }
+html[data-font="mona-sans"] { font-family: var(--font-mona-sans); }
+html[data-font="google-sans"] { font-family: var(--font-google-sans); }
+html[data-font="bricolage-grotesque"] { font-family: var(--font-bricolage-grotesque); }
+html[data-font="cal-sans"] { font-family: var(--font-cal-sans); }
+html[data-font="comic-neue"] { font-family: var(--font-comic-neue); }
 
 .zt-caret-blink {
-  animation: zt-blink 1s step-end infinite;
+  animation: zt-blink 1s ease-in-out infinite;
 }
 @keyframes zt-blink {
   0%,
@@ -185,6 +314,26 @@ html[data-font="ibm-plex-sans"] { font-family: var(--font-ibm-plex-sans); }
   from {
     opacity: 0;
     transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Smooth transitions for theme changes */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Prevent layout shift in tabs */
+[data-slot="tabs-content"] {
+  animation: zt-tab-fade 0.2s ease-out;
+}
+@keyframes zt-tab-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;

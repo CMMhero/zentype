@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
+import { DynamicFavicon } from "~/components/ui/dynamic-favicon";
 import { AppShell } from "~/components/layout/app-shell";
 import { CommandPalette } from "~/components/layout/command-palette";
 import { HelpDialog } from "~/components/layout/help-dialog";
@@ -29,10 +30,51 @@ const themeBootstrapScript = `
 `;
 
 export const metadata: Metadata = {
-  title: "zentype",
+  title: {
+    default: "zentype - a minimal typing test",
+    template: "%s | zentype",
+  },
   description:
-    "A keyboard-first typing test. Quotes, anime synopses, wikipedia extracts and dictionary definitions. Track stats, climb leaderboards.",
-  icons: { icon: "/logo.svg" },
+    "Test your typing speed. See your WPM, accuracy, and consistency. Compete on leaderboards and track your progress over time.",
+  keywords: ["typing test", "typing speed", "wpm", "words per minute", "typing practice", "keyboard test", "leaderboard"],
+  authors: [{ name: "CMMhero" }],
+  creator: "CMMhero",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.dev"),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "zentype",
+    title: "zentype - a minimal typing test",
+    description:
+      "Test your typing speed. See your WPM, accuracy, and consistency. Compete on leaderboards.",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "zentype - a minimal typing test",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "zentype - a minimal typing test",
+    description:
+      "Test your typing speed. See your WPM, accuracy, and consistency.",
+    images: ["/og.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -41,11 +83,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="theme-color" content="#282828" />
+        <meta name="color-scheme" content="dark light" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <style dangerouslySetInnerHTML={{ __html: themeStyleSheet() }} id="zt-theme-vars" />
       </head>
-      <body>
+      <body className="antialiased">
         <TooltipProvider>
+          <DynamicFavicon />
           <UserProvider user={user}>
             <AppShell>
               {children}

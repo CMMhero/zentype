@@ -66,7 +66,7 @@ const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
       >
         <header className="mb-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <IconFlame className="h-6 w-6 text-primary" aria-hidden="true" />
+            <IconFlame className="size-6 text-primary" aria-hidden="true" />
             <h3 className="text-2xl font-semibold leading-none">{title}</h3>
           </div>
           <Button
@@ -123,7 +123,7 @@ const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
               <span className="text-lg font-semibold">{howItWorksTitle}</span>
               <IconChevronDown
                 className={cn(
-                  "h-5 w-5 text-muted-foreground transition-transform",
+                  "size-5 text-muted-foreground transition-transform",
                   isHowItWorksOpen && "rotate-180"
                 )}
                 aria-hidden="true"
@@ -145,7 +145,7 @@ const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
                       className="flex items-start gap-3"
                     >
                       <Icon
-                        className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                        className="mt-0.5 size-5 shrink-0 text-primary"
                         aria-hidden="true"
                       />
                       <p className="text-lg leading-snug text-muted-foreground">

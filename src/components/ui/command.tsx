@@ -29,12 +29,14 @@ function CommandDialog({
   children,
   className,
   showCloseButton = true,
+  filter,
   ...props
 }: React.ComponentProps<typeof Dialog> & {
   title?: string;
   description?: string;
   className?: string;
   showCloseButton?: boolean;
+  filter?: (value: string, search: string) => number;
 }) {
   return (
     <Dialog {...props}>
@@ -46,7 +48,7 @@ function CommandDialog({
         showCloseButton={showCloseButton}
         className={cn("overflow-hidden p-0", className)}
       >
-        <Command className="[&[[cmdk-group-heading]]]:text-muted-foreground **:data-[slot=command-input-wrapper]:h-12 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [[cmdk-group]]:px-2 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-2.5">
+        <Command filter={filter} className="[&[[cmdk-group-heading]]]:text-muted-foreground **:data-[slot=command-input-wrapper]:h-12 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [[cmdk-group]]:px-2 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-2.5">
           {children}
         </Command>
       </DialogContent>
@@ -80,7 +82,7 @@ function CommandList({ className, ...props }: React.ComponentProps<typeof Comman
   return (
     <CommandPrimitive.List
       data-slot="command-list"
-      className={cn("max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto", className)}
+      className={cn("max-h-[500px] scroll-py-1 overflow-x-hidden overflow-y-auto", className)}
       {...props}
     />
   );

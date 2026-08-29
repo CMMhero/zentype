@@ -26,6 +26,16 @@ export interface AchievementCheckInput {
   bestByBoard: Record<string, number>;
   level: number;
   accountAgeDays: number;
+  // volume achievements
+  testsAbove60Wpm: number;
+  testsAbove80Wpm: number;
+  testsAbove90Wpm: number;
+  testsAbove100Wpm: number;
+  testsAbove120Wpm: number;
+  testsAbove95Acc: number;
+  testsAbove98Acc: number;
+  testsAbove99Acc: number;
+  testsAbove90Acc: number;
 }
 
 function pct(current: number, target: number): number {
@@ -140,6 +150,19 @@ export const ACHIEVEMENTS: AchievementDef[] = [
   { id: "avg_90", name: "Steady Elite", description: "Maintain 90+ avg WPM", trigger: "metric", xp: 250, check: (s) => pct(s.avgWpm, 90) },
   { id: "avg_100", name: "Elite Typist", description: "Maintain 100+ avg WPM", trigger: "metric", xp: 500, check: (s) => pct(s.avgWpm, 100) },
   { id: "avg_110", name: "Top 1%", description: "Maintain 110+ avg WPM", trigger: "metric", xp: 750, check: (s) => pct(s.avgWpm, 110) },
+
+  // ── Volume: finish X tests above Y ──
+  { id: "vol_5_above_60", name: "Steady Pace", description: "Finish 5 tests above 60 WPM", trigger: "metric", xp: 40, check: (s) => pct(s.testsAbove60Wpm, 5) },
+  { id: "vol_10_above_80", name: "Speed Batch", description: "Finish 10 tests above 80 WPM", trigger: "metric", xp: 75, check: (s) => pct(s.testsAbove80Wpm, 10) },
+  { id: "vol_25_above_80", name: "High Output", description: "Finish 25 tests above 80 WPM", trigger: "metric", xp: 150, check: (s) => pct(s.testsAbove80Wpm, 25) },
+  { id: "vol_10_above_90", name: "Elite Batch", description: "Finish 10 tests above 90 WPM", trigger: "metric", xp: 100, check: (s) => pct(s.testsAbove90Wpm, 10) },
+  { id: "vol_10_above_100", name: "Century Batch", description: "Finish 10 tests above 100 WPM", trigger: "metric", xp: 200, check: (s) => pct(s.testsAbove100Wpm, 10) },
+  { id: "vol_5_above_120", name: "Velocity Batch", description: "Finish 5 tests above 120 WPM", trigger: "metric", xp: 300, check: (s) => pct(s.testsAbove120Wpm, 5) },
+  { id: "vol_10_acc_95", name: "Accuracy Batch", description: "Finish 10 tests at 95%+ accuracy", trigger: "metric", xp: 75, check: (s) => pct(s.testsAbove95Acc, 10) },
+  { id: "vol_25_acc_95", name: "Precise Streak", description: "Finish 25 tests at 95%+ accuracy", trigger: "metric", xp: 150, check: (s) => pct(s.testsAbove95Acc, 25) },
+  { id: "vol_10_acc_98", name: "Surgical", description: "Finish 10 tests at 98%+ accuracy", trigger: "metric", xp: 100, check: (s) => pct(s.testsAbove98Acc, 10) },
+  { id: "vol_10_acc_99", name: "Near Perfect Batch", description: "Finish 10 tests at 99%+ accuracy", trigger: "metric", xp: 200, check: (s) => pct(s.testsAbove99Acc, 10) },
+  { id: "vol_50_acc_90", name: "Reliable", description: "Finish 50 tests at 90%+ accuracy", trigger: "metric", xp: 120, check: (s) => pct(s.testsAbove90Acc, 50) },
 
   // ── Level milestones ──
   { id: "level_5", name: "Rising Star", description: "Reach level 5", trigger: "metric", xp: 50, check: (s) => pct(s.level, 5) },

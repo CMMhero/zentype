@@ -1,0 +1,302 @@
+# zentype UI Style Guide
+
+This document defines the consistent design patterns used across the zentype codebase. Follow these conventions when creating or modifying components.
+
+## Color System
+
+### Primary Colors
+- **Primary**: `text-primary` / `bg-primary` — Used for main actions, highlights, and important values (WPM, level numbers)
+- **Muted**: `text-muted-foreground` / `bg-muted` — Secondary text, labels, descriptions
+- **Destructive**: `text-destructive` — Error states, incorrect inputs
+- **Chart colors**: `text-chart-1` through `text-chart-5` — Data visualization
+
+### Color Usage
+- **Active/highlighted items**: `text-primary font-medium`
+- **Inactive items**: `text-muted-foreground hover:text-foreground hover:bg-muted`
+- **Disabled/muted state**: `opacity-50 pointer-events-none`
+- **Cards**: `bg-card` with `border border-border/30` or `border-primary/20` for highlighted
+- **Badges**: `bg-primary/10 text-primary` for level/XP indicators
+- **Success states**: `text-chart-3` (green)
+- **Warning states**: `text-foreground` (neutral)
+- **Error states**: `text-destructive`
+
+## Typography
+
+### Font Sizes (Tailwind classes)
+- **Extra small labels**: `text-[10px]` or `text-[9px]` — Tracking badges, stats labels
+- **Small text**: `text-xs` — Secondary info, descriptions
+- **Body text**: `text-sm` — Normal content
+- **Large headings**: `text-lg` — Page titles
+- **Extra large numbers**: `text-2xl` to `text-7xl` — Stats, WPM displays
+
+### Font Weights
+- **Bold for values**: `font-bold` — Numbers, important text
+- **Medium for labels**: `font-medium` — Section headers
+- **Normal for descriptions**: `font-normal` — Secondary info
+
+### Typography Patterns
+- **Section headers**: `text-xs font-semibold tracking-widest uppercase text-muted-foreground`
+- **Stats values**: `text-xl font-bold tabular-nums text-primary`
+- **Badges/labels**: `text-[10px] font-bold tracking-widest uppercase`
+- **Small labels**: `text-[10px] tracking-wider uppercase text-muted-foreground`
+
+## Spacing & Layout
+
+### Page Layout
+- **Max width**: `max-w-4xl` (profile, settings) or `max-w-5xl` (test page)
+- **Horizontal padding**: `px-4`
+- **Vertical padding**: `py-6` to `py-8`
+- **Gap between sections**: `gap-5` or `gap-6`
+
+### Card Layout
+- **Card padding**: `py-4` (vertical), `px-4` or `px-6` (horizontal)
+- **Gap inside cards**: `gap-3` (between header/content)
+- **Card header padding**: `px-4`
+- **Card content padding**: `px-4`
+
+### Grid Systems
+- **2-column stat grid**: `grid grid-cols-2 gap-3`
+- **3-column grid**: `grid grid-cols-3 gap-3`
+- **Responsive grid**: `md:grid-cols-2` or `md:grid-cols-[1fr_auto]`
+
+## Component Patterns
+
+### Cards
+```tsx
+<Card className="gap-3 py-4">
+  <CardHeader className="px-4">
+    <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+      <IconName className="size-4" /> section title
+    </CardTitle>
+  </CardHeader>
+  <CardContent className="px-4">
+    {/* content */}
+  </CardContent>
+</Card>
+```
+
+### Stat Cards
+```tsx
+function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
+  return (
+    <Card className="gap-1 py-3">
+      <CardContent className="flex flex-col gap-1 px-3">
+        <span className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
+          {icon} {label}
+        </span>
+        {value === null ? <Skeleton className="mt-1 h-7 w-16" /> : <span className="text-xl font-bold tabular-nums text-primary">{value}</span>}
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### Badges
+```tsx
+// Level/XP badge
+<Badge variant="secondary" className="text-[10px]">Lv. {level}</Badge>
+
+// Rank badge
+<span className="ml-1 rounded bg-primary/10 px-1 py-0 text-[10px] font-bold tracking-widest text-primary">
+  #{rank}
+</span>
+
+// Status badge
+<Badge variant={saveState === "cloud" ? "default" : "secondary"} className="text-[10px]">
+  {statusText}
+</Badge>
+```
+
+### Buttons
+- **Primary action**: `variant="default"` or `variant="secondary"`
+- **Outline action**: `variant="outline"`
+- **Link action**: `variant="link"` or `className="text-xs text-primary hover:underline"`
+- **Small buttons**: `size="sm"`
+- **Icon buttons**: `size="icon"`
+
+### Icons
+- **Library**: `@tabler/icons-react`
+- **Standard size**: `className="size-4"` (16px)
+- **Small icons**: `className="size-3"` (12px)
+- **Icon + text gap**: `gap-2` or `gap-1.5`
+
+### Progress Bars
+```tsx
+<div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+  <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${progress}%` }} />
+</div>
+```
+
+### Empty States
+```tsx
+<div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+  <IconName className="mr-2 size-4" /> empty state message
+</div>
+```
+
+### Loading States
+```tsx
+<Skeleton className="h-7 w-4/5" />
+<Skeleton className="h-40 w-full" />
+```
+
+## Navigation & Layout
+
+### Header
+- **Height**: `h-12`
+- **Background**: `bg-background/95` with `backdrop-blur`
+- **Border**: `border-b border-border/60`
+- **Max width**: `max-w-5xl`
+
+### Footer
+- **Background**: `bg-secondary/40`
+- **Border**: `border-t border-border/60`
+- **Text size**: `text-[11px]`
+
+### Navigation Links
+- **Active**: `text-primary font-medium`
+- **Inactive**: `text-muted-foreground hover:text-foreground hover:bg-muted`
+- **Padding**: `px-2.5 py-1.5`
+
+## Dialogs & Modals
+
+### Dialog Structure
+```tsx
+<DialogContent className="sm:max-w-xl max-h-[80vh] overflow-hidden flex flex-col">
+  <DialogHeader className="pr-8">
+    <DialogTitle className="flex items-center gap-2">
+      <IconName className="size-4" /> title
+      <Badge variant="secondary" className="text-[10px]">count</Badge>
+    </DialogTitle>
+  </DialogHeader>
+  {/* content */}
+</DialogContent>
+```
+
+**Note**: Add `pr-8` to DialogHeader to prevent overlap with close button.
+
+## Tables
+
+### Table Structure
+```tsx
+<Table>
+  <TableHeader>
+    <TableRow className="hover:bg-transparent">
+      <TableHead>column</TableHead>
+      <TableHead className="text-right">right-aligned</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow className="cursor-pointer">
+      <TableCell className="text-xs text-muted-foreground">data</TableCell>
+      <TableCell className="text-right font-bold tabular-nums text-primary">value</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Responsive Design
+
+### Breakpoints
+- **Mobile first**: Default styles
+- **sm**: `640px` — Hide/show elements
+- **md**: `768px` — Grid layouts, navigation
+- **lg**: `1024px` — Larger grids
+
+### Common Patterns
+- **Hide on mobile**: `hidden sm:inline`
+- **Show on mobile only**: `sm:hidden`
+- **Responsive grid**: `grid-cols-2 md:grid-cols-3 lg:grid-cols-4`
+
+## Animation & Transitions
+
+### Standard Transitions
+- **Color transitions**: `transition-colors`
+- **Opacity transitions**: `transition-opacity duration-200` or `duration-300`
+- **Layout shifts**: Use opacity instead of removing elements from DOM
+
+### Muted/Disabled State
+```tsx
+// Instead of removing elements, use:
+className="pointer-events-none opacity-50"
+
+// For hidden but layout-preserving:
+className="pointer-events-none opacity-0"
+```
+
+## Profile Card Layout
+
+### Standard Structure (2-row layout)
+```tsx
+<Card className="row-span-2 gap-4 py-4">
+  <CardContent className="px-6 pt-2">
+    {/* Row 1: Avatar + Username */}
+    <div className="flex items-center gap-4">
+      <Avatar className="size-16 shrink-0 border-2 border-primary/30">
+        <AvatarImage src={avatarUrl} alt="" />
+        <AvatarFallback className="rounded text-xl font-bold uppercase">{initials}</AvatarFallback>
+      </Avatar>
+      <div className="flex-1 min-w-0">
+        <h1 className="text-lg font-bold truncate">{username}</h1>
+        <p className="text-xs text-muted-foreground truncate">{email}</p>
+        {/* Optional: join date */}
+      </div>
+    </div>
+    {/* Row 2: Level/XP bar */}
+    <div className="mt-4 flex flex-col gap-1.5">
+      <div className="flex items-baseline gap-2">
+        <span className="text-2xl font-bold tabular-nums text-primary">{level}</span>
+        <span className="text-[10px] text-muted-foreground">level</span>
+        <span className="ml-auto text-xs font-bold tabular-nums">{xp} <span className="text-muted-foreground">xp</span></span>
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+        <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${progress}%` }} />
+      </div>
+      <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{progress}%</span>
+    </div>
+  </CardContent>
+</Card>
+```
+
+## Level Pill (Navbar)
+
+```tsx
+<span className="hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+  Lv. {level}
+</span>
+```
+
+## Achievement Grid Tooltips
+
+```tsx
+<Tooltip key={achievement.id}>
+  <TooltipTrigger asChild>
+    <div>
+      <AchievementBadge ... />
+    </div>
+  </TooltipTrigger>
+  <TooltipContent side="top" className="max-w-[200px] text-center">
+    <p className="font-medium">{achievement.name}</p>
+    <p className="text-muted-foreground">{description}</p>
+    {rarity != null && (
+      <p className="text-muted-foreground">{rarity}% of users</p>
+    )}
+  </TooltipContent>
+</Tooltip>
+```
+
+## Key Principles
+
+1. **Consistency**: Use the same patterns across all components
+2. **Accessibility**: Include proper ARIA labels and semantic HTML
+3. **Responsiveness**: Design mobile-first, enhance for larger screens
+4. **Performance**: Use opacity transitions instead of DOM removal for layout stability
+5. **Clarity**: Use clear labels and consistent terminology
+
+## File Organization
+
+- **Components**: `src/components/ui/` for reusable UI primitives
+- **Layout**: `src/components/layout/` for app shell, nav, footer
+- **Pages**: `src/app/` for route-based pages
+- **Types**: `src/lib/types.ts` for shared TypeScript types
+- **Utils**: `src/lib/utils.ts` for helper functions
