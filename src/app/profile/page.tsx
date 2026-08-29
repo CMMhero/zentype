@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconAward, IconChartBar, IconClock, IconCrown, IconExternalLink, IconGauge, IconHistory,
-  IconLink, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
+  IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconExternalLink, IconGauge, IconHistory,
+  IconLink, IconNumbers, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import {
@@ -26,6 +26,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from "~/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
@@ -614,7 +615,25 @@ export default function ProfilePage() {
                       <AccCell value={r.accuracy} />
                       <TableCell className="hidden text-right tabular-nums sm:table-cell">{r.consistency}%</TableCell>
                       <TableCell className="hidden text-right text-xs text-muted-foreground md:table-cell">
-                        {modeLabel(r)}
+                        <span className="inline-flex items-center gap-1">
+                          {modeLabel(r)}
+                          {r.punctuation && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <IconAt className="size-3 text-muted-foreground/70" />
+                              </TooltipTrigger>
+                              <TooltipContent>punctuation</TooltipContent>
+                            </Tooltip>
+                          )}
+                          {r.numbers && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <IconNumbers className="size-3 text-muted-foreground/70" />
+                              </TooltipTrigger>
+                              <TooltipContent>numbers</TooltipContent>
+                            </Tooltip>
+                          )}
+                        </span>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -652,6 +671,26 @@ export default function ProfilePage() {
                   <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
                     {modeLabel(selected)}
                   </Badge>
+                  {selected.punctuation && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
+                          <IconAt className="size-3" />
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>punctuation</TooltipContent>
+                    </Tooltip>
+                  )}
+                  {selected.numbers && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
+                          <IconNumbers className="size-3" />
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>numbers</TooltipContent>
+                    </Tooltip>
+                  )}
                   {" · "}{new Date(selected.createdAt).toLocaleString()}
                 </DialogDescription>
               </DialogHeader>

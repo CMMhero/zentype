@@ -1,8 +1,9 @@
-import { IconPlayerSkipForward } from "@tabler/icons-react";
+import { IconPlayerSkipForward, IconAt, IconNumbers } from "@tabler/icons-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { WpmChart } from "~/components/charts/wpm-chart";
 import { Kbd } from "~/components/ui/kbd";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { modeLabel, type TestResult } from "~/lib/types";
 
 export type SaveState = "cloud" | "guest" | "failed" | "skipped";
@@ -37,11 +38,31 @@ export function ResultView({ result, saveState, onNext }: ResultViewProps) {
         </div>
       </div>
 
-      {/* Meta — identical to history detail's DialogDescription, plus mode + save badges */}
+      {/* Meta — mode, punctuation, numbers badges */}
       <p className="text-muted-foreground flex items-center gap-2 text-sm">
         <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
           {modeLabel(result)}
         </Badge>
+        {result.punctuation && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
+                <IconAt className="size-3" />
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>punctuation</TooltipContent>
+          </Tooltip>
+        )}
+        {result.numbers && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
+                <IconNumbers className="size-3" />
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>numbers</TooltipContent>
+          </Tooltip>
+        )}
         <Badge variant={variant} className="text-[9px]">{label}</Badge>
       </p>
 

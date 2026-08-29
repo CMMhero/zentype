@@ -113,14 +113,10 @@ export const SOURCE_LABELS: Record<PromptSource, string> = {
   words: "english",
 };
 
-export function modeLabel(result: Pick<TestResult, "mode" | "variant" | "punctuation" | "numbers">) {
-  const base = result.mode === "time"
+export function modeLabel(result: Pick<TestResult, "mode" | "variant">) {
+  return result.mode === "time"
     ? `time ${result.variant}`
     : `words ${result.variant}`;
-  const extras: string[] = [];
-  if (result.punctuation) extras.push("punct");
-  if (result.numbers) extras.push("nums");
-  return extras.length > 0 ? `${base} · ${extras.join(" · ")}` : base;
 }
 
 export function boardKey(mode: GameMode, variant: number) {
