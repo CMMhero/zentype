@@ -4,7 +4,7 @@ import { IconInfoCircleFilled, IconKeyboard, IconKeyboardFilled, IconTrophy, Ico
 import { getPublicStats } from "~/server/results";
 
 export const metadata: Metadata = {
-  title: "About | zentype",
+  title: "About",
   description: "About zentype - a customizable typing test with leaderboards, achievements, and stats",
 };
 

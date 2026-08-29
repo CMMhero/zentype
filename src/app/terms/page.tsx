@@ -3,7 +3,7 @@ import Link from "next/link";
 import { IconFileTextFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | zentype",
+  title: "Terms of Service",
   description: "Terms of Service for zentype",
 };
 
