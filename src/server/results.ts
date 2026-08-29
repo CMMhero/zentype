@@ -410,3 +410,52 @@ export async function searchUsers(
     avatarUrl: p.avatar_url,
   }));
 }
+
+export async function getPublicStats(): Promise<{
+  totalUsers: number;
+  totalTests: number;
+  totalHours: number;
+  totalAchievements: number;
+} | null> {
+  const supabase = await getSupabasePublicClient();
+  if (!supabase) return null;
+
+  try {
+    // Get total users
+    const { count: totalUsers } = await supabase
+      .from("profiles")
+      .select("id", { count: "exact", head: true });
+
+    // Get total tests
+    const { count: totalTests } = await supabase
+      .from("test_results")
+      .select("id", { count: "exact", head: true });
+
+    // Get total achievements
+    const { count: totalAchievements } = await supabase
+      .from("user_achievements")
+      .select("id", { count: "exact", head: true });
+
+    // Calculate total hours from test durations
+    const { data: durations } = await supabase
+      .from("test_results")
+      .select("duration")
+      .select("variant,mode");
+
+    let totalSeconds = 0;
+    if (durations) {
+      for (const r of durations) {
+        totalSeconds += r.mode === "time" ? r.variant : Math.round((r.variant * 60) / 50);
+      }
+    }
+
+    return {
+      totalUsers: totalUsers ?? 0,
+      totalTests: totalTests ?? 0,
+      totalHours: Math.round(totalSeconds / 3600),
+      totalAchievements: totalAchievements ?? 0,
+    };
+  } catch {
+    return null;
+  }
+}
