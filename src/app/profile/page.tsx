@@ -209,7 +209,7 @@ export default function ProfilePage() {
   })();
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8" role="main" aria-label="User profile">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconUserFilled className="text-primary size-5" /> profile

@@ -52,7 +52,7 @@ export function WpmChart({
   }));
 
   return (
-    <ChartContainer config={chartConfig} className={cn(compact ? "h-40 sm:h-56" : "h-56", "w-full", className)}>
+    <ChartContainer config={chartConfig} className={cn(compact ? "h-40 sm:h-56" : "h-56", "w-full", className)} role="img" aria-label="WPM performance chart">
       <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
         <defs>
           <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
