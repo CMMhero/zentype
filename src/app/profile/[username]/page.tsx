@@ -259,7 +259,7 @@ export default function PublicProfilePage() {
                   achievedAt: a.achievedAt,
                   progress: a.progress,
                 }))}
-              columns={4}
+              columns="auto"
               gap="sm"
               badgeSize="sm"
             />

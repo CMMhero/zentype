@@ -164,8 +164,8 @@ export function AppShell({
         </div>
       </nav>
 
-      <footer className="text-muted-foreground mt-auto hidden md:block" role="contentinfo">
-        <div className="mx-auto flex w-full max-w-5xl items-center gap-x-4 gap-y-2 px-4 py-3 text-[11px]">
+      <footer className="text-muted-foreground mt-auto" role="contentinfo">
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 text-[11px]">
           <span className="flex items-center gap-2">
             <span>Made by <a href="https://cmmhero.top" target="_blank" rel="noreferrer" className="hover:text-foreground underline underline-offset-2">CMMhero</a></span>
             <span className="text-muted-foreground/50">·</span>
@@ -173,7 +173,7 @@ export function AppShell({
             <span className="text-muted-foreground/50">·</span>
             <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">Privacy</Link>
           </span>
-          <span className="ml-auto flex items-center gap-1">
+          <span className="ml-auto hidden items-center gap-1 sm:flex">
             <Combobox
               items={THEME_FOOTER_ITEMS}
               value={themeId}
