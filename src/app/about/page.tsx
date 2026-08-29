@@ -21,12 +21,12 @@ export default async function AboutPage() {
         <section>
           <h2 className="text-base font-semibold">what is zentype?</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            zentype is a keyboard-first typing test built for speed and accuracy tracking.
-            It combines clean, terminal-inspired design with gamification elements like XP,
+            zentype is a keyboard-first typing test built for speed and accuracy tracking,
+            inspired by monkeytype. It combines gamification elements like XP,
             levels, achievements, and global leaderboards to make typing practice engaging.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            Built with Next.js 15, Supabase, and Tailwind CSS. Open source and free to use.
+            Built with Next.js 15, Supabase, shadcn/ui, and Tailwind CSS. Open source and free to use.
           </p>
         </section>
 
@@ -73,7 +73,7 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconBrandGithub className="size-5" />}
               title="open source"
-              description="Built with Next.js, Supabase, and Tailwind. Community contributions welcome."
+              description="Built with Next.js, Supabase, shadcn/ui, and Tailwind. Community contributions welcome."
             />
           </div>
         </section>
@@ -86,7 +86,7 @@ export default async function AboutPage() {
             <a href="https://cmmhero.top" target="_blank" rel="noreferrer" className="text-primary hover:underline">
               CMMhero
             </a>
-            . v1 was a Vite SPA; v2 is the full-stack rebuild with cloud sync, gamification, and leaderboards.
+            . Full-stack typing test with cloud sync, gamification, and leaderboards.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Trophy UI components by{" "}
