@@ -415,7 +415,7 @@ export async function getPublicStats(): Promise<{
   totalUsers: number;
   totalTests: number;
   totalHours: number;
-  totalAchievements: number;
+  totalXpEarned: number;
 } | null> {
   const supabase = await getSupabasePublicClient();
   if (!supabase) return null;
@@ -431,21 +431,27 @@ export async function getPublicStats(): Promise<{
       .from("test_results")
       .select("id", { count: "exact", head: true });
 
-    // Get total achievements
-    const { count: totalAchievements } = await supabase
-      .from("user_achievements")
-      .select("id", { count: "exact", head: true });
+    // Get total XP earned from user_points
+    const { data: xpData } = await supabase
+      .from("user_points")
+      .select("total_xp");
+    const totalXpEarned = xpData?.reduce((sum, r) => sum + (r.total_xp ?? 0), 0) ?? 0;
 
     // Calculate total hours from test durations
-    const { data: durations } = await supabase
+    // time mode: variant seconds; words mode: estimated from words typed
+    const { data: tests } = await supabase
       .from("test_results")
-      .select("duration")
       .select("variant,mode");
 
     let totalSeconds = 0;
-    if (durations) {
-      for (const r of durations) {
-        totalSeconds += r.mode === "time" ? r.variant : Math.round((r.variant * 60) / 50);
+    if (tests) {
+      for (const r of tests) {
+        if (r.mode === "time") {
+          totalSeconds += r.variant;
+        } else {
+          // Estimate: ~50 wpm average, each word ~5 chars + space
+          totalSeconds += Math.round((r.variant * 60) / 50);
+        }
       }
     }
 
@@ -453,7 +459,7 @@ export async function getPublicStats(): Promise<{
       totalUsers: totalUsers ?? 0,
       totalTests: totalTests ?? 0,
       totalHours: Math.round(totalSeconds / 3600),
-      totalAchievements: totalAchievements ?? 0,
+      totalXpEarned,
     };
   } catch {
     return null;

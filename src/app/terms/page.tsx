@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IconKeyboardFilled } from "@tabler/icons-react";
+import { IconFileTextFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "Terms of Service | zentype",
@@ -12,7 +12,7 @@ export default function TermsPage() {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconKeyboardFilled className="text-primary size-5" /> terms of service
+          <IconFileTextFilled className="text-primary size-5" /> terms of service
         </h1>
       </header>
 
