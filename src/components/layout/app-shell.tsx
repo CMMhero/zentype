@@ -79,7 +79,7 @@ export function AppShell({
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground">
         Skip to content
       </a>
-      <header className="border-border/40 bg-background/80 sticky top-0 z-40 border-b shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60" role="banner">
+      <header className="bg-background/80 sticky top-0 z-40 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60" role="banner">
         <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4">
           <Link
             href="/"
