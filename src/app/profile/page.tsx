@@ -451,7 +451,7 @@ export default function ProfilePage() {
           {achievements === null ? (
             <div className="grid grid-cols-4 gap-3">
               {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full rounded-lg" />
+                <Skeleton key={i} className="h-28 w-full rounded-lg" />
               ))}
             </div>
           ) : unlockedAch.length > 0 ? (
