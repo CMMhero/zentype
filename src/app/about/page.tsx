@@ -12,6 +12,13 @@ function ZentypeIcon({ className }: { className?: string }) {
   return <IconKeyboardFilled className={className} />;
 }
 
+function formatTime(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`;
+  return `${Math.floor(seconds / 86400)}d`;
+}
+
 export default async function AboutPage() {
   const stats = await getPublicStats();
 
@@ -41,7 +48,7 @@ export default async function AboutPage() {
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <StatCard label="users" value={stats?.totalUsers ?? 0} />
             <StatCard label="tests typed" value={stats?.totalTests ?? 0} />
-            <StatCard label="hours typed" value={stats?.totalHours ?? 0} />
+            <StatCard label="time typed" value={formatTime(stats?.totalSeconds ?? 0)} />
             <StatCard label="xp earned" value={stats?.totalXpEarned ?? 0} />
           </div>
         </section>
@@ -110,11 +117,14 @@ export default async function AboutPage() {
   );
 }
 
-function StatCard({ label, value }: { label: string; value: number }) {
+function StatCard({ label, value }: { label: string; value: number | string }) {
+  const display = typeof value === "string"
+    ? value
+    : value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toLocaleString();
   return (
     <div className="rounded-lg border border-border/30 bg-card p-3 text-center">
       <div className="text-xl font-bold tabular-nums text-primary">
-        {value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toLocaleString()}
+        {display}
       </div>
       <div className="text-muted-foreground mt-1 text-[10px] tracking-wider">{label}</div>
     </div>
