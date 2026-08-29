@@ -3,11 +3,11 @@
 ```
 ┌──────────────────────────────────────────────┐
 │  zentype                                     │
-│  a keyboard-first typing test.               │
+│  a customizable, clean typing test.          │
 └──────────────────────────────────────────────┘
 ```
 
-A full-stack typing test built on **Next.js** — fast, keyboard-first, and gamified. Inspired by monkeytype. 81 themes, 50 fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
+A full-stack typing test built on **Next.js** — customizable, clean, and gamified. Inspired by monkeytype. 81 themes, 50 fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
 
 ## Features
 
