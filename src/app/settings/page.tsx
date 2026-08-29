@@ -63,11 +63,11 @@ export default function SettingsPage() {
       </header>
 
       <Tabs defaultValue="gameplay" className="w-full min-w-0 gap-4">
-        <TabsList className="w-full overflow-x-auto sm:w-fit">
-          <TabsTrigger value="gameplay" className="flex-none gap-1.5"><IconDeviceGamepad2 className="size-4" /> <span className="hidden sm:inline">gameplay</span><span className="hidden max-sm:[&[data-state=active]]:inline max-sm:[&[data-state=active]]:ml-1">gameplay</span></TabsTrigger>
-          <TabsTrigger value="appearance" className="flex-none gap-1.5"><IconPalette className="size-4" /> <span className="hidden sm:inline">appearance</span><span className="hidden max-sm:[&[data-state=active]]:inline max-sm:[&[data-state=active]]:ml-1">appearance</span></TabsTrigger>
-          <TabsTrigger value="account" className="flex-none gap-1.5"><IconUser className="size-4" /> <span className="hidden sm:inline">account</span><span className="hidden max-sm:[&[data-state=active]]:inline max-sm:[&[data-state=active]]:ml-1">account</span></TabsTrigger>
-          <TabsTrigger value="keybinds" className="flex-none gap-1.5"><IconKeyboard className="size-4" /> <span className="hidden sm:inline">keybinds</span><span className="hidden max-sm:[&[data-state=active]]:inline max-sm:[&[data-state=active]]:ml-1">keybinds</span></TabsTrigger>
+        <TabsList className="w-full sm:w-fit sm:flex-none">
+          <TabsTrigger value="gameplay" className="flex-1 gap-1.5 sm:flex-none"><IconDeviceGamepad2 className="size-4" /> <span className="hidden min-[480px]:inline">gameplay</span></TabsTrigger>
+          <TabsTrigger value="appearance" className="flex-1 gap-1.5 sm:flex-none"><IconPalette className="size-4" /> <span className="hidden min-[480px]:inline">appearance</span></TabsTrigger>
+          <TabsTrigger value="account" className="flex-1 gap-1.5 sm:flex-none"><IconUser className="size-4" /> <span className="hidden min-[480px]:inline">account</span></TabsTrigger>
+          <TabsTrigger value="keybinds" className="flex-1 gap-1.5 sm:flex-none"><IconKeyboard className="size-4" /> <span className="hidden min-[480px]:inline">keybinds</span></TabsTrigger>
         </TabsList>
 
         <TabsContent value="gameplay" className="flex w-full flex-col gap-4 outline-none">
