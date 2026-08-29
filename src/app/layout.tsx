@@ -20,7 +20,7 @@ const themeBootstrapScript = `
     var raw = localStorage.getItem('zentype-settings');
     var st = raw ? (JSON.parse(raw).state||{}).settings : null;
     var t = (st && st.themeId) || '${DEFAULT_THEME_ID}';
-    var f = (st && st.fontFamily) || 'geist-mono';
+    var f = (st && st.fontFamily) || 'work-sans';
     var map = ${JSON.stringify(appearanceMap)};
     document.documentElement.setAttribute('data-theme', t);
     document.documentElement.setAttribute('data-appearance', map[t] || 'dark');
