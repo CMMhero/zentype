@@ -286,21 +286,20 @@ export async function processTestResult(
     if (error) console.error("[zentype] record_point_event failed:", error.message);
   });
 
-  // Check achievements
+  // Check achievements -- batch-fetch already-unlocked in one query
+  const { data: existingRows } = await ctx.supabase
+    .from("user_achievements")
+    .select("achievement_id")
+    .eq("user_id", ctx.user.id);
+  const unlockedSet = new Set((existingRows ?? []).map((r) => r.achievement_id));
+
   const newAchievements: Array<{ id: string; name: string; description: string; xp: number }> = [];
 
   for (const a of ACHIEVEMENTS) {
+    if (unlockedSet.has(a.id)) continue;
     const raw = a.check(stats);
     const unlocked = typeof raw === "boolean" ? raw : raw >= 100;
     if (!unlocked) continue;
-
-    const { data: already } = await ctx.supabase
-      .from("user_achievements")
-      .select("achievement_id")
-      .eq("user_id", ctx.user.id)
-      .eq("achievement_id", a.id)
-      .maybeSingle();
-    if (already) continue;
 
     // Unlock achievement
     await ctx.supabase.rpc("unlock_achievement", {

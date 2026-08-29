@@ -138,7 +138,10 @@ export default function TestPage() {
           removeLocal(full.id);
           setSaveState("cloud");
           // Process gamification (XP + achievements) silently - no popup/sonner to avoid interrupting chained tests
-          void processTestResult(full).catch((err) => console.error("[zentype] processTestResult failed:", err));
+          // Defer gamification to next frame so result view paints without jank
+          requestAnimationFrame(() => {
+            void processTestResult(full).catch((err) => console.error("[zentype] processTestResult failed:", err));
+          });
         } else if (res.reason === "guest") {
           setSaveState("guest");
         } else {
