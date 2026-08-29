@@ -85,20 +85,24 @@ export default function TestPage() {
     [],
   );
 
+  const loadPromptIdRef = useRef(0);
+
   const loadPrompt = useCallback(
     async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">) => {
+      const id = ++loadPromptIdRef.current;
       setLoadingPrompt(true);
       if (prefetchedRef.current) {
         setWords(prefetchedRef.current);
         prefetchedRef.current = null;
         setLoadingPrompt(false);
-        void fetchWords(cfg).then((w) => { prefetchedRef.current = w; });
+        void fetchWords(cfg).then((w) => { if (id === loadPromptIdRef.current) prefetchedRef.current = w; });
         return;
       }
       const w = await fetchWords(cfg);
+      if (id !== loadPromptIdRef.current) return; // stale, a newer call superseded us
       setWords(w);
       setLoadingPrompt(false);
-      void fetchWords(cfg).then((next) => { prefetchedRef.current = next; });
+      void fetchWords(cfg).then((next) => { if (id === loadPromptIdRef.current) prefetchedRef.current = next; });
     },
     [fetchWords],
   );
@@ -199,7 +203,7 @@ export default function TestPage() {
     engineRef.current.reset();
     setResult(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.source, settings.punctuation, settings.numbers]);
+  }, [settings.source, settings.punctuation, settings.numbers, settings.mode, settings.duration, settings.wordCount]);
 
   /* ---------- extend words during long time-mode tests ---------- */
 
