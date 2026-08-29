@@ -25,6 +25,9 @@ import type { GameSettings, TestResult } from "~/lib/types";
 import { lcGet } from "~/lib/client-cache";
 import type { AggregatedStats } from "~/server/results";
 
+/** Detect mobile/touch device for keyboard input routing */
+const isMobile = typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
 /** Check if a result is a personal best by comparing against cached stats */
 function isResultPB(result: TestResult): boolean {
   const stats = lcGet<AggregatedStats>("profile-stats", 5 * 60 * 1000);
@@ -287,13 +290,39 @@ export default function TestPage() {
   const runningOrIdle = engine.status !== "finished";
 
   return (
-    <div className={`mx-auto flex w-full ${!runningOrIdle ? "flex-1 flex-col items-center" : "max-w-5xl flex-1 flex-col"} px-4 py-6`} role="region" aria-label="Typing test">
+    <div className={`mx-auto flex w-full flex-1 flex-col ${!runningOrIdle ? "items-center" : "max-w-5xl"} px-4 py-6 md:py-6`} role="region" aria-label="Typing test">
       <input
         ref={inputEl}
-        className="pointer-events-none absolute size-0 opacity-0"
-        aria-hidden
-        tabIndex={-1}
+        className="absolute left-1/2 top-1/2 -z-10 h-px w-px -translate-x-1/2 -translate-y-1/2 opacity-0"
+        aria-hidden="true"
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
         data-zt-ignore
+        onKeyDown={(e) => {
+          if (isMobile && !e.repeat) {
+            window.dispatchEvent(new KeyboardEvent("keydown", { key: e.key, code: e.code, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey }));
+          }
+        }}
+        onKeyUp={(e) => {
+          if (isMobile) {
+            window.dispatchEvent(new KeyboardEvent("keyup", { key: e.key, code: e.code, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey }));
+          }
+        }}
+        onInput={(e) => {
+          // Mobile software keyboards sometimes only fire onInput, not keyDown.
+          // Route each character through the engine.
+          if (!isMobile) return;
+          const val = (e.target as HTMLInputElement).value;
+          if (val.length === 0) return;
+          // Clear the input so it stays hidden
+          (e.target as HTMLInputElement).value = "";
+          for (const ch of val) {
+            window.dispatchEvent(new KeyboardEvent("keydown", { key: ch }));
+            window.dispatchEvent(new KeyboardEvent("keyup", { key: ch }));
+          }
+        }}
         onChange={() => {}}
       />
 
@@ -359,7 +388,7 @@ export default function TestPage() {
 
           <Progress value={engine.progress * 100} className="mb-3" aria-label="test progress" />
 
-          <div className="relative w-full p-4">
+          <div className="relative w-full p-4" onClick={() => { if (isMobile) inputEl.current?.focus(); }}>
             {loadingPrompt ? (
               <div className="flex flex-col gap-3 py-2">
                 <Skeleton className="h-7 w-4/5" />
