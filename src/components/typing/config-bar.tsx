@@ -35,7 +35,7 @@ export function ConfigBar({
       role="toolbar"
       aria-label="test configuration"
     >
-      <div className="grid w-full grid-cols-2 gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
+      <div className="grid w-full grid-cols-[1fr_2fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
         {/* Mode selector — pill style like Tabs */}
         <div className="bg-muted/80 inline-flex h-9 items-center justify-center rounded-lg p-[3px] sm:w-auto">
           <ConfigButton
