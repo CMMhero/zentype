@@ -1,4 +1,5 @@
 import { IconClock, IconTypography } from "@tabler/icons-react";
+import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import {
   TIME_OPTIONS,
@@ -81,13 +82,14 @@ function ConfigButton({
   onClick,
   children,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { active: boolean }) {
+}: React.ComponentProps<typeof Button> & { active: boolean }) {
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
       onClick={onClick}
       className={cn(
-        "inline-flex h-[calc(100%-2px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-3 text-sm font-medium transition-all duration-200",
+        "h-[calc(100%-2px)] flex-1 gap-1.5 rounded-md border border-transparent px-3 text-sm font-medium hover:bg-transparent",
         active
           ? "bg-background text-foreground shadow-sm"
           : "text-muted-foreground hover:text-foreground",
@@ -96,6 +98,6 @@ function ConfigButton({
       {...props}
     >
       {children}
-    </button>
+    </Button>
   );
 }
