@@ -74,7 +74,6 @@
 @import "@fontsource-variable/quicksand";
 @import "@fontsource-variable/red-hat-display";
 @import "@fontsource-variable/red-hat-mono";
-@import "@fontsource/bebas-neue";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -191,7 +190,6 @@
   --font-quicksand: "Quicksand Variable", ui-sans-serif, system-ui, sans-serif;
   --font-red-hat-display: "Red Hat Display Variable", ui-sans-serif, system-ui, sans-serif;
   --font-red-hat-mono: "Red Hat Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-bebas-neue: "Bebas Neue", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
@@ -344,7 +342,6 @@ html[data-font="figtree"] { font-family: var(--font-figtree); }
 html[data-font="quicksand"] { font-family: var(--font-quicksand); }
 html[data-font="red-hat-display"] { font-family: var(--font-red-hat-display); }
 html[data-font="red-hat-mono"] { font-family: var(--font-red-hat-mono); }
-html[data-font="bebas-neue"] { font-family: var(--font-bebas-neue); }
 
 .zt-caret-blink {
   animation: zt-blink 1s ease-in-out infinite;
