@@ -396,7 +396,7 @@ export default function TestPage() {
 
           {settings.showKeyboard && (
             <div className="flex flex-1 items-center justify-center py-2">
-              <VirtualKeyboard numbers={settings.numbers} punctuation={settings.punctuation} />
+              <VirtualKeyboard />
             </div>
           )}
 
