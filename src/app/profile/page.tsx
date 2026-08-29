@@ -634,18 +634,18 @@ export default function ProfilePage() {
 
       {/* Test detail dialog */}
       <Dialog open={selected !== null} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] sm:max-w-2xl sm:w-full max-h-[90vh] overflow-y-auto overflow-x-hidden">
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           {selected && (
             <>
               <DialogHeader>
-                <DialogTitle className="flex items-end gap-6 sm:gap-8">
+                <DialogTitle className="flex items-end gap-4 sm:gap-8">
                   <span className="flex flex-col">
-                    <span className="text-4xl font-bold tabular-nums text-primary sm:text-5xl">{selected.wpm}</span>
-                    <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">wpm</span>
+                    <span className="text-3xl font-bold tabular-nums text-primary sm:text-5xl">{selected.wpm}</span>
+                    <span className="text-muted-foreground mt-1 text-xs tracking-wider">wpm</span>
                   </span>
                   <span className="flex flex-col">
-                    <span className="text-4xl font-bold tabular-nums sm:text-5xl">{selected.accuracy}%</span>
-                    <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">acc</span>
+                    <span className="text-3xl font-bold tabular-nums sm:text-5xl">{selected.accuracy}%</span>
+                    <span className="text-muted-foreground mt-1 text-xs tracking-wider">acc</span>
                   </span>
                 </DialogTitle>
                 <DialogDescription>
@@ -655,8 +655,8 @@ export default function ProfilePage() {
                   {" · "}{new Date(selected.createdAt).toLocaleString()}
                 </DialogDescription>
               </DialogHeader>
-              <WpmChart timeline={selected.timeline} />
-              <div className="grid grid-cols-3 gap-3 text-center sm:grid-cols-6">
+              <WpmChart timeline={selected.timeline} compact />
+              <div className="grid grid-cols-3 gap-2 text-center sm:grid-cols-6 sm:gap-3">
                 <Mini label="raw" value={String(selected.rawWpm)} />
                 <Mini label="cons" value={`${selected.consistency}%`} />
                 <Mini label="correct" value={String(selected.chars.correct)} />
