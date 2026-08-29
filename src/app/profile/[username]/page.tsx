@@ -12,17 +12,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from "~/components/ui/dialog";
+
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { getPublicProfile, type PublicProfile } from "~/server/results";
 import { getUserAchievementsByUsername, getUserPointsByUsername } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
-import { AchievementList } from "~/components/ui/achievement-list";
+
 import { ACHIEVEMENTS } from "~/lib/achievements";
 
 export default function PublicProfilePage() {
@@ -35,8 +33,7 @@ export default function PublicProfilePage() {
     id: string; name: string; description: string; trigger: "metric" | "streak" | "api";
     achievedAt: string | null; progress: number; xp: number;
   }> | null>(null);
-  const [achOpen, setAchOpen] = useState(false);
-  const [achTab, setAchTab] = useState<"all" | "unlocked" | "locked">("all");
+  
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
 
@@ -135,7 +132,7 @@ export default function PublicProfilePage() {
     achievedAt: null as string | null, progress: 0, xp: a.xp,
   }));
   const unlockedAch = allAch.filter((a) => a.achievedAt !== null);
-  const filteredAch = achTab === "unlocked" ? allAch.filter((a) => a.achievedAt !== null) : achTab === "locked" ? allAch.filter((a) => a.achievedAt === null) : allAch;
+  
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
@@ -266,47 +263,11 @@ export default function PublicProfilePage() {
           ) : (
             <p className="text-xs text-muted-foreground">no achievements yet</p>
           )}
-          {achievements === null ? (
-            <Skeleton className="mt-3 h-4 w-32" />
-          ) : (
-            <Button variant="link" size="sm" className="mt-3 h-auto p-0 text-xs" onClick={() => setAchOpen(true)}>
-              view all achievements →
-            </Button>
-          )}
+          
         </CardContent>
       </Card>
 
-      {/* All achievements modal — uses AchievementList */}
-      <Dialog open={achOpen} onOpenChange={setAchOpen}>
-        <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-hidden flex flex-col">
-          <DialogHeader className="pr-8">
-            <DialogTitle className="flex items-center gap-2">
-              <IconAward className="size-4" /> achievements
-              <Badge variant="secondary" className="text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
-            </DialogTitle>
-          </DialogHeader>
-          <Tabs value={achTab} onValueChange={(v) => setAchTab(v as "all" | "unlocked" | "locked")}>
-            <TabsList>
-              <TabsTrigger value="all">all</TabsTrigger>
-              <TabsTrigger value="unlocked">unlocked</TabsTrigger>
-              <TabsTrigger value="locked">locked</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="flex-1 overflow-y-auto pr-1">
-            <AchievementList
-              achievements={filteredAch.map((a) => ({
-                id: a.id,
-                name: a.name,
-                description: a.description,
-                trigger: a.trigger,
-                achievedAt: a.achievedAt,
-                progress: a.progress,
-              }))}
-              badgeSize="sm"
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+      
 
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
