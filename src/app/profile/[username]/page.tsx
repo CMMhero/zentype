@@ -256,7 +256,7 @@ export default function PublicProfilePage() {
                   achievedAt: a.achievedAt,
                   progress: a.progress,
                 }))}
-              columns="auto"
+              columns={4}
               gap="sm"
               badgeSize="sm"
             />
@@ -322,7 +322,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   return (
     <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
-        <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase">
+        <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest">
           {icon} {label}
         </span>
         {value === null ? <Skeleton className="mt-1 h-7 w-16" /> : <span className="text-xl font-bold tabular-nums text-primary">{value}</span>}
@@ -383,7 +383,7 @@ function ProfileSkeleton() {
           ].map(({ icon, label }) => (
             <Card key={label} className="gap-1 bg-gradient-to-br py-3 from-card to-muted/30">
               <CardContent className="flex flex-col gap-1 px-3">
-                <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase">
+                <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest">
                   {icon} {label}
                 </span>
                 <div className="flex h-7 items-center">
