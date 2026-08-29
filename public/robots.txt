@@ -37,4 +37,4 @@ User-agent: Bytespider
 Disallow: /
 
 # Sitemaps
-Sitemap: https://zentype.dev/sitemap.xml
+Sitemap: https://zentype.cmmhero.top/sitemap.xml

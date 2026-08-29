@@ -40,6 +40,8 @@ export interface GameSettings {
   showKeyboard: boolean;
   visibleLines: 1 | 2 | 3;
   hideLiveStats: boolean;
+  punctuation: boolean;
+  numbers: boolean;
 }
 
 export interface CharCounts {
@@ -64,6 +66,8 @@ export interface TestResult {
   /** seconds (time mode) or word count (words mode) */
   variant: number;
   source: PromptSource;
+  punctuation: boolean;
+  numbers: boolean;
   wpm: number;
   rawWpm: number;
   accuracy: number;

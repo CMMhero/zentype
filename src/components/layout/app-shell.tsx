@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   IconCommand, IconKeyboardFilled, IconLogout,
-  IconSettingsFilled, IconTrophyFilled, IconUser, IconUserFilled,
+  IconSettingsFilled, IconTrophyFilled, IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";

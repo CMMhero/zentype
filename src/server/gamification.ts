@@ -7,6 +7,7 @@ import {
 } from "~/lib/achievements";
 import { calculateTestXP, levelFromXP, xpProgress } from "~/lib/xp";
 import type { TestResult } from "~/lib/types";
+import { cacheGet, cacheSet, cacheDel } from "~/lib/cache";
 
 async function requireUser() {
   const supabase = await getSupabaseServerClient();
@@ -286,21 +287,20 @@ export async function processTestResult(
     if (error) console.error("[zentype] record_point_event failed:", error.message);
   });
 
-  // Check achievements
+  // Check achievements -- batch-fetch already-unlocked in one query
+  const { data: existingRows } = await ctx.supabase
+    .from("user_achievements")
+    .select("achievement_id")
+    .eq("user_id", ctx.user.id);
+  const unlockedSet = new Set((existingRows ?? []).map((r) => r.achievement_id));
+
   const newAchievements: Array<{ id: string; name: string; description: string; xp: number }> = [];
 
   for (const a of ACHIEVEMENTS) {
+    if (unlockedSet.has(a.id)) continue;
     const raw = a.check(stats);
     const unlocked = typeof raw === "boolean" ? raw : raw >= 100;
     if (!unlocked) continue;
-
-    const { data: already } = await ctx.supabase
-      .from("user_achievements")
-      .select("achievement_id")
-      .eq("user_id", ctx.user.id)
-      .eq("achievement_id", a.id)
-      .maybeSingle();
-    if (already) continue;
 
     // Unlock achievement
     await ctx.supabase.rpc("unlock_achievement", {
@@ -314,6 +314,9 @@ export async function processTestResult(
     newAchievements.push({ id: a.id, name: a.name, description: a.description, xp: a.xp });
   }
 
+  // Invalidate stats cache so next achievement check uses fresh data
+  await cacheDel(`ach-stats:${ctx.user.id}`);
+
   return { xpEarned, newAchievements };
 }
 
@@ -321,6 +324,11 @@ async function buildAchievementStats(
   userId: string,
   supabase: Awaited<ReturnType<typeof getSupabaseServerClient>> & {},
 ): Promise<AchievementCheckInput> {
+  // Cache for 30s -- this scans 2000 rows and is called by both processTestResult and getUserAchievements
+  const cacheKey = `ach-stats:${userId}`;
+  const cached = await cacheGet<AchievementCheckInput>(cacheKey);
+  if (cached) return cached;
+
   const RESULT_COLUMNS =
     "id,created_at,mode,variant,source,wpm,raw_wpm,accuracy,consistency,chars,timeline";
 
@@ -447,7 +455,7 @@ async function buildAchievementStats(
     if (run > longestStreak) longestStreak = run;
   }
 
-  return {
+  const stats: AchievementCheckInput = {
     testsCompleted: results.length,
     timeTypedSeconds: totalTime,
     bestWpm,
@@ -473,4 +481,6 @@ async function buildAchievementStats(
     testsAbove99Acc,
     testsAbove90Acc,
   };
+  await cacheSet(cacheKey, stats, 30);
+  return stats;
 }

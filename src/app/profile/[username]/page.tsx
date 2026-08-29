@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import { getPublicProfile, type PublicProfile } from "~/server/results";
 import { getUserAchievementsByUsername, getUserPointsByUsername } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
+import { lcGet, lcSet } from "~/lib/client-cache";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 
@@ -37,28 +38,40 @@ export default function PublicProfilePage() {
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
 
+  // Stale-while-revalidate: show cached data instantly, fetch fresh in background
   useEffect(() => {
     let cancelled = false;
-    void getPublicProfile(username)
-      .then((p) => {
-        if (!cancelled) { setProfile(p); setLoading(false); }
-      })
-      .catch(() => {
-        if (!cancelled) setLoading(false);
-      });
+    const FIVE_MIN = 5 * 60 * 1000;
+    const ONE_MIN = 60 * 1000;
+    const cacheKey = `pub-${username}`;
+
+    // Load cached data immediately
+    const cProfile = lcGet<PublicProfile>(cacheKey, FIVE_MIN);
+    const cPoints = lcGet<{ totalXP: number; level: number; progress: number }>(`${cacheKey}-points`, ONE_MIN);
+    const cAch = lcGet<Array<{ id: string; name: string; description: string; trigger: "metric" | "streak" | "api"; achievedAt: string | null; progress: number; xp: number }>>(`${cacheKey}-ach`, FIVE_MIN);
+
+    if (cProfile) { setProfile(cProfile); setLoading(false); }
+    if (cPoints) setPoints(cPoints);
+    if (cAch) setAchievements(cAch);
+
+    // Fetch all data in parallel
+    void Promise.all([
+      getPublicProfile(username),
+      getUserPointsByUsername(username),
+      getUserAchievementsByUsername(username),
+    ]).then(([p, pt, a]) => {
+      if (cancelled) return;
+      if (p) { setProfile(p); setLoading(false); lcSet(cacheKey, p); }
+      if (pt) { setPoints(pt); lcSet(`${cacheKey}-points`, pt); }
+      if (a) { setAchievements(a); lcSet(`${cacheKey}-ach`, a); }
+    }).catch(() => {
+      if (!cancelled) setLoading(false);
+    });
+
     return () => { cancelled = true; };
   }, [username]);
 
-  useEffect(() => {
-    if (!profile) return;
-    void getUserAchievementsByUsername(username).then((a) => {
-      setAchievements(a);
-    });
-    void getUserPointsByUsername(username).then((p) => {
-      if (p) setPoints(p);
-    });
-  }, [profile, username]);
-
+  // Board ranks depend on profile stats
   useEffect(() => {
     if (!profile?.stats) return;
     const boards = Object.keys(profile.stats.bestByBoard);
@@ -156,7 +169,7 @@ export default function PublicProfilePage() {
                 <Badge variant="outline" className="text-[10px]">public profile</Badge>
                 {profile!.joinedAt && (
                   <p className="mt-1 text-[10px] text-muted-foreground/70">
-                    Joined {new Date(profile!.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    joined {new Date(profile!.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                   </p>
                 )}
               </div>
@@ -177,7 +190,7 @@ export default function PublicProfilePage() {
                 <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
               </div>
             ) : (
-              <p className="mt-4 text-[10px] text-muted-foreground">No XP yet</p>
+              <p className="mt-4 text-[10px] text-muted-foreground">no xp yet</p>
             )}
           </CardContent>
         </Card>
@@ -289,7 +302,7 @@ export default function PublicProfilePage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="last12">Last 12 months</SelectItem>
+                    <SelectItem value="last12">last 12 months</SelectItem>
                     {availableYears.map((y) => (
                       <SelectItem key={y} value={String(y)}>{y}</SelectItem>
                     ))}

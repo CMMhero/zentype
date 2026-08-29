@@ -5,7 +5,7 @@ import { getPublicStats } from "~/server/results";
 
 export const metadata: Metadata = {
   title: "About | zentype",
-  description: "About zentype - a customizable, clean typing test with gamification",
+  description: "About zentype - a customizable typing test with leaderboards, achievements, and stats",
 };
 
 function ZentypeIcon({ className }: { className?: string }) {
@@ -34,9 +34,8 @@ export default async function AboutPage() {
         <section>
           <h2 className="text-base font-semibold">what is <ZentypeIcon className="text-primary size-4 inline" /> zentype?</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            <ZentypeIcon className="text-primary size-4 inline" /> zentype is a customizable, clean typing test built for speed and accuracy tracking,
-            inspired by monkeytype. It combines gamification elements like XP,
-            levels, achievements, and global leaderboards to make typing practice engaging.
+            <ZentypeIcon className="text-primary size-4 inline" /> zentype is a typing test with speed and accuracy tracking, inspired by monkeytype.
+            XP, levels, 110+ achievements, streak heatmaps, and global leaderboards.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Built with Next.js, Supabase, shadcn/ui, and Tailwind CSS. Open source and free to use.
@@ -59,32 +58,32 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconKeyboard className="size-5" />}
               title="typing modes"
-              description="Time-based (15s to 120s) and word-count modes with configurable options like blind mode, stop on error, and strict space."
+              description="Time (15/30/60/120s) and word (10/25/50/100) modes. Punctuation and numbers toggles. Blind mode, stop on error, strict space. Works on phone and desktop."
             />
             <FeatureCard
               icon={<IconChartBar className="size-5" />}
               title="detailed stats"
-              description="Track WPM, accuracy, consistency, and character breakdowns. View progress charts and personal bests."
+              description="Net and raw WPM, accuracy, kogasa consistency, character breakdown. Per-second timeline charts and personal bests per mode."
             />
             <FeatureCard
               icon={<IconTrophy className="size-5" />}
               title="leaderboards"
-              description="Compete globally on WPM leaderboards. Rank by mode and variant with weekly and all-time views."
+              description="Global leaderboards ranked by mode and variant. Weekly and all-time views. Redis-backed with Postgres fallback."
             />
             <FeatureCard
               icon={<IconAward className="size-5" />}
               title="achievements"
-              description="110+ achievements across categories like speed, accuracy, consistency, streaks, and more. Earn XP and level up."
+              description="110+ achievements: tests typed, WPM milestones, accuracy runs, streaks, consistency, account age, and more. XP per test, 500 per level."
             />
             <FeatureCard
               icon={<IconPalette className="size-5" />}
               title="customization"
-              description="81 themes, 50 fonts, multiple caret styles, virtual keyboard, and sound effects. Make it yours."
+              description="80+ themes, 50+ fonts, 4 caret styles, virtual keyboard, WebAudio sounds, and a command palette (cmd+k)."
             />
             <FeatureCard
               icon={<IconBrandGithub className="size-5" />}
               title="open source"
-              description="Built with Next.js, Supabase, shadcn/ui, and Tailwind. Community contributions welcome."
+              description="Next.js, Supabase, shadcn/ui, Tailwind CSS. Open source under the repo linked above."
             />
           </div>
         </section>
@@ -96,7 +95,7 @@ export default async function AboutPage() {
             <a href="https://cmmhero.top" target="_blank" rel="noreferrer" className="text-primary hover:underline">
               CMMhero
             </a>
-            . Full-stack typing test with cloud sync, gamification, and leaderboards.
+            . Full-stack typing test with cloud sync, XP, and leaderboards.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Trophy UI components by{" "}

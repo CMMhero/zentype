@@ -30,7 +30,7 @@ export function HelpDialog() {
         <DialogHeader>
           <DialogTitle>keyboard shortcuts</DialogTitle>
           <DialogDescription>
-            Shortcuts for navigating and controlling tests.
+            Navigate and control tests.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-1">

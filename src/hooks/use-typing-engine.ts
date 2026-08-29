@@ -17,6 +17,8 @@ export interface EngineResult {
   mode: GameSettings["mode"];
   variant: number;
   source: GameSettings["source"];
+  punctuation: boolean;
+  numbers: boolean;
   wpm: number;
   rawWpm: number;
   accuracy: number;
@@ -167,6 +169,8 @@ export function useTypingEngine({
       mode: settings.mode,
       variant: settings.mode === "time" ? settings.duration : settings.wordCount,
       source: settings.source,
+      punctuation: settings.punctuation,
+      numbers: settings.numbers,
       wpm: stats.wpm,
       rawWpm: stats.rawWpm,
       accuracy: stats.accuracy,
@@ -174,7 +178,7 @@ export function useTypingEngine({
       chars: stats.chars,
       timeline: tl,
     });
-  }, [onFinish, settings.mode, settings.duration, settings.wordCount, settings.source]);
+  }, [onFinish, settings.mode, settings.duration, settings.wordCount, settings.source, settings.punctuation, settings.numbers]);
 
   const finishRef = useRef(finish);
   useEffect(() => {

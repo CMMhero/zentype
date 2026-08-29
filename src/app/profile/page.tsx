@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconAward, IconChartBar, IconClock, IconCrown, IconExternalLink, IconGauge, IconHistory,
+  IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconExternalLink, IconGauge, IconHash, IconHistory,
   IconLink, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import {
-  Area, AreaChart, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis,
+  Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis,
 } from "recharts";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
@@ -26,6 +26,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from "~/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
@@ -34,6 +35,7 @@ import { WpmChart } from "~/components/charts/wpm-chart";
 import { getMyJoinDate, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
+import { lcGet, lcSet } from "~/lib/client-cache";
 import { useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
 import { formatDateTime } from "~/lib/utils";
@@ -77,25 +79,45 @@ export default function ProfilePage() {
   const [historyCount, setHistoryCount] = useState(10);
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
 
+  // Stale-while-revalidate: show cached data instantly, fetch fresh in background
   useEffect(() => {
     let cancelled = false;
-    void Promise.all([getUserStats(), getUserResults({ limit: 200 })]).then(([s, r]) => {
-      if (cancelled) return;
-      setStats(s);
-      setResults(r);
-    });
-    return () => { cancelled = true; };
-  }, []);
+    const FIVE_MIN = 5 * 60 * 1000;
+    const ONE_MIN = 60 * 1000;
 
-  useEffect(() => {
-    if (!user) return;
-    void Promise.all([getUserPoints(), getUserAchievements(), getMyJoinDate()]).then(([p, a, j]) => {
-      if (p) setPoints(p);
-      if (a) setAchievements(a);
-      if (j) setJoinedAt(j);
+    // Load cached data immediately (no loading state)
+    const cStats = lcGet<AggregatedStats>("profile-stats", FIVE_MIN);
+    const cResults = lcGet<TestResult[]>("profile-results", FIVE_MIN);
+    const cPoints = lcGet<{ totalXP: number; level: number; progress: number }>("profile-points", ONE_MIN);
+    const cAchievements = lcGet<Array<{ id: string; name: string; description: string; trigger: "metric" | "streak" | "api"; achievedAt: string | null; progress: number; xp: number }>>("profile-achievements", FIVE_MIN);
+    const cJoinDate = lcGet<string>("profile-join-date", FIVE_MIN);
+
+    if (cStats) setStats(cStats);
+    if (cResults) setResults(cResults);
+    if (cPoints) setPoints(cPoints);
+    if (cAchievements) setAchievements(cAchievements);
+    if (cJoinDate) setJoinedAt(cJoinDate);
+
+    // Fetch all data in parallel (single round-trip for everything)
+    void Promise.all([
+      getUserStats(),
+      getUserResults({ limit: 200 }),
+      user ? getUserPoints() : Promise.resolve(null),
+      user ? getUserAchievements() : Promise.resolve(null),
+      user ? getMyJoinDate() : Promise.resolve(null),
+    ]).then(([s, r, p, a, j]) => {
+      if (cancelled) return;
+      if (s) { setStats(s); lcSet("profile-stats", s); }
+      if (r) { setResults(r); lcSet("profile-results", r); }
+      if (p) { setPoints(p); lcSet("profile-points", p); }
+      if (a) { setAchievements(a); lcSet("profile-achievements", a); }
+      if (j) { setJoinedAt(j); lcSet("profile-join-date", j); }
     });
+
+    return () => { cancelled = true; };
   }, [user]);
 
+  // Board ranks depend on stats (use latest from state, whether cached or fresh)
   useEffect(() => {
     if (!user || !stats) return;
     const boards = Object.keys(stats.bestByBoard);
@@ -261,7 +283,7 @@ export default function ProfilePage() {
                 <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                 {joinedAt && (
                   <p className="text-[10px] text-muted-foreground/70">
-                    Joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                   </p>
                 )}
               </div>
@@ -538,7 +560,7 @@ export default function ProfilePage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="last12">Last 12 months</SelectItem>
+                    <SelectItem value="last12">last 12 months</SelectItem>
                     {availableYears.map((y) => (
                       <SelectItem key={y} value={String(y)}>{y}</SelectItem>
                     ))}
@@ -580,8 +602,8 @@ export default function ProfilePage() {
           ) : (results ?? []).length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-12 text-center">
               <IconHistory className="size-8 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">No tests recorded yet</p>
-              <Link href="/" className="text-sm text-primary hover:underline">Start typing →</Link>
+              <p className="text-sm text-muted-foreground">no tests recorded yet</p>
+              <Link href="/" className="text-sm text-primary hover:underline">start typing →</Link>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -614,7 +636,25 @@ export default function ProfilePage() {
                       <AccCell value={r.accuracy} />
                       <TableCell className="hidden text-right tabular-nums sm:table-cell">{r.consistency}%</TableCell>
                       <TableCell className="hidden text-right text-xs text-muted-foreground md:table-cell">
-                        {modeLabel(r)}
+                        <span className="inline-flex items-center gap-1">
+                          {modeLabel(r)}
+                          {r.punctuation && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <IconAt className="size-3 text-muted-foreground/70" />
+                              </TooltipTrigger>
+                              <TooltipContent>punctuation</TooltipContent>
+                            </Tooltip>
+                          )}
+                          {r.numbers && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <IconHash className="size-3 text-muted-foreground/70" />
+                              </TooltipTrigger>
+                              <TooltipContent>numbers</TooltipContent>
+                            </Tooltip>
+                          )}
+                        </span>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -649,10 +689,34 @@ export default function ProfilePage() {
                   </span>
                 </DialogTitle>
                 <DialogDescription>
-                  <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
-                    {modeLabel(selected)}
-                  </Badge>
-                  {" · "}{new Date(selected.createdAt).toLocaleString()}
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
+                        {modeLabel(selected)}
+                      </Badge>
+                      {selected.punctuation && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
+                              <IconAt className="size-3" />
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>punctuation</TooltipContent>
+                        </Tooltip>
+                      )}
+                      {selected.numbers && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
+                              <IconHash className="size-3" />
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>numbers</TooltipContent>
+                        </Tooltip>
+                      )}
+                    </span>
+                    <span className="shrink-0 text-xs text-muted-foreground">{new Date(selected.createdAt).toLocaleString()}</span>
+                  </span>
                 </DialogDescription>
               </DialogHeader>
               <WpmChart timeline={selected.timeline} compact />

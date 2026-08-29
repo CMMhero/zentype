@@ -22,6 +22,18 @@ import { mergeLocalResults, saveResult } from "~/server/results";
 import { processTestResult } from "~/server/gamification";
 import { useUser } from "~/components/user-provider";
 import type { GameSettings, TestResult } from "~/lib/types";
+import { lcGet } from "~/lib/client-cache";
+import type { AggregatedStats } from "~/server/results";
+
+/** Check if a result is a personal best by comparing against cached stats */
+function isResultPB(result: TestResult): boolean {
+  const stats = lcGet<AggregatedStats>("profile-stats", 5 * 60 * 1000);
+  if (!stats) return false;
+  const board = `${result.mode}:${result.variant}`;
+  const best = stats.bestByBoard[board];
+  if (best === undefined) return true; // no previous result on this board
+  return result.wpm > best;
+}
 
 export default function TestPage() {
   const user = useUser();
@@ -35,7 +47,6 @@ export default function TestPage() {
   const [loadingPrompt, setLoadingPrompt] = useState(true);
   const [result, setResult] = useState<TestResult | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("skipped");
-  const [activeKey, setActiveKey] = useState<string | null>(null);
   const [focused, setFocused] = useState(true);
   const [isMac, setIsMac] = useState(false);
   useEffect(() => {
@@ -52,12 +63,12 @@ export default function TestPage() {
   const prefetchedRef = useRef<string[] | null>(null);
 
   const fetchWords = useCallback(
-    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source">) => {
+    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">) => {
       const want =
         cfg.mode === "time"
           ? Math.min(220, Math.ceil(cfg.duration * 3.2))
           : cfg.wordCount + 10;
-      if (cfg.source === "words") return randomWordSlice(want);
+      if (cfg.source === "words") return randomWordSlice(want, { punctuation: cfg.punctuation, numbers: cfg.numbers });
       try {
         const res = await getPrompt(cfg.source, want);
         const w = res.text.split(/\s+/).filter(Boolean);
@@ -74,20 +85,24 @@ export default function TestPage() {
     [],
   );
 
+  const loadPromptIdRef = useRef(0);
+
   const loadPrompt = useCallback(
-    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source">) => {
+    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">) => {
+      const id = ++loadPromptIdRef.current;
       setLoadingPrompt(true);
       if (prefetchedRef.current) {
         setWords(prefetchedRef.current);
         prefetchedRef.current = null;
         setLoadingPrompt(false);
-        void fetchWords(cfg).then((w) => { prefetchedRef.current = w; });
+        void fetchWords(cfg).then((w) => { if (id === loadPromptIdRef.current) prefetchedRef.current = w; });
         return;
       }
       const w = await fetchWords(cfg);
+      if (id !== loadPromptIdRef.current) return; // stale, a newer call superseded us
       setWords(w);
       setLoadingPrompt(false);
-      void fetchWords(cfg).then((next) => { prefetchedRef.current = next; });
+      void fetchWords(cfg).then((next) => { if (id === loadPromptIdRef.current) prefetchedRef.current = next; });
     },
     [fetchWords],
   );
@@ -138,7 +153,10 @@ export default function TestPage() {
           removeLocal(full.id);
           setSaveState("cloud");
           // Process gamification (XP + achievements) silently - no popup/sonner to avoid interrupting chained tests
-          void processTestResult(full).catch((err) => console.error("[zentype] processTestResult failed:", err));
+          // Defer gamification to next frame so result view paints without jank
+          requestAnimationFrame(() => {
+            void processTestResult(full).catch((err) => console.error("[zentype] processTestResult failed:", err));
+          });
         } else if (res.reason === "guest") {
           setSaveState("guest");
         } else {
@@ -185,7 +203,7 @@ export default function TestPage() {
     engineRef.current.reset();
     setResult(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.source]);
+  }, [settings.source, settings.punctuation, settings.numbers, settings.mode, settings.duration, settings.wordCount]);
 
   /* ---------- extend words during long time-mode tests ---------- */
 
@@ -216,7 +234,6 @@ export default function TestPage() {
 
   useEffect(() => {
     const onDown = (e: KeyboardEvent) => {
-      setActiveKey(e.key.toLowerCase());
       if (paletteOpen || helpOpen || isDialogOpen()) return;
       if (isTypingTarget(e.target)) return;
 
@@ -229,12 +246,9 @@ export default function TestPage() {
       engine.handleKeyDown(e as unknown as Parameters<typeof engine.handleKeyDown>[0]);
       inputEl.current?.focus({ preventScroll: true });
     };
-    const onUp = () => setActiveKey(null);
     window.addEventListener("keydown", onDown);
-    window.addEventListener("keyup", onUp);
     return () => {
       window.removeEventListener("keydown", onDown);
-      window.removeEventListener("keyup", onUp);
     };
   }, [engine, paletteOpen, helpOpen]);
 
@@ -288,6 +302,8 @@ export default function TestPage() {
           mode={settings.mode}
           duration={settings.duration}
           wordCount={settings.wordCount}
+          punctuation={settings.punctuation}
+          numbers={settings.numbers}
           locked={engine.status === "running"}
           onChange={applyConfig}
         />
@@ -299,6 +315,7 @@ export default function TestPage() {
             <ResultView
               result={result}
               saveState={saveState}
+              isPB={isResultPB(result)}
               onNext={() => restartRef.current()}
             />
           </div>
@@ -379,7 +396,7 @@ export default function TestPage() {
 
           {settings.showKeyboard && (
             <div className="flex flex-1 items-center justify-center py-2">
-              <VirtualKeyboard activeKey={activeKey} />
+              <VirtualKeyboard />
             </div>
           )}
 

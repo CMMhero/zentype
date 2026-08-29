@@ -123,6 +123,8 @@ const STATIC_ITEMS = (() => {
     { id: "gp-strict", group: "gameplay", value: "gameplay strict space wrong words cannot be skipped", keywords: "gameplay strict space", label: "strict space" },
     { id: "gp-back", group: "gameplay", value: "gameplay free backspace restore previous word", keywords: "gameplay free backspace", label: "free backspace" },
     { id: "gp-hide", group: "gameplay", value: "gameplay hide live stats blank wpm acc while running", keywords: "gameplay hide live stats", label: "hide live stats" },
+    { id: "gp-punct", group: "gameplay", value: "gameplay punctuation add commas periods exclamation marks", keywords: "gameplay punctuation", label: "punctuation" },
+    { id: "gp-nums", group: "gameplay", value: "gameplay numbers add digits 0 1 2 3 4 5", keywords: "gameplay numbers", label: "numbers" },
     { id: "app-kb", group: "appearance", value: "appearance virtual keyboard show key highlighter", keywords: "appearance keyboard", label: "virtual keyboard" },
     { id: "app-smooth", group: "appearance", value: "appearance smooth caret animate caret movement", keywords: "appearance smooth caret", label: "smooth caret" },
   ];
@@ -228,6 +230,8 @@ export function CommandPalette() {
     hideLiveStats: settings.hideLiveStats,
     showKeyboard: settings.showKeyboard,
     smoothCaret: settings.smoothCaret,
+    punctuation: settings.punctuation,
+    numbers: settings.numbers,
   }), [settings]);
 
   // ─── Stable callbacks for toggles ──────────────────────────────────
@@ -240,6 +244,8 @@ export function CommandPalette() {
   const toggleHideLive = useCallback(() => update({ hideLiveStats: !settings.hideLiveStats }), [update, settings.hideLiveStats]);
   const toggleKeyboard = useCallback(() => update({ showKeyboard: !settings.showKeyboard }), [update, settings.showKeyboard]);
   const toggleSmoothCaret = useCallback(() => update({ smoothCaret: !settings.smoothCaret }), [update, settings.smoothCaret]);
+  const togglePunctuation = useCallback(() => update({ punctuation: !settings.punctuation }), [update, settings.punctuation]);
+  const toggleNumbers = useCallback(() => update({ numbers: !settings.numbers }), [update, settings.numbers]);
   const restartTest = useCallback(() => { close(); window.dispatchEvent(new CustomEvent("zt:restart")); }, [close]);
 
   // Clear fuse cache when dialog closes
@@ -473,6 +479,20 @@ export function CommandPalette() {
             onSelect={toggleHideLive}
           >
             <IconEyeOff /> hide live stats {activeSet.hideLiveStats ? "on" : "off"}<CommandDesc>blank wpm/acc while running</CommandDesc>
+          </CommandItem>
+          <CommandItem
+            value="gameplay punctuation add commas periods exclamation marks"
+            keywords={["gameplay", "punctuation"]}
+            onSelect={togglePunctuation}
+          >
+            <IconTypography /> punctuation {activeSet.punctuation ? "on" : "off"}<CommandDesc>add punctuation marks to words</CommandDesc>
+          </CommandItem>
+          <CommandItem
+            value="gameplay numbers add digits 0 1 2 3 4 5"
+            keywords={["gameplay", "numbers"]}
+            onSelect={toggleNumbers}
+          >
+            <IconLetterT /> numbers {activeSet.numbers ? "on" : "off"}<CommandDesc>add numbers to words</CommandDesc>
           </CommandItem>
         </CommandGroup>
 
