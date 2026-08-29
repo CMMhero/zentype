@@ -273,7 +273,7 @@ export default function TestPage() {
   const runningOrIdle = engine.status !== "finished";
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6" role="region" aria-label="Typing test">
+    <div className={`mx-auto flex w-full ${!runningOrIdle ? "flex-1 flex-col items-center" : "max-w-5xl flex-1 flex-col"} px-4 py-6`} role="region" aria-label="Typing test">
       <input
         ref={inputEl}
         className="pointer-events-none absolute size-0 opacity-0"
@@ -295,11 +295,13 @@ export default function TestPage() {
 
       {!runningOrIdle ? (
         result ? (
-          <ResultView
-            result={result}
-            saveState={saveState}
-            onNext={() => restartRef.current()}
-          />
+          <div className="zt-fade-in flex w-full max-w-4xl flex-1 flex-col items-center justify-center">
+            <ResultView
+              result={result}
+              saveState={saveState}
+              onNext={() => restartRef.current()}
+            />
+          </div>
         ) : null
       ) : (
         <>
