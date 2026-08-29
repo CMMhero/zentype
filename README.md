@@ -1,13 +1,13 @@
-# zentype v2
+# zentype
 
 ```
 ┌──────────────────────────────────────────────┐
-│  zentype v2                                  │
+│  zentype                                     │
 │  a keyboard-first typing test.               │
 └──────────────────────────────────────────────┘
 ```
 
-A full-stack typing test built on **Next.js 15** — fast, keyboard-first, and gamified. Clean terminal-inspired UI, 81 themes, 50 fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
+A full-stack typing test built on **Next.js** — fast, keyboard-first, and gamified. Inspired by monkeytype. 81 themes, 50 fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
 
 ## Features
 
@@ -65,14 +65,14 @@ A full-stack typing test built on **Next.js 15** — fast, keyboard-first, and g
 **Appearance**
 - 81 themes via `[data-theme]` CSS vars — gruvbox, nord, dracula, tokyo night, catppuccin mocha/latte, everforest, rosé pine/moon/dawn, serika dark, matrix, amber terminal, paper, one dark, monokai, kanagawa, github dark, solarized dark, cyberpunk, ayu mirage, tokyo night storm, cobalt, mocha light, jellybeans, and 58 more
 - 50 fonts (`data-font` on `<html>`, `@fontsource-variable/*`): geist-mono, inter, jetbrains-mono, dm-sans, space-grotesk, nunito-sans, work-sans, playfair-display, lora, merriweather, fira-code, cabin, josefin, bitter, crimson-pro, roboto-flex, ibm-plex-sans, cascadia-code, commit-mono, victor-mono, and 30 more
-- Tailwind CSS v4 (`@theme inline`), shadcn/ui, Recharts 3, Tabler icons
+- Tailwind CSS v4, shadcn/ui, Recharts 3, Tabler icons
 
 ## Stack
 
 | layer | tech |
 |---|---|
-| framework | [Next.js 15](https://nextjs.org/) App Router + Server Actions, React 19 |
-| UI | shadcn/ui · Tailwind v4 · Recharts 3 · Tabler icons · Sonner |
+| framework | [Next.js](https://nextjs.org/) App Router + Server Actions, React 19 |
+| UI | shadcn/ui · Tailwind CSS v4 · Recharts 3 · Tabler icons |
 | auth + db | Supabase (OAuth, Postgres, RLS) |
 | cache/leaderboards | Upstash Redis (REST + `zrange`/`hmget` pipeline) |
 | state | Zustand (settings persisted + guest results, ui) |
@@ -172,4 +172,4 @@ supabase/migrations/
 
 ## Credits
 
-Built by [CMMhero](https://github.com/CMMhero). v1 was a Vite SPA; v2 is the full-stack rebuild. Trophy UI by [trophyso/ui](https://ui.trophy.so).
+Built by [CMMhero](https://github.com/CMMhero). Trophy UI by [trophyso/ui](https://ui.trophy.so).
