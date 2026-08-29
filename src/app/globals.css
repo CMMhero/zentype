@@ -209,6 +209,13 @@
 @layer base {
   * {
     @apply border-border outline-ring/40;
+    /* Standard (Firefox) scrollbar — matches the webkit styles below */
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted) var(--background);
+    /* Reserve the gutter on every scroll container so content width never
+       changes when a scrollbar appears/disappears (prevents layout shift
+       in overlays like the command palette and any scrollable panel). */
+    scrollbar-gutter: stable;
   }
   html {
     color-scheme: dark;
@@ -221,6 +228,12 @@
     background: linear-gradient(180deg, color-mix(in srgb, var(--background) 100%, transparent) 0%, color-mix(in srgb, var(--background) 95%, var(--primary) 5%) 50%, color-mix(in srgb, var(--background) 100%, transparent) 100%);
     background-attachment: fixed;
     font-feature-settings: "zero" 1, "ss01" 1;
+    /* Make body the scroll container with an always-reserved gutter.
+       Radix dialogs lock body scroll (react-remove-scroll) and compensate
+       with matching padding, so the page behind never shifts when any
+       modal, the command palette, or a confirmation opens/closes. */
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
   }
   ::selection {
     background-color: color-mix(in srgb, var(--primary) 35%, transparent);
