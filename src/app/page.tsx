@@ -47,7 +47,6 @@ export default function TestPage() {
   const [loadingPrompt, setLoadingPrompt] = useState(true);
   const [result, setResult] = useState<TestResult | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("skipped");
-  const [activeKey, setActiveKey] = useState<string | null>(null);
   const [focused, setFocused] = useState(true);
   const [isMac, setIsMac] = useState(false);
   useEffect(() => {
@@ -231,7 +230,6 @@ export default function TestPage() {
 
   useEffect(() => {
     const onDown = (e: KeyboardEvent) => {
-      setActiveKey(e.key.toLowerCase());
       if (paletteOpen || helpOpen || isDialogOpen()) return;
       if (isTypingTarget(e.target)) return;
 
@@ -244,12 +242,9 @@ export default function TestPage() {
       engine.handleKeyDown(e as unknown as Parameters<typeof engine.handleKeyDown>[0]);
       inputEl.current?.focus({ preventScroll: true });
     };
-    const onUp = () => setActiveKey(null);
     window.addEventListener("keydown", onDown);
-    window.addEventListener("keyup", onUp);
     return () => {
       window.removeEventListener("keydown", onDown);
-      window.removeEventListener("keyup", onUp);
     };
   }, [engine, paletteOpen, helpOpen]);
 
@@ -397,7 +392,7 @@ export default function TestPage() {
 
           {settings.showKeyboard && (
             <div className="flex flex-1 items-center justify-center py-2">
-              <VirtualKeyboard activeKey={activeKey} />
+              <VirtualKeyboard />
             </div>
           )}
 
