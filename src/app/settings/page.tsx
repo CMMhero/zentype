@@ -62,7 +62,7 @@ export default function SettingsPage() {
         </AlertDialog>
       </header>
 
-      <Tabs defaultValue="gameplay" className="w-full min-w-0 gap-4">
+      <Tabs defaultValue="gameplay" className="w-full min-w-0 gap-4" aria-label="Settings tabs">
         <TabsList className="w-full sm:w-fit sm:flex-none">
           <TabsTrigger value="gameplay" className="flex-1 gap-1.5 sm:flex-none"><IconDeviceGamepad2 className="size-4" /> <span className="hidden min-[480px]:inline">gameplay</span></TabsTrigger>
           <TabsTrigger value="appearance" className="flex-1 gap-1.5 sm:flex-none"><IconPalette className="size-4" /> <span className="hidden min-[480px]:inline">appearance</span></TabsTrigger>
