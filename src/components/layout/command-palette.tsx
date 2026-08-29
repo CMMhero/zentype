@@ -36,9 +36,9 @@ const FONT_SIZES: { value: FontSizeKey; label: string; desc: string }[] = [
   { value: "sm", label: "small", desc: "compact text" },
   { value: "md", label: "medium", desc: "balanced" },
   { value: "lg", label: "large", desc: "default, easy to read" },
-  { value: "xl", label: "xlarge", desc: "extra large text" },
-  { value: "2xl", label: "2xlarge", desc: "very large text" },
-  { value: "3xl", label: "3xlarge", desc: "huge text" },
+  { value: "xl", label: "extra large", desc: "extra large text" },
+  { value: "2xl", label: "2x large", desc: "very large text" },
+  { value: "3xl", label: "3x large", desc: "huge text" },
 ];
 
 const SOUND_VARIANTS: { value: SoundVariant; label: string; desc: string }[] = [
@@ -109,7 +109,7 @@ const STATIC_ITEMS = (() => {
     { id: "nav-settings", group: "navigate", value: "navigate settings config alt+4", keywords: "navigate settings", label: "settings" },
     { id: "act-restart", group: "actions", value: "actions restart test tab", keywords: "actions restart", label: "restart test" },
     ...TIME_OPTIONS.map((t) => ({ id: `mode-time-${t}`, group: "mode", value: `mode time ${t}s type for ${t} seconds`, keywords: `mode time ${t}s`, label: `${t}s time` })),
-    ...WORD_OPTIONS.map((w) => ({ id: `mode-words-${w}`, group: "mode", value: `mode words ${w}w type ${w} words`, keywords: `mode words ${w}w`, label: `${w}w words` })),
+    ...WORD_OPTIONS.map((w) => ({ id: `mode-words-${w}`, group: "mode", value: `mode words ${w} words type ${w} words`, keywords: `mode words ${w}`, label: `${w} words` })),
     ...THEMES.map((t) => ({ id: `theme-${t.id}`, group: "theme", value: `theme appearance ${t.label} ${t.appearance} ${t.id}`, keywords: `theme appearance ${t.label} ${t.appearance}`, label: t.label })),
     { id: "sound-toggle", group: "sound", value: "sound audio keystroke click thock beep enable disable", keywords: "sound audio enable disable", label: "sound toggle" },
     { id: "sound-error", group: "sound", value: "sound error beep incorrect character", keywords: "sound error beep", label: "error sound" },
@@ -316,7 +316,7 @@ export function CommandPalette() {
               onSelect={() => { update({ mode: "words", wordCount: w }); close(); }}
               className={activeSet.mode === `words:${w}` ? "text-primary bg-primary/10" : ""}
             >
-              <IconLetterT /> {w}w words<CommandDesc>type {w} words</CommandDesc>
+              <IconLetterT /> {w} words<CommandDesc>type {w} words</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
