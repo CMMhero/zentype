@@ -1,4 +1,4 @@
-import { IconClock, IconTypography } from "@tabler/icons-react";
+import { IconClock, IconNumbers, IconAt } from "@tabler/icons-react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import {
@@ -87,14 +87,14 @@ export function ConfigBar({
           onClick={() => onChange({ punctuation: !punctuation })}
           aria-label="toggle punctuation"
         >
-          !?.
+          <IconAt className="size-3.5" /> punct
         </ConfigButton>
         <ConfigButton
           active={numbers}
           onClick={() => onChange({ numbers: !numbers })}
           aria-label="toggle numbers"
         >
-          123
+          <IconNumbers className="size-3.5" /> nums
         </ConfigButton>
       </div>
     </div>
