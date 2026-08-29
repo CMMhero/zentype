@@ -5,7 +5,7 @@ import { getPublicStats } from "~/server/results";
 
 export const metadata: Metadata = {
   title: "About | zentype",
-  description: "About zentype - a keyboard-first typing test with gamification",
+  description: "About zentype - a customizable, clean typing test with gamification",
 };
 
 function ZentypeIcon({ className }: { className?: string }) {
@@ -34,7 +34,7 @@ export default async function AboutPage() {
         <section>
           <h2 className="text-base font-semibold">what is <ZentypeIcon className="text-primary size-4 inline" /> zentype?</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            <ZentypeIcon className="text-primary size-4 inline" /> zentype is a keyboard-first typing test built for speed and accuracy tracking,
+            <ZentypeIcon className="text-primary size-4 inline" /> zentype is a customizable, clean typing test built for speed and accuracy tracking,
             inspired by monkeytype. It combines gamification elements like XP,
             levels, achievements, and global leaderboards to make typing practice engaging.
           </p>
