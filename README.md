@@ -9,6 +9,9 @@
 
 A full-stack typing test built on **Next.js** — customizable, clean, and gamified. Inspired by monkeytype. 81 themes, 50 fonts, cloud-synced stats, XP/levels, 110+ achievements, streak heatmaps, and global leaderboards.
 
+[![Discord](https://img.shields.io/discord/YOUR_SERVER_ID?label=discord&logo=discord&logoColor=white)](https://discord.gg/zentype)
+[![GitHub](https://img.shields.io/github/stars/CMMhero/zentype?logo=github)](https://github.com/CMMhero/zentype)
+
 ## Features
 
 **Typing**
@@ -169,6 +172,11 @@ supabase/migrations/
 - **consistency** = kogasa (`1 - stddev/mean` of per-second raw WPM)
 - **time typed**: `time` mode = variant seconds; `words` mode = `round(variant*60 / wpm)` capped 5–600s (used for time achievements)
 - plausibility gate (`isPlausible`) before any `test_results` insert
+
+## Community
+
+- [Discord](https://discord.gg/zentype) — join the community for discussions, feedback, and support
+- [GitHub](https://github.com/CMMhero/zentype) — report issues, contribute, or star the project
 
 ## Credits
 
