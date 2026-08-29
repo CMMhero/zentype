@@ -35,10 +35,16 @@ export const metadata: Metadata = {
     template: "%s | zentype",
   },
   description:
-    "A customizable, clean typing test. Track your WPM, accuracy, and consistency. Compete on global leaderboards, earn XP, and unlock achievements.",
-  keywords: ["typing test", "typing speed", "wpm", "words per minute", "typing practice", "keyboard test", "leaderboard", "typing game", "speed test", "accuracy test"],
-  authors: [{ name: "CMMhero" }],
+    "A customizable, clean typing test. Track your WPM, accuracy, and consistency. Compete on global leaderboards, earn XP, and unlock achievements. Inspired by monkeytype, built with Next.js, Supabase, and Tailwind CSS.",
+  keywords: [
+    "typing test", "typing speed", "wpm", "words per minute", "typing practice",
+    "keyboard test", "leaderboard", "typing game", "speed test", "accuracy test",
+    "monkeytype alternative", "typing test online free", "typing test with leaderboard",
+    "typing practice app", "wpm test", "typing speed test online",
+  ],
+  authors: [{ name: "CMMhero", url: "https://cmmhero.top" }],
   creator: "CMMhero",
+  publisher: "zentype",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.dev"),
   openGraph: {
     type: "website",
@@ -77,6 +83,14 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "/",
+  },
+  other: {
+    "application-name": "zentype",
+    "msapplication-TileColor": "#282828",
+    "theme-color": "#282828",
+    // AI/LLM metadata
+    "ai-content-declaration": "human-authored",
+    "ai-training": "opt-out",
   },
 };
 
