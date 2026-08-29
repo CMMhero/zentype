@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
   IconArrowLeft, IconAward, IconClock, IconGauge,
-  IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
+  IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
@@ -92,9 +92,9 @@ export default function PublicProfilePage() {
                 <IconTrophy className="size-4" /> view leaderboard
               </Link>
             </Button>
-            <button onClick={() => history.back()} className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-xs transition-colors">
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground gap-1.5 text-xs" onClick={() => history.back()}>
               <IconArrowLeft className="size-3" /> go back
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -138,10 +138,15 @@ export default function PublicProfilePage() {
   const filteredAch = achTab === "unlocked" ? allAch.filter((a) => a.achievedAt !== null) : achTab === "locked" ? allAch.filter((a) => a.achievedAt === null) : allAch;
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+      <header className="flex items-center justify-between">
+        <h1 className="flex items-center gap-2 text-lg font-semibold">
+          <IconUserFilled className="text-primary size-5" /> profile
+        </h1>
+      </header>
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
-        <Card className="row-span-2 gap-3 py-3 bg-gradient-to-br from-card via-card to-primary/5 border-primary/20">
+        <Card className="row-span-2 gap-3 py-3">
           <CardContent className="px-5 pt-2">
             {/* Row 1: Avatar + Username */}
             <div className="flex items-center gap-4">
@@ -162,9 +167,9 @@ export default function PublicProfilePage() {
             {/* Row 2: Level/XP bar — compact single row */}
             {loading ? (
               <div className="mt-4 flex items-center gap-3">
-                <Skeleton className="h-5 w-16" />
-                <Skeleton className="h-1.5 flex-1" />
-                <Skeleton className="h-3 w-20" />
+                <Skeleton className="h-7 w-14" />
+                <Skeleton className="h-1.5 flex-1 rounded-full" />
+                <Skeleton className="h-3 w-16" />
               </div>
             ) : points && points.totalXP > 0 ? (
               <div className="mt-4 flex items-center gap-3">
@@ -203,15 +208,17 @@ export default function PublicProfilePage() {
                 <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
                   <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
                   {loading ? (
-                    <Skeleton className="h-7 w-12" />
+                    <Skeleton className="h-8 w-14" />
                   ) : (
                     <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
                   )}
-                  {rank && (
-                    <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+                  {rank ? (
+                    <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-primary/10 px-1.5 text-[9px] font-bold leading-none tracking-widest text-primary">
                       #{rank}
                     </span>
-                  )}
+                  ) : boardRanks === null ? (
+                    <Skeleton className="mt-0.5 h-[18px] w-9 rounded-full" />
+                  ) : null}
                 </div>
               );
             })}
@@ -224,11 +231,21 @@ export default function PublicProfilePage() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
             <IconAward className="size-4" /> achievements
-            <Badge variant="secondary" className="text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+            {achievements === null ? (
+              <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+            ) : (
+              <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          {unlockedAch.length > 0 ? (
+          {achievements === null ? (
+            <div className="grid grid-cols-4 gap-3">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-24 w-full rounded-lg" />
+              ))}
+            </div>
+          ) : unlockedAch.length > 0 ? (
             <AchievementGrid
               achievements={unlockedAch
                 .slice()
@@ -249,9 +266,13 @@ export default function PublicProfilePage() {
           ) : (
             <p className="text-xs text-muted-foreground">no achievements yet</p>
           )}
-          <button onClick={() => setAchOpen(true)} className="mt-3 text-xs text-primary hover:underline">
-            view all achievements →
-          </button>
+          {achievements === null ? (
+            <Skeleton className="mt-3 h-4 w-32" />
+          ) : (
+            <Button variant="link" size="sm" className="mt-3 h-auto p-0 text-xs" onClick={() => setAchOpen(true)}>
+              view all achievements →
+            </Button>
+          )}
         </CardContent>
       </Card>
 
@@ -291,23 +312,29 @@ export default function PublicProfilePage() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
             <IconClock className="size-4" /> activity
-            {!loading && (
+            {loading ? (
+              <Skeleton className="ml-2 h-3 w-28" />
+            ) : (
               <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
                 {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
               </span>
             )}
             <div className="ml-auto">
-              <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
-                <SelectTrigger size="sm" className="h-7 w-36 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="last12">Last 12 months</SelectItem>
-                  {availableYears.map((y) => (
-                    <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {loading ? (
+                <Skeleton className="h-7 w-36" />
+              ) : (
+                <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
+                  <SelectTrigger size="sm" className="h-7 w-36 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="last12">Last 12 months</SelectItem>
+                    {availableYears.map((y) => (
+                      <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </CardTitle>
         </CardHeader>
@@ -334,7 +361,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   return (
     <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
-        <span className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
+        <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase">
           {icon} {label}
         </span>
         {value === null ? <Skeleton className="mt-1 h-7 w-16" /> : <span className="text-xl font-bold tabular-nums text-primary">{value}</span>}
@@ -362,7 +389,13 @@ const ALL_BOARDS = [
 
 function ProfileSkeleton() {
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+      <header className="flex items-center justify-between">
+        <h1 className="flex items-center gap-2 text-lg font-semibold">
+          <IconUserFilled className="text-primary size-5" /> profile
+        </h1>
+      </header>
+      {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
         <Card className="row-span-2 gap-3 py-3">
           <CardContent className="px-5 pt-2">
@@ -370,49 +403,88 @@ function ProfileSkeleton() {
               <Skeleton className="size-16 shrink-0 rounded-full" />
               <div className="flex-1 min-w-0 space-y-2">
                 <Skeleton className="h-5 w-32" />
-                <Skeleton className="h-3 w-20" />
+                <Skeleton className="h-4 w-20" />
               </div>
             </div>
             <div className="mt-4 flex items-center gap-3">
-              <Skeleton className="h-5 w-16" />
-              <Skeleton className="h-1.5 flex-1" />
-              <Skeleton className="h-3 w-20" />
+              <Skeleton className="h-7 w-14" />
+              <Skeleton className="h-1.5 flex-1 rounded-full" />
+              <Skeleton className="h-3 w-16" />
             </div>
           </CardContent>
         </Card>
         <div className="grid grid-cols-2 gap-3 row-span-2">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i} className="gap-1 py-3">
+          {[
+            { icon: <IconTrendingUp className="size-4" />, label: "avg wpm (last 10)" },
+            { icon: <IconGauge className="size-4" />, label: "avg wpm (all)" },
+            { icon: <IconTarget className="size-4" />, label: "avg accuracy" },
+            { icon: <IconStopwatch className="size-4" />, label: "time typed" },
+          ].map(({ icon, label }) => (
+            <Card key={label} className="gap-1 bg-gradient-to-br py-3 from-card to-muted/30">
               <CardContent className="flex flex-col gap-1 px-3">
-                <Skeleton className="h-3 w-20" />
-                <Skeleton className="mt-1 h-7 w-16" />
+                <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase">
+                  {icon} {label}
+                </span>
+                <div className="flex h-7 items-center">
+                  <Skeleton className="h-4 w-20" />
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
+
+      {/* Personal bests */}
       <Card className="gap-3 py-4">
-        <CardHeader className="px-4"><Skeleton className="h-3 w-28" /></CardHeader>
+        <CardHeader className="px-4">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <IconTrophy className="size-4" /> personal bests
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-4">
+          <div className="grid grid-cols-4 gap-3">
+            {ALL_BOARDS.map((board) => (
+              <div key={board} className="flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-muted/20 p-3 text-center">
+                <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                <div className="flex h-8 items-center">
+                  <Skeleton className="h-4 w-12" />
+                </div>
+                <Skeleton className="mt-0.5 h-[18px] w-9 rounded-full" />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Achievements */}
+      <Card className="gap-3 py-4">
+        <CardHeader className="px-4">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <IconAward className="size-4" /> achievements
+            <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+          </CardTitle>
+        </CardHeader>
         <CardContent className="px-4">
           <div className="grid grid-cols-4 gap-3">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-20 w-full rounded-xl" />
+              <Skeleton key={i} className="h-24 w-full rounded-lg" />
             ))}
           </div>
+          <Skeleton className="mt-3 h-4 w-32" />
         </CardContent>
       </Card>
+
+      {/* Activity */}
       <Card className="gap-3 py-4">
-        <CardHeader className="px-4"><Skeleton className="h-3 w-32" /></CardHeader>
-        <CardContent className="px-4">
-          <div className="grid grid-cols-4 gap-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-16 w-full rounded-lg" />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-      <Card className="gap-3 py-4">
-        <CardHeader className="px-4"><Skeleton className="h-3 w-20" /></CardHeader>
+        <CardHeader className="px-4">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <IconClock className="size-4" /> activity
+            <Skeleton className="ml-2 h-3 w-28" />
+            <div className="ml-auto">
+              <Skeleton className="h-7 w-36" />
+            </div>
+          </CardTitle>
+        </CardHeader>
         <CardContent className="px-4"><Skeleton className="h-24 w-full" /></CardContent>
       </Card>
     </div>
