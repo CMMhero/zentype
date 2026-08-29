@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useTransition, useState } from "react";
+import { Suspense, useEffect, useTransition, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { IconBolt, IconCalendar, IconCalendarMonth, IconTrophy, IconTrophyFilled } from "@tabler/icons-react";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
@@ -29,6 +29,14 @@ function periodToDate(period: Period): string | undefined {
 }
 
 export default function LeaderboardPage() {
+  return (
+    <Suspense>
+      <LeaderboardContent />
+    </Suspense>
+  );
+}
+
+function LeaderboardContent() {
   const user = useUser();
   const searchParams = useSearchParams();
   const router = useRouter();
