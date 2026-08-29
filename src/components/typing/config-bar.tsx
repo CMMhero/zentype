@@ -29,7 +29,7 @@ export function ConfigBar({
   return (
     <div
       className={cn(
-        "mx-auto flex w-fit flex-wrap items-center justify-center gap-2 text-sm transition-all duration-300",
+        "mx-auto flex w-fit flex-wrap items-center justify-center gap-2 text-sm transition-all duration-300 sm:gap-3",
         locked ? "pointer-events-none opacity-40" : "opacity-100"
       )}
       role="toolbar"
