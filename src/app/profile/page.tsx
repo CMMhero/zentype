@@ -675,7 +675,7 @@ export default function ProfilePage() {
                     {selected.punctuation && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
+                          <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
                             <IconAt className="size-3" />
                           </Badge>
                         </TooltipTrigger>
@@ -685,7 +685,7 @@ export default function ProfilePage() {
                     {selected.numbers && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Badge variant="outline" className="gap-1 px-1.5 text-[10px]">
+                          <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
                             <IconHash className="size-3" />
                           </Badge>
                         </TooltipTrigger>
