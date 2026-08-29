@@ -468,7 +468,7 @@ export default function ProfilePage() {
                   achievedAt: a.achievedAt,
                   progress: a.progress,
                 }))}
-              columns={4}
+              columns="auto"
               gap="sm"
               badgeSize="sm"
             />
@@ -634,17 +634,17 @@ export default function ProfilePage() {
 
       {/* Test detail dialog */}
       <Dialog open={selected !== null} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="sm:max-w-2xl">
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           {selected && (
             <>
               <DialogHeader>
-                <DialogTitle className="flex items-end gap-8">
+                <DialogTitle className="flex items-end gap-6 sm:gap-8">
                   <span className="flex flex-col">
-                    <span className="text-5xl font-bold tabular-nums text-primary">{selected.wpm}</span>
+                    <span className="text-4xl font-bold tabular-nums text-primary sm:text-5xl">{selected.wpm}</span>
                     <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">wpm</span>
                   </span>
                   <span className="flex flex-col">
-                    <span className="text-5xl font-bold tabular-nums">{selected.accuracy}%</span>
+                    <span className="text-4xl font-bold tabular-nums sm:text-5xl">{selected.accuracy}%</span>
                     <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">acc</span>
                   </span>
                 </DialogTitle>
