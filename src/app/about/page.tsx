@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IconKeyboard, IconTrophy, IconAward, IconChartBar, IconPalette, IconBrandGithub } from "@tabler/icons-react";
+import { IconKeyboardFilled, IconTrophy, IconAward, IconChartBar, IconPalette, IconBrandGithub } from "@tabler/icons-react";
 import { getPublicStats } from "~/server/results";
 
 export const metadata: Metadata = {
@@ -8,29 +8,34 @@ export const metadata: Metadata = {
   description: "About zentype - a keyboard-first typing test with gamification",
 };
 
+function ZentypeIcon({ className }: { className?: string }) {
+  return <IconKeyboardFilled className={className} />;
+}
+
 export default async function AboutPage() {
   const stats = await getPublicStats();
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-10">
-      <h1 className="text-2xl font-bold tracking-tight">about zentype</h1>
-      <p className="text-muted-foreground mt-2 text-xs">Last updated: August 29, 2026</p>
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+      <header className="flex items-center justify-between">
+        <h1 className="flex items-center gap-2 text-lg font-semibold">
+          <ZentypeIcon className="text-primary size-5" /> about zentype
+        </h1>
+      </header>
 
-      <div className="mt-8 space-y-8">
-        {/* What is zentype */}
+      <div className="space-y-8">
         <section>
-          <h2 className="text-base font-semibold">what is zentype?</h2>
+          <h2 className="text-base font-semibold">what is <ZentypeIcon className="text-primary size-4 inline" /> zentype?</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            zentype is a keyboard-first typing test built for speed and accuracy tracking,
+            <ZentypeIcon className="text-primary size-4 inline" /> zentype is a keyboard-first typing test built for speed and accuracy tracking,
             inspired by monkeytype. It combines gamification elements like XP,
             levels, achievements, and global leaderboards to make typing practice engaging.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            Built with Next.js 15, Supabase, shadcn/ui, and Tailwind CSS. Open source and free to use.
+            Built with Next.js, Supabase, shadcn/ui, and Tailwind CSS. Open source and free to use.
           </p>
         </section>
 
-        {/* Stats */}
         <section>
           <h2 className="text-base font-semibold">community stats</h2>
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -41,12 +46,11 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        {/* Features */}
         <section>
           <h2 className="text-base font-semibold">features</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <FeatureCard
-              icon={<IconKeyboard className="size-5" />}
+              icon={<IconKeyboardFilled className="size-5" />}
               title="typing modes"
               description="Time-based (15s to 120s) and word-count modes with configurable options like blind mode, stop on error, and strict space."
             />
@@ -78,7 +82,6 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        {/* Credits */}
         <section>
           <h2 className="text-base font-semibold">credits</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
