@@ -1,7 +1,6 @@
 import { IconPlayerSkipForward } from "@tabler/icons-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { WpmChart } from "~/components/charts/wpm-chart";
 import { Kbd } from "~/components/ui/kbd";
 import { modeLabel, type TestResult } from "~/lib/types";
@@ -14,62 +13,52 @@ interface ResultViewProps {
   onNext: () => void;
 }
 
+const SAVE_BADGE: Record<SaveState, { label: string; variant: "default" | "secondary" | "destructive" }> = {
+  cloud: { label: "saved", variant: "default" },
+  guest: { label: "guest", variant: "secondary" },
+  failed: { label: "sync failed", variant: "destructive" },
+  skipped: { label: "not saved", variant: "secondary" },
+};
+
 export function ResultView({ result, saveState, onNext }: ResultViewProps) {
+  const { label, variant } = SAVE_BADGE[saveState];
+
   return (
     <div className="zt-fade-in mx-auto flex w-full max-w-4xl flex-col gap-6 py-6" role="region" aria-label="Test results">
-      <div className="flex items-end justify-between">
-        <div className="flex items-baseline gap-8">
-          <div>
-            <div className="text-muted-foreground text-xs font-bold tracking-widest uppercase">wpm</div>
-            <div className="text-primary text-7xl leading-none font-bold tabular-nums">
-              {result.wpm}
-            </div>
-          </div>
-          <div>
-            <div className="text-muted-foreground text-xs font-bold tracking-widest uppercase">accuracy</div>
-            <div className="text-7xl leading-none font-bold tabular-nums">
-              {result.accuracy}%
-            </div>
-          </div>
+      {/* Header — WPM and acc (labels below numbers), no separator */}
+      <div className="flex items-end gap-6 sm:gap-8">
+        <div className="flex flex-col">
+          <span className="text-primary text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.wpm}</span>
+          <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">wpm</span>
         </div>
-        <div className="flex flex-col items-end gap-1.5">
-          <Badge variant={saveState === "cloud" ? "default" : "secondary"} className="text-[10px]">
-            {saveState === "cloud"
-              ? "synced to account"
-              : saveState === "guest"
-                ? "saved locally (guest)"
-                : saveState === "failed"
-                  ? "sync failed, kept locally"
-                  : "not saved"}
-          </Badge>
-          <span className="text-muted-foreground font-mono text-xs">
-            {modeLabel(result)} · {result.source}
-          </span>
+        <div className="flex flex-col">
+          <span className="text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.accuracy}%</span>
+          <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">acc</span>
         </div>
       </div>
 
-      <Card className="gap-2 py-4">
-        <CardHeader className="px-4">
-          <CardTitle className="text-muted-foreground text-xs font-medium tracking-widest uppercase">
-            performance over time
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="px-4">
-          <WpmChart timeline={result.timeline} />
-        </CardContent>
-      </Card>
+      {/* Meta — identical to history detail's DialogDescription, plus mode + save badges */}
+      <p className="text-muted-foreground flex items-center gap-2 text-sm">
+        <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
+          {modeLabel(result)}
+        </Badge>
+        <Badge variant={variant} className="text-[9px]">{label}</Badge>
+      </p>
 
-      <Card className="py-4">
-        <CardContent className="grid grid-cols-3 gap-y-4 px-4 sm:grid-cols-6">
-          <Stat label="raw" value={String(result.rawWpm)} />
-          <Stat label="consistency" value={`${result.consistency}%`} />
-          <Stat label="correct" value={String(result.chars.correct)} className="text-chart-3" />
-          <Stat label="incorrect" value={String(result.chars.incorrect)} className="text-destructive" />
-          <Stat label="extra" value={String(result.chars.extra)} className="text-muted-foreground" />
-          <Stat label="missed" value={String(result.chars.missed)} className="text-muted-foreground" />
-        </CardContent>
-      </Card>
+      {/* Chart — identical to history detail (no wrapper) */}
+      <WpmChart timeline={result.timeline} />
 
+      {/* Mini grid — identical to history detail */}
+      <div className="grid grid-cols-3 gap-3 text-center sm:grid-cols-6">
+        <Mini label="raw" value={String(result.rawWpm)} />
+        <Mini label="cons" value={`${result.consistency}%`} />
+        <Mini label="correct" value={String(result.chars.correct)} />
+        <Mini label="errors" value={String(result.chars.incorrect)} />
+        <Mini label="extra" value={String(result.chars.extra)} />
+        <Mini label="missed" value={String(result.chars.missed)} />
+      </div>
+
+      {/* Next test */}
       <div className="flex items-center justify-end">
         <Button size="lg" onClick={onNext} className="gap-2.5">
           <IconPlayerSkipForward /> next test{" "}
@@ -82,21 +71,11 @@ export function ResultView({ result, saveState, onNext }: ResultViewProps) {
   );
 }
 
-function Stat({
-  label,
-  value,
-  className,
-}: {
-  label: string;
-  value: string;
-  className?: string;
-}) {
+function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col items-center gap-0.5 text-center">
-      <span className={`text-xl font-semibold tabular-nums ${className ?? ""}`}>{value}</span>
-      <span className="text-muted-foreground text-[10px] font-bold tracking-widest uppercase">
-        {label}
-      </span>
+    <div className="border-border/30 bg-card rounded border p-2">
+      <div className="font-semibold tabular-nums">{value}</div>
+      <div className="text-muted-foreground text-[10px] tracking-wider">{label}</div>
     </div>
   );
 }

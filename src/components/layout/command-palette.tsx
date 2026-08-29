@@ -4,10 +4,11 @@ import { useEffect, useState, useRef, useMemo, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import {
-  IconArrowRight, IconBlender, IconClock, IconDeviceDesktop,
-  IconEye, IconEyeOff, IconKeyboardFilled, IconLayoutDashboard,
-  IconLetterT, IconList, IconMoon, IconPlayerPlay, IconRefresh, IconSearch,
-  IconSettings, IconSparkles, IconTypography, IconUser, IconVolume, IconVolumeOff,
+  IconAlertTriangle, IconArrowBackUp, IconArrowRight, IconClock,
+  IconCursorText, IconEye, IconEyeOff, IconKeyboardFilled,
+  IconLetterT, IconList, IconMoon, IconMusic, IconPointer, IconPlayerStop,
+  IconRefresh, IconSearch, IconSettings, IconSpace, IconTextResize,
+  IconTrophy, IconTypography, IconUser, IconVolume, IconVolumeOff,
 } from "@tabler/icons-react";
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator,
@@ -35,9 +36,9 @@ const FONT_SIZES: { value: FontSizeKey; label: string; desc: string }[] = [
   { value: "sm", label: "small", desc: "compact text" },
   { value: "md", label: "medium", desc: "balanced" },
   { value: "lg", label: "large", desc: "default, easy to read" },
-  { value: "xl", label: "xlarge", desc: "extra large text" },
-  { value: "2xl", label: "2xlarge", desc: "very large text" },
-  { value: "3xl", label: "3xlarge", desc: "huge text" },
+  { value: "xl", label: "extra large", desc: "extra large text" },
+  { value: "2xl", label: "2x large", desc: "very large text" },
+  { value: "3xl", label: "3x large", desc: "huge text" },
 ];
 
 const SOUND_VARIANTS: { value: SoundVariant; label: string; desc: string }[] = [
@@ -108,7 +109,7 @@ const STATIC_ITEMS = (() => {
     { id: "nav-settings", group: "navigate", value: "navigate settings config alt+4", keywords: "navigate settings", label: "settings" },
     { id: "act-restart", group: "actions", value: "actions restart test tab", keywords: "actions restart", label: "restart test" },
     ...TIME_OPTIONS.map((t) => ({ id: `mode-time-${t}`, group: "mode", value: `mode time ${t}s type for ${t} seconds`, keywords: `mode time ${t}s`, label: `${t}s time` })),
-    ...WORD_OPTIONS.map((w) => ({ id: `mode-words-${w}`, group: "mode", value: `mode words ${w}w type ${w} words`, keywords: `mode words ${w}w`, label: `${w}w words` })),
+    ...WORD_OPTIONS.map((w) => ({ id: `mode-words-${w}`, group: "mode", value: `mode words ${w} words type ${w} words`, keywords: `mode words ${w}`, label: `${w} words` })),
     ...THEMES.map((t) => ({ id: `theme-${t.id}`, group: "theme", value: `theme appearance ${t.label} ${t.appearance} ${t.id}`, keywords: `theme appearance ${t.label} ${t.appearance}`, label: t.label })),
     { id: "sound-toggle", group: "sound", value: "sound audio keystroke click thock beep enable disable", keywords: "sound audio enable disable", label: "sound toggle" },
     { id: "sound-error", group: "sound", value: "sound error beep incorrect character", keywords: "sound error beep", label: "error sound" },
@@ -280,8 +281,8 @@ export function CommandPalette() {
 
         <CommandGroup heading="navigate">
           <CommandItem value="navigate test alt+1" keywords={["navigate", "test"]} onSelect={() => go("/")}><IconKeyboardFilled /> test<Shortcut>alt+1</Shortcut></CommandItem>
-          <CommandItem value="navigate leaderboard global bests alt+2" keywords={["navigate", "leaderboard"]} onSelect={() => go("/leaderboard")}><IconSparkles /> leaderboard<Shortcut>alt+2</Shortcut></CommandItem>
-          <CommandItem value="navigate profile dashboard alt+3" keywords={["navigate", "profile"]} onSelect={() => go("/profile")}><IconLayoutDashboard /> profile<Shortcut>alt+3</Shortcut></CommandItem>
+          <CommandItem value="navigate leaderboard global bests alt+2" keywords={["navigate", "leaderboard"]} onSelect={() => go("/leaderboard")}><IconTrophy /> leaderboard<Shortcut>alt+2</Shortcut></CommandItem>
+          <CommandItem value="navigate profile dashboard alt+3" keywords={["navigate", "profile"]} onSelect={() => go("/profile")}><IconUser /> profile<Shortcut>alt+3</Shortcut></CommandItem>
           <CommandItem value="navigate settings config alt+4" keywords={["navigate", "settings"]} onSelect={() => go("/settings")}><IconSettings /> settings<Shortcut>alt+4</Shortcut></CommandItem>
         </CommandGroup>
 
@@ -315,7 +316,7 @@ export function CommandPalette() {
               onSelect={() => { update({ mode: "words", wordCount: w }); close(); }}
               className={activeSet.mode === `words:${w}` ? "text-primary bg-primary/10" : ""}
             >
-              <IconLetterT /> {w}w words<CommandDesc>type {w} words</CommandDesc>
+              <IconLetterT /> {w} words<CommandDesc>type {w} words</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -351,13 +352,12 @@ export function CommandPalette() {
           >
             {activeSet.soundEnabled ? <IconVolume /> : <IconVolumeOff />}
             sound {activeSet.soundEnabled ? "on" : "off"}<CommandDesc>enable or disable keystroke audio feedback</CommandDesc>
-          </CommandItem>
-          <CommandItem
-            value="sound error beep incorrect character"
-            keywords={["sound", "error"]}
-            onSelect={toggleSoundError}
-          >
-            <IconBlender /> error sound {activeSet.soundOnError ? "on" : "off"}<CommandDesc>play a sound when you type an incorrect character</CommandDesc>
+          </CommandItem><CommandItem
+              value="sound error beep incorrect character"
+              keywords={["sound", "error"]}
+              onSelect={toggleSoundError}
+            >
+              <IconAlertTriangle /> error sound {activeSet.soundOnError ? "on" : "off"}<CommandDesc>play a sound when you type an incorrect character</CommandDesc>
           </CommandItem>
           {SOUND_VARIANTS.map((v) => (
             <CommandItem
@@ -367,7 +367,7 @@ export function CommandPalette() {
               onSelect={() => { update({ sound: { ...settings.sound, variant: v.value } }); playKeypress(v.value, settings.sound.volume); }}
               className={activeSet.soundVariant === v.value ? "text-primary bg-primary/10" : ""}
             >
-              <IconPlayerPlay /> {v.label}<CommandDesc>{v.desc}</CommandDesc>
+              <IconMusic /> {v.label}<CommandDesc>{v.desc}</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -383,7 +383,7 @@ export function CommandPalette() {
               onSelect={() => { update({ caretStyle: c.value }); close(); }}
               className={activeSet.caret === c.value ? "text-primary bg-primary/10" : ""}
             >
-              <IconTypography /> {c.label}<CommandDesc>{c.desc}</CommandDesc>
+              <IconCursorText /> {c.label}<CommandDesc>{c.desc}</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -399,7 +399,7 @@ export function CommandPalette() {
               onSelect={() => { update({ fontSize: f.value }); close(); }}
               className={activeSet.fontSize === f.value ? "text-primary bg-primary/10" : ""}
             >
-              <IconDeviceDesktop /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
+              <IconTextResize /> {f.label}<CommandDesc>{f.desc}</CommandDesc>
             </CommandItem>
           ))}
         </CommandGroup>
@@ -448,27 +448,24 @@ export function CommandPalette() {
           >
             {activeSet.blindMode ? <IconEyeOff /> : <IconEye />}
             blind mode {activeSet.blindMode ? "on" : "off"}<CommandDesc>hide error coloring</CommandDesc>
-          </CommandItem>
-          <CommandItem
-            value="gameplay stop on error block cursor until fixed"
-            keywords={["gameplay", "stop"]}
-            onSelect={toggleStop}
-          >
-            <IconBlender /> stop on error {activeSet.stopOnError ? "on" : "off"}<CommandDesc>block cursor until fixed</CommandDesc>
-          </CommandItem>
-          <CommandItem
-            value="gameplay strict space wrong words cannot be skipped"
-            keywords={["gameplay", "strict"]}
-            onSelect={toggleStrict}
-          >
-            <IconBlender /> strict space {activeSet.strictSpace ? "on" : "off"}<CommandDesc>wrong words can&apos;t be skipped</CommandDesc>
-          </CommandItem>
-          <CommandItem
-            value="gameplay free backspace restore previous word"
-            keywords={["gameplay", "backspace"]}
-            onSelect={toggleFreeBack}
-          >
-            <IconRefresh /> free backspace {activeSet.freeBackspace ? "on" : "off"}<CommandDesc>restore previous word on backspace</CommandDesc>
+          </CommandItem><CommandItem
+              value="gameplay stop on error block cursor until fixed"
+              keywords={["gameplay", "stop"]}
+              onSelect={toggleStop}
+            >
+              <IconPlayerStop /> stop on error {activeSet.stopOnError ? "on" : "off"}<CommandDesc>block cursor until fixed</CommandDesc>
+          </CommandItem><CommandItem
+              value="gameplay strict space wrong words cannot be skipped"
+              keywords={["gameplay", "strict"]}
+              onSelect={toggleStrict}
+            >
+              <IconSpace /> strict space {activeSet.strictSpace ? "on" : "off"}<CommandDesc>wrong words can&apos;t be skipped</CommandDesc>
+          </CommandItem><CommandItem
+              value="gameplay free backspace restore previous word"
+              keywords={["gameplay", "backspace"]}
+              onSelect={toggleFreeBack}
+            >
+              <IconArrowBackUp /> free backspace {activeSet.freeBackspace ? "on" : "off"}<CommandDesc>restore previous word on backspace</CommandDesc>
           </CommandItem>
           <CommandItem
             value="gameplay hide live stats blank wpm acc while running"
@@ -488,13 +485,12 @@ export function CommandPalette() {
             onSelect={toggleKeyboard}
           >
             <IconKeyboardFilled /> virtual keyboard {activeSet.showKeyboard ? "on" : "off"}<CommandDesc>show key highlighter</CommandDesc>
-          </CommandItem>
-          <CommandItem
-            value="appearance smooth caret animate caret movement"
-            keywords={["appearance", "caret"]}
-            onSelect={toggleSmoothCaret}
-          >
-            <IconEye /> smooth caret {activeSet.smoothCaret ? "on" : "off"}<CommandDesc>animate caret movement</CommandDesc>
+          </CommandItem><CommandItem
+              value="appearance smooth caret animate caret movement"
+              keywords={["appearance", "caret"]}
+              onSelect={toggleSmoothCaret}
+            >
+              <IconPointer /> smooth caret {activeSet.smoothCaret ? "on" : "off"}<CommandDesc>animate caret movement</CommandDesc>
           </CommandItem>
         </CommandGroup>
       </CommandList>

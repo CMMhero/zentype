@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconAward, IconClock, IconCrown, IconGauge, IconHistory,
-  IconTarget, IconStopwatch, IconTrendingUp, IconTrophy,
+  IconAward, IconChartBar, IconClock, IconCrown, IconExternalLink, IconGauge, IconHistory,
+  IconLink, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
 } from "@tabler/icons-react";
+import { toast } from "sonner";
 import {
   Area, AreaChart, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis,
 } from "recharts";
@@ -51,6 +52,7 @@ const wpmConfig = {
 
 const accConfig = {
   accuracy: { label: "accuracy", color: "var(--chart-3)" },
+  avgAcc: { label: "avg", color: "var(--chart-2)" },
 } satisfies ChartConfig;
 
 const distConfig = {
@@ -185,6 +187,13 @@ export default function ProfilePage() {
       return { n: i + 1, wpm: r.wpm, avg: Math.round(sum / (i + 1)) };
     });
   })();
+  const accWithAvgData = (() => {
+    let sum = 0;
+    return chartData.map((r, i) => {
+      sum += r.accuracy;
+      return { n: i + 1, accuracy: r.accuracy, avgAcc: Math.round(sum / (i + 1)) };
+    });
+  })();
   const distributionData = (() => {
     const buckets = new Map<string, number>();
     const BUCKET = 10;
@@ -200,11 +209,46 @@ export default function ProfilePage() {
   })();
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8" role="main" aria-label="User profile">
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="flex items-center gap-2 text-lg font-semibold">
+          <IconUserFilled className="text-primary size-5" /> profile
+        </h1>
+        {user && (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-muted-foreground gap-2 text-xs"
+              asChild
+            >
+              <Link href={`/profile/${user.username}`}>
+                <IconExternalLink className="size-3.5" /> <span className="hidden sm:inline">view public profile</span><span className="sm:hidden">profile</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-muted-foreground gap-2 text-xs"
+              onClick={async () => {
+                const url = `${window.location.origin}/profile/${user.username}`;
+                try {
+                  await navigator.clipboard.writeText(url);
+                  toast.success("Public profile link copied");
+                } catch {
+                  toast.error("Failed to copy link");
+                }
+              }}
+            >
+              <IconLink className="size-3.5" /> <span className="hidden sm:inline">copy link</span><span className="sm:hidden">copy</span>
+            </Button>
+          </div>
+        )}
+      </header>
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
         {/* Level card — 2-row layout: avatar+username, then level/XP */}
-        <Card className="row-span-2 gap-3 py-3 bg-gradient-to-br from-card via-card to-primary/5 border-primary/20">
+        <Card className="row-span-2 gap-3 py-3">
           <CardContent className="px-5 pt-2">
             {/* Row 1: Avatar + Username */}
             <div className="flex items-center gap-4">
@@ -223,7 +267,13 @@ export default function ProfilePage() {
               </div>
             </div>
             {/* Row 2: Level/XP bar — compact single row */}
-            {points && points.totalXP > 0 ? (
+            {user && points === null ? (
+              <div className="mt-4 flex items-center gap-3">
+                <Skeleton className="h-7 w-14" />
+                <Skeleton className="h-1.5 flex-1 rounded-full" />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            ) : points && points.totalXP > 0 ? (
               <div className="mt-4 flex items-center gap-3">
                 <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
                 <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
@@ -249,12 +299,12 @@ export default function ProfilePage() {
       {/* Personal bests */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconTrophy className="size-4" /> personal bests
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {ALL_BOARDS.map((board) => {
                 const wpm = stats?.bestByBoard?.[board];
                 const rank = boardRanks?.[board];
@@ -262,15 +312,17 @@ export default function ProfilePage() {
                   <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
                     <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
                     {loading ? (
-                      <Skeleton className="h-7 w-12" />
+                      <Skeleton className="h-8 w-14" />
                     ) : (
                       <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
                     )}
-                    {rank && (
-                      <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+                    {rank ? (
+                      <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-primary/10 px-1.5 text-[9px] font-bold leading-none tracking-widest text-primary">
                         #{rank}
                       </span>
-                    )}
+                    ) : boardRanks === null ? (
+                      <Skeleton className="mt-0.5 h-[18px] w-9 rounded-full" />
+                    ) : null}
                   </div>
                 );
               })}
@@ -282,7 +334,7 @@ export default function ProfilePage() {
       <div className="grid gap-5 md:grid-cols-2">
         <Card className="gap-3 py-4">
           <CardHeader className="px-4">
-            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
               <IconTrendingUp className="size-4" /> wpm
             </CardTitle>
           </CardHeader>
@@ -316,7 +368,7 @@ export default function ProfilePage() {
 
         <Card className="gap-3 py-4">
           <CardHeader className="px-4">
-            <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
               <IconTarget className="size-4" /> accuracy
             </CardTitle>
           </CardHeader>
@@ -325,7 +377,7 @@ export default function ProfilePage() {
               <Skeleton className="h-40 w-full" />
             ) : chartData.length >= 2 ? (
               <ChartContainer config={accConfig} className="h-40 w-full">
-                <AreaChart data={chartData.map((r, i) => ({ n: i + 1, accuracy: r.accuracy }))}>
+                <ComposedChart data={accWithAvgData}>
                   <defs>
                     <linearGradient id="fillAccuracy" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="var(--color-accuracy)" stopOpacity={0.8} />
@@ -337,7 +389,8 @@ export default function ProfilePage() {
                   <YAxis tickLine={false} axisLine={false} width={36} domain={[70, 100]} />
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <Area dataKey="accuracy" type="monotone" stroke="var(--color-accuracy)" fill="url(#fillAccuracy)" strokeWidth={2} dot={false} />
-                </AreaChart>
+                  <Line dataKey="avgAcc" type="monotone" stroke="var(--color-avgAcc)" strokeWidth={1.5} dot={false} strokeDasharray="4 4" />
+                </ComposedChart>
               </ChartContainer>
             ) : (
               <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
@@ -351,8 +404,8 @@ export default function ProfilePage() {
       {/* WPM distribution — full width */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
-            <IconTrophy className="size-4" /> wpm distribution
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
+            <IconChartBar className="size-4" /> wpm distribution
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
@@ -385,13 +438,23 @@ export default function ProfilePage() {
       {/* Top achievements — uses AchievementGrid */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
-            <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+            {achievements === null ? (
+              <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+            ) : (
+              <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          {unlockedAch.length > 0 ? (
+          {achievements === null ? (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-28 w-full rounded-lg" />
+              ))}
+            </div>
+          ) : unlockedAch.length > 0 ? (
             <AchievementGrid
               achievements={unlockedAch
                 .slice()
@@ -412,9 +475,13 @@ export default function ProfilePage() {
           ) : (
             <p className="text-xs text-muted-foreground">no achievements yet. finish tests to earn badges.</p>
           )}
-          <button onClick={() => setAchOpen(true)} className="mt-3 text-xs text-primary hover:underline">
-            view all achievements →
-          </button>
+          {achievements === null ? (
+            <Skeleton className="mt-3 h-4 w-32" />
+          ) : (
+            <Button variant="link" size="sm" className="mt-3 h-auto p-0 text-xs" onClick={() => setAchOpen(true)}>
+              view all achievements →
+            </Button>
+          )}
         </CardContent>
       </Card>
 
@@ -453,44 +520,56 @@ export default function ProfilePage() {
       {/* Activity — last 12 months / by year with totals */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconClock className="size-4" /> activity
-            <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
-              {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
-            </span>
+            {loading ? (
+              <Skeleton className="ml-2 h-3 w-28" />
+            ) : (
+              <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
+                {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
+              </span>
+            )}
             <div className="ml-auto">
-              <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
-                <SelectTrigger size="sm" className="h-7 w-36 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="last12">Last 12 months</SelectItem>
-                  {availableYears.map((y) => (
-                    <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {loading ? (
+                <Skeleton className="h-7 w-36" />
+              ) : (
+                <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
+                  <SelectTrigger size="sm" className="h-7 w-36 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="last12">Last 12 months</SelectItem>
+                    {availableYears.map((y) => (
+                      <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <StreakCalendar
-            streak={streakPeriods}
-            counts={countsRecord}
-            displayYear={streakYear}
-            view="year"
-            compact
-            className="max-w-none"
-          />
+          {loading ? (
+            <Skeleton className="h-24 w-full" />
+          ) : (
+            <StreakCalendar
+              streak={streakPeriods}
+              counts={countsRecord}
+              displayYear={streakYear}
+              view="year"
+              compact
+              className="max-w-none"
+            />
+          )}
         </CardContent>
       </Card>
 
       {/* Test history */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconHistory className="size-4" /> test history
-            <span className="text-muted-foreground font-normal">/ {results?.length ?? 0} tests</span>
+            <Badge variant="secondary" className="ml-auto text-[10px]">{results?.length ?? 0} tests</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
@@ -555,22 +634,29 @@ export default function ProfilePage() {
 
       {/* Test detail dialog */}
       <Dialog open={selected !== null} onOpenChange={(o) => !o && setSelected(null)}>
-        <DialogContent className="sm:max-w-2xl">
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           {selected && (
             <>
               <DialogHeader>
-                <DialogTitle className="flex items-baseline gap-4">
-                  <span className="text-5xl font-bold tabular-nums text-primary">{selected.wpm}</span>
-                  <span className="text-sm font-normal text-muted-foreground">wpm</span>
-                  <span className="ml-auto text-lg tabular-nums">{selected.accuracy}%</span>
-                  <span className="text-sm font-normal text-muted-foreground">accuracy</span>
+                <DialogTitle className="flex items-end gap-4 sm:gap-8">
+                  <span className="flex flex-col">
+                    <span className="text-3xl font-bold tabular-nums text-primary sm:text-5xl">{selected.wpm}</span>
+                    <span className="text-muted-foreground mt-1 text-xs tracking-wider">wpm</span>
+                  </span>
+                  <span className="flex flex-col">
+                    <span className="text-3xl font-bold tabular-nums sm:text-5xl">{selected.accuracy}%</span>
+                    <span className="text-muted-foreground mt-1 text-xs tracking-wider">acc</span>
+                  </span>
                 </DialogTitle>
                 <DialogDescription>
-                  {modeLabel(selected)} · {new Date(selected.createdAt).toLocaleString()}
+                  <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
+                    {modeLabel(selected)}
+                  </Badge>
+                  {" · "}{new Date(selected.createdAt).toLocaleString()}
                 </DialogDescription>
               </DialogHeader>
-              <WpmChart timeline={selected.timeline} />
-              <div className="grid grid-cols-3 gap-3 text-center sm:grid-cols-6">
+              <WpmChart timeline={selected.timeline} compact />
+              <div className="grid grid-cols-3 gap-2 text-center sm:grid-cols-6 sm:gap-3">
                 <Mini label="raw" value={String(selected.rawWpm)} />
                 <Mini label="cons" value={`${selected.consistency}%`} />
                 <Mini label="correct" value={String(selected.chars.correct)} />
@@ -592,10 +678,16 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   return (
     <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
-        <span className="flex items-center gap-1.5 text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
+        <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
           {icon} {label}
         </span>
-        {value === null ? <Skeleton className="mt-1 h-7 w-16" /> : <span className="text-xl font-bold tabular-nums text-primary">{value}</span>}
+        {value === null ? (
+          <div className="flex h-7 items-center">
+            <Skeleton className="h-4 w-20" />
+          </div>
+        ) : (
+          <span className="text-xl font-bold tabular-nums text-primary">{value}</span>
+        )}
       </CardContent>
     </Card>
   );
@@ -608,9 +700,9 @@ function AccCell({ value }: { value: number }) {
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded bg-secondary/40 p-2">
+    <div className="rounded border border-border/30 bg-card p-2">
       <div className="font-semibold tabular-nums">{value}</div>
-      <div className="text-[10px] tracking-wider uppercase text-muted-foreground">{label}</div>
+      <div className="text-[10px] tracking-wider text-muted-foreground">{label}</div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Toaster } from "sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
+import { Toaster } from "~/components/ui/sonner";
 import { DynamicFavicon } from "~/components/ui/dynamic-favicon";
 import { AppShell } from "~/components/layout/app-shell";
 import { CommandPalette } from "~/components/layout/command-palette";
@@ -31,37 +31,43 @@ const themeBootstrapScript = `
 
 export const metadata: Metadata = {
   title: {
-    default: "zentype - a minimal typing test",
+    default: "zentype - a customizable, clean typing test",
     template: "%s | zentype",
   },
   description:
-    "Test your typing speed. See your WPM, accuracy, and consistency. Compete on leaderboards and track your progress over time.",
-  keywords: ["typing test", "typing speed", "wpm", "words per minute", "typing practice", "keyboard test", "leaderboard"],
-  authors: [{ name: "CMMhero" }],
+    "A customizable, clean typing test. Track your WPM, accuracy, and consistency. Compete on global leaderboards, earn XP, and unlock achievements. Inspired by monkeytype, built with Next.js, Supabase, and Tailwind CSS.",
+  keywords: [
+    "typing test", "typing speed", "wpm", "words per minute", "typing practice",
+    "keyboard test", "leaderboard", "typing game", "speed test", "accuracy test",
+    "monkeytype alternative", "typing test online free", "typing test with leaderboard",
+    "typing practice app", "wpm test", "typing speed test online",
+  ],
+  authors: [{ name: "CMMhero", url: "https://cmmhero.top" }],
   creator: "CMMhero",
+  publisher: "zentype",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.dev"),
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
     siteName: "zentype",
-    title: "zentype - a minimal typing test",
+    title: "zentype - a customizable, clean typing test",
     description:
-      "Test your typing speed. See your WPM, accuracy, and consistency. Compete on leaderboards.",
+      "A customizable, clean typing test. Track your WPM, accuracy, and consistency. Compete on global leaderboards.",
     images: [
       {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "zentype - a minimal typing test",
+        alt: "zentype - a customizable, clean typing test",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "zentype - a minimal typing test",
+    title: "zentype - a customizable, clean typing test",
     description:
-      "Test your typing speed. See your WPM, accuracy, and consistency.",
+      "A customizable, clean typing test. Track your WPM, accuracy, and consistency.",
     images: ["/og.png"],
   },
   robots: {
@@ -75,10 +81,41 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  alternates: {
+    canonical: "/",
+  },
+  other: {
+    "application-name": "zentype",
+    "msapplication-TileColor": "#282828",
+    "theme-color": "#282828",
+    // AI/LLM metadata
+    "ai-content-declaration": "human-authored",
+    "ai-training": "opt-out",
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "zentype",
+    description: "A customizable, clean typing test with leaderboards, achievements, and progress tracking.",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://zentype.dev",
+    applicationCategory: "GameApplication",
+    operatingSystem: "Web",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    author: {
+      "@type": "Person",
+      name: "CMMhero",
+      url: "https://cmmhero.top",
+    },
+  };
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -86,8 +123,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content="#282828" />
         <meta name="color-scheme" content="dark light" />
+        <meta name="application-name" content="zentype" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <style dangerouslySetInnerHTML={{ __html: themeStyleSheet() }} id="zt-theme-vars" />
       </head>

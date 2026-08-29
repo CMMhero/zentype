@@ -12,17 +12,17 @@ export function VirtualKeyboard({ activeKey }: { activeKey: string | null }) {
 
   return (
     <div
-      className="mx-auto mt-3 flex w-fit select-none flex-col items-center gap-1.5"
+      className="mx-auto -mt-1 flex w-fit select-none flex-col items-center gap-1 scale-75 sm:scale-100 origin-top"
       aria-hidden
     >
       {ROWS.map((row, i) => (
-        <div key={i} className="flex gap-1.5" style={{ paddingLeft: `${i * 14}px` }}>
+        <div key={i} className="flex gap-1 sm:gap-1.5" style={{ paddingLeft: `${i * 10}px` }}>
           {row.map((key) => (
             <div
               key={key}
               data-active={isActive(key)}
               className={cn(
-                "flex size-9 items-center justify-center rounded border text-xs font-medium transition-all duration-75",
+                "flex size-8 sm:size-9 items-center justify-center rounded border text-xs font-medium transition-all duration-75",
                 isActive(key)
                   ? "border-primary bg-primary text-primary-foreground scale-95"
                   : "border-border bg-card text-muted-foreground",
@@ -36,7 +36,7 @@ export function VirtualKeyboard({ activeKey }: { activeKey: string | null }) {
       <div
         data-active={isActive("space")}
         className={cn(
-          "h-9 w-64 rounded-md border transition-all duration-75",
+          "h-8 w-56 sm:h-9 sm:w-64 rounded-md border transition-all duration-75",
           isActive("space")
             ? "border-primary bg-primary scale-x-[0.98]"
             : "border-border bg-card",
