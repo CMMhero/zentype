@@ -16,6 +16,8 @@ dist
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+bun.lock
+bun.lockb
 
 # TypeScript incremental build
 *.tsbuildinfo
