@@ -378,7 +378,7 @@ export default function TestPage() {
           </div>
 
           {settings.showKeyboard && (
-            <div className="my-4">
+            <div className="flex flex-1 items-center justify-center py-2">
               <VirtualKeyboard activeKey={activeKey} />
             </div>
           )}
