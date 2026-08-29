@@ -192,7 +192,7 @@ export default function PublicProfilePage() {
 
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconTrophy className="size-4" /> personal bests
           </CardTitle>
         </CardHeader>
@@ -226,7 +226,7 @@ export default function PublicProfilePage() {
       {/* Top achievements — uses AchievementGrid */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
             {achievements === null ? (
               <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
@@ -271,7 +271,7 @@ export default function PublicProfilePage() {
 
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconClock className="size-4" /> activity
             {loading ? (
               <Skeleton className="ml-2 h-3 w-28" />
@@ -322,7 +322,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   return (
     <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
-        <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest">
+        <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
           {icon} {label}
         </span>
         {value === null ? <Skeleton className="mt-1 h-7 w-16" /> : <span className="text-xl font-bold tabular-nums text-primary">{value}</span>}
@@ -383,7 +383,7 @@ function ProfileSkeleton() {
           ].map(({ icon, label }) => (
             <Card key={label} className="gap-1 bg-gradient-to-br py-3 from-card to-muted/30">
               <CardContent className="flex flex-col gap-1 px-3">
-                <span className="flex items-center gap-1.5 text-xs font-semibold tracking-widest">
+                <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
                   {icon} {label}
                 </span>
                 <div className="flex h-7 items-center">
@@ -398,7 +398,7 @@ function ProfileSkeleton() {
       {/* Personal bests */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconTrophy className="size-4" /> personal bests
           </CardTitle>
         </CardHeader>
@@ -420,7 +420,7 @@ function ProfileSkeleton() {
       {/* Achievements */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
             <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
           </CardTitle>
@@ -438,7 +438,7 @@ function ProfileSkeleton() {
       {/* Activity */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconClock className="size-4" /> activity
             <Skeleton className="ml-2 h-3 w-28" />
             <div className="ml-auto">
