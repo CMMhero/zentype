@@ -192,7 +192,7 @@ export default function PublicProfilePage() {
 
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
             <IconTrophy className="size-4" /> personal bests
           </CardTitle>
         </CardHeader>
@@ -226,7 +226,7 @@ export default function PublicProfilePage() {
       {/* Top achievements — uses AchievementGrid */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
             <IconAward className="size-4" /> achievements
             {achievements === null ? (
               <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
@@ -271,7 +271,7 @@ export default function PublicProfilePage() {
 
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
             <IconClock className="size-4" /> activity
             {loading ? (
               <Skeleton className="ml-2 h-3 w-28" />
@@ -398,7 +398,7 @@ function ProfileSkeleton() {
       {/* Personal bests */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
             <IconTrophy className="size-4" /> personal bests
           </CardTitle>
         </CardHeader>
@@ -420,7 +420,7 @@ function ProfileSkeleton() {
       {/* Achievements */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
             <IconAward className="size-4" /> achievements
             <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
           </CardTitle>
@@ -438,7 +438,7 @@ function ProfileSkeleton() {
       {/* Activity */}
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
-          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest uppercase">
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-widest">
             <IconClock className="size-4" /> activity
             <Skeleton className="ml-2 h-3 w-28" />
             <div className="ml-auto">

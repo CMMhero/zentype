@@ -102,7 +102,7 @@ const AchievementBadge = React.forwardRef<
         }
         className={cn(
           "relative flex flex-col items-center justify-center gap-1 rounded-lg border bg-card transition-all duration-200",
-          badgeSize === "xs" ? "p-2 gap-1" : "gap-2 p-4",
+          badgeSize === "xs" ? "h-20 w-20 p-2 gap-1" : badgeSize === "sm" ? "h-28 w-full p-4 gap-2" : "h-32 w-full p-4 gap-2",
           onAchievementClick && "cursor-pointer hover:scale-105",
           isUnlocked
             ? "border-primary/40 bg-gradient-to-b from-card to-primary/5 shadow-sm hover:shadow-md hover:border-primary/60"
