@@ -11,7 +11,7 @@ import { modeLabel, type TestResult } from "~/lib/types";
 
 const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-40 w-full" /> });
 
-export type SaveState = "cloud" | "guest" | "failed" | "skipped";
+export type SaveState = "cloud" | "guest" | "failed" | "skipped" | "invalid";
 
 interface ResultViewProps {
   result: TestResult;
@@ -24,6 +24,7 @@ const SAVE_BADGE: Record<SaveState, { label: string; variant: "default" | "secon
   cloud: { label: "saved", variant: "default" },
   guest: { label: "guest", variant: "secondary" },
   failed: { label: "sync failed", variant: "destructive" },
+  invalid: { label: "invalid", variant: "destructive" },
   skipped: { label: "not saved", variant: "secondary" },
 };
 
