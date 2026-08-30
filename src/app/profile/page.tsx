@@ -337,7 +337,7 @@ export default function ProfilePage() {
                 const wpm = stats?.bestByBoard?.[board];
                 const rank = boardRanks?.[board];
                 return (
-                  <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-primary/5 hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
+                  <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
                     <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
                     {loading ? (
                       <Skeleton className="h-8 w-14" />
