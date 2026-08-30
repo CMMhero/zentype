@@ -35,7 +35,7 @@ export function ConfigBar({
       role="toolbar"
       aria-label="test configuration"
     >
-      <div className="flex w-full flex-col gap-2 sm:w-fit sm:flex-row sm:gap-2">
+      <div className="grid w-full grid-cols-[3fr_7fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
         {/* Mode selector */}
         <PillGroup>
           <PillButton
