@@ -8,7 +8,7 @@ export default function HomeLoading() {
       {/* ConfigBar wrapper — matches real page pb-4 + transition */}
       <div className="pb-4 transition-all duration-200 opacity-100">
       <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-2 text-sm sm:gap-3">
-        <div className="grid w-full grid-cols-[1fr_2fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
+        <div className="flex w-full flex-col gap-2 sm:w-fit sm:flex-row sm:gap-2">
           {/* Mode selector */}
           <PillGroup>
             <PillButton active>
@@ -20,7 +20,7 @@ export default function HomeLoading() {
           </PillGroup>
 
           {/* Variant selector */}
-          <PillGroup className="min-w-0 overflow-hidden sm:w-64">
+          <PillGroup className="w-full min-w-0 overflow-hidden sm:w-64">
             {[15, 30, 60, 120].map((t) => (
               <PillButton key={t} active={t === 30}>{t}s</PillButton>
             ))}
