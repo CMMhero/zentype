@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import Fuse from "fuse.js";
 import {
   IconAlertTriangle, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboard, IconSettingsFilled,
   IconPalette, IconPlayerPlay, IconRefresh, IconUser, IconVolume,
@@ -21,6 +22,8 @@ import { Slider } from "~/components/ui/slider";
 import { Switch } from "~/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { THEMES } from "~/lib/themes";
+import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
+import { IconSearch, IconSun, IconMoon, IconDevices } from "@tabler/icons-react";
 import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
 import type { CaretStyle, FontFamily, FontSizeKey, SoundVariant } from "~/lib/types";
 import { FONTS } from "~/lib/fonts";
@@ -134,17 +137,8 @@ export default function SettingsPage() {
         <TabsContent value="appearance" className="flex min-w-0 flex-col gap-4 outline-none">
           <Card className="w-full min-w-0 py-4">
             <SectionTitle icon={<IconPalette className="size-4" />} title="theme" />
-            <CardContent className="grid grid-cols-2 gap-2 px-4 sm:grid-cols-3 md:grid-cols-4">
-              {[...THEMES].sort((a, b) => a.label.localeCompare(b.label)).map((t) => (
-                <Button key={t.id} variant="outline" onClick={() => update({ themeId: t.id })} className={`h-auto w-full min-w-0 justify-start gap-2 rounded-md border-border bg-transparent p-2 text-left shadow-none hover:bg-transparent ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : "hover:border-primary"}`}>
-                  <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
-                    <span className="size-5" style={{ background: t.vars["--background"] }} />
-                    <span className="size-5" style={{ background: t.vars["--primary"] }} />
-                    <span className="size-5" style={{ background: t.vars["--zt-sub"] }} />
-                  </span>
-                  <span className="min-w-0 flex-1 truncate text-xs">{t.label}</span>
-                </Button>
-              ))}
+            <CardContent className="flex flex-col gap-3 px-4">
+              <ThemeSearch />
             </CardContent>
           </Card>
 
@@ -420,6 +414,52 @@ const KEYBINDS: Array<[string[], string]> = [
   [["alt", "4"], "settings"],
   [["backspace"], "fix current word"],
 ];
+
+function ThemeSearch() {
+  const settings = useSettingsStore((s) => s.settings);
+  const update = useSettingsStore((s) => s.update);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<"all" | "light" | "dark">("all");
+
+  const sorted = useMemo(() => [...THEMES].sort((a, b) => a.label.localeCompare(b.label)), []);
+  const fuse = useMemo(() => new Fuse(sorted, { keys: ["label"], threshold: 0.4, ignoreLocation: true }), [sorted]);
+
+  const filtered = useMemo(() => {
+    let list = sorted;
+    if (search.trim()) list = fuse.search(search).map((r) => r.item);
+    if (filter !== "all") list = list.filter((t) => t.appearance === filter);
+    return list;
+  }, [sorted, fuse, search, filter]);
+
+  return (
+    <>
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <IconSearch className="text-muted-foreground pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2" />
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="search themes…" className="h-8 pl-8 text-xs" />
+        </div>
+        <PillGroup className="shrink-0">
+          <PillButton active={filter === "all"} onClick={() => setFilter("all")}><IconDevices className="size-3.5" /></PillButton>
+          <PillButton active={filter === "light"} onClick={() => setFilter("light")}><IconSun className="size-3.5" /></PillButton>
+          <PillButton active={filter === "dark"} onClick={() => setFilter("dark")}><IconMoon className="size-3.5" /></PillButton>
+        </PillGroup>
+      </div>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+        {filtered.map((t) => (
+          <Button key={t.id} variant="outline" onClick={() => update({ themeId: t.id })} className={`h-auto w-full min-w-0 justify-start gap-2 rounded-md border-border bg-transparent p-2 text-left shadow-none hover:bg-transparent ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : "hover:border-primary"}`}>
+            <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
+              <span className="size-5" style={{ background: t.vars["--background"] }} />
+              <span className="size-5" style={{ background: t.vars["--primary"] }} />
+              <span className="size-5" style={{ background: t.vars["--zt-sub"] }} />
+            </span>
+            <span className="min-w-0 flex-1 truncate text-xs">{t.label}</span>
+          </Button>
+        ))}
+      </div>
+      {filtered.length === 0 && <p className="text-muted-foreground py-4 text-center text-xs">no themes match</p>}
+    </>
+  );
+}
 
 const FONT_ITEMS: ComboboxItem[] = FONTS.map((f) => ({
   value: f.value,
