@@ -53,7 +53,7 @@ function theme(
   };
 }
 
-export const DEFAULT_THEME_ID = "horizon";
+export const DEFAULT_THEME_ID = "sunset";
 
 export const THEMES: ThemePalette[] = [
   theme("dino", "Dino", "light", {
