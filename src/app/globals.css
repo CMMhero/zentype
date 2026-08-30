@@ -78,6 +78,7 @@
 @import "@fontsource-variable/urbanist";
 @import "@fontsource-variable/victor-mono";
 @import "@fontsource-variable/work-sans";
+@import "@fontsource-variable/stack-sans-text";
 @import "@fontsource/atkinson-hyperlegible";
 @import "@fontsource/anonymous-pro";
 @import "@fontsource/cal-sans";
@@ -211,6 +212,7 @@
   --font-urbanist: "Urbanist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-victor-mono: "Victor Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-work-sans: "Work Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-stack-sans-text: "Stack Sans Text Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-background: var(--background);
@@ -381,6 +383,7 @@ html[data-font="ubuntu-mono"] { font-family: var(--font-ubuntu-mono); }
 html[data-font="urbanist"] { font-family: var(--font-urbanist); }
 html[data-font="victor-mono"] { font-family: var(--font-victor-mono); }
 html[data-font="work-sans"] { font-family: var(--font-work-sans); }
+html[data-font="stack-sans-text"] { font-family: var(--font-stack-sans-text); }
 
 .zt-caret-blink {
   animation: zt-blink 1s ease-in-out infinite;
