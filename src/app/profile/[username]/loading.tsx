@@ -7,7 +7,7 @@ import {
 
 export default function PublicProfileLoading() {
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       {/* Header — static */}
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
@@ -20,7 +20,7 @@ export default function PublicProfileLoading() {
         <Card className="row-span-2 gap-3 py-3">
           <CardContent className="px-5 pt-2">
             <div className="flex items-center gap-4">
-              <Skeleton className="size-16 shrink-0 rounded-full" />
+              <Skeleton className="size-16 shrink-0 rounded border-2 border-transparent" />
               <div className="flex-1 min-w-0 space-y-2">
                 <Skeleton className="h-5 w-32" />
                 <Skeleton className="h-4 w-20" />

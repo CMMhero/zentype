@@ -148,7 +148,7 @@ export default function PublicProfilePage() {
   
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconUserFilled className="text-primary size-5" /> profile
@@ -363,7 +363,7 @@ const ALL_BOARDS = [
 
 function ProfileSkeleton() {
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconUserFilled className="text-primary size-5" /> profile

@@ -7,7 +7,7 @@ import {
 
 export default function ProfileLoading() {
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       {/* Header — static */}
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
@@ -24,7 +24,7 @@ export default function ProfileLoading() {
         <Card className="row-span-2 gap-3 py-3">
           <CardContent className="px-5 pt-2">
             <div className="flex items-center gap-4">
-              <Skeleton className="size-16 shrink-0 rounded-full" />
+              <Skeleton className="size-16 shrink-0 rounded border-2 border-transparent" />
               <div className="flex-1 min-w-0 space-y-2">
                 <Skeleton className="h-5 w-32" />
                 <Skeleton className="h-3 w-40" />
@@ -80,7 +80,7 @@ export default function ProfileLoading() {
       </Card>
 
       {/* Charts — static cards with skeleton chart area */}
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card className="gap-3 py-4">
           <CardHeader className="px-4">
             <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
