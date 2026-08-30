@@ -1,5 +1,6 @@
 import { Skeleton } from "~/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import {
   IconDeviceGamepad2, IconKeyboard,
   IconPalette, IconSettingsFilled, IconUser, IconVolume,
@@ -16,24 +17,14 @@ export default function SettingsLoading() {
         <span className="text-muted-foreground text-xs">restore defaults</span>
       </header>
 
-      {/* Tabs — fully rendered */}
-      <div className="w-full gap-4">
-        <div className="bg-muted/50 flex w-full gap-1 rounded-lg p-1 sm:w-fit sm:flex-none">
-          {[
-            { icon: <IconDeviceGamepad2 className="size-4" />, label: "gameplay" },
-            { icon: <IconPalette className="size-4" />, label: "appearance" },
-            { icon: <IconUser className="size-4" />, label: "account" },
-            { icon: <IconKeyboard className="size-4" />, label: "keybinds" },
-          ].map(({ icon, label }) => (
-            <button
-              key={label}
-              className="bg-background flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium shadow-sm sm:flex-none"
-              disabled
-            >
-              {icon} <span className="hidden min-[480px]:inline">{label}</span>
-            </button>
-          ))}
-        </div>
+      {/* Tabs — exact same structure as real settings page */}
+      <Tabs defaultValue="gameplay" className="w-full min-w-0 gap-4" aria-label="Settings tabs">
+        <TabsList className="w-full sm:w-fit sm:flex-none">
+          <TabsTrigger value="gameplay" className="flex-1 gap-1.5 sm:flex-none"><IconDeviceGamepad2 className="size-4" /> <span className="hidden min-[480px]:inline">gameplay</span></TabsTrigger>
+          <TabsTrigger value="appearance" className="flex-1 gap-1.5 sm:flex-none"><IconPalette className="size-4" /> <span className="hidden min-[480px]:inline">appearance</span></TabsTrigger>
+          <TabsTrigger value="account" className="flex-1 gap-1.5 sm:flex-none"><IconUser className="size-4" /> <span className="hidden min-[480px]:inline">account</span></TabsTrigger>
+          <TabsTrigger value="keybinds" className="flex-1 gap-1.5 sm:flex-none"><IconKeyboard className="size-4" /> <span className="hidden min-[480px]:inline">keybinds</span></TabsTrigger>
+        </TabsList>
 
         {/* Gameplay tab content — all text and icons rendered, only controls skeleton */}
         <div className="flex w-full flex-col gap-4 pt-4">
@@ -87,7 +78,7 @@ export default function SettingsLoading() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </Tabs>
     </div>
   );
 }
