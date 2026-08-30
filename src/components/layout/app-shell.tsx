@@ -232,7 +232,7 @@ const THEME_FOOTER_ITEMS: ComboboxItem[] = [...THEMES]
       <span className="flex shrink-0 gap-0.5">
         <span className="size-3 rounded-sm border border-border/50" style={{ background: t.vars["--background"] }} />
         <span className="size-3 rounded-sm" style={{ background: t.vars["--primary"] }} />
-        <span className="size-3 rounded-sm" style={{ background: t.vars["--zt-sub"] }} />
+        <span className="size-3 rounded-sm" style={{ background: t.vars["--secondary"] }} />
       </span>
     ),
   }));

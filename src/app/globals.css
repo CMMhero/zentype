@@ -109,7 +109,6 @@
   --border: #3c3836;
   --input: #3c3836;
   --ring: #fabd2f;
-  --zt-sub: #504945;
   --chart-1: #fabd2f;
   --chart-2: #83a598;
   --chart-3: #8ec07c;
@@ -234,7 +233,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-zt-sub: var(--zt-sub);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);

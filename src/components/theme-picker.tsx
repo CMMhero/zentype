@@ -78,7 +78,7 @@ export function ThemePicker({ themes, selectedId, onSelect }: ThemePickerProps) 
             <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
               <span className="size-5" style={{ background: t.vars["--background"] }} />
               <span className="size-5" style={{ background: t.vars["--primary"] }} />
-              <span className="size-5" style={{ background: t.vars["--zt-sub"] }} />
+              <span className="size-5" style={{ background: t.vars["--secondary"] }} />
             </span>
             <span className="min-w-0 flex-1 truncate text-xs">{t.label}</span>
           </button>
