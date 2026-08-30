@@ -1,5 +1,5 @@
 -- =============================================================
--- ZenType v2 — initial schema
+-- zentype v2 — initial schema
 -- Run in Supabase dashboard → SQL Editor, or via supabase CLI:
 --   supabase db push   (after linking your project)
 -- =============================================================

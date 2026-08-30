@@ -165,7 +165,7 @@ export function AppShell({
       <footer className="text-muted-foreground mt-auto" role="contentinfo">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
           <span className="flex items-center gap-2">
-            <a href="https://github.com/CMMhero/ZenType" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="GitHub">
+            <a href="https://github.com/CMMhero/zentype" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="GitHub">
               <IconBrandGithubFilled className="size-4" />
             </a>
             <span className="text-muted-foreground/50">·</span>

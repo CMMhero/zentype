@@ -1,5 +1,5 @@
 -- =============================================================
--- ZenType v2 — user settings persistence
+-- zentype v2 — user settings persistence
 -- Run in Supabase dashboard → SQL Editor
 -- =============================================================
 
