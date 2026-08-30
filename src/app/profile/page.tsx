@@ -703,7 +703,7 @@ export default function ProfilePage() {
                       {selected.punctuation && (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
+                            <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary gap-1 px-1.5 text-[10px] font-medium normal-case">
                               <IconAt className="size-3" />
                             </Badge>
                           </TooltipTrigger>
@@ -713,7 +713,7 @@ export default function ProfilePage() {
                       {selected.numbers && (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Badge variant="outline" className="h-5 gap-1 px-1.5 text-[10px]">
+                            <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary gap-1 px-1.5 text-[10px] font-medium normal-case">
                               <IconHash className="size-3" />
                             </Badge>
                           </TooltipTrigger>
