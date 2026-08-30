@@ -73,7 +73,7 @@
 @import "@fontsource-variable/space-grotesk";
 @import "@fontsource/space-mono";
 @import "@fontsource/titillium-web";
-@import "@fontsource-variable/ubuntu";
+@import "@fontsource/ubuntu";
 @import "@fontsource/ubuntu-mono";
 @import "@fontsource-variable/urbanist";
 @import "@fontsource-variable/victor-mono";
@@ -201,7 +201,7 @@
   --font-space-grotesk: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
   --font-space-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-titillium-web: "Titillium Web", ui-sans-serif, system-ui, sans-serif;
-  --font-ubuntu: "Ubuntu Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-ubuntu: "Ubuntu", ui-sans-serif, system-ui, sans-serif;
   --font-ubuntu-mono: "Ubuntu Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-urbanist: "Urbanist Variable", ui-sans-serif, system-ui, sans-serif;
   --font-victor-mono: "Victor Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
