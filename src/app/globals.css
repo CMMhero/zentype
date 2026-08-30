@@ -241,6 +241,7 @@
   }
   html {
     color-scheme: dark;
+    overflow-x: hidden;
   }
   html[data-appearance="light"] {
     color-scheme: light;
