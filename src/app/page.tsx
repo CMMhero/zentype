@@ -301,18 +301,18 @@ export default function TestPage() {
         spellCheck={false}
         data-zt-ignore
         onKeyDown={(e) => {
-          if (isMobile && !e.repeat) {
+          if (!isMobile) return;
+          // On mobile, only forward non-printable keys (backspace, enter, tab, etc.).
+          // Printable characters go through onInput to avoid double-processing.
+          const printable = e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey;
+          if (printable) return;
+          if (!e.repeat) {
             window.dispatchEvent(new KeyboardEvent("keydown", { key: e.key, code: e.code, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey }));
           }
         }}
-        onKeyUp={(e) => {
-          if (isMobile) {
-            window.dispatchEvent(new KeyboardEvent("keyup", { key: e.key, code: e.code, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey }));
-          }
-        }}
         onInput={(e) => {
-          // Mobile software keyboards sometimes only fire onInput, not keyDown.
-          // Route each character through the engine.
+          // Mobile software keyboards route characters through onInput.
+          // This is the single path for printable chars on mobile — onKeyDown skips them.
           if (!isMobile) return;
           const val = (e.target as HTMLInputElement).value;
           if (val.length === 0) return;
