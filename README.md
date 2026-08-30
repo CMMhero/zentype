@@ -136,6 +136,12 @@ public/
 - **consistency** = kogasa (`1 - stddev/mean` of per-second raw WPM)
 - **time typed**: time mode = variant seconds; words mode = `round(variant * 60 / wpm)` capped 5-600s
 
+## Development & Contributing
+
+- **[Git Workflow Guide](GIT_WORKFLOW.md)**: Branching strategy, semantic commits, PR lifecycle, and worktree usage.
+- **[UI Style Guide](STYLE_GUIDE.md)**: Design principles, typography, icons, color tokens, and component patterns.
+
 ## Credits
 
 Built by [CMMhero](https://github.com/CMMhero). Trophy UI components by [trophyso/ui](https://ui.trophy.so).
+
