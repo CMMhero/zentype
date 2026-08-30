@@ -46,7 +46,7 @@ export function ResultView({ result, saveState, isPB, onNext }: ResultViewProps)
           <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">wpm</span>
         </div>
         <div className="flex flex-col">
-          <span className="text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.accuracy}%</span>
+          <span className="text-secondary text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.accuracy}%</span>
           <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">acc</span>
         </div>
       </div>
