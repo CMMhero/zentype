@@ -5,8 +5,9 @@ import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
 export default function HomeLoading() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center px-4 py-6 md:py-6">
-      {/* ConfigBar — exact same structure as real ConfigBar */}
-      <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-2 pb-4 text-sm sm:gap-3">
+      {/* ConfigBar wrapper — matches real page pb-4 + transition */}
+      <div className="pb-4 transition-all duration-200 opacity-100">
+      <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-2 text-sm sm:gap-3">
         <div className="grid w-full grid-cols-[1fr_2fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
           {/* Mode selector */}
           <PillGroup>
@@ -36,6 +37,7 @@ export default function HomeLoading() {
           </PillButton>
         </PillGroup>
       </div>
+      </div>
 
       {/* Live stats — default idle values */}
       <div className="mb-4 flex w-full items-end justify-between">
@@ -55,9 +57,9 @@ export default function HomeLoading() {
         </div>
       </div>
 
-      {/* Progress bar — at 0% */}
-      <div className="mb-3 h-1.5 w-full overflow-hidden rounded-full bg-primary/20">
-        <div className="h-full w-0 rounded-full bg-primary transition-all" />
+      {/* Progress bar — at 0%, matches Progress component bg-secondary */}
+      <div className="mb-3 bg-secondary relative h-1.5 w-full overflow-hidden rounded-full">
+        <div className="bg-primary h-full w-full flex-1 transition-all" style={{ transform: 'translateX(-100%)' }} />
       </div>
 
       {/* Typing area — skeleton for words (the dynamic part) */}
