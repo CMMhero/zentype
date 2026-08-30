@@ -143,7 +143,7 @@ export function AppShell({
               <span className="text-muted-foreground">commands</span>
               <Kbd><IconCommand className="size-3" />k</Kbd>
             </Button>
-            <Button variant="default" size="icon" className="sm:hidden" onClick={() => setPaletteOpen(true)} aria-label="Open command palette">
+            <Button variant="default" size="sm" className="sm:hidden" onClick={() => setPaletteOpen(true)} aria-label="Open command palette">
               <IconCommand className="size-4" />
             </Button>
 
@@ -200,7 +200,7 @@ export function AppShell({
       </main>
 
       {/* Mobile bottom nav - normal flow, not fixed */}
-      <nav className="shrink-0 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <nav className="shrink-0 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation">
         <div className="flex h-14 items-center justify-around">
           {NAV.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
