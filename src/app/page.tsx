@@ -9,6 +9,7 @@ import { ResultView, type SaveState } from "~/components/typing/result-view";
 import { Progress } from "~/components/ui/progress";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Kbd } from "~/components/ui/kbd";
+import { IconMouse } from "@tabler/icons-react";
 import { useTypingEngine } from "~/hooks/use-typing-engine";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useResultsStore } from "~/stores/results-store";
@@ -414,10 +415,10 @@ export default function TestPage() {
             {!focused && runningOrIdle && !loadingPrompt && (
               <button
                 onClick={() => inputEl.current?.focus()}
-                className="bg-background/60 absolute inset-0 z-10 flex items-center justify-center rounded-xl backdrop-blur-[2px]"
+                className="absolute inset-0 z-10 flex items-center justify-center rounded-xl backdrop-blur-[2px]"
               >
-                <span className="border-border bg-card animate-pulse rounded border px-3 py-1.5 text-xs">
-                  click here or press any key to focus
+                <span className="border-border bg-card animate-pulse flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs">
+                  <IconMouse className="size-3.5" /> click here or press any key to focus
                 </span>
               </button>
             )}
