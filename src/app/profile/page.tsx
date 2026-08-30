@@ -337,7 +337,7 @@ export default function ProfilePage() {
                 const wpm = stats?.bestByBoard?.[board];
                 const rank = boardRanks?.[board];
                 return (
-                  <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
+                  <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-primary/5 hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
                     <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
                     {loading ? (
                       <Skeleton className="h-8 w-14" />
@@ -603,7 +603,7 @@ export default function ProfilePage() {
         <CardContent className="px-4">
           {loading ? (
             <div className="flex flex-col gap-2">
-              {Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-11 animate-pulse rounded bg-muted" />)}
+              {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-11 rounded" />)}
             </div>
           ) : (results ?? []).length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-12 text-center">
@@ -746,7 +746,7 @@ export default function ProfilePage() {
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
   return (
-    <Card className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30 hover:to-muted/50 transition-colors">
+    <Card className="gap-1 py-3 bg-card hover:bg-muted/30 transition-colors">
       <CardContent className="flex flex-col gap-1 px-3">
         <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
           {icon} {label}
