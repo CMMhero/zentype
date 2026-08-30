@@ -18,22 +18,33 @@ function ConfigButton({ active, children }: { active: boolean; children: React.R
 export default function HomeLoading() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center px-4 py-6 md:py-6">
-      {/* ConfigBar — rendered with default values (time, 30s, no punct, no nums) */}
+      {/* ConfigBar — matches real ConfigBar layout exactly */}
       <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-2 pb-4 text-sm sm:gap-3">
         <div className="grid w-full grid-cols-[1fr_2fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
+          {/* Mode selector */}
           <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-1 rounded-lg p-[3px]">
-            <ConfigButton active><IconClock className="size-3.5" /> time</ConfigButton>
-            <ConfigButton active={false}><IconTypography className="size-3.5" /> words</ConfigButton>
+            <ConfigButton active>
+              <span className="inline-flex items-center gap-1.5"><IconClock className="size-3.5" /> time</span>
+            </ConfigButton>
+            <ConfigButton active={false}>
+              <span className="inline-flex items-center gap-1.5"><IconTypography className="size-3.5" /> words</span>
+            </ConfigButton>
           </div>
+          {/* Variant selector */}
           <div className="bg-muted/80 inline-flex h-9 min-w-0 items-center justify-center gap-1 overflow-hidden rounded-lg p-[3px] sm:w-64">
             {[15, 30, 60, 120].map((t) => (
               <ConfigButton key={t} active={t === 30}>{t}s</ConfigButton>
             ))}
           </div>
         </div>
+        {/* Punctuation & numbers */}
         <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-1 rounded-lg p-[3px]">
-          <ConfigButton active={false}><IconAt className="size-3.5" /> punct</ConfigButton>
-          <ConfigButton active={false}><IconHash className="size-3.5" /> nums</ConfigButton>
+          <ConfigButton active={false}>
+            <span className="inline-flex items-center gap-1.5"><IconAt className="size-3.5" /> punct</span>
+          </ConfigButton>
+          <ConfigButton active={false}>
+            <span className="inline-flex items-center gap-1.5"><IconHash className="size-3.5" /> nums</span>
+          </ConfigButton>
         </div>
       </div>
 
