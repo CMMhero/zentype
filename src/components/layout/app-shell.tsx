@@ -10,7 +10,7 @@ const HelpDialog = dynamic(() => import("~/components/layout/help-dialog").then(
 import {
   IconCommand, IconKeyboardFilled, IconLogout,
   IconSettingsFilled, IconTrophyFilled, IconUserFilled,
-  IconBrandGithubFilled,
+  IconCode,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -165,7 +165,7 @@ export function AppShell({
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
           <span className="flex items-center gap-2">
             <a href="https://github.com/CMMhero/zentype" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="GitHub">
-              <IconBrandGithubFilled className="size-4" />
+              <IconCode className="size-4" />
             </a>
             <span className="text-muted-foreground/50">·</span>
             <Link href="/about" className="hover:text-foreground underline underline-offset-2">about</Link>
