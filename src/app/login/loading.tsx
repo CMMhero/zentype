@@ -1,15 +1,61 @@
-import { Skeleton } from "~/components/ui/skeleton";
+import Link from "next/link";
+import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconKeyboardFilled, IconArrowLeft } from "@tabler/icons-react";
+import { Button } from "~/components/ui/button";
+
+const providers = [
+  { id: "github", label: "Continue with GitHub", icon: IconBrandGithubFilled },
+  { id: "google", label: "Continue with Google", icon: IconBrandGoogleFilled },
+  { id: "discord", label: "Continue with Discord", icon: IconBrandDiscordFilled },
+] as const;
 
 export default function LoginLoading() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-4">
-      <div className="flex flex-col items-center gap-6">
-        <Skeleton className="h-12 w-12 rounded-xl" />
-        <Skeleton className="h-5 w-48" />
-        <div className="flex flex-col gap-3 w-64">
-          <Skeleton className="h-10 w-full rounded-md" />
-          <Skeleton className="h-10 w-full rounded-md" />
-          <Skeleton className="h-10 w-full rounded-md" />
+    <div className="flex flex-1 items-center justify-center px-4 py-16">
+      <div className="relative w-full max-w-sm">
+        {/* Background glow */}
+        <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2">
+          <div className="size-64 rounded-full bg-primary/5 blur-3xl" />
+        </div>
+
+        <div className="relative flex flex-col items-center gap-8">
+          {/* Logo + heading */}
+          <div className="flex flex-col items-center gap-3 text-center">
+            <div className="flex flex-col gap-1">
+              <p className="text-muted-foreground text-sm">welcome to</p>
+              <h1 className="flex items-center justify-center gap-2 text-xl font-semibold tracking-tight">
+                <IconKeyboardFilled className="text-primary size-6" />
+                zentype
+              </h1>
+            </div>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              keep your stats across devices.<br />
+              sign in to sync, or keep playing as a guest.
+            </p>
+          </div>
+
+          {/* Sign in buttons */}
+          <div className="flex w-full flex-col gap-2.5">
+            {providers.map(({ id, label, icon: Icon }) => (
+              <Button
+                key={id}
+                variant="outline"
+                size="lg"
+                className="w-full justify-center gap-3 text-sm"
+              >
+                <Icon className="size-4" />
+                {label}
+              </Button>
+            ))}
+          </div>
+
+          {/* Back link */}
+          <Link
+            href="/"
+            className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-xs transition-colors"
+          >
+            <IconArrowLeft className="size-3" />
+            back to typing
+          </Link>
         </div>
       </div>
     </div>
