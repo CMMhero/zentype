@@ -269,7 +269,7 @@ export function CommandPalette() {
               <span className="mr-1.5 inline-flex gap-0.5" aria-hidden>
                 <span className="size-3 rounded-sm border border-border" style={{ background: t.vars["--background"] }} />
                 <span className="size-3 rounded-sm" style={{ background: t.vars["--primary"] }} />
-                <span className="size-3 rounded-sm" style={{ background: t.vars["--zt-sub"] }} />
+                <span className="size-3 rounded-sm" style={{ background: t.vars["--secondary"] }} />
               </span>
               {t.label}<CommandDesc>{t.appearance} theme</CommandDesc>
             </CommandItem>
