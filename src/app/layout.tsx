@@ -131,7 +131,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <style dangerouslySetInnerHTML={{ __html: themeStyleSheet() }} id="zt-theme-vars" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased overflow-x-hidden">
         <TooltipProvider>
           <DynamicFavicon />
           <UserProvider user={user}>
