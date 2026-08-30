@@ -1,12 +1,12 @@
-# ZenType Git & Development Workflow Guide
+# zentype Git & Development Workflow Guide
 
-This document outlines the Git workflow, branching strategy, commit conventions, and development procedures for ZenType. **All developers and AI agents must reference and follow these rules.**
+This document outlines the Git workflow, branching strategy, commit conventions, and development procedures for zentype. **All developers and AI agents must reference and follow these rules.**
 
 ---
 
 ## 1. Branch Strategy (`dev` $\rightarrow$ `main`)
 
-ZenType uses a safe and lightweight two-branch model tailored for agile solo development:
+zentype uses a safe and lightweight two-branch model tailored for agile solo development:
 
 - **`main`**: **Production branch**. Always deployable, stable, and protected. Pushing or merging to `main` triggers automated production deployments. **Never commit directly to `main`.**
 - **`dev`**: **Active development branch**. All day-to-day coding, feature building, bug fixing, and continuous commits happen here.
@@ -140,7 +140,7 @@ Commit messages follow the [Conventional Commits](https://www.conventionalcommit
 
 ## 6. AI Agent Guidelines
 
-AI agents operating on the ZenType codebase must:
+AI agents operating on the zentype codebase must:
 1. **Work on `dev`**: Never commit directly to `main`.
 2. **Auto-commit**: Immediately stage and commit changes after making code edits.
 3. **Strict Semantic Commits**: Always format commits with standard semantic types and descriptive summaries.

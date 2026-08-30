@@ -1,5 +1,5 @@
 -- =============================================================
--- ZenType v2 — SECURITY DEFINER RPCs for leaderboard
+-- zentype v2 — SECURITY DEFINER RPCs for leaderboard
 -- These functions bypass RLS so the leaderboard works for
 -- everyone (including unauthenticated visitors) regardless
 -- of whether earlier RLS migrations were applied.

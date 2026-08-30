@@ -1,5 +1,5 @@
 -- =============================================================
--- ZenType v2 — Fix RLS for leaderboard and public profiles
+-- zentype v2 — Fix RLS for leaderboard and public profiles
 -- This migration adds read access to test_results for all users
 -- so the leaderboard and public profiles work correctly.
 -- =============================================================
