@@ -355,44 +355,6 @@ html[data-font="red-hat-mono"] { font-family: var(--font-red-hat-mono); }
   }
 }
 
-/* Page transition animation */
-.zt-page-enter {
-  animation: zt-page-in 0.3s ease-out both;
-}
-@keyframes zt-page-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* View Transitions API support */
-@view-transition {
-  navigation: auto;
-}
-
-::view-transition-old(root) {
-  animation: zt-page-out 0.15s ease-in both;
-}
-::view-transition-new(root) {
-  animation: zt-page-in 0.2s ease-out both;
-}
-
-@keyframes zt-page-out {
-  from {
-    opacity: 1;
-    transform: none;
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-}
-
 .zt-fade-in {
   animation: zt-fade-in 0.25s ease-out both;
 }
