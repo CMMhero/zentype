@@ -38,22 +38,22 @@ const STATIC_ITEMS = (() => {
     ...TIME_OPTIONS.map((t) => ({ id: `mode-time-${t}`, group: "mode", value: `mode time ${t}s type for ${t} seconds`, keywords: `mode time ${t}s`, label: `${t}s time` })),
     ...WORD_OPTIONS.map((w) => ({ id: `mode-words-${w}`, group: "mode", value: `mode words ${w} words type ${w} words`, keywords: `mode words ${w}`, label: `${w} words` })),
     ...THEMES.map((t) => ({ id: `theme-${t.id}`, group: "theme", value: `theme appearance ${t.label} ${t.appearance} ${t.id}`, keywords: `theme appearance ${t.label} ${t.appearance}`, label: t.label })),
-    { id: "sound-toggle", group: "sound", value: "sound audio keystroke click thock beep enable disable", keywords: "sound audio enable disable", label: "sound toggle" },
-    { id: "sound-error", group: "sound", value: "sound error beep incorrect character", keywords: "sound error beep", label: "error sound" },
+    { id: "sound-toggle", group: "sound", value: "sound audio keystroke click thock beep enable disable toggle on off", keywords: "sound audio enable disable toggle on off", label: "sound toggle" },
+    { id: "sound-error", group: "sound", value: "sound error beep incorrect character toggle on off", keywords: "sound error beep toggle on off", label: "error sound" },
     ...SOUND_VARIANTS.map((v) => ({ id: `sound-${v.value}`, group: "sound", value: `sound audio variant ${v.label} ${v.desc}`, keywords: `sound ${v.label}`, label: v.label })),
     ...CARET_STYLES.map((c) => ({ id: `caret-${c.value}`, group: "caret", value: `caret cursor ${c.label} ${c.desc}`, keywords: `caret ${c.label}`, label: c.label })),
     ...FONT_SIZES.map((f) => ({ id: `fsize-${f.value}`, group: "font size", value: `font size ${f.label} ${f.desc} text`, keywords: `font size ${f.label}`, label: f.label })),
     ...FONT_FAMILIES.map((f) => ({ id: `ffam-${f.value}`, group: "font family", value: `font family ${f.label} ${f.desc} typeface`, keywords: `font family ${f.label}`, label: f.label })),
     ...([1, 2, 3] as const).map((n) => ({ id: `lines-${n}`, group: "visible lines", value: `visible lines ${n} line show text`, keywords: `visible lines ${n}`, label: `${n} line${n > 1 ? 's' : ''}` })),
-    { id: "gp-blind", group: "gameplay", value: "gameplay blind mode hide error coloring trust fingers", keywords: "gameplay blind mode", label: "blind mode" },
-    { id: "gp-stop", group: "gameplay", value: "gameplay stop on error block cursor until fixed", keywords: "gameplay stop error", label: "stop on error" },
-    { id: "gp-strict", group: "gameplay", value: "gameplay strict space wrong words cannot be skipped", keywords: "gameplay strict space", label: "strict space" },
-    { id: "gp-back", group: "gameplay", value: "gameplay free backspace restore previous word", keywords: "gameplay free backspace", label: "free backspace" },
-    { id: "gp-hide", group: "gameplay", value: "gameplay hide live stats blank wpm acc while running", keywords: "gameplay hide live stats", label: "hide live stats" },
-    { id: "gp-punct", group: "gameplay", value: "gameplay punctuation add commas periods exclamation marks", keywords: "gameplay punctuation", label: "punctuation" },
-    { id: "gp-nums", group: "gameplay", value: "gameplay numbers add digits 0 1 2 3 4 5", keywords: "gameplay numbers", label: "numbers" },
-    { id: "app-kb", group: "appearance", value: "appearance virtual keyboard show key highlighter", keywords: "appearance keyboard", label: "virtual keyboard" },
-    { id: "app-smooth", group: "appearance", value: "appearance smooth caret animate caret movement", keywords: "appearance smooth caret", label: "smooth caret" },
+    { id: "gp-blind", group: "gameplay", value: "gameplay blind mode hide error coloring trust fingers toggle on off", keywords: "gameplay blind mode toggle on off", label: "blind mode" },
+    { id: "gp-stop", group: "gameplay", value: "gameplay stop on error block cursor until fixed toggle on off", keywords: "gameplay stop error toggle on off", label: "stop on error" },
+    { id: "gp-strict", group: "gameplay", value: "gameplay strict space wrong words cannot be skipped toggle on off", keywords: "gameplay strict space toggle on off", label: "strict space" },
+    { id: "gp-back", group: "gameplay", value: "gameplay free backspace restore previous word toggle on off", keywords: "gameplay free backspace toggle on off", label: "free backspace" },
+    { id: "gp-hide", group: "gameplay", value: "gameplay hide live stats blank wpm acc while running toggle on off", keywords: "gameplay hide live stats toggle on off", label: "hide live stats" },
+    { id: "gp-punct", group: "gameplay", value: "gameplay punctuation add commas periods exclamation marks toggle on off", keywords: "gameplay punctuation toggle on off", label: "punctuation" },
+    { id: "gp-nums", group: "gameplay", value: "gameplay numbers add digits 0 1 2 3 4 5 toggle on off", keywords: "gameplay numbers toggle on off", label: "numbers" },
+    { id: "app-kb", group: "appearance", value: "appearance virtual keyboard show key highlighter toggle on off", keywords: "appearance keyboard toggle on off", label: "virtual keyboard" },
+    { id: "app-smooth", group: "appearance", value: "appearance smooth caret animate caret movement toggle on off", keywords: "appearance smooth caret toggle on off", label: "smooth caret" },
   ];
   return items;
 })();
@@ -280,18 +280,20 @@ export function CommandPalette() {
 
         <CommandGroup heading="sound">
           <CommandItem
-            value="sound audio keystroke click thock beep enable disable"
+            value="sound audio keystroke click thock beep enable disable toggle on off"
             keywords={["sound", "audio"]}
             onSelect={toggleSound}
+            className={activeSet.soundEnabled ? "text-primary bg-primary/10" : ""}
           >
             {activeSet.soundEnabled ? <IconVolume /> : <IconVolumeOff />}
-            sound {activeSet.soundEnabled ? "on" : "off"}<CommandDesc>enable or disable keystroke audio feedback</CommandDesc>
+            sound <ToggleBadge on={activeSet.soundEnabled} /><CommandDesc>enable or disable keystroke audio feedback</CommandDesc>
           </CommandItem><CommandItem
-              value="sound error beep incorrect character"
+              value="sound error beep incorrect character toggle on off"
               keywords={["sound", "error"]}
               onSelect={toggleSoundError}
+              className={activeSet.soundOnError ? "text-primary bg-primary/10" : ""}
             >
-              <IconAlertTriangle /> error sound {activeSet.soundOnError ? "on" : "off"}<CommandDesc>play a sound when you type an incorrect character</CommandDesc>
+              <IconAlertTriangle /> error sound <ToggleBadge on={activeSet.soundOnError} /><CommandDesc>play a sound when you type an incorrect character</CommandDesc>
           </CommandItem>
           {SOUND_VARIANTS.map((v) => (
             <CommandItem
@@ -376,51 +378,58 @@ export function CommandPalette() {
 
         <CommandGroup heading="gameplay">
           <CommandItem
-            value="gameplay blind mode hide error coloring trust fingers"
+            value="gameplay blind mode hide error coloring trust fingers toggle on off"
             keywords={["gameplay", "blind"]}
             onSelect={toggleBlind}
+            className={activeSet.blindMode ? "text-primary bg-primary/10" : ""}
           >
             {activeSet.blindMode ? <IconEyeOff /> : <IconEye />}
-            blind mode {activeSet.blindMode ? "on" : "off"}<CommandDesc>hide error coloring</CommandDesc>
+            blind mode <ToggleBadge on={activeSet.blindMode} /><CommandDesc>hide error coloring</CommandDesc>
           </CommandItem><CommandItem
-              value="gameplay stop on error block cursor until fixed"
+              value="gameplay stop on error block cursor until fixed toggle on off"
               keywords={["gameplay", "stop"]}
               onSelect={toggleStop}
+              className={activeSet.stopOnError ? "text-primary bg-primary/10" : ""}
             >
-              <IconPlayerStop /> stop on error {activeSet.stopOnError ? "on" : "off"}<CommandDesc>block cursor until fixed</CommandDesc>
+              <IconPlayerStop /> stop on error <ToggleBadge on={activeSet.stopOnError} /><CommandDesc>block cursor until fixed</CommandDesc>
           </CommandItem><CommandItem
-              value="gameplay strict space wrong words cannot be skipped"
+              value="gameplay strict space wrong words cannot be skipped toggle on off"
               keywords={["gameplay", "strict"]}
               onSelect={toggleStrict}
+              className={activeSet.strictSpace ? "text-primary bg-primary/10" : ""}
             >
-              <IconSpace /> strict space {activeSet.strictSpace ? "on" : "off"}<CommandDesc>wrong words can&apos;t be skipped</CommandDesc>
+              <IconSpace /> strict space <ToggleBadge on={activeSet.strictSpace} /><CommandDesc>wrong words can&apos;t be skipped</CommandDesc>
           </CommandItem><CommandItem
-              value="gameplay free backspace restore previous word"
+              value="gameplay free backspace restore previous word toggle on off"
               keywords={["gameplay", "backspace"]}
               onSelect={toggleFreeBack}
+              className={activeSet.freeBackspace ? "text-primary bg-primary/10" : ""}
             >
-              <IconArrowBackUp /> free backspace {activeSet.freeBackspace ? "on" : "off"}<CommandDesc>restore previous word on backspace</CommandDesc>
+              <IconArrowBackUp /> free backspace <ToggleBadge on={activeSet.freeBackspace} /><CommandDesc>restore previous word on backspace</CommandDesc>
           </CommandItem>
           <CommandItem
-            value="gameplay hide live stats blank wpm acc while running"
+            value="gameplay hide live stats blank wpm acc while running toggle on off"
             keywords={["gameplay", "live", "stats"]}
             onSelect={toggleHideLive}
+            className={activeSet.hideLiveStats ? "text-primary bg-primary/10" : ""}
           >
-            <IconEyeOff /> hide live stats {activeSet.hideLiveStats ? "on" : "off"}<CommandDesc>blank wpm/acc while running</CommandDesc>
+            <IconEyeOff /> hide live stats <ToggleBadge on={activeSet.hideLiveStats} /><CommandDesc>blank wpm/acc while running</CommandDesc>
           </CommandItem>
           <CommandItem
-            value="gameplay punctuation add commas periods exclamation marks"
+            value="gameplay punctuation add commas periods exclamation marks toggle on off"
             keywords={["gameplay", "punctuation"]}
             onSelect={togglePunctuation}
+            className={activeSet.punctuation ? "text-primary bg-primary/10" : ""}
           >
-            <IconTypography /> punctuation {activeSet.punctuation ? "on" : "off"}<CommandDesc>add punctuation marks to words</CommandDesc>
+            <IconTypography /> punctuation <ToggleBadge on={activeSet.punctuation} /><CommandDesc>add punctuation marks to words</CommandDesc>
           </CommandItem>
           <CommandItem
-            value="gameplay numbers add digits 0 1 2 3 4 5"
+            value="gameplay numbers add digits 0 1 2 3 4 5 toggle on off"
             keywords={["gameplay", "numbers"]}
             onSelect={toggleNumbers}
+            className={activeSet.numbers ? "text-primary bg-primary/10" : ""}
           >
-            <IconLetterT /> numbers {activeSet.numbers ? "on" : "off"}<CommandDesc>add numbers to words</CommandDesc>
+            <IconLetterT /> numbers <ToggleBadge on={activeSet.numbers} /><CommandDesc>add numbers to words</CommandDesc>
           </CommandItem>
         </CommandGroup>
 
@@ -428,17 +437,19 @@ export function CommandPalette() {
 
         <CommandGroup heading="appearance">
           <CommandItem
-            value="appearance virtual keyboard show key highlighter"
+            value="appearance virtual keyboard show key highlighter toggle on off"
             keywords={["appearance", "keyboard"]}
             onSelect={toggleKeyboard}
+            className={activeSet.showKeyboard ? "text-primary bg-primary/10" : ""}
           >
-            <IconKeyboardFilled /> virtual keyboard {activeSet.showKeyboard ? "on" : "off"}<CommandDesc>show key highlighter</CommandDesc>
+            <IconKeyboardFilled /> virtual keyboard <ToggleBadge on={activeSet.showKeyboard} /><CommandDesc>show key highlighter</CommandDesc>
           </CommandItem><CommandItem
-              value="appearance smooth caret animate caret movement"
+              value="appearance smooth caret animate caret movement toggle on off"
               keywords={["appearance", "caret"]}
               onSelect={toggleSmoothCaret}
+              className={activeSet.smoothCaret ? "text-primary bg-primary/10" : ""}
             >
-              <IconPointer /> smooth caret {activeSet.smoothCaret ? "on" : "off"}<CommandDesc>animate caret movement</CommandDesc>
+              <IconPointer /> smooth caret <ToggleBadge on={activeSet.smoothCaret} /><CommandDesc>animate caret movement</CommandDesc>
           </CommandItem>
         </CommandGroup>
       </CommandList>
@@ -471,4 +482,12 @@ function Shortcut({ children }: { children: React.ReactNode }) {
 
 function CommandDesc({ children }: { children: React.ReactNode }) {
   return <span className="text-muted-foreground ml-auto text-[10px] shrink-0 flex items-center gap-1">{children}</span>;
+}
+
+function ToggleBadge({ on }: { on: boolean }) {
+  return (
+    <span className={`ml-1 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase leading-none ${on ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+      {on ? "on" : "off"}
+    </span>
+  );
 }
