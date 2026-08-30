@@ -56,7 +56,7 @@ function theme(
 export const DEFAULT_THEME_ID = "horizon";
 
 export const THEMES: ThemePalette[] = [
-  theme("dino", "dino", "light", {
+  theme("dino", "Dino", "light", {
     "--background": "#ffffff",
     "--foreground": "#1d221f",
     "--card": "#fafafa",
@@ -80,7 +80,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d9d9",
     "--chart-5": "#40d672",
   }),
-  theme("magic_girl", "magic girl", "light", {
+  theme("magic_girl", "Magic Girl", "light", {
     "--background": "#ffffff",
     "--foreground": "#00ac8c",
     "--card": "#fafafa",
@@ -104,7 +104,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d9d9",
     "--chart-5": "#f5b1cc",
   }),
-  theme("milkshake", "milkshake", "light", {
+  theme("milkshake", "Milkshake", "light", {
     "--background": "#ffffff",
     "--foreground": "#212b43",
     "--card": "#fafafa",
@@ -128,7 +128,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d9d9",
     "--chart-5": "#212b43",
   }),
-  theme("modern_ink", "modern ink", "light", {
+  theme("modern_ink", "Modern Ink", "light", {
     "--background": "#ffffff",
     "--foreground": "#000000",
     "--card": "#fafafa",
@@ -152,7 +152,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d9d9",
     "--chart-5": "#ff360d",
   }),
-  theme("ms_cupcakes", "ms cupcakes", "light", {
+  theme("ms_cupcakes", "MS Cupcakes", "light", {
     "--background": "#ffffff",
     "--foreground": "#0a282f",
     "--card": "#fafafa",
@@ -176,7 +176,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d9d9",
     "--chart-5": "#5ed5f3",
   }),
-  theme("sewing_tin_light", "sewing tin light", "light", {
+  theme("sewing_tin_light", "Sewing Tin Light", "light", {
     "--background": "#ffffff",
     "--foreground": "#2d2076",
     "--card": "#fafafa",
@@ -200,7 +200,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d9d9",
     "--chart-5": "#2d2076",
   }),
-  theme("vesper_light", "vesper light", "light", {
+  theme("vesper_light", "Vesper Light", "light", {
     "--background": "#ffffff",
     "--foreground": "#000000",
     "--card": "#fafafa",
@@ -224,7 +224,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d9d9",
     "--chart-5": "#fb7100",
   }),
-  theme("lilac_mist", "lilac mist", "light", {
+  theme("lilac_mist", "Lilac Mist", "light", {
     "--background": "#fffbfe",
     "--foreground": "#5c2954",
     "--card": "#faf6f9",
@@ -248,7 +248,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d5d8",
     "--chart-5": "#b94189",
   }),
-  theme("rose_pine_dawn", "rose pine dawn", "light", {
+  theme("rose_pine_dawn", "Rose Pine Dawn", "light", {
     "--background": "#fffaf3",
     "--foreground": "#286983",
     "--card": "#faf5ee",
@@ -272,7 +272,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d5cf",
     "--chart-5": "#56949f",
   }),
-  theme("soaring_skies", "soaring skies", "light", {
+  theme("soaring_skies", "Soaring Skies", "light", {
     "--background": "#fff9f2",
     "--foreground": "#1d1e1e",
     "--card": "#faf4ed",
@@ -296,7 +296,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d4ce",
     "--chart-5": "#55c6f0",
   }),
-  theme("rainbow_trail", "rainbow trail", "light", {
+  theme("rainbow_trail", "Rainbow Trail", "light", {
     "--background": "#f5f5f5",
     "--foreground": "#1f1f1f",
     "--card": "#f0f0f0",
@@ -320,7 +320,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d0d0d0",
     "--chart-5": "#363636",
   }),
-  theme("nord_light", "nord light", "light", {
+  theme("nord_light", "Nord Light", "light", {
     "--background": "#eceff4",
     "--foreground": "#8fbcbb",
     "--card": "#e7eaef",
@@ -344,7 +344,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#c9cbcf",
     "--chart-5": "#8fbcbb",
   }),
-  theme("solarized_light", "solarized light", "light", {
+  theme("solarized_light", "Solarized Light", "light", {
     "--background": "#fdf6e3",
     "--foreground": "#181819",
     "--card": "#f8f1de",
@@ -368,7 +368,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d7d1c1",
     "--chart-5": "#859900",
   }),
-  theme("tangerine", "tangerine", "light", {
+  theme("tangerine", "Tangerine", "light", {
     "--background": "#ffede0",
     "--foreground": "#3d1705",
     "--card": "#fae8dc",
@@ -392,7 +392,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9c9be",
     "--chart-5": "#fe5503",
   }),
-  theme("camping", "camping", "light", {
+  theme("camping", "Camping", "light", {
     "--background": "#faf1e4",
     "--foreground": "#3c403b",
     "--card": "#f5ecdf",
@@ -416,7 +416,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d5cdc2",
     "--chart-5": "#618c56",
   }),
-  theme("slambook", "slambook", "light", {
+  theme("slambook", "Slambook", "light", {
     "--background": "#fffdde",
     "--foreground": "#13005a",
     "--card": "#faf8da",
@@ -440,7 +440,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9d7bd",
     "--chart-5": "#03001c",
   }),
-  theme("paper", "paper", "light", {
+  theme("paper", "Paper", "light", {
     "--background": "#eeeeee",
     "--foreground": "#444444",
     "--card": "#e9e9e9",
@@ -464,7 +464,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#cacaca",
     "--chart-5": "#444444",
   }),
-  theme("desert_oasis", "desert oasis", "light", {
+  theme("desert_oasis", "Desert Oasis", "light", {
     "--background": "#fff2d5",
     "--foreground": "#332800",
     "--card": "#faedd1",
@@ -488,7 +488,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9ceb5",
     "--chart-5": "#d19d01",
   }),
-  theme("iceberg_light", "iceberg light", "light", {
+  theme("iceberg_light", "Iceberg Light", "light", {
     "--background": "#e8e9ec",
     "--foreground": "#33374c",
     "--card": "#e3e4e7",
@@ -512,7 +512,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#c5c6c9",
     "--chart-5": "#2d539e",
   }),
-  theme("cheesecake", "cheesecake", "light", {
+  theme("cheesecake", "Cheesecake", "light", {
     "--background": "#fdf0d5",
     "--foreground": "#3a3335",
     "--card": "#f8ebd1",
@@ -560,7 +560,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#cac8c0",
     "--chart-5": "#080909",
   }),
-  theme("lil_dragon", "lil dragon", "light", {
+  theme("lil_dragon", "Lil Dragon", "light", {
     "--background": "#ebe1ef",
     "--foreground": "#212b43",
     "--card": "#e6ddea",
@@ -584,7 +584,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#c8bfcb",
     "--chart-5": "#8a5bd6",
   }),
-  theme("blueberry_light", "blueberry light", "light", {
+  theme("blueberry_light", "Blueberry Light", "light", {
     "--background": "#dae0f5",
     "--foreground": "#678198",
     "--card": "#d6dcf0",
@@ -608,7 +608,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#b9bed0",
     "--chart-5": "#506477",
   }),
-  theme("witch_girl", "witch girl", "light", {
+  theme("witch_girl", "Witch Girl", "light", {
     "--background": "#f3dbda",
     "--foreground": "#56786a",
     "--card": "#eed7d6",
@@ -632,7 +632,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#cfbab9",
     "--chart-5": "#56786a",
   }),
-  theme("terrazzo", "terrazzo", "light", {
+  theme("terrazzo", "Terrazzo", "light", {
     "--background": "#f1e5da",
     "--foreground": "#023e3b",
     "--card": "#ece0d6",
@@ -656,7 +656,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#cdc3b9",
     "--chart-5": "#e0794e",
   }),
-  theme("darling", "darling", "light", {
+  theme("darling", "Darling", "light", {
     "--background": "#fec8cd",
     "--foreground": "#ffffff",
     "--card": "#f9c4c9",
@@ -680,7 +680,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d8aaae",
     "--chart-5": "#ffffff",
   }),
-  theme("serika", "serika", "light", {
+  theme("serika", "Serika", "light", {
     "--background": "#e1e1e3",
     "--foreground": "#323437",
     "--card": "#ddddde",
@@ -704,7 +704,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#bfbfc1",
     "--chart-5": "#e2b714",
   }),
-  theme("gruvbox_light", "gruvbox light", "light", {
+  theme("gruvbox_light", "Gruvbox Light", "light", {
     "--background": "#fbf1c7",
     "--foreground": "#3c3836",
     "--card": "#f6ecc3",
@@ -728,7 +728,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d5cda9",
     "--chart-5": "#689d6a",
   }),
-  theme("repose_light", "repose light", "light", {
+  theme("repose_light", "Repose Light", "light", {
     "--background": "#efead0",
     "--foreground": "#333538",
     "--card": "#eae5cc",
@@ -752,7 +752,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#cbc7b1",
     "--chart-5": "#5f605e",
   }),
-  theme("godspeed", "godspeed", "light", {
+  theme("godspeed", "Godspeed", "light", {
     "--background": "#eae4cf",
     "--foreground": "#646669",
     "--card": "#e5dfcb",
@@ -776,7 +776,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#c7c2b0",
     "--chart-5": "#9abbcd",
   }),
-  theme("dollar", "dollar", "light", {
+  theme("dollar", "Dollar", "light", {
     "--background": "#e4e4d4",
     "--foreground": "#555a56",
     "--card": "#dfdfd0",
@@ -800,7 +800,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#c2c2b4",
     "--chart-5": "#6b886b",
   }),
-  theme("dmg", "dmg", "light", {
+  theme("dmg", "DMG", "light", {
     "--background": "#dadbdc",
     "--foreground": "#414141",
     "--card": "#d6d7d8",
@@ -824,7 +824,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#b9babb",
     "--chart-5": "#ae185e",
   }),
-  theme("modern_dolch_light", "modern dolch light", "light", {
+  theme("modern_dolch_light", "Modern Dolch Light", "light", {
     "--background": "#dbdbdb",
     "--foreground": "#454545",
     "--card": "#d7d7d7",
@@ -848,7 +848,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#bababa",
     "--chart-5": "#8fd1c3",
   }),
-  theme("olive", "olive", "light", {
+  theme("olive", "Olive", "light", {
     "--background": "#e9e5cc",
     "--foreground": "#373731",
     "--card": "#e4e0c8",
@@ -872,7 +872,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#c6c3ad",
     "--chart-5": "#92946f",
   }),
-  theme("taro", "taro", "light", {
+  theme("taro", "Taro", "light", {
     "--background": "#b3baff",
     "--foreground": "#130f1a",
     "--card": "#afb6fa",
@@ -896,7 +896,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#989ed9",
     "--chart-5": "#130f1a",
   }),
-  theme("shoko", "shoko", "light", {
+  theme("shoko", "Shoko", "light", {
     "--background": "#ced7e0",
     "--foreground": "#3b4c58",
     "--card": "#cad3dc",
@@ -920,7 +920,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#afb7be",
     "--chart-5": "#81c4dd",
   }),
-  theme("beach", "beach", "light", {
+  theme("beach", "Beach", "light", {
     "--background": "#ffeead",
     "--foreground": "#5b7869",
     "--card": "#fae9aa",
@@ -944,7 +944,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d9ca93",
     "--chart-5": "#96ceb4",
   }),
-  theme("breeze", "breeze", "light", {
+  theme("breeze", "Breeze", "light", {
     "--background": "#e8d5c4",
     "--foreground": "#1b4c5e",
     "--card": "#e3d1c0",
@@ -968,7 +968,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#c5b5a7",
     "--chart-5": "#7d67a9",
   }),
-  theme("froyo", "froyo", "light", {
+  theme("froyo", "Froyo", "light", {
     "--background": "#e1dacb",
     "--foreground": "#7b7d7d",
     "--card": "#ddd6c7",
@@ -992,7 +992,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#bfb9ad",
     "--chart-5": "#7b7d7d",
   }),
-  theme("mr_sleeves", "mr sleeves", "light", {
+  theme("mr_sleeves", "Mr Sleeves", "light", {
     "--background": "#d1d7da",
     "--foreground": "#1d1d1d",
     "--card": "#cdd3d6",
@@ -1016,7 +1016,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#b2b7b9",
     "--chart-5": "#daa99b",
   }),
-  theme("fruit_chew", "fruit chew", "light", {
+  theme("fruit_chew", "Fruit Chew", "light", {
     "--background": "#d6d3d6",
     "--foreground": "#282528",
     "--card": "#d2cfd2",
@@ -1040,7 +1040,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#b6b3b6",
     "--chart-5": "#5c1e5f",
   }),
-  theme("peaches", "peaches", "light", {
+  theme("peaches", "Peaches", "light", {
     "--background": "#e0d7c1",
     "--foreground": "#5f4c41",
     "--card": "#dcd3bd",
@@ -1064,7 +1064,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#beb7a4",
     "--chart-5": "#dd7a5f",
   }),
-  theme("hanok", "hanok", "light", {
+  theme("hanok", "Hanok", "light", {
     "--background": "#d8d2c3",
     "--foreground": "#393b3b",
     "--card": "#d4cebf",
@@ -1088,7 +1088,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#b8b3a6",
     "--chart-5": "#513a2a",
   }),
-  theme("retro", "retro", "light", {
+  theme("retro", "Retro", "light", {
     "--background": "#dad3c1",
     "--foreground": "#1d1b17",
     "--card": "#d6cfbd",
@@ -1112,7 +1112,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#b9b3a4",
     "--chart-5": "#1d1b17",
   }),
-  theme("pastel", "pastel", "light", {
+  theme("pastel", "Pastel", "light", {
     "--background": "#e0b2bd",
     "--foreground": "#6d5c6f",
     "--card": "#dcaeb9",
@@ -1136,7 +1136,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#be97a1",
     "--chart-5": "#fbf4b6",
   }),
-  theme("vaporwave", "vaporwave", "light", {
+  theme("vaporwave", "Vaporwave", "light", {
     "--background": "#a4a7ea",
     "--foreground": "#f1ebf1",
     "--card": "#a1a4e5",
@@ -1160,7 +1160,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#8b8ec7",
     "--chart-5": "#e368da",
   }),
-  theme("frozen_llama", "frozen llama", "light", {
+  theme("frozen_llama", "Frozen Llama", "light", {
     "--background": "#9bf2ea",
     "--foreground": "#ffffff",
     "--card": "#98ede5",
@@ -1184,7 +1184,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#84cec7",
     "--chart-5": "#6d44a6",
   }),
-  theme("mizu", "mizu", "light", {
+  theme("mizu", "Mizu", "light", {
     "--background": "#afcbdd",
     "--foreground": "#1a2633",
     "--card": "#acc7d9",
@@ -1208,7 +1208,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#95adbc",
     "--chart-5": "#fcfbf6",
   }),
-  theme("pink_lemonade", "pink lemonade", "light", {
+  theme("pink_lemonade", "Pink Lemonade", "light", {
     "--background": "#f6d992",
     "--foreground": "#fcfcf8",
     "--card": "#f1d58f",
@@ -1232,7 +1232,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d1b87c",
     "--chart-5": "#f6a192",
   }),
-  theme("tiramisu", "tiramisu", "light", {
+  theme("tiramisu", "Tiramisu", "light", {
     "--background": "#cfc6b9",
     "--foreground": "#7d5448",
     "--card": "#cbc2b5",
@@ -1256,7 +1256,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#b0a89d",
     "--chart-5": "#c0976f",
   }),
-  theme("macroblank", "macroblank", "light", {
+  theme("macroblank", "Macroblank", "light", {
     "--background": "#b2d2c8",
     "--foreground": "#490909",
     "--card": "#aecec4",
@@ -1280,7 +1280,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#97b3aa",
     "--chart-5": "#c13117",
   }),
-  theme("snes", "snes", "light", {
+  theme("snes", "SNES", "light", {
     "--background": "#bfbec2",
     "--foreground": "#2e2e2e",
     "--card": "#bbbabe",
@@ -1304,7 +1304,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#a2a2a5",
     "--chart-5": "#553d94",
   }),
-  theme("strawberry", "strawberry", "light", {
+  theme("strawberry", "Strawberry", "light", {
     "--background": "#f37f83",
     "--foreground": "#fcfcf8",
     "--card": "#ee7c80",
@@ -1328,7 +1328,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#cf6c6f",
     "--chart-5": "#fcfcf8",
   }),
-  theme("creamsicle", "creamsicle", "light", {
+  theme("creamsicle", "Creamsicle", "light", {
     "--background": "#ff9869",
     "--foreground": "#fcfcf8",
     "--card": "#fa9567",
@@ -1352,7 +1352,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d98159",
     "--chart-5": "#fcfcf8",
   }),
-  theme("lavender", "lavender", "light", {
+  theme("lavender", "Lavender", "light", {
     "--background": "#ada6c2",
     "--foreground": "#2f2a41",
     "--card": "#aaa3be",
@@ -1376,7 +1376,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#938da5",
     "--chart-5": "#e4e3e9",
   }),
-  theme("bingsu", "bingsu", "light", {
+  theme("bingsu", "Bingsu", "light", {
     "--background": "#b8a7aa",
     "--foreground": "#ebe6ea",
     "--card": "#b4a4a7",
@@ -1400,7 +1400,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#9c8e91",
     "--chart-5": "#83616e",
   }),
-  theme("cafe", "cafe", "light", {
+  theme("cafe", "Cafe", "light", {
     "--background": "#ceb18d",
     "--foreground": "#14120f",
     "--card": "#caad8a",
@@ -1424,7 +1424,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#af9678",
     "--chart-5": "#14120f",
   }),
-  theme("fleuriste", "fleuriste", "light", {
+  theme("fleuriste", "Fleuriste", "light", {
     "--background": "#c6b294",
     "--foreground": "#091914",
     "--card": "#c2ae91",
@@ -1448,7 +1448,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#a8977e",
     "--chart-5": "#405a52",
   }),
-  theme("miami", "miami", "light", {
+  theme("miami", "Miami", "light", {
     "--background": "#f35588",
     "--foreground": "#f0e9ec",
     "--card": "#ee5385",
@@ -1472,7 +1472,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#cf4874",
     "--chart-5": "#05dfd7",
   }),
-  theme("iv_clover", "iv clover", "light", {
+  theme("iv_clover", "IV Clover", "light", {
     "--background": "#a0a0a0",
     "--foreground": "#3b2d3b",
     "--card": "#9d9d9d",
@@ -1496,7 +1496,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#888888",
     "--chart-5": "#573e40",
   }),
-  theme("mexican", "mexican", "light", {
+  theme("mexican", "Mexican", "light", {
     "--background": "#f8ad34",
     "--foreground": "#eeeeee",
     "--card": "#f3aa33",
@@ -1520,7 +1520,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#d3932c",
     "--chart-5": "#b12189",
   }),
-  theme("botanical", "botanical", "light", {
+  theme("botanical", "Botanical", "light", {
     "--background": "#7b9c98",
     "--foreground": "#eaf1f3",
     "--card": "#799995",
@@ -1544,7 +1544,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#698581",
     "--chart-5": "#eaf1f3",
   }),
-  theme("lime", "lime", "light", {
+  theme("lime", "Lime", "light", {
     "--background": "#7c878e",
     "--foreground": "#bfcfdc",
     "--card": "#7a848b",
@@ -1568,7 +1568,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#697379",
     "--chart-5": "#93c247",
   }),
-  theme("honey", "honey", "light", {
+  theme("honey", "Honey", "light", {
     "--background": "#f2aa00",
     "--foreground": "#f3eecb",
     "--card": "#eda700",
@@ -1592,7 +1592,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#ce9100",
     "--chart-5": "#fff546",
   }),
-  theme("leather", "leather", "dark", {
+  theme("leather", "Leather", "dark", {
     "--background": "#a86948",
     "--foreground": "#ffe4bc",
     "--card": "#a56747",
@@ -1616,7 +1616,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#8f593d",
     "--chart-5": "#ffe4bc",
   }),
-  theme("diner", "diner", "dark", {
+  theme("diner", "Diner", "dark", {
     "--background": "#537997",
     "--foreground": "#dfdbc8",
     "--card": "#517794",
@@ -1640,7 +1640,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#476780",
     "--chart-5": "#c3af5b",
   }),
-  theme("alpine", "alpine", "dark", {
+  theme("alpine", "Alpine", "dark", {
     "--background": "#6c687f",
     "--foreground": "#ffffff",
     "--card": "#6a667c",
@@ -1664,7 +1664,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#5c586c",
     "--chart-5": "#ffffff",
   }),
-  theme("dualshot", "dualshot", "dark", {
+  theme("dualshot", "Dualshot", "dark", {
     "--background": "#737373",
     "--foreground": "#212222",
     "--card": "#717171",
@@ -1688,7 +1688,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#626262",
     "--chart-5": "#212222",
   }),
-  theme("fundamentals", "fundamentals", "dark", {
+  theme("fundamentals", "Fundamentals", "dark", {
     "--background": "#727474",
     "--foreground": "#131313",
     "--card": "#707272",
@@ -1712,7 +1712,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#616363",
     "--chart-5": "#7fa482",
   }),
-  theme("our_theme", "our theme", "dark", {
+  theme("our_theme", "Our Theme", "dark", {
     "--background": "#ce1226",
     "--foreground": "#ffffff",
     "--card": "#ca1225",
@@ -1736,7 +1736,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#af0f20",
     "--chart-5": "#fcd116",
   }),
-  theme("ez_mode", "ez mode", "dark", {
+  theme("ez_mode", "EZ Mode", "dark", {
     "--background": "#0068c6",
     "--foreground": "#ffffff",
     "--card": "#0066c2",
@@ -1760,7 +1760,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0058a8",
     "--chart-5": "#fa62d5",
   }),
-  theme("evil_eye", "evil eye", "dark", {
+  theme("evil_eye", "Evil Eye", "dark", {
     "--background": "#0084c2",
     "--foreground": "#171718",
     "--card": "#0081be",
@@ -1784,7 +1784,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0070a5",
     "--chart-5": "#f7f2ea",
   }),
-  theme("menthol", "menthol", "light", {
+  theme("menthol", "Menthol", "light", {
     "--background": "#00c18c",
     "--foreground": "#ffffff",
     "--card": "#00bd89",
@@ -1808,7 +1808,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#00a477",
     "--chart-5": "#ffffff",
   }),
-  theme("comfy", "comfy", "dark", {
+  theme("comfy", "Comfy", "dark", {
     "--background": "#4a5b6e",
     "--foreground": "#f5efee",
     "--card": "#49596c",
@@ -1832,7 +1832,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#3f4d5e",
     "--chart-5": "#f8cdc6",
   }),
-  theme("trackday", "trackday", "dark", {
+  theme("trackday", "Trackday", "dark", {
     "--background": "#464d66",
     "--foreground": "#cfcfcf",
     "--card": "#454b64",
@@ -1856,7 +1856,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#3c4157",
     "--chart-5": "#e0513e",
   }),
-  theme("muted", "muted", "dark", {
+  theme("muted", "Muted", "dark", {
     "--background": "#525252",
     "--foreground": "#b1e4e3",
     "--card": "#505050",
@@ -1880,7 +1880,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#464646",
     "--chart-5": "#c5b4e3",
   }),
-  theme("red_samurai", "red samurai", "dark", {
+  theme("red_samurai", "Red Samurai", "dark", {
     "--background": "#84202c",
     "--foreground": "#e2dad0",
     "--card": "#811f2b",
@@ -1904,7 +1904,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#701b25",
     "--chart-5": "#c79e6e",
   }),
-  theme("sweden", "sweden", "dark", {
+  theme("sweden", "Sweden", "dark", {
     "--background": "#0058a3",
     "--foreground": "#ffffff",
     "--card": "#0056a0",
@@ -1928,7 +1928,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#004b8b",
     "--chart-5": "#ffcc02",
   }),
-  theme("passion_fruit", "passion fruit", "dark", {
+  theme("passion_fruit", "Passion Fruit", "dark", {
     "--background": "#7c2142",
     "--foreground": "#ffffff",
     "--card": "#7a2041",
@@ -1952,7 +1952,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#691c38",
     "--chart-5": "#f4a3b4",
   }),
-  theme("suisei", "suisei", "dark", {
+  theme("suisei", "Suisei", "dark", {
     "--background": "#3b4a62",
     "--foreground": "#dbdeeb",
     "--card": "#3a4960",
@@ -1976,7 +1976,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#323f53",
     "--chart-5": "#bef0ff",
   }),
-  theme("striker", "striker", "dark", {
+  theme("striker", "Striker", "dark", {
     "--background": "#124883",
     "--foreground": "#d6dbd9",
     "--card": "#124780",
@@ -2000,7 +2000,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0f3d6f",
     "--chart-5": "#d7dcda",
   }),
-  theme("cy_red", "cy red", "dark", {
+  theme("cy_red", "CY Red", "dark", {
     "--background": "#6e2626",
     "--foreground": "#ffaaaa",
     "--card": "#6c2525",
@@ -2024,7 +2024,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#5e2020",
     "--chart-5": "#e55050",
   }),
-  theme("grand_prix", "grand prix", "dark", {
+  theme("grand_prix", "Grand Prix", "dark", {
     "--background": "#36475c",
     "--foreground": "#c1c7d7",
     "--card": "#35465a",
@@ -2048,7 +2048,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#2e3c4e",
     "--chart-5": "#c0d036",
   }),
-  theme("deku", "deku", "dark", {
+  theme("deku", "Deku", "dark", {
     "--background": "#058b8c",
     "--foreground": "#f7f2ea",
     "--card": "#058889",
@@ -2072,7 +2072,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#047677",
     "--chart-5": "#b63530",
   }),
-  theme("hedge", "hedge", "dark", {
+  theme("hedge", "Hedge", "dark", {
     "--background": "#415e31",
     "--foreground": "#f7f1d6",
     "--card": "#405c30",
@@ -2096,7 +2096,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#37502a",
     "--chart-5": "#6a994e",
   }),
-  theme("pale_nimbus", "pale nimbus", "dark", {
+  theme("pale_nimbus", "Pale Nimbus", "dark", {
     "--background": "#433e4c",
     "--foreground": "#feffdb",
     "--card": "#423d4a",
@@ -2120,7 +2120,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#393541",
     "--chart-5": "#94ffc2",
   }),
-  theme("retrocast", "retrocast", "dark", {
+  theme("retrocast", "Retrocast", "dark", {
     "--background": "#07737a",
     "--foreground": "#ffffff",
     "--card": "#077178",
@@ -2144,7 +2144,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#066268",
     "--chart-5": "#88dbdf",
   }),
-  theme("sewing_tin", "sewing tin", "dark", {
+  theme("sewing_tin", "Sewing Tin", "dark", {
     "--background": "#241963",
     "--foreground": "#ffffff",
     "--card": "#231961",
@@ -2168,7 +2168,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1f1554",
     "--chart-5": "#f2ce83",
   }),
-  theme("bento", "bento", "dark", {
+  theme("bento", "Bento", "dark", {
     "--background": "#2d394d",
     "--foreground": "#fffaf8",
     "--card": "#2c384b",
@@ -2216,7 +2216,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#2b313b",
     "--chart-5": "#f44c7f",
   }),
-  theme("matcha_moccha", "matcha moccha", "dark", {
+  theme("matcha_moccha", "Matcha Moccha", "dark", {
     "--background": "#523525",
     "--foreground": "#ecddcc",
     "--card": "#503424",
@@ -2240,7 +2240,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#462d1f",
     "--chart-5": "#7ec160",
   }),
-  theme("fledgling", "fledgling", "dark", {
+  theme("fledgling", "Fledgling", "dark", {
     "--background": "#3b363f",
     "--foreground": "#e6d5d3",
     "--card": "#3a353e",
@@ -2264,7 +2264,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#322e36",
     "--chart-5": "#fc6e83",
   }),
-  theme("onedark", "onedark", "dark", {
+  theme("onedark", "One Dark", "dark", {
     "--background": "#2f343f",
     "--foreground": "#98c379",
     "--card": "#2e333e",
@@ -2288,7 +2288,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#282c36",
     "--chart-5": "#61afef",
   }),
-  theme("copper", "copper", "dark", {
+  theme("copper", "Copper", "dark", {
     "--background": "#442f29",
     "--foreground": "#e7e0de",
     "--card": "#432e28",
@@ -2312,7 +2312,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#3a2823",
     "--chart-5": "#b46a55",
   }),
-  theme("graen", "graen", "dark", {
+  theme("graen", "Graen", "dark", {
     "--background": "#303c36",
     "--foreground": "#a59682",
     "--card": "#2f3b35",
@@ -2336,7 +2336,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#29332e",
     "--chart-5": "#a59682",
   }),
-  theme("cherry_blossom", "cherry blossom", "dark", {
+  theme("cherry_blossom", "Cherry Blossom", "dark", {
     "--background": "#323437",
     "--foreground": "#d1d0c5",
     "--card": "#313336",
@@ -2360,7 +2360,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#2b2c2f",
     "--chart-5": "#d65ccc",
   }),
-  theme("discord", "discord", "dark", {
+  theme("discord", "Discord", "dark", {
     "--background": "#313338",
     "--foreground": "#dcdee3",
     "--card": "#303237",
@@ -2384,7 +2384,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#2a2b30",
     "--chart-5": "#5a65ea",
   }),
-  theme("serika_dark", "serika dark", "dark", {
+  theme("serika_dark", "Serika Dark", "dark", {
     "--background": "#323437",
     "--foreground": "#d1d0c5",
     "--card": "#313336",
@@ -2408,7 +2408,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#2b2c2f",
     "--chart-5": "#e2b714",
   }),
-  theme("repose_dark", "repose dark", "dark", {
+  theme("repose_dark", "Repose Dark", "dark", {
     "--background": "#2f3338",
     "--foreground": "#d6d2bc",
     "--card": "#2e3237",
@@ -2432,7 +2432,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#282b30",
     "--chart-5": "#d6d2bc",
   }),
-  theme("rose_pine_moon", "rose pine moon", "dark", {
+  theme("rose_pine_moon", "Rose Pine Moon", "dark", {
     "--background": "#2a273f",
     "--foreground": "#e0def4",
     "--card": "#29263e",
@@ -2456,7 +2456,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#242136",
     "--chart-5": "#9ccfd8",
   }),
-  theme("blueberry_dark", "blueberry dark", "dark", {
+  theme("blueberry_dark", "Blueberry Dark", "dark", {
     "--background": "#212b42",
     "--foreground": "#91b4d5",
     "--card": "#202a41",
@@ -2480,7 +2480,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1c2538",
     "--chart-5": "#add7ff",
   }),
-  theme("oblivion", "oblivion", "dark", {
+  theme("oblivion", "Oblivion", "dark", {
     "--background": "#313231",
     "--foreground": "#f7f5f1",
     "--card": "#303130",
@@ -2504,7 +2504,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#2a2b2a",
     "--chart-5": "#a5a096",
   }),
-  theme("watermelon", "watermelon", "dark", {
+  theme("watermelon", "Watermelon", "dark", {
     "--background": "#1f4437",
     "--foreground": "#cdc6bc",
     "--card": "#1e4336",
@@ -2528,7 +2528,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1a3a2f",
     "--chart-5": "#d6686f",
   }),
-  theme("carbon", "carbon", "dark", {
+  theme("carbon", "Carbon", "dark", {
     "--background": "#313131",
     "--foreground": "#f5e6c8",
     "--card": "#303030",
@@ -2552,7 +2552,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#2a2a2a",
     "--chart-5": "#f66e0d",
   }),
-  theme("future_funk", "future funk", "dark", {
+  theme("future_funk", "Future Funk", "dark", {
     "--background": "#2e1a47",
     "--foreground": "#f7f2ea",
     "--card": "#2d1946",
@@ -2576,7 +2576,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#27163c",
     "--chart-5": "#f7f2ea",
   }),
-  theme("mint", "mint", "dark", {
+  theme("mint", "Mint", "dark", {
     "--background": "#05385b",
     "--foreground": "#edf5e1",
     "--card": "#053759",
@@ -2600,7 +2600,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#04304d",
     "--chart-5": "#5cdb95",
   }),
-  theme("sonokai", "sonokai", "dark", {
+  theme("sonokai", "Sonokai", "dark", {
     "--background": "#2c2e34",
     "--foreground": "#e2e2e3",
     "--card": "#2b2d33",
@@ -2624,7 +2624,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#25272c",
     "--chart-5": "#9ed072",
   }),
-  theme("laser", "laser", "dark", {
+  theme("laser", "Laser", "dark", {
     "--background": "#221b44",
     "--foreground": "#dbe7e8",
     "--card": "#211a43",
@@ -2648,7 +2648,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1d173a",
     "--chart-5": "#009eaf",
   }),
-  theme("viridescent", "viridescent", "dark", {
+  theme("viridescent", "Viridescent", "dark", {
     "--background": "#2c3333",
     "--foreground": "#e9f5db",
     "--card": "#2b3232",
@@ -2672,7 +2672,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#252b2b",
     "--chart-5": "#95d5b2",
   }),
-  theme("dracula", "dracula", "dark", {
+  theme("dracula", "Dracula", "dark", {
     "--background": "#282a36",
     "--foreground": "#f8f8f2",
     "--card": "#272935",
@@ -2696,7 +2696,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#22242e",
     "--chart-5": "#bd93f9",
   }),
-  theme("material", "material", "dark", {
+  theme("material", "Material", "dark", {
     "--background": "#263238",
     "--foreground": "#e6edf3",
     "--card": "#253137",
@@ -2720,7 +2720,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#202b30",
     "--chart-5": "#80cbc4",
   }),
-  theme("modern_dolch", "modern dolch", "dark", {
+  theme("modern_dolch", "Modern Dolch", "dark", {
     "--background": "#2d2e30",
     "--foreground": "#e3e6eb",
     "--card": "#2c2d2f",
@@ -2744,7 +2744,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#262729",
     "--chart-5": "#7eddd3",
   }),
-  theme("superuser", "superuser", "dark", {
+  theme("superuser", "Superuser", "dark", {
     "--background": "#262a33",
     "--foreground": "#e5f7ef",
     "--card": "#252932",
@@ -2768,7 +2768,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#20242b",
     "--chart-5": "#43ffaf",
   }),
-  theme("rudy", "rudy", "dark", {
+  theme("rudy", "Rudy", "dark", {
     "--background": "#1a2b3e",
     "--foreground": "#c9c8bf",
     "--card": "#192a3d",
@@ -2792,7 +2792,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#162535",
     "--chart-5": "#af8f5c",
   }),
-  theme("bushido", "bushido", "dark", {
+  theme("bushido", "Bushido", "dark", {
     "--background": "#242933",
     "--foreground": "#f6f0e9",
     "--card": "#232832",
@@ -2816,7 +2816,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1f232b",
     "--chart-5": "#ec4c56",
   }),
-  theme("mashu", "mashu", "dark", {
+  theme("mashu", "Mashu", "dark", {
     "--background": "#2b2b2c",
     "--foreground": "#f1e2e4",
     "--card": "#2a2a2b",
@@ -2840,7 +2840,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#252525",
     "--chart-5": "#76689a",
   }),
-  theme("nord", "nord", "dark", {
+  theme("nord", "Nord", "dark", {
     "--background": "#242933",
     "--foreground": "#d8dee9",
     "--card": "#232832",
@@ -2864,7 +2864,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1f232b",
     "--chart-5": "#88c0d0",
   }),
-  theme("bouquet", "bouquet", "dark", {
+  theme("bouquet", "Bouquet", "dark", {
     "--background": "#173f35",
     "--foreground": "#e9e0d2",
     "--card": "#173e34",
@@ -2888,7 +2888,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#14362d",
     "--chart-5": "#eaa09c",
   }),
-  theme("nebula", "nebula", "dark", {
+  theme("nebula", "Nebula", "dark", {
     "--background": "#212135",
     "--foreground": "#838686",
     "--card": "#202034",
@@ -2912,7 +2912,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1c1c2d",
     "--chart-5": "#be3c88",
   }),
-  theme("peach_blossom", "peach blossom", "dark", {
+  theme("peach_blossom", "Peach Blossom", "dark", {
     "--background": "#292929",
     "--foreground": "#fecea8",
     "--card": "#282828",
@@ -2936,7 +2936,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#232323",
     "--chart-5": "#99b898",
   }),
-  theme("80s_after_dark", "80s after dark", "dark", {
+  theme("80s_after_dark", "80s After Dark", "dark", {
     "--background": "#1b1d36",
     "--foreground": "#e1e7ec",
     "--card": "#1a1c35",
@@ -2960,7 +2960,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#17192e",
     "--chart-5": "#fca6d1",
   }),
-  theme("github", "github", "dark", {
+  theme("github", "GitHub", "dark", {
     "--background": "#212830",
     "--foreground": "#ccdae6",
     "--card": "#20272f",
@@ -2984,7 +2984,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1c2229",
     "--chart-5": "#41ce5c",
   }),
-  theme("luna", "luna", "dark", {
+  theme("luna", "Luna", "dark", {
     "--background": "#221c35",
     "--foreground": "#ffe3eb",
     "--card": "#211b34",
@@ -3008,7 +3008,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1d182d",
     "--chart-5": "#f67599",
   }),
-  theme("blue_dolphin", "blue dolphin", "dark", {
+  theme("blue_dolphin", "Blue Dolphin", "dark", {
     "--background": "#003950",
     "--foreground": "#82eaff",
     "--card": "#00384e",
@@ -3032,7 +3032,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#003044",
     "--chart-5": "#ffcefb",
   }),
-  theme("gruvbox_dark", "gruvbox dark", "dark", {
+  theme("gruvbox_dark", "Gruvbox Dark", "dark", {
     "--background": "#282828",
     "--foreground": "#ebdbb2",
     "--card": "#272727",
@@ -3056,7 +3056,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#222222",
     "--chart-5": "#d79921",
   }),
-  theme("purpleish", "purpleish", "dark", {
+  theme("purpleish", "Purpleish", "dark", {
     "--background": "#1e1e32",
     "--foreground": "#a3a3cc",
     "--card": "#1d1d31",
@@ -3080,7 +3080,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1a1a2b",
     "--chart-5": "#7a52cc",
   }),
-  theme("bliss", "bliss", "dark", {
+  theme("bliss", "Bliss", "dark", {
     "--background": "#262727",
     "--foreground": "#ffffff",
     "--card": "#252626",
@@ -3104,7 +3104,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#202121",
     "--chart-5": "#f0d3c9",
   }),
-  theme("wavez", "wavez", "dark", {
+  theme("wavez", "Wavez", "dark", {
     "--background": "#1c292f",
     "--foreground": "#e9efe6",
     "--card": "#1b282e",
@@ -3128,7 +3128,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#182328",
     "--chart-5": "#6bde3b",
   }),
-  theme("earthsong", "earthsong", "dark", {
+  theme("earthsong", "Earthsong", "dark", {
     "--background": "#292521",
     "--foreground": "#e6c7a8",
     "--card": "#282420",
@@ -3152,7 +3152,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#231f1c",
     "--chart-5": "#509452",
   }),
-  theme("monokai", "monokai", "dark", {
+  theme("monokai", "Monokai", "dark", {
     "--background": "#272822",
     "--foreground": "#e2e2dc",
     "--card": "#262721",
@@ -3176,7 +3176,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#21221d",
     "--chart-5": "#a6e22e",
   }),
-  theme("nautilus", "nautilus", "dark", {
+  theme("nautilus", "Nautilus", "dark", {
     "--background": "#132237",
     "--foreground": "#1cbaac",
     "--card": "#132136",
@@ -3200,7 +3200,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#101d2f",
     "--chart-5": "#ebb723",
   }),
-  theme("norse", "norse", "dark", {
+  theme("norse", "Norse", "dark", {
     "--background": "#242425",
     "--foreground": "#ccc2b1",
     "--card": "#232324",
@@ -3224,7 +3224,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1f1f1f",
     "--chart-5": "#2b5f6d",
   }),
-  theme("metaverse", "metaverse", "dark", {
+  theme("metaverse", "Metaverse", "dark", {
     "--background": "#232323",
     "--foreground": "#e8e8e8",
     "--card": "#222222",
@@ -3248,7 +3248,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1e1e1e",
     "--chart-5": "#d82934",
   }),
-  theme("rose_pine", "rose pine", "dark", {
+  theme("rose_pine", "Rose Pine", "dark", {
     "--background": "#1f1d27",
     "--foreground": "#e0def4",
     "--card": "#1e1c26",
@@ -3272,7 +3272,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1a1921",
     "--chart-5": "#9ccfd8",
   }),
-  theme("dev", "dev", "dark", {
+  theme("dev", "Dev", "dark", {
     "--background": "#1b2028",
     "--foreground": "#ccccb5",
     "--card": "#1a1f27",
@@ -3296,7 +3296,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#171b22",
     "--chart-5": "#23a9d5",
   }),
-  theme("horizon", "horizon", "dark", {
+  theme("horizon", "Horizon", "dark", {
     "--background": "#1c1e26",
     "--foreground": "#bbbbbb",
     "--card": "#1b1d25",
@@ -3320,7 +3320,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#181a20",
     "--chart-5": "#c4a88a",
   }),
-  theme("night_runner", "night runner", "dark", {
+  theme("night_runner", "Night Runner", "dark", {
     "--background": "#212121",
     "--foreground": "#e8e8e8",
     "--card": "#202020",
@@ -3344,7 +3344,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1c1c1c",
     "--chart-5": "#feff04",
   }),
-  theme("sunset", "sunset", "dark", {
+  theme("sunset", "Sunset", "dark", {
     "--background": "#211e24",
     "--foreground": "#f4e0c9",
     "--card": "#201d23",
@@ -3368,7 +3368,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1c1a1f",
     "--chart-5": "#f79777",
   }),
-  theme("moonlight", "moonlight", "dark", {
+  theme("moonlight", "Moonlight", "dark", {
     "--background": "#191f28",
     "--foreground": "#ccccb5",
     "--card": "#191e27",
@@ -3392,7 +3392,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#151a22",
     "--chart-5": "#c69f68",
   }),
-  theme("ishtar", "ishtar", "dark", {
+  theme("ishtar", "Ishtar", "dark", {
     "--background": "#202020",
     "--foreground": "#fae1c3",
     "--card": "#1f1f1f",
@@ -3416,7 +3416,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1b1b1b",
     "--chart-5": "#91170c",
   }),
-  theme("dark_note", "dark note", "dark", {
+  theme("dark_note", "Dark Note", "dark", {
     "--background": "#1f1f1f",
     "--foreground": "#d2dff4",
     "--card": "#1e1e1e",
@@ -3440,7 +3440,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1a1a1a",
     "--chart-5": "#f2c17b",
   }),
-  theme("drowning", "drowning", "dark", {
+  theme("drowning", "Drowning", "dark", {
     "--background": "#191826",
     "--foreground": "#9393a7",
     "--card": "#191825",
@@ -3464,7 +3464,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#151420",
     "--chart-5": "#4a6fb5",
   }),
-  theme("grape", "grape", "dark", {
+  theme("grape", "Grape", "dark", {
     "--background": "#2c003e",
     "--foreground": "#ffffff",
     "--card": "#2b003d",
@@ -3488,7 +3488,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#250035",
     "--chart-5": "#ff8f00",
   }),
-  theme("vscode", "vscode", "dark", {
+  theme("vscode", "VSCode", "dark", {
     "--background": "#1e1e1e",
     "--foreground": "#d4d4d4",
     "--card": "#1d1d1d",
@@ -3512,7 +3512,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#1a1a1a",
     "--chart-5": "#007acc",
   }),
-  theme("metropolis", "metropolis", "dark", {
+  theme("metropolis", "Metropolis", "dark", {
     "--background": "#0f1f2c",
     "--foreground": "#e4edf1",
     "--card": "#0f1e2b",
@@ -3536,7 +3536,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0d1a25",
     "--chart-5": "#56c3b7",
   }),
-  theme("alduin", "alduin", "dark", {
+  theme("alduin", "Alduin", "dark", {
     "--background": "#1c1c1c",
     "--foreground": "#f5f3ed",
     "--card": "#1b1b1b",
@@ -3560,7 +3560,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#181818",
     "--chart-5": "#dfd7af",
   }),
-  theme("olivia", "olivia", "dark", {
+  theme("olivia", "Olivia", "dark", {
     "--background": "#1c1b1d",
     "--foreground": "#f2efed",
     "--card": "#1b1a1c",
@@ -3584,7 +3584,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#181719",
     "--chart-5": "#deaf9d",
   }),
-  theme("iceberg_dark", "iceberg dark", "dark", {
+  theme("iceberg_dark", "Iceberg Dark", "dark", {
     "--background": "#161821",
     "--foreground": "#c6c8d1",
     "--card": "#161820",
@@ -3608,7 +3608,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#13141c",
     "--chart-5": "#84a0c6",
   }),
-  theme("solarized_dark", "solarized dark", "dark", {
+  theme("solarized_dark", "Solarized Dark", "dark", {
     "--background": "#002b36",
     "--foreground": "#268bd2",
     "--card": "#002a35",
@@ -3632,7 +3632,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#00252e",
     "--chart-5": "#859900",
   }),
-  theme("dark_magic_girl", "dark magic girl", "dark", {
+  theme("dark_magic_girl", "Dark Magic Girl", "dark", {
     "--background": "#091f2c",
     "--foreground": "#a288d9",
     "--card": "#091e2b",
@@ -3656,7 +3656,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#081a25",
     "--chart-5": "#f5b1cc",
   }),
-  theme("cyberspace", "cyberspace", "dark", {
+  theme("cyberspace", "Cyberspace", "dark", {
     "--background": "#181c18",
     "--foreground": "#c2fbe1",
     "--card": "#181b18",
@@ -3680,7 +3680,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#141814",
     "--chart-5": "#00ce7c",
   }),
-  theme("terminal", "terminal", "dark", {
+  theme("terminal", "Terminal", "dark", {
     "--background": "#191a1b",
     "--foreground": "#e7eae0",
     "--card": "#19191a",
@@ -3704,7 +3704,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#151617",
     "--chart-5": "#79a617",
   }),
-  theme("chaos_theory", "chaos theory", "dark", {
+  theme("chaos_theory", "Chaos Theory", "dark", {
     "--background": "#141221",
     "--foreground": "#dde5ed",
     "--card": "#141220",
@@ -3728,7 +3728,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#110f1c",
     "--chart-5": "#fd77d7",
   }),
-  theme("joker", "joker", "dark", {
+  theme("joker", "Joker", "dark", {
     "--background": "#1a0e25",
     "--foreground": "#e9e2f5",
     "--card": "#190e24",
@@ -3752,7 +3752,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#160c1f",
     "--chart-5": "#99de1e",
   }),
-  theme("dots", "dots", "dark", {
+  theme("dots", "Dots", "dark", {
     "--background": "#121520",
     "--foreground": "#ffffff",
     "--card": "#12151f",
@@ -3776,7 +3776,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0f121b",
     "--chart-5": "#ffffff",
   }),
-  theme("everblush", "everblush", "dark", {
+  theme("everblush", "Everblush", "dark", {
     "--background": "#141b1e",
     "--foreground": "#dadada",
     "--card": "#141a1d",
@@ -3800,7 +3800,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#11171a",
     "--chart-5": "#8ccf7e",
   }),
-  theme("miami_nights", "miami nights", "dark", {
+  theme("miami_nights", "Miami Nights", "dark", {
     "--background": "#18181a",
     "--foreground": "#ffffff",
     "--card": "#181819",
@@ -3824,7 +3824,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#141416",
     "--chart-5": "#e4609b",
   }),
-  theme("aether", "aether", "dark", {
+  theme("aether", "Aether", "dark", {
     "--background": "#101820",
     "--foreground": "#eedaea",
     "--card": "#10181f",
@@ -3848,7 +3848,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0e141b",
     "--chart-5": "#eedaea",
   }),
-  theme("pulse", "pulse", "dark", {
+  theme("pulse", "Pulse", "dark", {
     "--background": "#181818",
     "--foreground": "#e5f4f4",
     "--card": "#181818",
@@ -3872,7 +3872,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#141414",
     "--chart-5": "#17b8bd",
   }),
-  theme("anti_hero", "anti hero", "dark", {
+  theme("anti_hero", "Anti Hero", "dark", {
     "--background": "#00002e",
     "--foreground": "#f1deef",
     "--card": "#00002d",
@@ -3896,7 +3896,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#000027",
     "--chart-5": "#ffadad",
   }),
-  theme("ryujinscales", "ryujinscales", "dark", {
+  theme("ryujinscales", "Ryujinscales", "dark", {
     "--background": "#081426",
     "--foreground": "#ffe4bc",
     "--card": "#081425",
@@ -3920,7 +3920,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#071120",
     "--chart-5": "#f17754",
   }),
-  theme("floret", "floret", "dark", {
+  theme("floret", "Floret", "dark", {
     "--background": "#00272c",
     "--foreground": "#e5e5e5",
     "--card": "#00262b",
@@ -3944,7 +3944,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#002125",
     "--chart-5": "#ffdd6d",
   }),
-  theme("terror_below", "terror below", "dark", {
+  theme("terror_below", "Terror Below", "dark", {
     "--background": "#0b1e1a",
     "--foreground": "#dceae5",
     "--card": "#0b1d19",
@@ -3968,7 +3968,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#091a16",
     "--chart-5": "#66ac92",
   }),
-  theme("tron_orange", "tron orange", "dark", {
+  theme("tron_orange", "Tron Orange", "dark", {
     "--background": "#0d1c1c",
     "--foreground": "#ffffff",
     "--card": "#0d1b1b",
@@ -3992,7 +3992,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0b1818",
     "--chart-5": "#f0e800",
   }),
-  theme("aurora", "aurora", "dark", {
+  theme("aurora", "Aurora", "dark", {
     "--background": "#011926",
     "--foreground": "#ffffff",
     "--card": "#011925",
@@ -4016,7 +4016,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#011520",
     "--chart-5": "#00e980",
   }),
-  theme("spiderman", "spiderman", "dark", {
+  theme("spiderman", "Spiderman", "dark", {
     "--background": "#0d1219",
     "--foreground": "#f0f0f0",
     "--card": "#0d1219",
@@ -4040,7 +4040,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0b0f15",
     "--chart-5": "#e23636",
   }),
-  theme("red_dragon", "red dragon", "dark", {
+  theme("red_dragon", "Red Dragon", "dark", {
     "--background": "#1a0b0c",
     "--foreground": "#4a4d4e",
     "--card": "#190b0c",
@@ -4064,7 +4064,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#16090a",
     "--chart-5": "#ff3a32",
   }),
-  theme("dark", "dark", "dark", {
+  theme("dark", "Dark", "dark", {
     "--background": "#111111",
     "--foreground": "#eeeeee",
     "--card": "#111111",
@@ -4088,7 +4088,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0e0e0e",
     "--chart-5": "#eeeeee",
   }),
-  theme("rgb", "rgb", "dark", {
+  theme("rgb", "RGB", "dark", {
     "--background": "#111111",
     "--foreground": "#eeeeee",
     "--card": "#111111",
@@ -4112,7 +4112,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0e0e0e",
     "--chart-5": "#eeeeee",
   }),
-  theme("vesper", "vesper", "dark", {
+  theme("vesper", "Vesper", "dark", {
     "--background": "#101010",
     "--foreground": "#ffffff",
     "--card": "#101010",
@@ -4136,7 +4136,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0e0e0e",
     "--chart-5": "#ffc799",
   }),
-  theme("voc", "voc", "dark", {
+  theme("voc", "VOC", "dark", {
     "--background": "#190618",
     "--foreground": "#eeeae4",
     "--card": "#190618",
@@ -4160,7 +4160,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#150514",
     "--chart-5": "#e0caac",
   }),
-  theme("midnight", "midnight", "dark", {
+  theme("midnight", "Midnight", "dark", {
     "--background": "#0b0e13",
     "--foreground": "#9fadc6",
     "--card": "#0b0e13",
@@ -4184,7 +4184,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#090c10",
     "--chart-5": "#60759f",
   }),
-  theme("mountain", "mountain", "dark", {
+  theme("mountain", "Mountain", "dark", {
     "--background": "#0f0f0f",
     "--foreground": "#e7e7e7",
     "--card": "#0f0f0f",
@@ -4208,7 +4208,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0d0d0d",
     "--chart-5": "#e7e7e7",
   }),
-  theme("arch", "arch", "dark", {
+  theme("arch", "Arch", "dark", {
     "--background": "#0c0d11",
     "--foreground": "#f6f5f5",
     "--card": "#0c0d11",
@@ -4232,7 +4232,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0a0b0e",
     "--chart-5": "#7ebab5",
   }),
-  theme("incognito", "incognito", "dark", {
+  theme("incognito", "Incognito", "dark", {
     "--background": "#0e0e0e",
     "--foreground": "#c6c6c6",
     "--card": "#0e0e0e",
@@ -4256,7 +4256,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0c0c0c",
     "--chart-5": "#ff9900",
   }),
-  theme("terra", "terra", "dark", {
+  theme("terra", "Terra", "dark", {
     "--background": "#0c100e",
     "--foreground": "#f0edd1",
     "--card": "#0c100e",
@@ -4280,7 +4280,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0a0e0c",
     "--chart-5": "#89c559",
   }),
-  theme("trance", "trance", "dark", {
+  theme("trance", "Trance", "dark", {
     "--background": "#00021b",
     "--foreground": "#ffffff",
     "--card": "#00021a",
@@ -4304,7 +4304,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#000217",
     "--chart-5": "#e51376",
   }),
-  theme("solarized_osaka", "solarized osaka", "dark", {
+  theme("solarized_osaka", "Solarized Osaka", "dark", {
     "--background": "#00141a",
     "--foreground": "#eee8d5",
     "--card": "#001419",
@@ -4328,7 +4328,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#001116",
     "--chart-5": "#859900",
   }),
-  theme("iv_spade", "iv spade", "dark", {
+  theme("iv_spade", "IV Spade", "dark", {
     "--background": "#0c0c0c",
     "--foreground": "#d3c2c3",
     "--card": "#0c0c0c",
@@ -4352,7 +4352,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0a0a0a",
     "--chart-5": "#b7976a",
   }),
-  theme("hammerhead", "hammerhead", "dark", {
+  theme("hammerhead", "Hammerhead", "dark", {
     "--background": "#030613",
     "--foreground": "#e2f1f5",
     "--card": "#030613",
@@ -4376,7 +4376,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#030510",
     "--chart-5": "#4fcdb9",
   }),
-  theme("phantom", "phantom", "dark", {
+  theme("phantom", "Phantom", "dark", {
     "--background": "#000011",
     "--foreground": "#c0caf5",
     "--card": "#000011",
@@ -4400,7 +4400,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#00000e",
     "--chart-5": "#7aa2f7",
   }),
-  theme("fire", "fire", "dark", {
+  theme("fire", "Fire", "dark", {
     "--background": "#0f0000",
     "--foreground": "#ffffff",
     "--card": "#0f0000",
@@ -4424,7 +4424,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#0d0000",
     "--chart-5": "#b31313",
   }),
-  theme("stealth", "stealth", "dark", {
+  theme("stealth", "Stealth", "dark", {
     "--background": "#010203",
     "--foreground": "#383e42",
     "--card": "#010203",
@@ -4448,7 +4448,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#010203",
     "--chart-5": "#383e42",
   }),
-  theme("husqy", "husqy", "dark", {
+  theme("husqy", "Husqy", "dark", {
     "--background": "#000000",
     "--foreground": "#ebd7ff",
     "--card": "#000000",
@@ -4472,7 +4472,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#000000",
     "--chart-5": "#c58aff",
   }),
-  theme("matrix", "matrix", "dark", {
+  theme("matrix", "Matrix", "dark", {
     "--background": "#000000",
     "--foreground": "#d1ffcd",
     "--card": "#000000",
@@ -4496,7 +4496,7 @@ export const THEMES: ThemePalette[] = [
     "--chart-4": "#000000",
     "--chart-5": "#15ff00",
   }),
-  theme("shadow", "shadow", "dark", {
+  theme("shadow", "Shadow", "dark", {
     "--background": "#000000",
     "--foreground": "#eeeeee",
     "--card": "#000000",
@@ -4519,6 +4519,390 @@ export const THEMES: ThemePalette[] = [
     "--chart-3": "#000000",
     "--chart-4": "#000000",
     "--chart-5": "#eeeeee",
+  }),
+  theme("amber", "Amber", "dark", {
+    "--background": "#282a36",
+    "--foreground": "#f8f8f2",
+    "--card": "#272935",
+    "--popover": "#272935",
+    "--primary": "#ffb86c",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#2e303e",
+    "--secondary-foreground": "#f8f8f2",
+    "--muted": "#22242e",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#2e303e",
+    "--accent-foreground": "#f8f8f2",
+    "--destructive": "#f87171",
+    "--border": "#22242e",
+    "--input": "#22242e",
+    "--ring": "#ffb86c",
+    "--zt-sub": "#ff79c6",
+    "--chart-1": "#ffb86c",
+    "--chart-2": "#ff79c6",
+    "--chart-3": "#2e303e",
+    "--chart-4": "#22242e",
+    "--chart-5": "#ffb86c",
+  }),
+  theme("arctic", "Arctic", "light", {
+    "--background": "#f0f4f8",
+    "--foreground": "#2e3440",
+    "--card": "#ebeff3",
+    "--popover": "#ebeff3",
+    "--primary": "#5e81ac",
+    "--primary-foreground": "#ffffff",
+    "--secondary": "#ffffff",
+    "--secondary-foreground": "#2e3440",
+    "--muted": "#cccfd3",
+    "--muted-foreground": "#9ca3af",
+    "--accent": "#ffffff",
+    "--accent-foreground": "#2e3440",
+    "--destructive": "#dc2626",
+    "--border": "#cccfd3",
+    "--input": "#cccfd3",
+    "--ring": "#5e81ac",
+    "--zt-sub": "#81a1c1",
+    "--chart-1": "#5e81ac",
+    "--chart-2": "#81a1c1",
+    "--chart-3": "#ffffff",
+    "--chart-4": "#cccfd3",
+    "--chart-5": "#5e81ac",
+  }),
+  theme("ayu_light", "Ayu Light", "light", {
+    "--background": "#fafafa",
+    "--foreground": "#5c6773",
+    "--card": "#f5f5f5",
+    "--popover": "#f5f5f5",
+    "--primary": "#ff8f40",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#ffffff",
+    "--secondary-foreground": "#5c6773",
+    "--muted": "#d5d5d5",
+    "--muted-foreground": "#9ca3af",
+    "--accent": "#ffffff",
+    "--accent-foreground": "#5c6773",
+    "--destructive": "#dc2626",
+    "--border": "#d5d5d5",
+    "--input": "#d5d5d5",
+    "--ring": "#ff8f40",
+    "--zt-sub": "#364a82",
+    "--chart-1": "#ff8f40",
+    "--chart-2": "#364a82",
+    "--chart-3": "#ffffff",
+    "--chart-4": "#d5d5d5",
+    "--chart-5": "#ff8f40",
+  }),
+  theme("ayu_mirage", "Ayu Mirage", "dark", {
+    "--background": "#1f2430",
+    "--foreground": "#cbccc6",
+    "--card": "#1e232f",
+    "--popover": "#1e232f",
+    "--primary": "#ffcc66",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#242937",
+    "--secondary-foreground": "#cbccc6",
+    "--muted": "#1a1f29",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#242937",
+    "--accent-foreground": "#cbccc6",
+    "--destructive": "#f87171",
+    "--border": "#1a1f29",
+    "--input": "#1a1f29",
+    "--ring": "#ffcc66",
+    "--zt-sub": "#364a82",
+    "--chart-1": "#ffcc66",
+    "--chart-2": "#364a82",
+    "--chart-3": "#242937",
+    "--chart-4": "#1a1f29",
+    "--chart-5": "#ffcc66",
+  }),
+  theme("catppuccin_latte", "Catppuccin Latte", "light", {
+    "--background": "#eff1f5",
+    "--foreground": "#4c4f69",
+    "--card": "#eaecf0",
+    "--popover": "#eaecf0",
+    "--primary": "#8839ef",
+    "--primary-foreground": "#ffffff",
+    "--secondary": "#ffffff",
+    "--secondary-foreground": "#4c4f69",
+    "--muted": "#cbcdd0",
+    "--muted-foreground": "#9ca3af",
+    "--accent": "#ffffff",
+    "--accent-foreground": "#4c4f69",
+    "--destructive": "#dc2626",
+    "--border": "#cbcdd0",
+    "--input": "#cbcdd0",
+    "--ring": "#8839ef",
+    "--zt-sub": "#7287fd",
+    "--chart-1": "#8839ef",
+    "--chart-2": "#7287fd",
+    "--chart-3": "#ffffff",
+    "--chart-4": "#cbcdd0",
+    "--chart-5": "#8839ef",
+  }),
+  theme("catppuccin_mocha", "Catppuccin Mocha", "dark", {
+    "--background": "#1e1e2e",
+    "--foreground": "#cdd6f4",
+    "--card": "#1d1d2d",
+    "--popover": "#1d1d2d",
+    "--primary": "#cba6f7",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#232335",
+    "--secondary-foreground": "#cdd6f4",
+    "--muted": "#1a1a27",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#232335",
+    "--accent-foreground": "#cdd6f4",
+    "--destructive": "#f87171",
+    "--border": "#1a1a27",
+    "--input": "#1a1a27",
+    "--ring": "#cba6f7",
+    "--zt-sub": "#89b4fa",
+    "--chart-1": "#cba6f7",
+    "--chart-2": "#89b4fa",
+    "--chart-3": "#232335",
+    "--chart-4": "#1a1a27",
+    "--chart-5": "#cba6f7",
+  }),
+  theme("cobalt", "Cobalt", "dark", {
+    "--background": "#132738",
+    "--foreground": "#ffffff",
+    "--card": "#132637",
+    "--popover": "#132637",
+    "--primary": "#f0c674",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#162d40",
+    "--secondary-foreground": "#ffffff",
+    "--muted": "#102130",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#162d40",
+    "--accent-foreground": "#ffffff",
+    "--destructive": "#f87171",
+    "--border": "#102130",
+    "--input": "#102130",
+    "--ring": "#f0c674",
+    "--zt-sub": "#81a2be",
+    "--chart-1": "#f0c674",
+    "--chart-2": "#81a2be",
+    "--chart-3": "#162d40",
+    "--chart-4": "#102130",
+    "--chart-5": "#f0c674",
+  }),
+  theme("everforest_light", "Everforest Light", "light", {
+    "--background": "#f2f1ec",
+    "--foreground": "#5c6a72",
+    "--card": "#edece7",
+    "--popover": "#edece7",
+    "--primary": "#a7c080",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#ffffff",
+    "--secondary-foreground": "#5c6a72",
+    "--muted": "#cecdc9",
+    "--muted-foreground": "#9ca3af",
+    "--accent": "#ffffff",
+    "--accent-foreground": "#5c6a72",
+    "--destructive": "#dc2626",
+    "--border": "#cecdc9",
+    "--input": "#cecdc9",
+    "--ring": "#a7c080",
+    "--zt-sub": "#e67e80",
+    "--chart-1": "#a7c080",
+    "--chart-2": "#e67e80",
+    "--chart-3": "#ffffff",
+    "--chart-4": "#cecdc9",
+    "--chart-5": "#a7c080",
+  }),
+  theme("everforest_dark", "Everforest Dark", "dark", {
+    "--background": "#2d353b",
+    "--foreground": "#d3c6aa",
+    "--card": "#2c343a",
+    "--popover": "#2c343a",
+    "--primary": "#a7c080",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#343d44",
+    "--secondary-foreground": "#d3c6aa",
+    "--muted": "#262d32",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#343d44",
+    "--accent-foreground": "#d3c6aa",
+    "--destructive": "#f87171",
+    "--border": "#262d32",
+    "--input": "#262d32",
+    "--ring": "#a7c080",
+    "--zt-sub": "#e67e80",
+    "--chart-1": "#a7c080",
+    "--chart-2": "#e67e80",
+    "--chart-3": "#343d44",
+    "--chart-4": "#262d32",
+    "--chart-5": "#a7c080",
+  }),
+  theme("kanagawa", "Kanagawa", "dark", {
+    "--background": "#1f1f28",
+    "--foreground": "#dcd7ba",
+    "--card": "#1e1e27",
+    "--popover": "#1e1e27",
+    "--primary": "#dca561",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#24242e",
+    "--secondary-foreground": "#dcd7ba",
+    "--muted": "#1a1a22",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#24242e",
+    "--accent-foreground": "#dcd7ba",
+    "--destructive": "#f87171",
+    "--border": "#1a1a22",
+    "--input": "#1a1a22",
+    "--ring": "#dca561",
+    "--zt-sub": "#7e9cd8",
+    "--chart-1": "#dca561",
+    "--chart-2": "#7e9cd8",
+    "--chart-3": "#24242e",
+    "--chart-4": "#1a1a22",
+    "--chart-5": "#dca561",
+  }),
+  theme("material_dark_light", "Material Dark Light", "dark", {
+    "--background": "#303030",
+    "--foreground": "#eeffff",
+    "--card": "#2f2f2f",
+    "--popover": "#2f2f2f",
+    "--primary": "#82aaff",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#373737",
+    "--secondary-foreground": "#eeffff",
+    "--muted": "#292929",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#373737",
+    "--accent-foreground": "#eeffff",
+    "--destructive": "#f87171",
+    "--border": "#292929",
+    "--input": "#292929",
+    "--ring": "#82aaff",
+    "--zt-sub": "#c792ea",
+    "--chart-1": "#82aaff",
+    "--chart-2": "#c792ea",
+    "--chart-3": "#373737",
+    "--chart-4": "#292929",
+    "--chart-5": "#82aaff",
+  }),
+  theme("neon", "Neon", "dark", {
+    "--background": "#1a1a2e",
+    "--foreground": "#e0e0e0",
+    "--card": "#19192d",
+    "--popover": "#19192d",
+    "--primary": "#00ff9f",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#1e1e35",
+    "--secondary-foreground": "#e0e0e0",
+    "--muted": "#161627",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#1e1e35",
+    "--accent-foreground": "#e0e0e0",
+    "--destructive": "#f87171",
+    "--border": "#161627",
+    "--input": "#161627",
+    "--ring": "#00ff9f",
+    "--zt-sub": "#ff6ac1",
+    "--chart-1": "#00ff9f",
+    "--chart-2": "#ff6ac1",
+    "--chart-3": "#1e1e35",
+    "--chart-4": "#161627",
+    "--chart-5": "#00ff9f",
+  }),
+  theme("ocean_breeze", "Ocean Breeze", "dark", {
+    "--background": "#1b2838",
+    "--foreground": "#c0c5ce",
+    "--card": "#1a2737",
+    "--popover": "#1a2737",
+    "--primary": "#88c0d0",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#1f2e40",
+    "--secondary-foreground": "#c0c5ce",
+    "--muted": "#172230",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#1f2e40",
+    "--accent-foreground": "#c0c5ce",
+    "--destructive": "#f87171",
+    "--border": "#172230",
+    "--input": "#172230",
+    "--ring": "#88c0d0",
+    "--zt-sub": "#81a1c1",
+    "--chart-1": "#88c0d0",
+    "--chart-2": "#81a1c1",
+    "--chart-3": "#1f2e40",
+    "--chart-4": "#172230",
+    "--chart-5": "#88c0d0",
+  }),
+  theme("one_light", "One Light", "light", {
+    "--background": "#fafafa",
+    "--foreground": "#383a42",
+    "--card": "#f5f5f5",
+    "--popover": "#f5f5f5",
+    "--primary": "#4078f2",
+    "--primary-foreground": "#ffffff",
+    "--secondary": "#ffffff",
+    "--secondary-foreground": "#383a42",
+    "--muted": "#d5d5d5",
+    "--muted-foreground": "#9ca3af",
+    "--accent": "#ffffff",
+    "--accent-foreground": "#383a42",
+    "--destructive": "#dc2626",
+    "--border": "#d5d5d5",
+    "--input": "#d5d5d5",
+    "--ring": "#4078f2",
+    "--zt-sub": "#a626a4",
+    "--chart-1": "#4078f2",
+    "--chart-2": "#a626a4",
+    "--chart-3": "#ffffff",
+    "--chart-4": "#d5d5d5",
+    "--chart-5": "#4078f2",
+  }),
+  theme("sakura", "Sakura", "light", {
+    "--background": "#fdf0ed",
+    "--foreground": "#575268",
+    "--card": "#f8ebe8",
+    "--popover": "#f8ebe8",
+    "--primary": "#d81159",
+    "--primary-foreground": "#ffffff",
+    "--secondary": "#ffffff",
+    "--secondary-foreground": "#575268",
+    "--muted": "#d7ccc9",
+    "--muted-foreground": "#9ca3af",
+    "--accent": "#ffffff",
+    "--accent-foreground": "#575268",
+    "--destructive": "#dc2626",
+    "--border": "#d7ccc9",
+    "--input": "#d7ccc9",
+    "--ring": "#d81159",
+    "--zt-sub": "#797fba",
+    "--chart-1": "#d81159",
+    "--chart-2": "#797fba",
+    "--chart-3": "#ffffff",
+    "--chart-4": "#d7ccc9",
+    "--chart-5": "#d81159",
+  }),
+  theme("tokyo_night", "Tokyo Night", "dark", {
+    "--background": "#1a1b26",
+    "--foreground": "#c0caf5",
+    "--card": "#191a25",
+    "--popover": "#191a25",
+    "--primary": "#7aa2f7",
+    "--primary-foreground": "#1a1a1a",
+    "--secondary": "#1e1f2c",
+    "--secondary-foreground": "#c0caf5",
+    "--muted": "#161720",
+    "--muted-foreground": "#6b7280",
+    "--accent": "#1e1f2c",
+    "--accent-foreground": "#c0caf5",
+    "--destructive": "#f87171",
+    "--border": "#161720",
+    "--input": "#161720",
+    "--ring": "#7aa2f7",
+    "--zt-sub": "#bb9af7",
+    "--chart-1": "#7aa2f7",
+    "--chart-2": "#bb9af7",
+    "--chart-3": "#1e1f2c",
+    "--chart-4": "#161720",
+    "--chart-5": "#7aa2f7",
   }),
 ];
 
