@@ -79,6 +79,7 @@
 @import "@fontsource-variable/victor-mono";
 @import "@fontsource-variable/work-sans";
 @import "@fontsource/atkinson-hyperlegible";
+@import "@fontsource/anonymous-pro";
 @import "@fontsource/cal-sans";
 @import "@fontsource/comic-neue";
 @import "@fontsource/courier-prime";
@@ -125,6 +126,8 @@
 @theme inline {
   --font-advent-pro: "Advent Pro Variable", ui-sans-serif, system-ui, sans-serif;
   --font-alfa-slab-one: "Alfa Slab One", ui-serif, Georgia, serif;
+  --font-anonymous-pro: "Anonymous Pro", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-barlow: "Barlow", ui-sans-serif, system-ui, sans-serif;
   --font-archivo: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
   --font-asap: "Asap Variable", ui-sans-serif, system-ui, sans-serif;
   --font-atkinson-hyperlegible: "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
@@ -136,6 +139,8 @@
   --font-cascadia-code: "Cascadia Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-caveat: "Caveat Variable", cursive, ui-sans-serif, system-ui, sans-serif;
   --font-chivo: "Chivo Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-coming-soon: "Coming Soon", cursive, ui-sans-serif, system-ui, sans-serif;
+  --font-comfortaa: "Comfortaa", ui-sans-serif, system-ui, sans-serif;
   --font-comic-neue: "Comic Neue", cursive, ui-sans-serif, system-ui, sans-serif;
   --font-commit-mono: "CommitMono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-courier-prime: "Courier Prime", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
