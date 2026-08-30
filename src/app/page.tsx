@@ -163,6 +163,8 @@ export default function TestPage() {
           });
         } else if (res.reason === "guest") {
           setSaveState("guest");
+        } else if (res.reason === "implausible") {
+          setSaveState("invalid");
         } else {
           setSaveState("failed");
         }

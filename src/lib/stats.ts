@@ -115,6 +115,7 @@ export function isPlausible(result: {
   variant: number;
   mode: string;
   timeline: TimelinePoint[];
+  chars?: { correct: number; incorrect: number; extra: number; missed: number };
 }): boolean {
   if (!Number.isFinite(result.wpm) || result.wpm < 0 || result.wpm > 400)
     return false;
@@ -125,5 +126,22 @@ export function isPlausible(result: {
   const minSeconds = result.mode === "time" ? Math.min(result.variant, 10) : 3;
   if (result.timeline.length > 0 && result.timeline[result.timeline.length - 1].t < minSeconds - 1)
     return false;
+
+  // AFK detection: reject tests where barely any real typing happened
+  if (result.chars) {
+    const { correct, incorrect } = result.chars;
+    const totalKeystrokes = correct + incorrect;
+    const lastT = result.timeline.length > 0 ? result.timeline[result.timeline.length - 1].t : 0;
+
+    // Essentially no keystrokes at all
+    if (totalKeystrokes < 5) return false;
+
+    // Very low keystroke rate (< 1 char/sec sustained) — likely AFK
+    if (lastT >= 5 && totalKeystrokes / lastT < 1) return false;
+
+    // WPM < 5 with meaningful duration — not actually typing
+    if (lastT >= 5 && result.wpm < 5) return false;
+  }
+
   return true;
 }
