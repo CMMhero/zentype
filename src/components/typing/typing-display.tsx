@@ -179,7 +179,7 @@ const Word = React.memo(function Word({
 
   if (state === "future") {
     return (
-      <span className={cn(cls, "text-secondary")} aria-hidden>
+      <span className={cn(cls, "text-muted")} aria-hidden>
         {word}
       </span>
     );
@@ -192,7 +192,7 @@ const Word = React.memo(function Word({
         {Array.from(word).map((c, i) => {
           const ok = t[i] === c;
           const color = !t[i]
-            ? "text-secondary"
+            ? "text-muted"
             : blindMode || ok
               ? "text-foreground"
               : "text-destructive";
@@ -228,7 +228,7 @@ const Word = React.memo(function Word({
         const typedC = t[i];
         const color =
           typedC === undefined
-            ? "text-secondary"
+            ? "text-muted"
             : typedC === c || blindMode
               ? "text-foreground"
               : "text-destructive";
