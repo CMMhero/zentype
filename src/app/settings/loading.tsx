@@ -8,7 +8,7 @@ import {
 
 export default function SettingsLoading() {
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       {/* Header — fully rendered, matches real Button sizing */}
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
@@ -55,7 +55,7 @@ export default function SettingsLoading() {
             </CardContent>
           </Card>
 
-          <Card className="mt-4 w-full py-4">
+          <Card className="w-full py-4">
             <CardHeader className="px-4 pb-0">
               <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">
                 <IconDeviceGamepad2 className="size-4" /> typing rules

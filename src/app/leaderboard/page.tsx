@@ -114,7 +114,7 @@ function LeaderboardContent() {
   const myRankItem = activeRankings.find((r) => r.userId === user?.id) ?? null;
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconTrophyFilled className="text-primary size-5" />
