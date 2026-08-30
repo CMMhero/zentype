@@ -51,6 +51,38 @@ const StreakBadge = React.forwardRef<HTMLDivElement, StreakBadgeProps>(
   ) => {
     const streakLength = length ?? 0
 
+    // GitHub-style intensity: 0=none, 1-2=low, 3-6=mid-low, 7-13=mid, 14-29=high, 30+=max
+    const streakLevel =
+      streakLength === 0
+        ? 0
+        : streakLength <= 2
+          ? 1
+          : streakLength <= 6
+            ? 2
+            : streakLength <= 13
+              ? 3
+              : streakLength <= 29
+                ? 4
+                : 5
+
+    const flameColors: Record<number, string> = {
+      0: "text-muted-foreground",
+      1: "text-amber-300",
+      2: "text-amber-400",
+      3: "text-amber-500",
+      4: "text-orange-500",
+      5: "text-red-500",
+    }
+
+    const bgColors: Record<number, string> = {
+      0: "",
+      1: "bg-amber-300/5 border-amber-300/20",
+      2: "bg-amber-400/8 border-amber-400/25",
+      3: "bg-amber-500/10 border-amber-500/30",
+      4: "bg-orange-500/10 border-orange-500/30",
+      5: "bg-red-500/10 border-red-500/30",
+    }
+
     const frequencyLabel = {
       daily: "day",
       weekly: "week",
@@ -89,12 +121,12 @@ const StreakBadge = React.forwardRef<HTMLDivElement, StreakBadgeProps>(
         ref={ref}
         role="status"
         aria-label={ariaLabel}
-        className={cn(streakBadgeVariants({ size }), className)}
+        className={cn(streakBadgeVariants({ size }), bgColors[streakLevel], className)}
         {...props}
       >
         {icon ?? (
           <IconFlame
-            className={cn(iconSize, "text-primary shrink-0")}
+            className={cn(iconSize, "shrink-0", flameColors[streakLevel])}
             aria-hidden="true"
           />
         )}
