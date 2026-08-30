@@ -4,19 +4,21 @@ export type CaretStyle = "line" | "block" | "underline" | "off";
 export type FontSizeKey = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 export type SoundVariant = "click" | "thock" | "beep";
 export type FontFamily =
-  | "anonymous-pro" | "archivo" | "barlow" | "bricolage-grotesque" | "bitter"
-  | "cal-sans" | "cabin" | "cascadia-code" | "comic-neue" | "commit-mono"
-  | "crimson-pro" | "dm-sans" | "domine" | "exo-2" | "figtree" | "fira-code" | "fira-sans"
-  | "geist" | "geist-mono" | "google-sans"
-  | "ibm-plex-mono" | "ibm-plex-sans" | "inconsolata" | "inter"
-  | "jetbrains-mono" | "josefin-sans" | "karla" | "lato" | "lexend" | "lora" | "manrope"
-  | "merriweather" | "mona-sans" | "montserrat" | "noto-sans" | "noto-serif"
-  | "nunito" | "nunito-sans" | "open-sans" | "oswald" | "outfit"
-  | "playfair-display" | "plus-jakarta-sans" | "poppins" | "pt-sans" | "pt-serif"
-  | "quicksand" | "raleway" | "red-hat-display" | "red-hat-mono"
-  | "roboto-flex" | "roboto-mono" | "rubik"
-  | "sora" | "source-code-pro" | "space-grotesk"
-  | "space-mono" | "titillium-web" | "ubuntu-mono" | "urbanist"
+  | "advent-pro" | "alfa-slab-one" | "anonymous-pro" | "archivo" | "asap"
+  | "atkinson-hyperlegible" | "baloo-2" | "barlow" | "bitter" | "bricolage-grotesque"
+  | "cabin" | "cal-sans" | "cascadia-code" | "caveat" | "chivo" | "comic-neue"
+  | "commit-mono" | "comfortaa" | "coming-soon" | "courier-prime" | "crimson-pro"
+  | "dancing-script" | "dm-sans" | "domine" | "exo-2" | "figtree" | "fira-code"
+  | "fira-sans" | "fredoka" | "geist" | "geist-mono" | "gelasio" | "google-sans"
+  | "ibm-plex-mono" | "ibm-plex-sans" | "inconsolata" | "inter" | "itim" | "iosevka"
+  | "jetbrains-mono" | "josefin-sans" | "karla" | "lato" | "lexend" | "lobster" | "lora"
+  | "manrope" | "merriweather" | "mona-sans" | "montserrat" | "noto-sans" | "noto-serif"
+  | "nunito" | "nunito-sans" | "opendyslexic" | "open-sans" | "oswald" | "outfit"
+  | "oxygen" | "pacifico" | "petrona" | "playfair-display" | "plus-jakarta-sans"
+  | "poppins" | "pt-sans" | "pt-serif" | "quicksand" | "raleway" | "red-hat-display"
+  | "red-hat-mono" | "roboto" | "roboto-flex" | "roboto-mono" | "roboto-slab" | "rubik"
+  | "sarabun" | "shantell-sans" | "sora" | "source-code-pro" | "space-grotesk"
+  | "space-mono" | "titillium-web" | "ubuntu" | "ubuntu-mono" | "urbanist"
   | "victor-mono" | "work-sans";
 
 export interface SoundSettings {
