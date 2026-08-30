@@ -267,6 +267,7 @@ export default function TestPage() {
   }, []);
 
   const inputEl = useRef<HTMLInputElement>(null);
+  const mobileBackspaceRef = useRef(false);
 
   useEffect(() => {
     inputEl.current?.focus({ preventScroll: true });
@@ -310,6 +311,7 @@ export default function TestPage() {
           const printable = e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey;
           if (printable) return;
           if (!e.repeat) {
+            if (e.key === "Backspace") mobileBackspaceRef.current = true;
             window.dispatchEvent(new KeyboardEvent("keydown", { key: e.key, code: e.code, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey }));
           }
         }}
@@ -317,10 +319,17 @@ export default function TestPage() {
           // Mobile software keyboards route characters through onInput.
           // This is the single path for printable chars on mobile — onKeyDown skips them.
           if (!isMobile) return;
-          const val = (e.target as HTMLInputElement).value;
+          const input = e.target as HTMLInputElement;
+          const val = input.value;
+          // Backspace already handled via onKeyDown — just clear the input.
+          if (mobileBackspaceRef.current) {
+            mobileBackspaceRef.current = false;
+            input.value = "";
+            return;
+          }
           if (val.length === 0) return;
           // Clear the input so it stays hidden
-          (e.target as HTMLInputElement).value = "";
+          input.value = "";
           for (const ch of val) {
             window.dispatchEvent(new KeyboardEvent("keydown", { key: ch }));
             window.dispatchEvent(new KeyboardEvent("keyup", { key: ch }));
