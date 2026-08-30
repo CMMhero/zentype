@@ -10,7 +10,7 @@ const HelpDialog = dynamic(() => import("~/components/layout/help-dialog").then(
 import {
   IconCommand, IconKeyboardFilled, IconLogout,
   IconSettingsFilled, IconTrophyFilled, IconUserFilled,
-  IconBrandGithub, IconBrandDiscord,
+  IconBrandGithub,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -174,9 +174,6 @@ export function AppShell({
           <span className="flex items-center gap-3">
             <a href="https://github.com/CMMhero/ZenType" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="GitHub">
               <IconBrandGithub className="size-4" />
-            </a>
-            <a href="https://discord.gg/your-invite" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="Discord">
-              <IconBrandDiscord className="size-4" fill="currentColor" />
             </a>
           </span>
           <span className="ml-auto hidden items-center gap-1 sm:flex">
