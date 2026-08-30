@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconExternalLink, IconGauge, IconHash, IconHistory,
+  IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconEye, IconGauge, IconHash, IconHistory,
   IconLink, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -237,7 +237,7 @@ export default function ProfilePage() {
   })();
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8" role="main" aria-label="User profile">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8" role="main" aria-label="User profile">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconUserFilled className="text-primary size-5" /> profile
@@ -251,7 +251,7 @@ export default function ProfilePage() {
               asChild
             >
               <Link href={`/profile/${user.username}`}>
-                <IconExternalLink className="size-3.5" /> <span className="hidden sm:inline">view public profile</span><span className="sm:hidden">profile</span>
+                <IconEye className="size-3.5" /> <span className="hidden sm:inline">view public profile</span><span className="sm:hidden">public</span>
               </Link>
             </Button>
             <Button
@@ -359,7 +359,7 @@ export default function ProfilePage() {
       </Card>
 
       {/* Trend charts — side by side, wpm with avg dotted */}
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card className="gap-3 py-4">
           <CardHeader className="px-4">
             <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">

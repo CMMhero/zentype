@@ -1,52 +1,62 @@
-import { Skeleton } from "~/components/ui/skeleton";
-import { IconTrophyFilled, IconTrophy, IconBolt } from "@tabler/icons-react";
+import { IconTrophyFilled, IconTrophy, IconBolt, IconCalendar, IconCalendarMonth } from "@tabler/icons-react";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { LeaderboardSkeleton } from "~/components/leaderboard-skeleton";
 
 export default function LeaderboardLoading() {
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
-      {/* Header — static */}
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
+      {/* Header — exact same structure as real leaderboard */}
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconTrophyFilled className="text-primary size-5" />
           leaderboard
         </h1>
         <div className="flex items-center gap-2">
-          <div className="bg-muted/50 flex gap-1 rounded-lg p-1">
-            <span className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium">
-              <IconTrophy className="size-3.5" /> wpm
-            </span>
-            <span className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-muted-foreground">
-              <IconBolt className="size-3.5" /> level
-            </span>
-          </div>
+          <Tabs defaultValue="wpm">
+            <TabsList>
+              <TabsTrigger value="wpm" className="gap-1.5"><IconTrophy className="size-3.5" /> wpm</TabsTrigger>
+              <TabsTrigger value="level" className="gap-1.5"><IconBolt className="size-3.5" /> level</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </header>
 
-      {/* Filters — static */}
+      {/* Filters — exact same structure as real leaderboard */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-24 rounded-md" />
-          <Skeleton className="h-9 w-20 rounded-md" />
+          <Select defaultValue="time">
+            <SelectTrigger size="sm" className="w-24 sm:w-28">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="time">time</SelectItem>
+              <SelectItem value="words">words</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select defaultValue="30">
+            <SelectTrigger size="sm" aria-label="variant filter" className="w-20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="15">15s</SelectItem>
+              <SelectItem value="30">30s</SelectItem>
+              <SelectItem value="60">60s</SelectItem>
+              <SelectItem value="120">120s</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <div className="flex gap-1 rounded-lg bg-muted/50 p-1">
-          <Skeleton className="h-8 w-24 rounded-md" />
-          <Skeleton className="h-8 w-24 rounded-md" />
-          <Skeleton className="h-8 w-20 rounded-md" />
-        </div>
+        <Tabs defaultValue="all" className="w-full sm:w-auto">
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="all" className="flex-1 gap-1.5 sm:flex-none"><IconCalendarMonth className="size-3.5" /> <span className="hidden xs:inline">all time</span><span className="xs:hidden">all</span></TabsTrigger>
+            <TabsTrigger value="week" className="flex-1 gap-1.5 sm:flex-none"><IconCalendar className="size-3.5" /> <span className="hidden xs:inline">this week</span><span className="xs:hidden">week</span></TabsTrigger>
+            <TabsTrigger value="today" className="flex-1 gap-1.5 sm:flex-none"><IconCalendar className="size-3.5" /> today</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
-      {/* Leaderboard rows — the dynamic part */}
-      <div className="flex flex-col gap-1">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-3 rounded-lg border border-border/30 px-4 py-3">
-            <Skeleton className="h-5 w-8 shrink-0" />
-            <Skeleton className="size-8 shrink-0 rounded-full" />
-            <Skeleton className="h-4 w-28 shrink-0" />
-            <div className="flex-1" />
-            <Skeleton className="h-4 w-16" />
-          </div>
-        ))}
-      </div>
+      {/* Leaderboard rows — use the shared skeleton component */}
+      <LeaderboardSkeleton />
     </div>
   );
 }

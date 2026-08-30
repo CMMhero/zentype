@@ -1,40 +1,42 @@
 import { Skeleton } from "~/components/ui/skeleton";
 import { IconClock, IconTypography, IconAt, IconHash } from "@tabler/icons-react";
-import { cn } from "~/lib/utils";
-
-function ConfigButton({ active, children }: { active: boolean; children: React.ReactNode }) {
-  return (
-    <span
-      className={cn(
-        "h-[calc(100%-2px)] flex-1 gap-1.5 rounded-md border border-transparent px-3 text-sm font-medium",
-        active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
-      )}
-    >
-      {children}
-    </span>
-  );
-}
+import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
 
 export default function HomeLoading() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center px-4 py-6 md:py-6">
-      {/* ConfigBar — rendered with default values (time, 30s, no punct, no nums) */}
-      <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-2 pb-4 text-sm sm:gap-3">
-        <div className="grid w-full grid-cols-[1fr_2fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
-          <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-1 rounded-lg p-[3px]">
-            <ConfigButton active><IconClock className="size-3.5" /> time</ConfigButton>
-            <ConfigButton active={false}><IconTypography className="size-3.5" /> words</ConfigButton>
-          </div>
-          <div className="bg-muted/80 inline-flex h-9 min-w-0 items-center justify-center gap-1 overflow-hidden rounded-lg p-[3px] sm:w-64">
+      {/* ConfigBar wrapper — matches real page pb-4 + transition */}
+      <div className="pb-4 transition-all duration-200 opacity-100">
+      <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-2 text-sm sm:gap-3">
+        <div className="grid w-full grid-cols-[3fr_7fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
+          {/* Mode selector */}
+          <PillGroup>
+            <PillButton active>
+              <IconClock className="size-3.5" /> time
+            </PillButton>
+            <PillButton active={false}>
+              <IconTypography className="size-3.5" /> words
+            </PillButton>
+          </PillGroup>
+
+          {/* Variant selector */}
+          <PillGroup className="w-full min-w-0 overflow-hidden sm:w-64">
             {[15, 30, 60, 120].map((t) => (
-              <ConfigButton key={t} active={t === 30}>{t}s</ConfigButton>
+              <PillButton key={t} active={t === 30}>{t}s</PillButton>
             ))}
-          </div>
+          </PillGroup>
         </div>
-        <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-1 rounded-lg p-[3px]">
-          <ConfigButton active={false}><IconAt className="size-3.5" /> punct</ConfigButton>
-          <ConfigButton active={false}><IconHash className="size-3.5" /> nums</ConfigButton>
-        </div>
+
+        {/* Punctuation & numbers */}
+        <PillGroup>
+          <PillButton active={false}>
+            <IconAt className="size-3.5" /> punct
+          </PillButton>
+          <PillButton active={false}>
+            <IconHash className="size-3.5" /> nums
+          </PillButton>
+        </PillGroup>
+      </div>
       </div>
 
       {/* Live stats — default idle values */}
@@ -55,9 +57,9 @@ export default function HomeLoading() {
         </div>
       </div>
 
-      {/* Progress bar — at 0% */}
-      <div className="mb-3 h-1.5 w-full overflow-hidden rounded-full bg-primary/20">
-        <div className="h-full w-0 rounded-full bg-primary transition-all" />
+      {/* Progress bar — at 0%, matches Progress component bg-secondary */}
+      <div className="mb-3 bg-secondary relative h-1.5 w-full overflow-hidden rounded-full">
+        <div className="bg-primary h-full w-full flex-1 transition-all" style={{ transform: 'translateX(-100%)' }} />
       </div>
 
       {/* Typing area — skeleton for words (the dynamic part) */}
