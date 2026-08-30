@@ -23,6 +23,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { THEMES } from "~/lib/themes";
 import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
 import type { CaretStyle, FontFamily, FontSizeKey, SoundVariant } from "~/lib/types";
+import { FONTS } from "~/lib/fonts";
+import { CARET_STYLES, FONT_SIZES, SOUND_VARIANTS } from "~/lib/settings-options";
 import { useResultsStore } from "~/stores/results-store";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useUser } from "~/components/user-provider";
@@ -86,9 +88,9 @@ export default function SettingsPage() {
                   <Select value={settings.sound.variant} onValueChange={(v) => update({ sound: { ...settings.sound, variant: v as SoundVariant } })}>
                     <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="click">click</SelectItem>
-                      <SelectItem value="thock">thock</SelectItem>
-                      <SelectItem value="beep">beep</SelectItem>
+                      {SOUND_VARIANTS.map((v) => (
+                        <SelectItem key={v.value} value={v.value}>{v.label}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <Button variant="outline" size="sm" className="size-8 p-0" onClick={() => playKeypress(settings.sound.variant, settings.sound.volume)} title="preview sound">
@@ -155,10 +157,9 @@ export default function SettingsPage() {
                   <Select value={settings.caretStyle} onValueChange={(v) => update({ caretStyle: v as CaretStyle })}>
                     <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="line">line</SelectItem>
-                      <SelectItem value="block">block</SelectItem>
-                      <SelectItem value="underline">underline</SelectItem>
-                      <SelectItem value="off">off</SelectItem>
+                      {CARET_STYLES.map((c) => (
+                        <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -181,13 +182,9 @@ export default function SettingsPage() {
                 <Select value={settings.fontSize} onValueChange={(v) => update({ fontSize: v as FontSizeKey })}>
                   <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="xs">xs</SelectItem>
-                    <SelectItem value="sm">sm</SelectItem>
-                    <SelectItem value="md">md</SelectItem>
-                    <SelectItem value="lg">lg</SelectItem>
-                    <SelectItem value="xl">xl</SelectItem>
-                    <SelectItem value="2xl">2xl</SelectItem>
-                    <SelectItem value="3xl">3xl</SelectItem>
+                    {FONT_SIZES.map((f) => (
+                      <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </SettingRow>
@@ -424,92 +421,8 @@ const KEYBINDS: Array<[string[], string]> = [
   [["backspace"], "fix current word"],
 ];
 
-const FONT_ITEMS: ComboboxItem[] = [
-  { value: "advent-pro", label: "Advent Pro", fontCssVar: "var(--font-advent-pro)" },
-  { value: "alfa-slab-one", label: "Alfa Slab One", fontCssVar: "var(--font-alfa-slab-one)" },
-  { value: "anonymous-pro", label: "Anonymous Pro", fontCssVar: "var(--font-anonymous-pro)" },
-  { value: "archivo", label: "Archivo", fontCssVar: "var(--font-archivo)" },
-  { value: "asap", label: "Asap", fontCssVar: "var(--font-asap)" },
-  { value: "atkinson-hyperlegible", label: "Atkinson Hyperlegible", fontCssVar: "var(--font-atkinson-hyperlegible)" },
-  { value: "baloo-2", label: "Baloo 2", fontCssVar: "var(--font-baloo-2)" },
-  { value: "barlow", label: "Barlow", fontCssVar: "var(--font-barlow)" },
-  { value: "bitter", label: "Bitter", fontCssVar: "var(--font-bitter)" },
-  { value: "bricolage-grotesque", label: "Bricolage Grotesque", fontCssVar: "var(--font-bricolage-grotesque)" },
-  { value: "cabin", label: "Cabin", fontCssVar: "var(--font-cabin)" },
-  { value: "cal-sans", label: "Cal Sans", fontCssVar: "var(--font-cal-sans)" },
-  { value: "cascadia-code", label: "Cascadia Code", fontCssVar: "var(--font-cascadia-code)" },
-  { value: "caveat", label: "Caveat", fontCssVar: "var(--font-caveat)" },
-  { value: "chivo", label: "Chivo", fontCssVar: "var(--font-chivo)" },
-  { value: "comic-neue", label: "Comic Sans", fontCssVar: "var(--font-comic-neue)" },
-  { value: "commit-mono", label: "Commit Mono", fontCssVar: "var(--font-commit-mono)" },
-  { value: "comfortaa", label: "Comfortaa", fontCssVar: "var(--font-comfortaa)" },
-  { value: "coming-soon", label: "Coming Soon", fontCssVar: "var(--font-coming-soon)" },
-  { value: "courier-prime", label: "Courier Prime", fontCssVar: "var(--font-courier-prime)" },
-  { value: "crimson-pro", label: "Crimson Pro", fontCssVar: "var(--font-crimson-pro)" },
-  { value: "dancing-script", label: "Dancing Script", fontCssVar: "var(--font-dancing-script)" },
-  { value: "dm-sans", label: "DM Sans", fontCssVar: "var(--font-dm-sans)" },
-  { value: "domine", label: "Domine", fontCssVar: "var(--font-domine)" },
-  { value: "exo-2", label: "Exo 2", fontCssVar: "var(--font-exo-2)" },
-  { value: "figtree", label: "Figtree", fontCssVar: "var(--font-figtree)" },
-  { value: "fira-code", label: "Fira Code", fontCssVar: "var(--font-fira-code)" },
-  { value: "fira-sans", label: "Fira Sans", fontCssVar: "var(--font-fira-sans)" },
-  { value: "fredoka", label: "Fredoka", fontCssVar: "var(--font-fredoka)" },
-  { value: "geist", label: "Geist", fontCssVar: "var(--font-geist)" },
-  { value: "geist-mono", label: "Geist Mono", fontCssVar: "var(--font-geist-mono)" },
-  { value: "gelasio", label: "Gelasio", fontCssVar: "var(--font-gelasio)" },
-  { value: "google-sans", label: "Google Sans", fontCssVar: "var(--font-google-sans)" },
-  { value: "ibm-plex-mono", label: "IBM Plex Mono", fontCssVar: "var(--font-ibm-plex-mono)" },
-  { value: "ibm-plex-sans", label: "IBM Plex Sans", fontCssVar: "var(--font-ibm-plex-sans)" },
-  { value: "inconsolata", label: "Inconsolata", fontCssVar: "var(--font-inconsolata)" },
-  { value: "inter", label: "Inter", fontCssVar: "var(--font-inter)" },
-  { value: "itim", label: "Itim", fontCssVar: "var(--font-itim)" },
-  { value: "iosevka", label: "Iosevka", fontCssVar: "var(--font-iosevka)" },
-  { value: "jetbrains-mono", label: "JetBrains Mono", fontCssVar: "var(--font-jetbrains-mono)" },
-  { value: "josefin-sans", label: "Josefin Sans", fontCssVar: "var(--font-josefin-sans)" },
-  { value: "karla", label: "Karla", fontCssVar: "var(--font-karla)" },
-  { value: "lato", label: "Lato", fontCssVar: "var(--font-lato)" },
-  { value: "lexend", label: "Lexend", fontCssVar: "var(--font-lexend)" },
-  { value: "lobster", label: "Lobster", fontCssVar: "var(--font-lobster)" },
-  { value: "lora", label: "Lora", fontCssVar: "var(--font-lora)" },
-  { value: "manrope", label: "Manrope", fontCssVar: "var(--font-manrope)" },
-  { value: "merriweather", label: "Merriweather", fontCssVar: "var(--font-merriweather)" },
-  { value: "mona-sans", label: "Mona Sans", fontCssVar: "var(--font-mona-sans)" },
-  { value: "montserrat", label: "Montserrat", fontCssVar: "var(--font-montserrat)" },
-  { value: "noto-sans", label: "Noto Sans", fontCssVar: "var(--font-noto-sans)" },
-  { value: "noto-serif", label: "Noto Serif", fontCssVar: "var(--font-noto-serif)" },
-  { value: "nunito", label: "Nunito", fontCssVar: "var(--font-nunito)" },
-  { value: "nunito-sans", label: "Nunito Sans", fontCssVar: "var(--font-nunito-sans)" },
-  { value: "opendyslexic", label: "OpenDyslexic", fontCssVar: "var(--font-opendyslexic)" },
-  { value: "open-sans", label: "Open Sans", fontCssVar: "var(--font-open-sans)" },
-  { value: "oswald", label: "Oswald", fontCssVar: "var(--font-oswald)" },
-  { value: "outfit", label: "Outfit", fontCssVar: "var(--font-outfit)" },
-  { value: "oxygen", label: "Oxygen", fontCssVar: "var(--font-oxygen)" },
-  { value: "pacifico", label: "Pacifico", fontCssVar: "var(--font-pacifico)" },
-  { value: "petrona", label: "Petrona", fontCssVar: "var(--font-petrona)" },
-  { value: "playfair-display", label: "Playfair Display", fontCssVar: "var(--font-playfair-display)" },
-  { value: "plus-jakarta-sans", label: "Plus Jakarta Sans", fontCssVar: "var(--font-plus-jakarta-sans)" },
-  { value: "poppins", label: "Poppins", fontCssVar: "var(--font-poppins)" },
-  { value: "pt-sans", label: "PT Sans", fontCssVar: "var(--font-pt-sans)" },
-  { value: "pt-serif", label: "PT Serif", fontCssVar: "var(--font-pt-serif)" },
-  { value: "quicksand", label: "Quicksand", fontCssVar: "var(--font-quicksand)" },
-  { value: "raleway", label: "Raleway", fontCssVar: "var(--font-raleway)" },
-  { value: "red-hat-display", label: "Red Hat Display", fontCssVar: "var(--font-red-hat-display)" },
-  { value: "red-hat-mono", label: "Red Hat Mono", fontCssVar: "var(--font-red-hat-mono)" },
-  { value: "roboto", label: "Roboto", fontCssVar: "var(--font-roboto)" },
-  { value: "roboto-flex", label: "Roboto Flex", fontCssVar: "var(--font-roboto-flex)" },
-  { value: "roboto-mono", label: "Roboto Mono", fontCssVar: "var(--font-roboto-mono)" },
-  { value: "roboto-slab", label: "Roboto Slab", fontCssVar: "var(--font-roboto-slab)" },
-  { value: "rubik", label: "Rubik", fontCssVar: "var(--font-rubik)" },
-  { value: "sarabun", label: "Sarabun", fontCssVar: "var(--font-sarabun)" },
-  { value: "shantell-sans", label: "Shantell Sans", fontCssVar: "var(--font-shantell-sans)" },
-  { value: "sora", label: "Sora", fontCssVar: "var(--font-sora)" },
-  { value: "source-code-pro", label: "Source Code Pro", fontCssVar: "var(--font-source-code-pro)" },
-  { value: "space-grotesk", label: "Space Grotesk", fontCssVar: "var(--font-space-grotesk)" },
-  { value: "space-mono", label: "Space Mono", fontCssVar: "var(--font-space-mono)" },
-  { value: "titillium-web", label: "Titillium Web", fontCssVar: "var(--font-titillium-web)" },
-  { value: "ubuntu", label: "Ubuntu", fontCssVar: "var(--font-ubuntu)" },
-  { value: "ubuntu-mono", label: "Ubuntu Mono", fontCssVar: "var(--font-ubuntu-mono)" },
-  { value: "urbanist", label: "Urbanist", fontCssVar: "var(--font-urbanist)" },
-  { value: "victor-mono", label: "Victor Mono", fontCssVar: "var(--font-victor-mono)" },
-  { value: "work-sans", label: "Work Sans", fontCssVar: "var(--font-work-sans)" },
-];
+const FONT_ITEMS: ComboboxItem[] = FONTS.map((f) => ({
+  value: f.value,
+  label: f.label,
+  fontCssVar: f.cssVar,
+}));
