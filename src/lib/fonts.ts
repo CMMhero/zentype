@@ -90,6 +90,7 @@ export const FONTS: FontDef[] = [
   { value: "source-code-pro", label: "Source Code Pro", desc: "code mono", cssVar: "var(--font-source-code-pro)", category: "mono" },
   { value: "space-grotesk", label: "Space Grotesk", desc: "monospace-inspired", cssVar: "var(--font-space-grotesk)", category: "sans" },
   { value: "space-mono", label: "Space Mono", desc: "monospace", cssVar: "var(--font-space-mono)", category: "mono" },
+  { value: "stack-sans-text", label: "Stack Sans Text", desc: "variable sans", cssVar: "var(--font-stack-sans-text)", category: "sans" },
   { value: "titillium-web", label: "Titillium Web", desc: "technical sans", cssVar: "var(--font-titillium-web)", category: "sans" },
   { value: "ubuntu", label: "Ubuntu", desc: "humanist sans", cssVar: "var(--font-ubuntu)", category: "sans" },
   { value: "ubuntu-mono", label: "Ubuntu Mono", desc: "mono", cssVar: "var(--font-ubuntu-mono)", category: "mono" },

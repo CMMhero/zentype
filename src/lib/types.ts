@@ -18,7 +18,7 @@ export type FontFamily =
   | "poppins" | "pt-sans" | "pt-serif" | "quicksand" | "raleway" | "red-hat-display"
   | "red-hat-mono" | "roboto" | "roboto-flex" | "roboto-mono" | "roboto-slab" | "rubik"
   | "sarabun" | "shantell-sans" | "sora" | "source-code-pro" | "space-grotesk"
-  | "space-mono" | "titillium-web" | "ubuntu" | "ubuntu-mono" | "urbanist"
+  | "space-mono" | "stack-sans-text" | "titillium-web" | "ubuntu" | "ubuntu-mono" | "urbanist"
   | "victor-mono" | "work-sans";
 
 export interface SoundSettings {
