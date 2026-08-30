@@ -26,7 +26,7 @@ async function CommunityStats() {
   return (
     <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
       <StatCard label="users" value={stats?.totalUsers ?? 0} />
-      <StatCard label="tests typed" value={stats?.totalTests ?? 0} />
+      <StatCard label="tests completed" value={stats?.totalTests ?? 0} />
       <StatCard label="time typed" value={formatTime(stats?.totalSeconds ?? 0)} />
       <StatCard label="xp earned" value={stats?.totalXpEarned ?? 0} />
     </div>
@@ -95,7 +95,7 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconAward className="size-5" />}
               title="achievements"
-              description="110+ achievements: tests typed, WPM milestones, accuracy runs, streaks, consistency, account age, and more. XP per test, 500 per level."
+              description="110+ achievements: tests completed, WPM milestones, accuracy runs, streaks, consistency, account age, and more. XP per test, 500 per level."
             />
             <FeatureCard
               icon={<IconPalette className="size-5" />}
