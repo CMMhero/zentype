@@ -139,6 +139,7 @@ export async function getUserResults(opts?: {
   let q = ctx.supabase
     .from("test_results")
     .select(RESULT_COLUMNS)
+    .eq("user_id", ctx.user.id)
     .order("created_at", { ascending: false })
     .limit(Math.min(data.limit ?? 100, 500));
   if (data.since) q = q.gte("created_at", data.since);
@@ -174,6 +175,7 @@ export async function getUserStats(): Promise<AggregatedStats | null> {
   const { data: rows, error } = await ctx.supabase
     .from("test_results")
     .select(RESULT_COLUMNS)
+    .eq("user_id", ctx.user.id)
     .order("created_at", { ascending: false })
     .limit(1000);
   if (error) {

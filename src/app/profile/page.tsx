@@ -36,7 +36,7 @@ const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) 
 import { getMyJoinDate, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
-import { lcGet, lcSet } from "~/lib/client-cache";
+import { lcGet, lcSet, lcDel } from "~/lib/client-cache";
 import { useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
 import { formatDateTime } from "~/lib/utils";
@@ -85,13 +85,18 @@ export default function ProfilePage() {
     let cancelled = false;
     const FIVE_MIN = 5 * 60 * 1000;
     const ONE_MIN = 60 * 1000;
+    // Namespace cache keys by user ID to prevent cross-user data leakage
+    const uid = user?.id ?? "anon";
+    const ck = (suffix: string) => `${uid}:${suffix}`;
+    // Clean up old non-namespaced keys from before this fix
+    ["profile-stats", "profile-results", "profile-points", "profile-achievements", "profile-join-date"].forEach((k) => lcDel(k));
 
     // Load cached data immediately (no loading state)
-    const cStats = lcGet<AggregatedStats>("profile-stats", FIVE_MIN);
-    const cResults = lcGet<TestResult[]>("profile-results", FIVE_MIN);
-    const cPoints = lcGet<{ totalXP: number; level: number; progress: number }>("profile-points", ONE_MIN);
-    const cAchievements = lcGet<Array<{ id: string; name: string; description: string; trigger: "metric" | "streak" | "api"; achievedAt: string | null; progress: number; xp: number }>>("profile-achievements", FIVE_MIN);
-    const cJoinDate = lcGet<string>("profile-join-date", FIVE_MIN);
+    const cStats = lcGet<AggregatedStats>(ck("profile-stats"), FIVE_MIN);
+    const cResults = lcGet<TestResult[]>(ck("profile-results"), FIVE_MIN);
+    const cPoints = lcGet<{ totalXP: number; level: number; progress: number }>(ck("profile-points"), ONE_MIN);
+    const cAchievements = lcGet<Array<{ id: string; name: string; description: string; trigger: "metric" | "streak" | "api"; achievedAt: string | null; progress: number; xp: number }>>(ck("profile-achievements"), FIVE_MIN);
+    const cJoinDate = lcGet<string>(ck("profile-join-date"), FIVE_MIN);
 
     if (cStats) setStats(cStats);
     if (cResults) setResults(cResults);
@@ -108,11 +113,11 @@ export default function ProfilePage() {
       user ? getMyJoinDate() : Promise.resolve(null),
     ]).then(([s, r, p, a, j]) => {
       if (cancelled) return;
-      if (s) { setStats(s); lcSet("profile-stats", s); }
-      if (r) { setResults(r); lcSet("profile-results", r); }
-      if (p) { setPoints(p); lcSet("profile-points", p); }
-      if (a) { setAchievements(a); lcSet("profile-achievements", a); }
-      if (j) { setJoinedAt(j); lcSet("profile-join-date", j); }
+      if (s) { setStats(s); lcSet(ck("profile-stats"), s); }
+      if (r) { setResults(r); lcSet(ck("profile-results"), r); }
+      if (p) { setPoints(p); lcSet(ck("profile-points"), p); }
+      if (a) { setAchievements(a); lcSet(ck("profile-achievements"), a); }
+      if (j) { setJoinedAt(j); lcSet(ck("profile-join-date"), j); }
     });
 
     return () => { cancelled = true; };
