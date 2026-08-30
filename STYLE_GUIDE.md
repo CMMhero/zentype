@@ -176,6 +176,12 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 - **Link action**: `variant="link"` with `className="h-auto p-0"`
 - **Small buttons**: `size="sm"`
 
+### Tabs & Pill Groups (Toggle Groups)
+- **Container**: `bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px] gap-1`
+- **Pills / Triggers**: `inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow]`
+- **Active state**: `bg-background text-foreground shadow-sm`
+- **Spacing**: Always maintain `gap-1` between each pill (used in settings tabs, config bar, leaderboard filters, and toggle groups)
+
 ### Badges
 ```tsx
 // Level/XP badge
