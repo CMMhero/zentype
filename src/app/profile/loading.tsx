@@ -159,7 +159,7 @@ export default function ProfileLoading() {
         <CardContent className="px-4">
           <div className="flex flex-col gap-2">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-11 animate-pulse rounded bg-muted" />
+              <div key={i} className="h-11 animate-pulse rounded bg-muted/50" />
             ))}
           </div>
         </CardContent>
