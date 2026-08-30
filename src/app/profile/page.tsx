@@ -54,7 +54,7 @@ const wpmConfig = {
 } satisfies ChartConfig;
 
 const accConfig = {
-  accuracy: { label: "accuracy", color: "var(--chart-3)" },
+  accuracy: { label: "accuracy", color: "var(--chart-4)" },
   avgAcc: { label: "avg", color: "var(--chart-2)" },
 } satisfies ChartConfig;
 
