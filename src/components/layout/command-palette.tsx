@@ -32,13 +32,13 @@ const CARET_STYLES: { value: CaretStyle; label: string; desc: string }[] = [
 ];
 
 const FONT_SIZES: { value: FontSizeKey; label: string; desc: string }[] = [
-  { value: "xs", label: "extra small", desc: "very compact text" },
-  { value: "sm", label: "small", desc: "compact text" },
-  { value: "md", label: "medium", desc: "balanced" },
-  { value: "lg", label: "large", desc: "default, easy to read" },
-  { value: "xl", label: "extra large", desc: "extra large text" },
-  { value: "2xl", label: "2x large", desc: "very large text" },
-  { value: "3xl", label: "3x large", desc: "huge text" },
+  { value: "xs", label: "xs", desc: "extra small" },
+  { value: "sm", label: "sm", desc: "small" },
+  { value: "md", label: "md", desc: "medium" },
+  { value: "lg", label: "lg", desc: "large, default" },
+  { value: "xl", label: "xl", desc: "extra large" },
+  { value: "2xl", label: "2xl", desc: "2x large" },
+  { value: "3xl", label: "3xl", desc: "3x large" },
 ];
 
 const SOUND_VARIANTS: { value: SoundVariant; label: string; desc: string }[] = [
