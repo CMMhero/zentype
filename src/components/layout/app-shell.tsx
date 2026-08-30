@@ -154,62 +154,62 @@ export function AppShell({
         </div>
       </header>
 
-      <main id="main-content" className="flex flex-1 flex-col pb-14 md:pb-0" role="main">
+      <main id="main-content" className="flex flex-1 flex-col" role="main">
         {children}
 
         <CommandPalette />
         <HelpDialog />
-
-        {/* Mobile bottom nav */}
-        <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-          <div className="flex h-14 items-center justify-around">
-            {NAV.map((item) => {
-              const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-              return (
-                <Link
-                  key={item.to}
-                  href={item.to}
-                  aria-label={item.label}
-                  className={`flex flex-col items-center gap-0.5 px-3 py-1.5 transition-colors ${active ? "text-primary" : "text-muted-foreground"}`}
-                >
-                  <item.icon className="size-5" stroke={active ? 2 : 1.5} />
-                  <span className="text-[10px]">{item.label}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
-
-        <footer className="text-muted-foreground mt-auto" role="contentinfo">
-          <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
-            <span className="flex items-center gap-2">
-              <Link href="/about" className="hover:text-foreground underline underline-offset-2">about</Link>
-              <span className="text-muted-foreground/50">·</span>
-              <Link href="/terms" className="hover:text-foreground underline underline-offset-2">terms</Link>
-              <span className="text-muted-foreground/50">·</span>
-              <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">privacy</Link>
-            </span>
-            <span className="ml-auto hidden items-center gap-1 sm:flex">
-              <Combobox
-                items={THEME_FOOTER_ITEMS}
-                value={themeId}
-                onValueChange={(v) => updateSettings({ themeId: v })}
-                placeholder="Theme"
-                searchPlaceholder="Search themes…"
-                className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
-              />
-              <Combobox
-                items={FONT_FOOTER_ITEMS}
-                value={fontFamily}
-                onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}
-                placeholder="Font"
-                searchPlaceholder="Search fonts…"
-                className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
-              />
-            </span>
-          </div>
-        </footer>
       </main>
+
+      <footer className="text-muted-foreground mt-auto" role="contentinfo">
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
+          <span className="flex items-center gap-2">
+            <Link href="/about" className="hover:text-foreground underline underline-offset-2">about</Link>
+            <span className="text-muted-foreground/50">·</span>
+            <Link href="/terms" className="hover:text-foreground underline underline-offset-2">terms</Link>
+            <span className="text-muted-foreground/50">·</span>
+            <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">privacy</Link>
+          </span>
+          <span className="ml-auto hidden items-center gap-1 sm:flex">
+            <Combobox
+              items={THEME_FOOTER_ITEMS}
+              value={themeId}
+              onValueChange={(v) => updateSettings({ themeId: v })}
+              placeholder="Theme"
+              searchPlaceholder="Search themes…"
+              className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
+            />
+            <Combobox
+              items={FONT_FOOTER_ITEMS}
+              value={fontFamily}
+              onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}
+              placeholder="Font"
+              searchPlaceholder="Search fonts…"
+              className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
+            />
+          </span>
+        </div>
+      </footer>
+
+      {/* Mobile bottom nav */}
+      <nav className="sticky bottom-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <div className="flex h-14 items-center justify-around">
+          {NAV.map((item) => {
+            const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+            return (
+              <Link
+                key={item.to}
+                href={item.to}
+                aria-label={item.label}
+                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 transition-colors ${active ? "text-primary" : "text-muted-foreground"}`}
+              >
+                <item.icon className="size-5" stroke={active ? 2 : 1.5} />
+                <span className="text-[10px]">{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 }
