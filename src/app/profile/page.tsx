@@ -54,7 +54,7 @@ const wpmConfig = {
 } satisfies ChartConfig;
 
 const accConfig = {
-  accuracy: { label: "accuracy", color: "var(--chart-2)" },
+  accuracy: { label: "accuracy", color: "var(--chart-3)" },
   avgAcc: { label: "avg", color: "var(--chart-2)" },
 } satisfies ChartConfig;
 
@@ -603,7 +603,7 @@ export default function ProfilePage() {
         <CardContent className="px-4">
           {loading ? (
             <div className="flex flex-col gap-2">
-              {Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-11 animate-pulse rounded bg-muted/50" />)}
+              {Array.from({ length: 5 }).map((_, i) => <div key={i} className="h-11 animate-pulse rounded bg-muted" />)}
             </div>
           ) : (results ?? []).length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-12 text-center">
@@ -690,7 +690,7 @@ export default function ProfilePage() {
                     <span className="text-muted-foreground mt-1 text-xs tracking-wider">wpm</span>
                   </span>
                   <span className="flex flex-col">
-                    <span className="text-primary text-3xl font-bold tabular-nums sm:text-5xl">{selected.accuracy}%</span>
+                    <span className="text-3xl font-bold tabular-nums sm:text-5xl">{selected.accuracy}%</span>
                     <span className="text-muted-foreground mt-1 text-xs tracking-wider">acc</span>
                   </span>
                 </DialogTitle>
