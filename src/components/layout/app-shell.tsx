@@ -255,7 +255,7 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
           </Avatar>
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
           {userLevel !== null ? (
-            <span className="hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-secondary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary">
+            <span className="hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground">
               {userLevel}
             </span>
           ) : (
