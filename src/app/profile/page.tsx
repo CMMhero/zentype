@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconExternalLink, IconGauge, IconHash, IconHistory,
+  IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconEye, IconGauge, IconHash, IconHistory,
   IconLink, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -251,7 +251,7 @@ export default function ProfilePage() {
               asChild
             >
               <Link href={`/profile/${user.username}`}>
-                <IconExternalLink className="size-3.5" /> <span className="hidden sm:inline">view public profile</span><span className="sm:hidden">profile</span>
+                <IconEye className="size-3.5" /> <span className="hidden sm:inline">view public profile</span><span className="sm:hidden">public</span>
               </Link>
             </Button>
             <Button
