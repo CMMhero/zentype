@@ -111,7 +111,8 @@ export async function getUserAchievements(): Promise<
 
   const { data: unlocked } = await ctx.supabase
     .from("user_achievements")
-    .select("achievement_id,unlocked_at,progress");
+    .select("achievement_id,unlocked_at,progress")
+    .eq("user_id", ctx.user.id);
 
   const unlockedMap = new Map(
     (unlocked ?? []).map((r) => [r.achievement_id, r])
