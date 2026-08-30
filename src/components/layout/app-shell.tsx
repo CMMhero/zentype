@@ -10,7 +10,7 @@ const HelpDialog = dynamic(() => import("~/components/layout/help-dialog").then(
 import {
   IconCommand, IconKeyboardFilled, IconLogout,
   IconSettingsFilled, IconTrophyFilled, IconUserFilled,
-  IconBrandGithub,
+  IconBrandGithubFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -165,16 +165,15 @@ export function AppShell({
       <footer className="text-muted-foreground mt-auto" role="contentinfo">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
           <span className="flex items-center gap-2">
+            <a href="https://github.com/CMMhero/ZenType" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="GitHub">
+              <IconBrandGithubFilled className="size-4" />
+            </a>
+            <span className="text-muted-foreground/50">·</span>
             <Link href="/about" className="hover:text-foreground underline underline-offset-2">about</Link>
             <span className="text-muted-foreground/50">·</span>
             <Link href="/terms" className="hover:text-foreground underline underline-offset-2">terms</Link>
             <span className="text-muted-foreground/50">·</span>
             <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">privacy</Link>
-          </span>
-          <span className="flex items-center gap-3">
-            <a href="https://github.com/CMMhero/ZenType" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="GitHub">
-              <IconBrandGithub className="size-4" />
-            </a>
           </span>
           <span className="ml-auto hidden items-center gap-1 sm:flex">
             <Combobox
@@ -198,7 +197,7 @@ export function AppShell({
       </footer>
 
       {/* Mobile bottom nav */}
-      <nav className="sticky bottom-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <div className="flex h-14 items-center justify-around">
           {NAV.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
