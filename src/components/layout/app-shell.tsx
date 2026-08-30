@@ -139,9 +139,12 @@ export function AppShell({
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
-            <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={() => setPaletteOpen(true)} aria-label="Open command palette (Ctrl+K)">
-              <span className="hidden sm:inline text-muted-foreground">commands</span>
+            <Button variant="outline" size="sm" className="gap-2 text-xs hidden sm:inline-flex" onClick={() => setPaletteOpen(true)} aria-label="Open command palette (Ctrl+K)">
+              <span className="text-muted-foreground">commands</span>
               <Kbd><IconCommand className="size-3" />k</Kbd>
+            </Button>
+            <Button variant="default" size="icon" className="sm:hidden" onClick={() => setPaletteOpen(true)} aria-label="Open command palette">
+              <IconCommand className="size-4" />
             </Button>
 
             {user ? (
