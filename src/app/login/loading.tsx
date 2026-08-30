@@ -2,12 +2,15 @@ import { Skeleton } from "~/components/ui/skeleton";
 
 export default function LoginLoading() {
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4">
-      <Skeleton className="h-8 w-48" />
-      <div className="flex w-full max-w-sm flex-col gap-3">
-        <Skeleton className="h-11 w-full rounded-lg" />
-        <Skeleton className="h-11 w-full rounded-lg" />
-        <Skeleton className="h-11 w-full rounded-lg" />
+    <div className="flex flex-1 flex-col items-center justify-center px-4">
+      <div className="flex flex-col items-center gap-6">
+        <Skeleton className="h-12 w-12 rounded-xl" />
+        <Skeleton className="h-5 w-48" />
+        <div className="flex flex-col gap-3 w-64">
+          <Skeleton className="h-10 w-full rounded-md" />
+          <Skeleton className="h-10 w-full rounded-md" />
+          <Skeleton className="h-10 w-full rounded-md" />
+        </div>
       </div>
     </div>
   );
