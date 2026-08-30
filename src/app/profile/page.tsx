@@ -50,12 +50,12 @@ const ALL_BOARDS = [
 
 const wpmConfig = {
   wpm: { label: "wpm", color: "var(--chart-1)" },
-  avg: { label: "avg", color: "var(--chart-2)" },
+  avg: { label: "avg", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 
 const accConfig = {
-  accuracy: { label: "accuracy", color: "var(--chart-4)" },
-  avgAcc: { label: "avg", color: "var(--chart-2)" },
+  accuracy: { label: "accuracy", color: "var(--chart-2)" },
+  avgAcc: { label: "avg", color: "var(--chart-4)" },
 } satisfies ChartConfig;
 
 const distConfig = {
@@ -764,8 +764,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
 }
 
 function AccCell({ value }: { value: number }) {
-  const tone = value >= 97 ? "text-chart-3" : value >= 90 ? "text-foreground" : "text-destructive";
-  return <TableCell className={`text-right tabular-nums ${tone}`}>{value}%</TableCell>;
+  return <TableCell className="text-right tabular-nums text-foreground">{value}%</TableCell>;
 }
 
 function Mini({ label, value }: { label: string; value: string }) {
