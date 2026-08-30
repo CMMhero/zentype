@@ -19,7 +19,9 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Kbd } from "~/components/ui/kbd";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
+import { Skeleton } from "~/components/ui/skeleton";
 import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
+import { lcGet } from "~/lib/client-cache";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useUiStore } from "~/stores/ui-store";
 import { signOutFn } from "~/server/auth";
@@ -48,9 +50,15 @@ export function AppShell({
   const fontFamily = useSettingsStore((s) => s.settings.fontFamily);
   const updateSettings = useSettingsStore((s) => s.update);
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
-  const [userLevel, setUserLevel] = useState<number | null>(null);
+  const [userLevel, setUserLevel] = useState<number | null>(() => {
+    if (!user) return null;
+    const cached = lcGet<{ level: number }>(`${user.id}:profile-points`, 60 * 1000);
+    return cached ? cached.level : null;
+  });
   useEffect(() => {
     if (!user) { setUserLevel(null); return; }
+    const cached = lcGet<{ level: number }>(`${user.id}:profile-points`, 60 * 1000);
+    if (cached && userLevel === null) setUserLevel(cached.level);
     let cancelled = false;
     void import("~/server/gamification").then(({ getUserPoints }) =>
       getUserPoints().then((p) => { if (!cancelled && p) setUserLevel(p.level); })
@@ -295,10 +303,12 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
             <AvatarFallback className="rounded text-[10px] uppercase">{user.username.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
-          {userLevel !== null && (
+          {userLevel !== null ? (
             <span className="hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
               {userLevel}
             </span>
+          ) : (
+            <Skeleton className="hidden sm:inline-flex shrink-0 h-4 w-5 rounded-full" />
           )}
         </Button>
       </DropdownMenuTrigger>
