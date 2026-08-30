@@ -20,7 +20,7 @@ export default function PublicProfileLoading() {
         <Card className="row-span-2 gap-3 py-3">
           <CardContent className="px-5 pt-2">
             <div className="flex items-center gap-4">
-              <Skeleton className="size-16 shrink-0 rounded-full" />
+              <Skeleton className="size-16 shrink-0 rounded border-2 border-transparent" />
               <div className="flex-1 min-w-0 space-y-2">
                 <Skeleton className="h-5 w-32" />
                 <Skeleton className="h-4 w-20" />
