@@ -31,6 +31,7 @@ import { useGlobalHotkeys } from "~/hooks/use-global-hotkeys";
 import { useSettingsSync } from "~/hooks/use-settings-sync";
 import { useUser } from "~/components/user-provider";
 import type { FontFamily, SessionUser } from "~/lib/types";
+import { PageTransition } from "~/components/layout/page-transition";
 
 const NAV = [
   { to: "/", label: "test", icon: IconKeyboardFilled },
@@ -156,7 +157,7 @@ export function AppShell({
       </header>
 
       <main id="main-content" className="flex flex-1 flex-col overflow-y-auto" role="main">
-        {children}
+        <PageTransition>{children}</PageTransition>
 
         <footer className="text-muted-foreground mt-auto shrink-0" role="contentinfo">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
