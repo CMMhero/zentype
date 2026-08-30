@@ -181,10 +181,13 @@ export default function SettingsPage() {
                 <Select value={settings.fontSize} onValueChange={(v) => update({ fontSize: v as FontSizeKey })}>
                   <SelectTrigger size="sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="sm">small</SelectItem>
-                    <SelectItem value="md">medium</SelectItem>
-                    <SelectItem value="lg">large</SelectItem>
-                    <SelectItem value="xl">xlarge</SelectItem>
+                    <SelectItem value="xs">xs</SelectItem>
+                    <SelectItem value="sm">sm</SelectItem>
+                    <SelectItem value="md">md</SelectItem>
+                    <SelectItem value="lg">lg</SelectItem>
+                    <SelectItem value="xl">xl</SelectItem>
+                    <SelectItem value="2xl">2xl</SelectItem>
+                    <SelectItem value="3xl">3xl</SelectItem>
                   </SelectContent>
                 </Select>
               </SettingRow>
