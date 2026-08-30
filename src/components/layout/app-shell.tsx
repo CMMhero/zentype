@@ -227,7 +227,7 @@ const THEME_FOOTER_ITEMS: ComboboxItem[] = [...THEMES]
   .sort((a, b) => a.label.localeCompare(b.label))
   .map((t) => ({
     value: t.id,
-    label: `${t.label} ${t.appearance === "light" ? "☀" : "☾"}`,
+    label: t.label,
     leading: (
       <span className="flex shrink-0 gap-0.5">
         <span className="size-3 rounded-sm" style={{ background: t.vars["--primary"] }} />
