@@ -50,12 +50,12 @@ const ALL_BOARDS = [
 
 const wpmConfig = {
   wpm: { label: "wpm", color: "var(--chart-1)" },
-  avg: { label: "avg", color: "var(--chart-4)" },
+  avg: { label: "avg", color: "var(--muted-foreground)" },
 } satisfies ChartConfig;
 
 const accConfig = {
-  accuracy: { label: "accuracy", color: "var(--chart-2)" },
-  avgAcc: { label: "avg", color: "var(--chart-4)" },
+  accuracy: { label: "accuracy", color: "var(--foreground)" },
+  avgAcc: { label: "avg", color: "var(--muted-foreground)" },
 } satisfies ChartConfig;
 
 const distConfig = {
@@ -345,7 +345,7 @@ export default function ProfilePage() {
                       <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
                     )}
                     {rank ? (
-                      <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-primary/10 px-1.5 text-[9px] font-bold leading-none tracking-widest text-primary">
+                      <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-secondary/10 px-1.5 text-[9px] font-bold leading-none tracking-widest text-secondary">
                         #{rank}
                       </span>
                     ) : boardRanks === null ? (
@@ -697,13 +697,13 @@ export default function ProfilePage() {
                 <DialogDescription>
                   <span className="flex items-center justify-between gap-2">
                     <span className="inline-flex items-center gap-1.5">
-                      <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary text-[10px] font-medium normal-case">
+                      <Badge variant="outline" className="border-secondary/40 bg-secondary/10 text-secondary text-[10px] font-medium normal-case">
                         {modeLabel(selected)}
                       </Badge>
                       {selected.punctuation && (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary gap-1 px-1.5 text-[10px] font-medium normal-case">
+                            <Badge variant="outline" className="border-secondary/40 bg-secondary/10 text-secondary gap-1 px-1.5 text-[10px] font-medium normal-case">
                               <IconAt className="size-3" />
                             </Badge>
                           </TooltipTrigger>
@@ -713,7 +713,7 @@ export default function ProfilePage() {
                       {selected.numbers && (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary gap-1 px-1.5 text-[10px] font-medium normal-case">
+                            <Badge variant="outline" className="border-secondary/40 bg-secondary/10 text-secondary gap-1 px-1.5 text-[10px] font-medium normal-case">
                               <IconHash className="size-3" />
                             </Badge>
                           </TooltipTrigger>

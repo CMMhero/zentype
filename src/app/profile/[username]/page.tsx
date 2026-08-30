@@ -183,7 +183,7 @@ export default function PublicProfilePage() {
               </div>
             ) : points && points.totalXP > 0 ? (
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
+                <span className="text-lg font-bold tabular-nums text-secondary">Lv. {points.level}</span>
                 <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
                   <div className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all shadow-sm shadow-primary/30" style={{ width: `${points.progress}%` }} />
                 </div>
@@ -223,7 +223,7 @@ export default function PublicProfilePage() {
                     <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
                   )}
                   {rank ? (
-                    <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-primary/10 px-1.5 text-[9px] font-bold leading-none tracking-widest text-primary">
+                    <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-secondary/10 px-1.5 text-[9px] font-bold leading-none tracking-widest text-secondary">
                       #{rank}
                     </span>
                   ) : boardRanks === null ? (
