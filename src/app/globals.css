@@ -355,6 +355,18 @@ html[data-font="red-hat-mono"] { font-family: var(--font-red-hat-mono); }
   }
 }
 
+/* View Transitions API */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: none;
+}
+::view-transition-new(root) {
+  animation: none;
+}
+
 .zt-fade-in {
   animation: zt-fade-in 0.25s ease-out both;
 }

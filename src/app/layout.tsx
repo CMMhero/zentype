@@ -3,6 +3,7 @@ import "./globals.css";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toaster } from "~/components/ui/sonner";
 import { DynamicFavicon } from "~/components/ui/dynamic-favicon";
+import { ViewTransitions } from "~/components/layout/view-transitions";
 import { AppShell } from "~/components/layout/app-shell";
 import { UserProvider } from "~/components/user-provider";
 import { getSessionUser } from "~/server/auth";
@@ -134,6 +135,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="antialiased">
         <TooltipProvider>
           <DynamicFavicon />
+          <ViewTransitions />
           <UserProvider user={user}>
             <AppShell>
               {children}
