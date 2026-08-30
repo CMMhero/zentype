@@ -35,7 +35,7 @@ export function ConfigBar({
       role="toolbar"
       aria-label="test configuration"
     >
-      <div className="grid w-full grid-cols-[1fr_2fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
+      <div className="flex w-full flex-col gap-2 sm:w-fit sm:flex-row sm:gap-2">
         {/* Mode selector */}
         <PillGroup>
           <PillButton
@@ -55,7 +55,7 @@ export function ConfigBar({
         </PillGroup>
 
         {/* Variant selector */}
-        <PillGroup className="min-w-0 overflow-hidden sm:w-64">
+        <PillGroup className="w-full min-w-0 overflow-hidden sm:w-64">
           {mode === "time"
             ? TIME_OPTIONS.map((t) => (
                 <PillButton
