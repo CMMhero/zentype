@@ -1,51 +1,40 @@
 import { Skeleton } from "~/components/ui/skeleton";
 import { IconClock, IconTypography, IconAt, IconHash } from "@tabler/icons-react";
-import { cn } from "~/lib/utils";
-
-function ConfigButton({ active, children }: { active: boolean; children: React.ReactNode }) {
-  return (
-    <span
-      className={cn(
-        "h-[calc(100%-2px)] flex-1 gap-1.5 rounded-md border border-transparent px-3 text-sm font-medium",
-        active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
-      )}
-    >
-      {children}
-    </span>
-  );
-}
+import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
 
 export default function HomeLoading() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col items-center px-4 py-6 md:py-6">
-      {/* ConfigBar — matches real ConfigBar layout exactly */}
+      {/* ConfigBar — exact same structure as real ConfigBar */}
       <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-2 pb-4 text-sm sm:gap-3">
         <div className="grid w-full grid-cols-[1fr_2fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
           {/* Mode selector */}
-          <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-1 rounded-lg p-[3px]">
-            <ConfigButton active>
-              <span className="inline-flex items-center gap-1.5"><IconClock className="size-3.5" /> time</span>
-            </ConfigButton>
-            <ConfigButton active={false}>
-              <span className="inline-flex items-center gap-1.5"><IconTypography className="size-3.5" /> words</span>
-            </ConfigButton>
-          </div>
+          <PillGroup>
+            <PillButton active>
+              <IconClock className="size-3.5" /> time
+            </PillButton>
+            <PillButton active={false}>
+              <IconTypography className="size-3.5" /> words
+            </PillButton>
+          </PillGroup>
+
           {/* Variant selector */}
-          <div className="bg-muted/80 inline-flex h-9 min-w-0 items-center justify-center gap-1 overflow-hidden rounded-lg p-[3px] sm:w-64">
+          <PillGroup className="min-w-0 overflow-hidden sm:w-64">
             {[15, 30, 60, 120].map((t) => (
-              <ConfigButton key={t} active={t === 30}>{t}s</ConfigButton>
+              <PillButton key={t} active={t === 30}>{t}s</PillButton>
             ))}
-          </div>
+          </PillGroup>
         </div>
+
         {/* Punctuation & numbers */}
-        <div className="bg-muted/80 inline-flex h-9 items-center justify-center gap-1 rounded-lg p-[3px]">
-          <ConfigButton active={false}>
-            <span className="inline-flex items-center gap-1.5"><IconAt className="size-3.5" /> punct</span>
-          </ConfigButton>
-          <ConfigButton active={false}>
-            <span className="inline-flex items-center gap-1.5"><IconHash className="size-3.5" /> nums</span>
-          </ConfigButton>
-        </div>
+        <PillGroup>
+          <PillButton active={false}>
+            <IconAt className="size-3.5" /> punct
+          </PillButton>
+          <PillButton active={false}>
+            <IconHash className="size-3.5" /> nums
+          </PillButton>
+        </PillGroup>
       </div>
 
       {/* Live stats — default idle values */}

@@ -6,21 +6,23 @@ import { LeaderboardSkeleton } from "~/components/leaderboard-skeleton";
 export default function LeaderboardLoading() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
-      {/* Header — static */}
+      {/* Header — exact same structure as real leaderboard */}
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconTrophyFilled className="text-primary size-5" />
           leaderboard
         </h1>
-        <Tabs defaultValue="wpm">
-          <TabsList>
-            <TabsTrigger value="wpm" className="gap-1.5"><IconTrophy className="size-3.5" /> wpm</TabsTrigger>
-            <TabsTrigger value="level" className="gap-1.5"><IconBolt className="size-3.5" /> level</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="flex items-center gap-2">
+          <Tabs defaultValue="wpm">
+            <TabsList>
+              <TabsTrigger value="wpm" className="gap-1.5"><IconTrophy className="size-3.5" /> wpm</TabsTrigger>
+              <TabsTrigger value="level" className="gap-1.5"><IconBolt className="size-3.5" /> level</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
       </header>
 
-      {/* Filters — static */}
+      {/* Filters — exact same structure as real leaderboard */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <Select defaultValue="time">
