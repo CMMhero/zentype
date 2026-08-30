@@ -88,7 +88,7 @@ export function AppShell({
   }
 
   return (
-    <div className="flex min-h-dvh flex-col md:min-h-screen">
+    <div className="flex h-dvh flex-col">
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground">
         Skip to content
       </a>
@@ -155,14 +155,10 @@ export function AppShell({
         </div>
       </header>
 
-      <main id="main-content" className="flex flex-1 flex-col" role="main">
+      <main id="main-content" className="flex flex-1 flex-col overflow-y-auto" role="main">
         {children}
 
-        <CommandPalette />
-        <HelpDialog />
-      </main>
-
-      <footer className="text-muted-foreground mt-auto" role="contentinfo">
+        <footer className="text-muted-foreground mt-auto shrink-0" role="contentinfo">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
           <span className="flex items-center gap-2">
             <a href="https://github.com/CMMhero/zentype" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="GitHub">
@@ -196,8 +192,12 @@ export function AppShell({
         </div>
       </footer>
 
-      {/* Mobile bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <CommandPalette />
+        <HelpDialog />
+      </main>
+
+      {/* Mobile bottom nav - normal flow, not fixed */}
+      <nav className="shrink-0 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <div className="flex h-14 items-center justify-around">
           {NAV.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
