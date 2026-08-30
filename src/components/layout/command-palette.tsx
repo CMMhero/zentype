@@ -4,8 +4,8 @@ import { useEffect, useState, useRef, useMemo, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import {
-  IconAlertTriangle, IconArrowBackUp, IconArrowRight, IconClock,
-  IconCursorText, IconEye, IconEyeOff, IconKeyboardFilled,
+  IconAlertTriangle, IconArrowBackUp, IconArrowRight, IconAt, IconClock,
+  IconCursorText, IconEye, IconEyeOff, IconHash, IconKeyboardFilled,
   IconLetterT, IconList, IconMoon, IconMusic, IconPointer, IconPlayerStop,
   IconRefresh, IconSearch, IconSettings, IconSpace, IconTextResize,
   IconTrophy, IconTypography, IconUser, IconVolume, IconVolumeOff,
@@ -421,7 +421,7 @@ export function CommandPalette() {
             onSelect={togglePunctuation}
             className={activeSet.punctuation ? "text-primary bg-primary/10" : ""}
           >
-            <IconTypography /> punctuation <ToggleBadge on={activeSet.punctuation} /><CommandDesc>add punctuation marks to words</CommandDesc>
+            <IconAt /> punctuation <ToggleBadge on={activeSet.punctuation} /><CommandDesc>add punctuation marks to words</CommandDesc>
           </CommandItem>
           <CommandItem
             value="gameplay numbers add digits 0 1 2 3 4 5 toggle on off"
@@ -429,7 +429,7 @@ export function CommandPalette() {
             onSelect={toggleNumbers}
             className={activeSet.numbers ? "text-primary bg-primary/10" : ""}
           >
-            <IconLetterT /> numbers <ToggleBadge on={activeSet.numbers} /><CommandDesc>add numbers to words</CommandDesc>
+            <IconHash /> numbers <ToggleBadge on={activeSet.numbers} /><CommandDesc>add numbers to words</CommandDesc>
           </CommandItem>
         </CommandGroup>
 

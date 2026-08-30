@@ -59,11 +59,16 @@ export default async function AboutPage() {
         <section>
           <h2 className="text-base font-semibold">what is <ZentypeIcon className="text-primary size-4 inline" /> zentype?</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            <ZentypeIcon className="text-primary size-4 inline" /> zentype is a typing test with speed and accuracy tracking, inspired by monkeytype.
+            <ZentypeIcon className="text-primary size-4 inline" /> zentype is a typing test with speed and accuracy tracking, inspired by{" "}
+            <a href="https://monkeytype.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline">monkeytype</a>.
             XP, levels, 110+ achievements, streak heatmaps, and global leaderboards.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            Built with Next.js, Supabase, shadcn/ui, and Tailwind CSS. Open source and free to use.
+            Built with{" "}
+            <a href="https://nextjs.org/" target="_blank" rel="noreferrer" className="text-primary hover:underline">Next.js</a>,{" "}
+            <a href="https://supabase.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline">Supabase</a>,{" "}
+            <a href="https://ui.shadcn.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline">shadcn/ui</a>, and{" "}
+            <a href="https://tailwindcss.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline">Tailwind CSS</a>. Open source and free to use.
           </p>
         </section>
 
@@ -105,7 +110,7 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconBrandGithub className="size-5" />}
               title="open source"
-              description="Next.js, Supabase, shadcn/ui, Tailwind CSS. Open source under the repo linked above."
+              description={<>Next.js, Supabase, shadcn/ui, Tailwind CSS. Open source under the repo linked above.</>}
             />
           </div>
         </section>
@@ -152,7 +157,7 @@ function StatCard({ label, value }: { label: string; value: number | string }) {
   );
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: React.ReactNode }) {
   return (
     <div className="rounded-lg border border-border/30 bg-card p-4">
       <div className="flex items-center gap-2">
