@@ -21,6 +21,7 @@ import { Slider } from "~/components/ui/slider";
 import { Switch } from "~/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { THEMES } from "~/lib/themes";
+import { ThemePicker } from "~/components/theme-picker";
 import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
 import type { CaretStyle, FontFamily, FontSizeKey, SoundVariant } from "~/lib/types";
 import { FONTS } from "~/lib/fonts";
@@ -134,17 +135,8 @@ export default function SettingsPage() {
         <TabsContent value="appearance" className="flex min-w-0 flex-col gap-4 outline-none">
           <Card className="w-full min-w-0 py-4">
             <SectionTitle icon={<IconPalette className="size-4" />} title="theme" />
-            <CardContent className="grid grid-cols-2 gap-2 px-4 sm:grid-cols-3 md:grid-cols-4">
-              {[...THEMES].sort((a, b) => a.label.localeCompare(b.label)).map((t) => (
-                <Button key={t.id} variant="outline" onClick={() => update({ themeId: t.id })} className={`h-auto w-full min-w-0 justify-start gap-2 rounded-md border-border bg-transparent p-2 text-left shadow-none hover:bg-transparent ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : "hover:border-primary"}`}>
-                  <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
-                    <span className="size-5" style={{ background: t.vars["--background"] }} />
-                    <span className="size-5" style={{ background: t.vars["--primary"] }} />
-                    <span className="size-5" style={{ background: t.vars["--zt-sub"] }} />
-                  </span>
-                  <span className="min-w-0 flex-1 truncate text-xs">{t.label}</span>
-                </Button>
-              ))}
+            <CardContent className="px-4">
+              <ThemePicker themes={THEMES} selectedId={settings.themeId} onSelect={(id) => update({ themeId: id })} />
             </CardContent>
           </Card>
 
