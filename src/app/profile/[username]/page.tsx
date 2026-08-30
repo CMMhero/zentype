@@ -223,7 +223,7 @@ export default function PublicProfilePage() {
                     <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
                   )}
                   {rank ? (
-                    <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-secondary/10 px-1.5 text-[9px] font-bold leading-none tracking-widest text-secondary">
+                    <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-secondary px-1.5 text-[9px] font-bold leading-none tracking-widest text-secondary-foreground">
                       #{rank}
                     </span>
                   ) : boardRanks === null ? (
