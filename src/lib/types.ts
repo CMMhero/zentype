@@ -46,6 +46,7 @@ export interface GameSettings {
   showKeyboard: boolean;
   visibleLines: 1 | 2 | 3;
   hideLiveStats: boolean;
+  hideProgress: boolean;
   punctuation: boolean;
   numbers: boolean;
 }

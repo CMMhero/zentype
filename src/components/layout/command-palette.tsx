@@ -55,6 +55,7 @@ const STATIC_ITEMS = (() => {
     { id: "gp-strict", group: "gameplay", value: "gameplay strict space wrong words cannot be skipped toggle on off", keywords: "gameplay strict space toggle on off", label: "strict space" },
     { id: "gp-back", group: "gameplay", value: "gameplay free backspace restore previous word toggle on off", keywords: "gameplay free backspace toggle on off", label: "free backspace" },
     { id: "gp-hide", group: "gameplay", value: "gameplay hide live stats blank wpm acc while running toggle on off", keywords: "gameplay hide live stats toggle on off", label: "hide live stats" },
+    { id: "gp-hide-progress", group: "gameplay", value: "gameplay hide progress time word count bar toggle on off", keywords: "gameplay hide progress toggle on off", label: "hide progress" },
     { id: "gp-punct", group: "gameplay", value: "gameplay punctuation add commas periods exclamation marks toggle on off", keywords: "gameplay punctuation toggle on off", label: "punctuation" },
     { id: "gp-nums", group: "gameplay", value: "gameplay numbers add digits 0 1 2 3 4 5 toggle on off", keywords: "gameplay numbers toggle on off", label: "numbers" },
     { id: "app-kb", group: "appearance", value: "appearance virtual keyboard show key highlighter toggle on off", keywords: "appearance keyboard toggle on off", label: "virtual keyboard" },
@@ -173,6 +174,7 @@ export function CommandPalette() {
     strictSpace: settings.strictSpace,
     freeBackspace: settings.freeBackspace,
     hideLiveStats: settings.hideLiveStats,
+    hideProgress: settings.hideProgress,
     showKeyboard: settings.showKeyboard,
     smoothCaret: settings.smoothCaret,
     punctuation: settings.punctuation,
@@ -187,6 +189,7 @@ export function CommandPalette() {
   const toggleStrict = useCallback(() => update({ strictSpace: !settings.strictSpace }), [update, settings.strictSpace]);
   const toggleFreeBack = useCallback(() => update({ freeBackspace: !settings.freeBackspace }), [update, settings.freeBackspace]);
   const toggleHideLive = useCallback(() => update({ hideLiveStats: !settings.hideLiveStats }), [update, settings.hideLiveStats]);
+  const toggleHideProgress = useCallback(() => update({ hideProgress: !settings.hideProgress }), [update, settings.hideProgress]);
   const toggleKeyboard = useCallback(() => update({ showKeyboard: !settings.showKeyboard }), [update, settings.showKeyboard]);
   const toggleSmoothCaret = useCallback(() => update({ smoothCaret: !settings.smoothCaret }), [update, settings.smoothCaret]);
   const togglePunctuation = useCallback(() => update({ punctuation: !settings.punctuation }), [update, settings.punctuation]);
@@ -542,6 +545,14 @@ export function CommandPalette() {
             className={activeSet.hideLiveStats ? "text-primary bg-primary/10" : ""}
           >
             <IconEyeOff /> hide live stats <ToggleBadge on={activeSet.hideLiveStats} /><CommandDesc>blank wpm/acc while running</CommandDesc>
+          </CommandItem>
+          <CommandItem
+            value="gameplay hide progress time word count bar toggle on off"
+            keywords={["gameplay", "progress"]}
+            onSelect={toggleHideProgress}
+            className={activeSet.hideProgress ? "text-primary bg-primary/10" : ""}
+          >
+            <IconEyeOff /> hide progress <ToggleBadge on={activeSet.hideProgress} /><CommandDesc>hide time/word count and progress bar</CommandDesc>
           </CommandItem>
           <CommandItem
             value="gameplay punctuation add commas periods exclamation marks toggle on off"

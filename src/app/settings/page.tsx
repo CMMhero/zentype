@@ -132,6 +132,9 @@ export default function SettingsPage() {
               <SettingRow label="hide live stats" hint="don't show wpm/accuracy during the test">
                 <Switch checked={settings.hideLiveStats} onCheckedChange={(v) => update({ hideLiveStats: v })} />
               </SettingRow>
+              <SettingRow label="hide progress" hint="don't show time/word count and progress bar">
+                <Switch checked={settings.hideProgress} onCheckedChange={(v) => update({ hideProgress: v })} />
+              </SettingRow>
             </CardContent>
           </Card>
         </TabsContent>
