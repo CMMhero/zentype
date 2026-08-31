@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import {
   IconAlertTriangle, IconArrowBackUp, IconArrowRight, IconAt, IconClock,
-  IconCursorText, IconDownload, IconEye, IconEyeOff, IconHash, IconKeyboardFilled,
-  IconLetterT, IconList, IconLogout, IconMoon, IconMusic, IconPointer, IconPlayerStop,
+  IconCode, IconCursorText, IconDownload, IconEye, IconEyeOff, IconFileText, IconHash, IconInfoCircle, IconKeyboardFilled,
+  IconLetterT, IconList, IconLock, IconLogout, IconMoon, IconMusic, IconPointer, IconPlayerStop,
   IconRefresh, IconSearch, IconSettings, IconSpace, IconTextResize,
   IconTrophy, IconTypography, IconUser, IconVolume, IconVolumeOff,
 } from "@tabler/icons-react";
@@ -64,6 +64,10 @@ const STATIC_ITEMS = (() => {
     { id: "act-delete", group: "actions", value: "actions delete all results history remove", keywords: "actions delete results history", label: "delete all results" },
     { id: "act-signout", group: "actions", value: "actions sign out log out logout", keywords: "actions sign out log out logout", label: "sign out" },
     { id: "act-discard", group: "actions", value: "actions discard local guest results", keywords: "actions discard local guest results", label: "discard local results" },
+    { id: "link-about", group: "links", value: "link about page info", keywords: "link about page info", label: "about" },
+    { id: "link-terms", group: "links", value: "link terms of service tos", keywords: "link terms of service tos", label: "terms" },
+    { id: "link-privacy", group: "links", value: "link privacy policy gdpr", keywords: "link privacy policy gdpr", label: "privacy" },
+    { id: "link-github", group: "links", value: "link github source code repository", keywords: "link github source code repository", label: "github" },
   ];
   return items;
 })();
@@ -332,6 +336,23 @@ export function CommandPalette() {
               <IconAlertTriangle /> discard local results<CommandDesc>delete {local.length} unsynced guest result{local.length === 1 ? "" : "s"}</CommandDesc>
             </CommandItem>
           )}
+        </CommandGroup>
+
+        <CommandSeparator />
+
+        <CommandGroup heading="links">
+          <CommandItem value="link about page info" keywords={["link", "about", "page", "info"]} onSelect={() => go("/about")}>
+            <IconInfoCircle /> about<CommandDesc>about zentype</CommandDesc>
+          </CommandItem>
+          <CommandItem value="link terms of service tos" keywords={["link", "terms", "service", "tos"]} onSelect={() => go("/terms")}>
+            <IconFileText /> terms<CommandDesc>terms of service</CommandDesc>
+          </CommandItem>
+          <CommandItem value="link privacy policy gdpr" keywords={["link", "privacy", "policy", "gdpr"]} onSelect={() => go("/privacy")}>
+            <IconLock /> privacy<CommandDesc>privacy policy</CommandDesc>
+          </CommandItem>
+          <CommandItem value="link github source code repository" keywords={["link", "github", "source", "code"]} onSelect={() => window.open("https://github.com/CMMhero/zentype", "_blank")}>
+            <IconCode /> github<CommandDesc>source code</CommandDesc>
+          </CommandItem>
         </CommandGroup>
 
         <CommandSeparator />
