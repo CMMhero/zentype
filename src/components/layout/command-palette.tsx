@@ -94,17 +94,10 @@ export function CommandPalette() {
   const update = useSettingsStore((s) => s.update);
 
   const [userQuery, setUserQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [userResults, setUserResults] = useState<UserResult[]>([]);
   const [userLoading, setUserLoading] = useState(false);
   const [confirmAction, setConfirmAction] = useState<null | { title: string; label: string; description: string; onConfirm: () => void }>(null);
   const [contentReady, setContentReady] = useState(false);
-
-  // Debounce query for fuzzy filtering — input stays responsive, filter updates after delay
-  useEffect(() => {
-    const id = setTimeout(() => setDebouncedQuery(userQuery), 150);
-    return () => clearTimeout(id);
-  }, [userQuery]);
 
   // Defer heavy theme/font groups until after dialog opens
   useEffect(() => {
@@ -164,22 +157,13 @@ export function CommandPalette() {
   // Clear confirmation when searching
   const onValueChange = useCallback((v: string) => { setUserQuery(v); if (confirmAction) setConfirmAction(null); }, [confirmAction]);
 
-  // Debounced query ref — filter uses this instead of the raw search param
-  const debouncedQueryRef = useRef("");
-  useEffect(() => {
-    debouncedQueryRef.current = debouncedQuery;
-    // Clear fuse cache when debounced query changes
-    matchCacheRef.current.clear();
-  }, [debouncedQuery]);
-
   const fuzzyFilter = useCallback((value: string, search: string) => {
-    const q = debouncedQueryRef.current;
-    if (!q) return 1;
-    let matchSet = matchCacheRef.current.get(q);
+    if (!search) return 1;
+    let matchSet = matchCacheRef.current.get(search);
     if (!matchSet) {
-      const results = fuse.search(q);
+      const results = fuse.search(search);
       matchSet = new Set(results.map((r) => r.item.value));
-      matchCacheRef.current.set(q, matchSet);
+      matchCacheRef.current.set(search, matchSet);
     }
     return matchSet.has(value) ? 1 : 0;
   }, []);
