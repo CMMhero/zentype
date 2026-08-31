@@ -35,9 +35,9 @@ export default function NotFound() {
               <IconKeyboardFilled className="size-4" /> start typing
             </Link>
           </Button>
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground gap-1.5 text-xs" onClick={() => history.back()}>
+          <button type="button" className="text-primary inline-flex items-center gap-1 text-xs underline underline-offset-2" onClick={() => history.back()}>
             <IconArrowLeft className="size-3" /> go back
-          </Button>
+          </button>
         </div>
       </div>
     </div>
