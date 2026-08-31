@@ -214,8 +214,8 @@ export default function SettingsPage() {
             <Card className="w-full py-6">
               <CardContent className="flex flex-col items-center gap-3 px-4 text-center">
                 <IconUser className="text-muted-foreground size-6" />
-                <p className="text-muted-foreground text-sm">You're typing as a guest. Results live in this browser only.</p>
-                <Button asChild size="sm"><a href="/login">login / Sign up →</a></Button>
+                <p className="text-muted-foreground text-sm">you're typing as a guest. results live in this browser only.</p>
+                <Button asChild size="sm"><a href="/login">sign in</a></Button>
               </CardContent>
             </Card>
           )}
