@@ -446,6 +446,10 @@ html {
 [data-sonner-toaster] {
   font-family: inherit;
 }
+[data-sonner-toast] [data-title],
+[data-sonner-toast] [data-description] {
+  text-transform: lowercase;
+}
 
 /* Prevent layout shift in tabs */
 [data-slot="tabs-content"] {
