@@ -518,6 +518,20 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                     })}
                   </div>
                 </TooltipProvider>
+                <div
+                  className={cn(
+                    "text-muted-foreground mt-2 flex items-center justify-end gap-1.5 text-[10px]",
+                    compact && "text-[9px]"
+                  )}
+                  aria-hidden
+                >
+                  <span className="mr-1">less</span>
+                  <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-muted/40")} />
+                  <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary/40 border-primary/40")} />
+                  <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary/70 border-primary/70")} />
+                  <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary border-primary")} />
+                  <span className="ml-1">more</span>
+                </div>
               </div>
             </div>
           </>
