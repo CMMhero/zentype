@@ -71,7 +71,7 @@ export default function HomeLoading() {
         </div>
       </div>
 
-      {/* Shortcuts hint — static */}
+      {/* Keybinds hint — static */}
       <div className="mt-auto flex flex-col items-center gap-1.5 pt-4 text-center text-xs text-muted-foreground">
         <p>press any key to start</p>
       </div>

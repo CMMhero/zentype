@@ -35,6 +35,7 @@ import { useUser } from "~/components/user-provider";
 import { signOutFn, updateUsername } from "~/server/auth";
 import { deleteMyData } from "~/server/results";
 import { playKeypress, playError } from "~/lib/sound";
+import { KEYBINDS } from "~/lib/keybinds";
 
 export default function SettingsPage() {
   const user = useUser();
@@ -223,11 +224,11 @@ export default function SettingsPage() {
           <Card className="w-full py-4">
             <CardContent className="px-4">
               <div className="grid gap-x-8 gap-y-1 sm:grid-cols-2">
-                {KEYBINDS.map(([keys, action]) => (
-                  <div key={action} className="hover:bg-muted/50 flex items-center justify-between rounded px-2 py-2">
-                    <span className="text-muted-foreground text-sm">{action}</span>
+                {KEYBINDS.map((kb) => (
+                  <div key={kb.action} className="hover:bg-muted/50 flex items-center justify-between rounded px-2 py-2">
+                    <span className="text-muted-foreground text-sm">{kb.action}</span>
                     <span className="flex items-center gap-1">
-                      {keys.map((k, i) => (
+                      {kb.keys.map((k, i) => (
                         <span key={i} className="flex items-center gap-1">
                           {i > 0 && <span className="text-muted-foreground text-[10px]">+</span>}
                           <Kbd>{k}</Kbd>
@@ -459,19 +460,6 @@ function CaretPreview({ style }: { style: CaretStyle }) {
     </div>
   );
 }
-
-const KEYBINDS: Array<[string[], string]> = [
-  [["tab"], "restart / new test"],
-  [["enter"], "next test (results screen)"],
-  [["ctrl", "k"], "command palette"],
-  [["?"], "shortcut reference"],
-  [["esc"], "close dialogs"],
-  [["alt", "1"], "test page"],
-  [["alt", "2"], "leaderboard"],
-  [["alt", "3"], "profile"],
-  [["alt", "4"], "settings"],
-  [["backspace"], "fix current word"],
-];
 
 function ThemeSearch() {
   const settings = useSettingsStore((s) => s.settings);

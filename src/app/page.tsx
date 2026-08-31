@@ -446,7 +446,7 @@ export default function TestPage() {
             <p className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 px-2 text-center">
               <span className="inline-flex items-center gap-1.5"><Kbd>tab</Kbd> new test</span>
               <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>esc</Kbd> restart</span>
-              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>?</Kbd> shortcuts</span>
+              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>?</Kbd> keybinds</span>
               <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> command</span>
             </p>
           </div>
