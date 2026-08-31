@@ -520,7 +520,7 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                 </TooltipProvider>
                 <div
                   className={cn(
-                    "text-muted-foreground mt-2 flex items-center justify-end gap-1.5 text-[10px]",
+                    "text-muted-foreground mt-2 flex items-center justify-start gap-1.5 text-[10px]",
                     compact && "text-[9px]"
                   )}
                   aria-hidden
