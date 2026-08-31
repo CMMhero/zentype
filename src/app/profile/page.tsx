@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconEye, IconGauge, IconHash, IconHistory,
+  IconArrowRight, IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconEye, IconGauge, IconHash, IconHistory,
   IconLink, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
@@ -506,8 +506,8 @@ export default function ProfilePage() {
           {achievements === null ? (
             <Skeleton className="mt-3 h-4 w-32" />
           ) : (
-            <Button variant="link" size="sm" className="mt-3 h-auto p-0 text-xs" onClick={() => setAchOpen(true)}>
-              view all achievements →
+            <Button variant="link" size="sm" className="mt-3 h-auto gap-1 p-0 text-xs" onClick={() => setAchOpen(true)}>
+              view all achievements <IconArrowRight className="size-3" />
             </Button>
           )}
         </CardContent>
