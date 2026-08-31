@@ -16,7 +16,7 @@ const SHORTCUTS: Array<{ keys: string[]; action: string }> = [
   { keys: ["ctrl", "k"], action: "command palette" },
   { keys: ["?"], action: "this help dialog" },
   { keys: ["esc"], action: "close dialogs / pause focus" },
-  { keys: ["alt", "1..4"], action: "test · leaderboard · profile · settings" },
+  { keys: ["alt", "1..4"], action: "test / leaderboard / profile / settings" },
   { keys: ["backspace"], action: "fix current word" },
 ];
 

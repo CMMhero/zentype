@@ -262,7 +262,7 @@ export default function ProfilePage() {
                 const url = `${window.location.origin}/profile/${user.username}`;
                 try {
                   await navigator.clipboard.writeText(url);
-                  toast.success("Public profile link copied");
+                  toast.success("public profile link copied");
                 } catch {
                   toast.error("Failed to copy link");
                 }

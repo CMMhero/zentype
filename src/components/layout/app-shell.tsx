@@ -84,7 +84,7 @@ export function AppShell({
 
   async function handleSignOut() {
     await signOutFn();
-    toast.success("Signed out");
+    toast.success("signed out");
     router.push("/");
   }
 
