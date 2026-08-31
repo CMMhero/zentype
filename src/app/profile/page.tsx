@@ -631,7 +631,7 @@ export default function ProfilePage() {
                       <TableCell className="text-right font-bold tabular-nums text-primary">
                         <span className="inline-flex items-center justify-end gap-1.5">
                           {pbIds.has(r.id) && (
-                            <span className="inline-flex items-center gap-0.5 rounded bg-primary/10 px-1 py-0 text-[9px] font-bold tracking-widest uppercase text-primary">
+                            <span className="inline-flex items-center gap-0.5 rounded bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground">
                               <IconCrown className="size-3" /> PB
                             </span>
                           )}
