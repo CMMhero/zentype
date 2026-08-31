@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import {
   IconAlertTriangle, IconArrowBackUp, IconArrowRight, IconAt, IconClock,
-  IconCursorText, IconEye, IconEyeOff, IconHash, IconKeyboardFilled,
-  IconLetterT, IconList, IconMoon, IconMusic, IconPointer, IconPlayerStop,
+  IconCursorText, IconDownload, IconEye, IconEyeOff, IconHash, IconKeyboardFilled,
+  IconLetterT, IconList, IconLogout, IconMoon, IconMusic, IconPointer, IconPlayerStop,
   IconRefresh, IconSearch, IconSettings, IconSpace, IconTextResize,
   IconTrophy, IconTypography, IconUser, IconVolume, IconVolumeOff,
 } from "@tabler/icons-react";
@@ -16,6 +16,11 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { useUiStore } from "~/stores/ui-store";
 import { useSettingsStore } from "~/stores/settings-store";
+import { useResultsStore } from "~/stores/results-store";
+import { useUser } from "~/components/user-provider";
+import { signOutFn } from "~/server/auth";
+import { deleteMyData } from "~/server/results";
+import { toast } from "sonner";
 import { THEMES } from "~/lib/themes";
 import {
   TIME_OPTIONS, WORD_OPTIONS,
@@ -54,6 +59,11 @@ const STATIC_ITEMS = (() => {
     { id: "gp-nums", group: "gameplay", value: "gameplay numbers add digits 0 1 2 3 4 5 toggle on off", keywords: "gameplay numbers toggle on off", label: "numbers" },
     { id: "app-kb", group: "appearance", value: "appearance virtual keyboard show key highlighter toggle on off", keywords: "appearance keyboard toggle on off", label: "virtual keyboard" },
     { id: "app-smooth", group: "appearance", value: "appearance smooth caret animate caret movement toggle on off", keywords: "appearance smooth caret toggle on off", label: "smooth caret" },
+    { id: "act-restore", group: "actions", value: "actions restore defaults reset settings", keywords: "actions restore defaults reset settings", label: "restore defaults" },
+    { id: "act-export", group: "actions", value: "actions export json data download", keywords: "actions export json data download", label: "export json" },
+    { id: "act-delete", group: "actions", value: "actions delete all results history remove", keywords: "actions delete results history", label: "delete all results" },
+    { id: "act-signout", group: "actions", value: "actions sign out log out logout", keywords: "actions sign out log out logout", label: "sign out" },
+    { id: "act-discard", group: "actions", value: "actions discard local guest results", keywords: "actions discard local guest results", label: "discard local results" },
   ];
   return items;
 })();
@@ -175,6 +185,32 @@ export function CommandPalette() {
   const toggleNumbers = useCallback(() => update({ numbers: !settings.numbers }), [update, settings.numbers]);
   const restartTest = useCallback(() => { close(); window.dispatchEvent(new CustomEvent("zt:restart")); }, [close]);
 
+  // ─── Account / data actions ────────────────────────────────────────
+  const user = useUser();
+  const local = useResultsStore((s) => s.local);
+  const clearLocal = useResultsStore((s) => s.clearLocal);
+  const reset = useSettingsStore((s) => s.reset);
+
+  const restoreDefaults = useCallback(() => { close(); reset(); toast.info("settings restored to defaults"); }, [close, reset]);
+  const exportJson = useCallback(() => {
+    close();
+    const payload = { exportedAt: new Date().toISOString(), app: "zentype", version: 2, localResults: local };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `zentype-export-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, [close, local]);
+  const deleteAllResults = useCallback(async () => {
+    close();
+    const res = await deleteMyData();
+    toast[res.ok ? "success" : "error"](res.ok ? "all results deleted" : "deletion failed");
+  }, [close]);
+  const handleSignOut = useCallback(() => { close(); signOutFn().then(() => router.push("/")); }, [close, router]);
+  const discardLocal = useCallback(() => { close(); clearLocal(); toast.success("local results discarded"); }, [close, clearLocal]);
+
   // Clear fuse cache when dialog closes
   useEffect(() => {
     if (!open) {
@@ -225,6 +261,27 @@ export function CommandPalette() {
           <CommandItem value="actions restart test tab" keywords={["actions", "restart"]} onSelect={restartTest}>
             <IconRefresh /> restart test<Shortcut>tab</Shortcut>
           </CommandItem>
+          <CommandItem value="actions restore defaults reset settings" keywords={["actions", "restore", "defaults", "reset"]} onSelect={restoreDefaults}>
+            <IconRefresh /> restore defaults<CommandDesc>reset all settings</CommandDesc>
+          </CommandItem>
+          <CommandItem value="actions export json data download" keywords={["actions", "export", "json", "data", "download"]} onSelect={exportJson}>
+            <IconDownload /> export json<CommandDesc>download your data</CommandDesc>
+          </CommandItem>
+          {user && (
+            <CommandItem value="actions delete all results history remove" keywords={["actions", "delete", "results", "history"]} onSelect={deleteAllResults}>
+              <IconAlertTriangle /> delete all results<CommandDesc>permanently remove</CommandDesc>
+            </CommandItem>
+          )}
+          {user && (
+            <CommandItem value="actions sign out log out logout" keywords={["actions", "sign", "out", "logout"]} onSelect={handleSignOut}>
+              <IconLogout /> sign out<CommandDesc>log out of account</CommandDesc>
+            </CommandItem>
+          )}
+          {local.length > 0 && (
+            <CommandItem value="actions discard local guest results" keywords={["actions", "discard", "local", "guest"]} onSelect={discardLocal}>
+              <IconAlertTriangle /> discard local results<CommandDesc>{local.length} pending result{local.length === 1 ? "" : "s"}</CommandDesc>
+            </CommandItem>
+          )}
         </CommandGroup>
 
         <CommandSeparator />
