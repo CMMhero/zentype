@@ -15,7 +15,7 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 
 **Gamification**
 - XP and levels with streak bonuses and perfect-test bonus
-- 110+ achievements across tiers: tests, WPM, accuracy, consistency, streak, time, chars, level, account age
+- 100+ achievements across tiers: tests, WPM, accuracy, consistency, streak, time, chars, level, account age
 - Real-time progress tracking on every achievement
 - Silent XP/achievement processing -- no popups interrupting chained tests
 
@@ -32,12 +32,12 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 - Your rank highlight, pagination, mode/variant/period filters
 
 **Command palette**
-- Fuzzy search across navigation, actions, themes (80+), fonts (50+), settings
+- Fuzzy search across navigation, actions, themes (200+), fonts (80+), settings
 - User search for visiting public profiles
 
 **Appearance**
-- 80+ themes via CSS custom properties (gruvbox, nord, dracula, catppuccin, tokyo night, and more)
-- 50+ fonts via fontsource (geist-mono, inter, jetbrains-mono, work-sans, sora, and more)
+- 200+ themes via CSS custom properties (gruvbox, nord, dracula, catppuccin, tokyo night, and more)
+- 80+ fonts via fontsource (geist-mono, inter, jetbrains-mono, work-sans, sora, and more)
 - Dynamic favicon that adapts to the active theme
 
 **Account**
