@@ -365,7 +365,7 @@ export default function TestPage() {
         <>
           <div
             className={`mb-4 flex items-end justify-between transition-opacity duration-300 ${
-              settings.hideLiveStats && engine.status === "running" ? "pointer-events-none invisible h-0 overflow-hidden opacity-0" : "opacity-100"
+              settings.hideLiveStats && engine.status === "running" ? "pointer-events-none opacity-0" : "opacity-100"
             }`}
             aria-live="polite"
             aria-atomic="true"
@@ -398,7 +398,7 @@ export default function TestPage() {
             </div>
           </div>
 
-          <Progress value={engine.progress * 100} className="mb-3" aria-label="test progress" />
+          <Progress value={engine.progress * 100} className="mb-3" indicatorClassName="transition-all duration-300 ease-out" aria-label="test progress" />
 
           <div className="relative w-full p-4" onClick={() => { if (isMobile) inputEl.current?.focus(); }}>
             {loadingPrompt ? (

@@ -35,8 +35,11 @@ export function DynamicFavicon() {
   const svgCacheRef = useRef<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Wait for hydration to complete before touching the DOM
-  useEffect(() => { setMounted(true); }, []);
+  // Wait for hydration + React commit to complete before touching the DOM
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   useEffect(() => {
     if (!mounted) return;
