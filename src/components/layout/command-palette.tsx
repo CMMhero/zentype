@@ -97,6 +97,16 @@ export function CommandPalette() {
   const [userResults, setUserResults] = useState<UserResult[]>([]);
   const [userLoading, setUserLoading] = useState(false);
   const [confirmAction, setConfirmAction] = useState<null | { title: string; label: string; description: string; onConfirm: () => void }>(null);
+  const [contentReady, setContentReady] = useState(false);
+
+  // Defer heavy theme/font groups until after dialog opens
+  useEffect(() => {
+    if (open && !contentReady) {
+      const id = requestAnimationFrame(() => setContentReady(true));
+      return () => cancelAnimationFrame(id);
+    }
+    if (!open) setContentReady(false);
+  }, [open, contentReady]);
   const userSearchTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   // ─── Fuse search result cache ──────────────────────────────────────
@@ -385,27 +395,30 @@ export function CommandPalette() {
           ))}
         </CommandGroup>
 
-        <CommandSeparator />
-
-        <CommandGroup heading="theme">
-          {THEMES.map((t) => (
-            <CommandItem
-              key={t.id}
-              value={`theme appearance ${t.label} ${t.appearance} ${t.id}`}
-              keywords={["theme", "appearance", t.label, t.appearance]}
-              onSelect={() => { update({ themeId: t.id }); close(); }}
-              className={activeSet.theme === t.id ? "text-primary bg-primary/10" : ""}
-            >
-              <IconMoon />
-              <span className="mr-1.5 inline-flex gap-0.5" aria-hidden>
-                <span className="size-3 rounded-sm border border-border" style={{ background: t.vars["--background"] }} />
-                <span className="size-3 rounded-sm" style={{ background: t.vars["--primary"] }} />
-                <span className="size-3 rounded-sm" style={{ background: t.vars["--secondary"] }} />
-              </span>
-              {t.label}<CommandDesc>{t.appearance} theme</CommandDesc>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        {contentReady && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="theme">
+              {THEMES.map((t) => (
+                <CommandItem
+                  key={t.id}
+                  value={`theme appearance ${t.label} ${t.appearance} ${t.id}`}
+                  keywords={["theme", "appearance", t.label, t.appearance]}
+                  onSelect={() => { update({ themeId: t.id }); close(); }}
+                  className={activeSet.theme === t.id ? "text-primary bg-primary/10" : ""}
+                >
+                  <IconMoon />
+                  <span className="mr-1.5 inline-flex gap-0.5" aria-hidden>
+                    <span className="size-3 rounded-sm border border-border" style={{ background: t.vars["--background"] }} />
+                    <span className="size-3 rounded-sm" style={{ background: t.vars["--primary"] }} />
+                    <span className="size-3 rounded-sm" style={{ background: t.vars["--secondary"] }} />
+                  </span>
+                  {t.label}<CommandDesc>{t.appearance} theme</CommandDesc>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
 
         <CommandSeparator />
 
@@ -471,23 +484,26 @@ export function CommandPalette() {
           ))}
         </CommandGroup>
 
-        <CommandSeparator />
-
-        <CommandGroup heading="font family">
-          {FONT_FAMILIES.map((f) => (
-            <CommandItem
-              key={f.value}
-              value={`font family ${f.label} ${f.desc} typeface`}
-              keywords={["font", "family", f.label]}
-              onSelect={() => { update({ fontFamily: f.value }); close(); }}
-              className={activeSet.fontFamily === f.value ? "text-primary bg-primary/10" : ""}
-            >
-              <IconTypography />
-              <span style={{ fontFamily: f.cssVar }}>{f.label}</span>
-              <CommandDesc>{f.desc}</CommandDesc>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        {contentReady && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="font family">
+              {FONT_FAMILIES.map((f) => (
+                <CommandItem
+                  key={f.value}
+                  value={`font family ${f.label} ${f.desc} typeface`}
+                  keywords={["font", "family", f.label]}
+                  onSelect={() => { update({ fontFamily: f.value }); close(); }}
+                  className={activeSet.fontFamily === f.value ? "text-primary bg-primary/10" : ""}
+                >
+                  <IconTypography />
+                  <span style={{ fontFamily: f.cssVar }}>{f.label}</span>
+                  <CommandDesc>{f.desc}</CommandDesc>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
 
         <CommandSeparator />
 
