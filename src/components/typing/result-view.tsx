@@ -39,7 +39,7 @@ export function ResultView({ result, saveState, isPB, onNext }: ResultViewProps)
           <span className="flex items-center gap-2">
             <span className="text-primary text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.wpm}</span>
             {isPB && (
-              <span className="inline-flex items-center gap-0.5 rounded bg-primary/10 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-primary">
+              <span className="inline-flex items-center gap-0.5 rounded bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground">
                 <IconCrown className="size-3" /> PB
               </span>
             )}
