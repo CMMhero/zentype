@@ -55,14 +55,14 @@ export default function SettingsPage() {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Restore all settings to defaults?</AlertDialogTitle>
+              <AlertDialogTitle>restore all settings to defaults?</AlertDialogTitle>
               <AlertDialogDescription>
                 Resets your theme, font, sound, and gameplay settings.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={() => { reset(); toast.info("Settings restored to defaults"); }}>yes, restore</AlertDialogAction>
+              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { reset(); toast.info("settings restored to defaults"); }}>yes, restore</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -253,7 +253,7 @@ function AccountCard({ username, email }: { username: string; email: string }) {
     try {
       const res = await updateUsername(value);
       if (res.error) toast.error(res.error);
-      else { toast.success("Username updated"); setTimeout(() => window.location.reload(), 400); }
+      else { toast.success("username updated"); setTimeout(() => window.location.reload(), 400); }
     } finally { setSaving(false); }
   }
 
@@ -267,7 +267,7 @@ function AccountCard({ username, email }: { username: string; email: string }) {
             <Input id="username" value={value} onChange={(e) => setValue(e.target.value)} maxLength={24} className="max-w-64" />
             <Button size="sm" onClick={save} disabled={saving || value === username}>{saving ? "saving…" : "save"}</Button>
           </div>
-          <p className="text-muted-foreground mt-1 text-[11px]">3–24 characters · letters, numbers and underscores · shown on leaderboards</p>
+          <p className="text-muted-foreground mt-1 text-[11px]">3–24 characters, letters, numbers and underscores, shown on leaderboards</p>
         </div>
         <Sep />
         <p className="text-muted-foreground text-xs">{email}</p>
@@ -314,9 +314,9 @@ function GuestDataCard() {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Discard {local.length} local result{local.length === 1 ? "" : "s"}?</AlertDialogTitle>
+              <AlertDialogTitle>discard {local.length} local result{local.length === 1 ? "" : "s"}?</AlertDialogTitle>
               <AlertDialogDescription>
-                Permanently deletes your local guest results. Cannot be recovered.
+                permanently deletes your local guest results. cannot be recovered.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -342,8 +342,8 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete every saved result?</AlertDialogTitle>
-              <AlertDialogDescription>Permanently removes all test history from the server. Cannot be undone.</AlertDialogDescription>
+              <AlertDialogTitle>delete every saved result?</AlertDialogTitle>
+              <AlertDialogDescription>permanently removes all test history from the server. cannot be undone.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>cancel</AlertDialogCancel>
@@ -362,7 +362,7 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
 function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
     <CardHeader className="px-4 pb-0">
-      <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">{icon} {title}</CardTitle>
+      <CardTitle className="flex items-center gap-2 text-xs tracking-wider">{icon} {title}</CardTitle>
     </CardHeader>
   );
 }

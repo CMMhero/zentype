@@ -15,13 +15,13 @@ export default function LoginPage() {
     try {
       const res = await signInWithProvider(provider);
       if (!res.url) {
-        toast.error(res.error ?? "Auth unavailable");
+        toast.error(res.error ?? "auth unavailable");
         setLoading(null);
         return;
       }
       window.location.href = res.url;
     } catch {
-      toast.error("Failed to start sign-in");
+      toast.error("failed to start sign-in");
       setLoading(null);
     }
   }

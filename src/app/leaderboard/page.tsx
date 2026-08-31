@@ -94,7 +94,7 @@ function LeaderboardContent() {
     userName: e.username,
     rank: e.rank,
     value: Math.round(e.wpm * 100 + e.accuracy), // composite score
-    byline: `${e.wpm} wpm · ${e.accuracy}% acc`,
+    byline: `${e.wpm} wpm, ${e.accuracy}% acc`,
     avatarUrl: e.avatarUrl,
   }));
 
@@ -103,7 +103,7 @@ function LeaderboardContent() {
     userName: e.username,
     rank: e.rank,
     value: e.totalXP,
-    byline: `Level ${e.level} · ${e.totalXP.toLocaleString()} XP`,
+    byline: `Level ${e.level}, ${e.totalXP.toLocaleString()} XP`,
     avatarUrl: e.avatarUrl,
   }));
 
