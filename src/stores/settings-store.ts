@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS: GameSettings = {
   smoothCaret: true,
   fontSize: "lg",
   fontFamily: "stack-sans-text",
-  showKeyboard: false,
+  showKeyboard: true,
   visibleLines: 3,
   hideLiveStats: false,
   punctuation: false,

@@ -365,7 +365,7 @@ export default function TestPage() {
         <>
           <div
             className={`mb-4 flex items-end justify-between transition-opacity duration-300 ${
-              settings.hideLiveStats && engine.status === "running" ? "opacity-50" : "opacity-100"
+              settings.hideLiveStats && engine.status === "running" ? "pointer-events-none invisible h-0 overflow-hidden opacity-0" : "opacity-100"
             }`}
             aria-live="polite"
             aria-atomic="true"
