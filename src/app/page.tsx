@@ -317,16 +317,32 @@ export default function TestPage() {
         }}
         onInput={(e) => {
           // Mobile software keyboards route characters through onInput.
-          // This is the single path for printable chars on mobile — onKeyDown skips them.
+          // Use inputType to reliably detect backspace across all mobile browsers
+          // (Firefox mobile may not fire onKeyDown for backspace reliably).
           if (!isMobile) return;
+          const native = e.nativeEvent as InputEvent;
           const input = e.target as HTMLInputElement;
-          const val = input.value;
-          // Backspace already handled via onKeyDown — just clear the input.
-          if (mobileBackspaceRef.current) {
+
+          // Backspace: native browser already deleted a char from the input.
+          // If onKeyDown handled it, the engine already processed it.
+          // If onKeyDown didn't fire (Firefox mobile), dispatch it now.
+          if (native.inputType === "deleteContentBackward") {
+            if (!mobileBackspaceRef.current) {
+              window.dispatchEvent(new KeyboardEvent("keydown", { key: "Backspace" }));
+            }
             mobileBackspaceRef.current = false;
             input.value = "";
             return;
           }
+
+          // Forward delete too
+          if (native.inputType === "deleteContentForward") {
+            window.dispatchEvent(new KeyboardEvent("keydown", { key: "Delete" }));
+            input.value = "";
+            return;
+          }
+
+          const val = input.value;
           if (val.length === 0) return;
           // Clear the input so it stays hidden
           input.value = "";
