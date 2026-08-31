@@ -8,6 +8,13 @@ import { cacheGet, cacheSet, cacheDel } from "~/lib/cache";
 
 type SaveInput = Omit<TestResult, "id" | "createdAt">;
 
+/** Estimate elapsed seconds for a test result. Time mode = variant (exact).
+ *  Words mode = round(variant * 60 / wpm), clamped 5-600s. */
+function estimateSeconds(mode: GameMode, variant: number, wpm: number): number {
+  if (mode === "time") return variant;
+  return Math.max(5, Math.min(600, Math.round((variant * 60) / Math.max(wpm, 1))));
+}
+
 async function requireUser() {
   const supabase = await getSupabaseServerClient();
   if (!supabase) return null;
@@ -206,7 +213,7 @@ export async function getUserStats(): Promise<AggregatedStats | null> {
   const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
   const stats: AggregatedStats = {
     testsCompleted: results.length,
-    timeTypedSeconds: sum(results.map((r) => (r.mode === "time" ? r.variant : 8))),
+    timeTypedSeconds: sum(results.map((r) => estimateSeconds(r.mode, r.variant, r.wpm))),
     avgWpm10: Math.round(sum(last10.map((r) => r.wpm)) / last10.length),
     avgWpmAll: Math.round(sum(results.map((r) => r.wpm)) / results.length),
     avgAccuracy: Math.round(sum(results.map((r) => r.accuracy)) / results.length),
@@ -416,7 +423,7 @@ export async function getPublicProfile(
     const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
     stats = {
       testsCompleted: full.length,
-      timeTypedSeconds: sum(full.map((r) => (r.mode === "time" ? r.variant : 8))),
+      timeTypedSeconds: sum(full.map((r) => estimateSeconds(r.mode, r.variant, r.wpm))),
       avgWpm10: Math.round(sum(last10.map((r) => r.wpm)) / last10.length),
       avgWpmAll: Math.round(sum(full.map((r) => r.wpm)) / full.length),
       avgAccuracy: Math.round(sum(full.map((r) => r.accuracy)) / full.length),
@@ -481,7 +488,7 @@ export async function getPublicStats(): Promise<{
       supabase.from("profiles").select("id", { count: "exact", head: true }),
       supabase.from("test_results").select("id", { count: "exact", head: true }),
       supabase.from("user_points").select("total_xp"),
-      supabase.from("test_results").select("variant,mode"),
+      supabase.from("test_results").select("variant,mode,wpm"),
     ]);
 
     const totalXpEarned = xpData?.reduce((sum, r) => sum + (r.total_xp ?? 0), 0) ?? 0;
@@ -489,11 +496,7 @@ export async function getPublicStats(): Promise<{
     let totalSeconds = 0;
     if (tests) {
       for (const r of tests) {
-        if (r.mode === "time") {
-          totalSeconds += r.variant;
-        } else {
-          totalSeconds += Math.round((r.variant * 60) / 50);
-        }
+        totalSeconds += estimateSeconds(r.mode as GameMode, r.variant, r.wpm ?? 50);
       }
     }
 
