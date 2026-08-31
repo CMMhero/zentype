@@ -419,8 +419,8 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
 
 function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
-    <CardHeader className="px-4 pb-0">
-      <CardTitle className="flex items-center gap-2 text-xs tracking-wider">{icon} {title}</CardTitle>
+    <CardHeader className="px-4 pb-1">
+      <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">{icon} {title}</CardTitle>
     </CardHeader>
   );
 }
