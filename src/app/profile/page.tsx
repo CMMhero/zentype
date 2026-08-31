@@ -697,13 +697,13 @@ export default function ProfilePage() {
                 <DialogDescription>
                   <span className="flex items-center justify-between gap-2">
                     <span className="inline-flex items-center gap-1.5">
-                      <Badge variant="outline" className="border-secondary bg-secondary text-secondary-foreground text-[10px] font-medium normal-case">
+                      <Badge variant="outline" className="border-secondary bg-secondary text-secondary-foreground h-5 text-[10px] font-medium normal-case">
                         {modeLabel(selected)}
                       </Badge>
                       {selected.punctuation && (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Badge variant="outline" className="border-secondary bg-secondary text-secondary-foreground gap-1 px-1.5 text-[10px] font-medium normal-case">
+                            <Badge variant="outline" className="border-secondary bg-secondary text-secondary-foreground size-5 text-[10px] font-medium normal-case">
                               <IconAt className="size-3" />
                             </Badge>
                           </TooltipTrigger>
@@ -713,7 +713,7 @@ export default function ProfilePage() {
                       {selected.numbers && (
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Badge variant="outline" className="border-secondary bg-secondary text-secondary-foreground gap-1 px-1.5 text-[10px] font-medium normal-case">
+                            <Badge variant="outline" className="border-secondary bg-secondary text-secondary-foreground size-5 text-[10px] font-medium normal-case">
                               <IconHash className="size-3" />
                             </Badge>
                           </TooltipTrigger>
