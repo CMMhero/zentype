@@ -91,7 +91,7 @@ export function CommandPalette() {
   const [userQuery, setUserQuery] = useState("");
   const [userResults, setUserResults] = useState<UserResult[]>([]);
   const [userLoading, setUserLoading] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<null | { label: string; description: string; onConfirm: () => void }>(null);
+  const [confirmAction, setConfirmAction] = useState<null | { title: string; label: string; description: string; onConfirm: () => void }>(null);
   const userSearchTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   // ─── Fuse search result cache ──────────────────────────────────────
@@ -197,8 +197,9 @@ export function CommandPalette() {
 
   const restoreDefaults = useCallback(() => {
     setConfirmAction({
-      label: "restore defaults",
-      description: "this will reset your theme, font, sound, and gameplay settings to their defaults.",
+      title: "restore all settings to defaults?",
+      label: "yes, restore",
+      description: "resets your theme, font, sound, and gameplay settings.",
       onConfirm: () => { close(); reset(); toast.info("settings restored to defaults"); },
     });
   }, [close, reset]);
@@ -215,8 +216,9 @@ export function CommandPalette() {
   }, [close, local]);
   const deleteAllResults = useCallback(() => {
     setConfirmAction({
-      label: "delete all results",
-      description: "this will permanently remove all your test history from the server. this cannot be undone.",
+      title: "delete every saved result?",
+      label: "yes, delete everything",
+      description: "permanently removes all test history from the server. cannot be undone.",
       onConfirm: async () => {
         close();
         const res = await deleteMyData();
@@ -227,8 +229,9 @@ export function CommandPalette() {
   const handleSignOut = useCallback(() => { close(); signOutFn().then(() => router.push("/")); }, [close, router]);
   const discardLocal = useCallback(() => {
     setConfirmAction({
-      label: "discard local results",
-      description: `this will permanently delete ${local.length} local guest result${local.length === 1 ? "" : "s"}. they cannot be recovered.`,
+      title: `discard ${local.length} local result${local.length === 1 ? "" : "s"}?`,
+      label: "yes, discard",
+      description: "permanently deletes your local guest results. cannot be recovered.",
       onConfirm: () => { close(); clearLocal(); toast.success("local results discarded"); },
     });
   }, [close, clearLocal, local.length]);
@@ -252,20 +255,20 @@ export function CommandPalette() {
         {confirmAction && (
           <CommandGroup heading="confirm action" forceMount>
             <div className="border-destructive/40 bg-destructive/5 rounded-md border px-3 py-3">
-              <p className="text-sm font-medium text-destructive">are you sure?</p>
+              <p className="text-sm font-medium lowercase">{confirmAction.title}</p>
               <p className="text-muted-foreground mt-0.5 text-xs">{confirmAction.description}</p>
               <div className="mt-2 flex gap-2">
-                <button
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-md px-3 py-1.5 text-xs font-medium"
-                  onClick={() => { confirmAction.onConfirm(); setConfirmAction(null); }}
-                >
-                  {confirmAction.label}
-                </button>
                 <button
                   className="bg-muted text-muted-foreground hover:bg-muted/80 rounded-md px-3 py-1.5 text-xs font-medium"
                   onClick={() => setConfirmAction(null)}
                 >
                   cancel
+                </button>
+                <button
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-md px-3 py-1.5 text-xs font-medium"
+                  onClick={() => { confirmAction.onConfirm(); setConfirmAction(null); }}
+                >
+                  {confirmAction.label}
                 </button>
               </div>
             </div>
