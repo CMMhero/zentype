@@ -10,15 +10,7 @@ import {
 import { Kbd } from "~/components/ui/kbd";
 import { Separator } from "~/components/ui/separator";
 import { useUiStore } from "~/stores/ui-store";
-
-const SHORTCUTS: Array<{ keys: string[]; action: string }> = [
-  { keys: ["tab"], action: "restart test" },
-  { keys: ["ctrl", "k"], action: "command palette" },
-  { keys: ["?"], action: "this help dialog" },
-  { keys: ["esc"], action: "close dialogs / pause focus" },
-  { keys: ["alt", "1..4"], action: "test / leaderboard / profile / settings" },
-  { keys: ["backspace"], action: "fix current word" },
-];
+import { KEYBINDS } from "~/lib/keybinds";
 
 export function HelpDialog() {
   const open = useUiStore((s) => s.helpOpen);
@@ -28,13 +20,13 @@ export function HelpDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>keyboard shortcuts</DialogTitle>
+          <DialogTitle>keybinds</DialogTitle>
           <DialogDescription>
-            Navigate and control tests.
+            navigate and control tests.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-1">
-          {SHORTCUTS.map((s, i) => (
+          {KEYBINDS.map((s, i) => (
             <div key={i}>
               <div className="flex items-center justify-between py-1.5 text-sm">
                 <span className="text-muted-foreground">{s.action}</span>
@@ -47,7 +39,7 @@ export function HelpDialog() {
                   ))}
                 </span>
               </div>
-              {i < SHORTCUTS.length - 1 && <Separator />}
+              {i < KEYBINDS.length - 1 && <Separator />}
             </div>
           ))}
         </div>
