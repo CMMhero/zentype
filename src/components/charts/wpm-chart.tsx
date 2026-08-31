@@ -64,10 +64,6 @@ export function WpmChart({
               <stop offset="5%" stopColor="var(--color-raw)" stopOpacity={0.3} />
               <stop offset="95%" stopColor="var(--color-raw)" stopOpacity={0.05} />
             </linearGradient>
-            <linearGradient id="fillErrors" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--color-errors)" stopOpacity={0.9} />
-              <stop offset="95%" stopColor="var(--color-errors)" stopOpacity={0.3} />
-            </linearGradient>
           </defs>
           <CartesianGrid vertical={false} strokeDasharray="3 3" />
           <XAxis
@@ -103,7 +99,7 @@ export function WpmChart({
             fill="url(#fillRaw)"
             dot={false}
           />
-          <Bar dataKey="errors" fill="url(#fillErrors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
+          <Bar dataKey="errors" fill="var(--color-errors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
         </ComposedChart>
       </ChartContainer>
       <div className="text-muted-foreground mt-1 flex items-center justify-center gap-4 text-[10px]" aria-hidden>
