@@ -91,6 +91,7 @@ export function CommandPalette() {
   const [userQuery, setUserQuery] = useState("");
   const [userResults, setUserResults] = useState<UserResult[]>([]);
   const [userLoading, setUserLoading] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<null | { label: string; description: string; onConfirm: () => void }>(null);
   const userSearchTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   // ─── Fuse search result cache ──────────────────────────────────────
@@ -138,6 +139,9 @@ export function CommandPalette() {
   // Key insight: cmdk calls this function N times per keystroke (once per
   // CommandItem). We compute the match set ONCE and cache it so subsequent
   // calls are O(1) Set lookups instead of O(N) fuse searches.
+  // Clear confirmation when searching
+  const onValueChange = useCallback((v: string) => { setUserQuery(v); if (confirmAction) setConfirmAction(null); }, [confirmAction]);
+
   const fuzzyFilter = useCallback((value: string, search: string) => {
     if (!search) return 1;
     let matchSet = matchCacheRef.current.get(search);
@@ -191,7 +195,13 @@ export function CommandPalette() {
   const clearLocal = useResultsStore((s) => s.clearLocal);
   const reset = useSettingsStore((s) => s.reset);
 
-  const restoreDefaults = useCallback(() => { close(); reset(); toast.info("settings restored to defaults"); }, [close, reset]);
+  const restoreDefaults = useCallback(() => {
+    setConfirmAction({
+      label: "restore defaults",
+      description: "this will reset your theme, font, sound, and gameplay settings to their defaults.",
+      onConfirm: () => { close(); reset(); toast.info("settings restored to defaults"); },
+    });
+  }, [close, reset]);
   const exportJson = useCallback(() => {
     close();
     const payload = { exportedAt: new Date().toISOString(), app: "zentype", version: 2, localResults: local };
@@ -203,27 +213,64 @@ export function CommandPalette() {
     a.click();
     URL.revokeObjectURL(url);
   }, [close, local]);
-  const deleteAllResults = useCallback(async () => {
-    close();
-    const res = await deleteMyData();
-    toast[res.ok ? "success" : "error"](res.ok ? "all results deleted" : "deletion failed");
+  const deleteAllResults = useCallback(() => {
+    setConfirmAction({
+      label: "delete all results",
+      description: "this will permanently remove all your test history from the server. this cannot be undone.",
+      onConfirm: async () => {
+        close();
+        const res = await deleteMyData();
+        toast[res.ok ? "success" : "error"](res.ok ? "all results deleted" : "deletion failed");
+      },
+    });
   }, [close]);
   const handleSignOut = useCallback(() => { close(); signOutFn().then(() => router.push("/")); }, [close, router]);
-  const discardLocal = useCallback(() => { close(); clearLocal(); toast.success("local results discarded"); }, [close, clearLocal]);
+  const discardLocal = useCallback(() => {
+    setConfirmAction({
+      label: "discard local results",
+      description: `this will permanently delete ${local.length} local guest result${local.length === 1 ? "" : "s"}. they cannot be recovered.`,
+      onConfirm: () => { close(); clearLocal(); toast.success("local results discarded"); },
+    });
+  }, [close, clearLocal, local.length]);
 
   // Clear fuse cache when dialog closes
   useEffect(() => {
     if (!open) {
       matchCacheRef.current.clear();
       setUserQuery("");
+      setConfirmAction(null);
     }
   }, [open]);
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen} className="sm:max-w-2xl max-h-[80vh]" filter={fuzzyFilter} data-command-overlay="">
-      <CommandInput placeholder="search users, settings, or commands…"      onValueChange={setUserQuery} />
+      <CommandInput placeholder="search users, settings, or commands…" onValueChange={onValueChange} />
       <CommandList>
         <CommandEmpty>no matching command</CommandEmpty>
+
+        {/* Confirmation overlay for destructive actions */}
+        {confirmAction && (
+          <CommandGroup heading="confirm action" forceMount>
+            <div className="border-destructive/40 bg-destructive/5 rounded-md border px-3 py-3">
+              <p className="text-sm font-medium text-destructive">are you sure?</p>
+              <p className="text-muted-foreground mt-0.5 text-xs">{confirmAction.description}</p>
+              <div className="mt-2 flex gap-2">
+                <button
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-md px-3 py-1.5 text-xs font-medium"
+                  onClick={() => { confirmAction.onConfirm(); setConfirmAction(null); }}
+                >
+                  {confirmAction.label}
+                </button>
+                <button
+                  className="bg-muted text-muted-foreground hover:bg-muted/80 rounded-md px-3 py-1.5 text-xs font-medium"
+                  onClick={() => setConfirmAction(null)}
+                >
+                  cancel
+                </button>
+              </div>
+            </div>
+          </CommandGroup>
+        )}
 
         {/* User search results — shown after 3+ chars */}
         {userQuery.trim().length >= 3 && (
@@ -262,24 +309,24 @@ export function CommandPalette() {
             <IconRefresh /> restart test<Shortcut>tab</Shortcut>
           </CommandItem>
           <CommandItem value="actions restore defaults reset settings" keywords={["actions", "restore", "defaults", "reset"]} onSelect={restoreDefaults}>
-            <IconRefresh /> restore defaults<CommandDesc>reset all settings</CommandDesc>
+            <IconRefresh /> restore defaults<CommandDesc>reset theme, font, sound, and gameplay</CommandDesc>
           </CommandItem>
           <CommandItem value="actions export json data download" keywords={["actions", "export", "json", "data", "download"]} onSelect={exportJson}>
-            <IconDownload /> export json<CommandDesc>download your data</CommandDesc>
+            <IconDownload /> export json<CommandDesc>download all your data as a file</CommandDesc>
           </CommandItem>
           {user && (
-            <CommandItem value="actions delete all results history remove" keywords={["actions", "delete", "results", "history"]} onSelect={deleteAllResults}>
-              <IconAlertTriangle /> delete all results<CommandDesc>permanently remove</CommandDesc>
+            <CommandItem value="actions delete all results history remove" keywords={["actions", "delete", "results", "history"]} onSelect={deleteAllResults} className="text-destructive focus:text-destructive">
+              <IconAlertTriangle /> delete all results<CommandDesc>permanently erase everything</CommandDesc>
             </CommandItem>
           )}
           {user && (
             <CommandItem value="actions sign out log out logout" keywords={["actions", "sign", "out", "logout"]} onSelect={handleSignOut}>
-              <IconLogout /> sign out<CommandDesc>log out of account</CommandDesc>
+              <IconLogout /> sign out<CommandDesc>log out of your account</CommandDesc>
             </CommandItem>
           )}
           {local.length > 0 && (
-            <CommandItem value="actions discard local guest results" keywords={["actions", "discard", "local", "guest"]} onSelect={discardLocal}>
-              <IconAlertTriangle /> discard local results<CommandDesc>{local.length} pending result{local.length === 1 ? "" : "s"}</CommandDesc>
+            <CommandItem value="actions discard local guest results" keywords={["actions", "discard", "local", "guest"]} onSelect={discardLocal} className="text-destructive focus:text-destructive">
+              <IconAlertTriangle /> discard local results<CommandDesc>delete {local.length} unsynced guest result{local.length === 1 ? "" : "s"}</CommandDesc>
             </CommandItem>
           )}
         </CommandGroup>
