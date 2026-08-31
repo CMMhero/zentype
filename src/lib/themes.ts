@@ -49,6 +49,8 @@ function theme(
       "--card-foreground": v["--card-foreground"] ?? v["--foreground"],
       "--popover-foreground": v["--popover-foreground"] ?? v["--foreground"],
       "--destructive-foreground": v["--destructive-foreground"] ?? v["--background"],
+      // chart-5 is reserved for errors (wpm chart error bars) -- always destructive
+      "--chart-5": v["--destructive"],
     } as ThemeVars,
   };
 }
