@@ -364,22 +364,24 @@ export default function TestPage() {
       ) : (
         <>
           <div
-            className={`mb-4 flex items-end justify-between transition-opacity duration-300 ${
-              settings.hideLiveStats && engine.status === "running" ? "pointer-events-none opacity-0" : "opacity-100"
-            }`}
+            className="mb-4 flex items-end justify-between"
             aria-live="polite"
             aria-atomic="true"
           >
-            <div className="flex items-baseline gap-3 sm:gap-5">
-              <div>
-                <span className="text-primary text-2xl font-bold tabular-nums sm:text-3xl">
-                  {engine.liveWpm}
-                </span>
-                <span className="text-muted-foreground ml-1 text-xs font-medium">wpm</span>
-              </div>
-              <div>
-                <span className="text-lg font-semibold tabular-nums sm:text-xl">{engine.liveAcc}%</span>
-                <span className="text-muted-foreground ml-1 text-xs font-medium">acc</span>
+            <div className={`transition-opacity duration-300 ${
+              settings.hideLiveStats && engine.status === "running" ? "pointer-events-none opacity-0" : "opacity-100"
+            }`}>
+              <div className="flex items-baseline gap-3 sm:gap-5">
+                <div>
+                  <span className="text-primary text-2xl font-bold tabular-nums sm:text-3xl">
+                    {engine.liveWpm}
+                  </span>
+                  <span className="text-muted-foreground ml-1 text-xs font-medium">wpm</span>
+                </div>
+                <div>
+                  <span className="text-lg font-semibold tabular-nums sm:text-xl">{engine.liveAcc}%</span>
+                  <span className="text-muted-foreground ml-1 text-xs font-medium">acc</span>
+                </div>
               </div>
             </div>
             <div className={`text-right transition-opacity duration-300 ${
@@ -400,10 +402,12 @@ export default function TestPage() {
             </div>
           </div>
 
-          <div className={`transition-opacity duration-300 ${
-            settings.hideProgress && engine.status === "running" ? "pointer-events-none h-0 overflow-hidden opacity-0 mb-0" : "mb-3 opacity-100"
-          }`}>
-            <Progress value={engine.progress * 100} indicatorClassName="transition-all duration-300 ease-out" aria-label="test progress" />
+          <div className="mb-3 h-1.5 w-full">
+            <div className={`h-full transition-opacity duration-300 ${
+              settings.hideProgress && engine.status === "running" ? "opacity-0" : "opacity-100"
+            }`}>
+              <Progress value={engine.progress * 100} className="h-full" indicatorClassName="transition-all duration-300 ease-out" aria-label="test progress" />
+            </div>
           </div>
 
           <div className="relative w-full p-4" onClick={() => { if (isMobile) inputEl.current?.focus(); }}>
