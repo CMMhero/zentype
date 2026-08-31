@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import {
-  IconAlertTriangle, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboard, IconSettingsFilled,
-  IconPalette, IconPlayerPlay, IconRefresh, IconUser, IconVolume,
+  IconAlertTriangle, IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconDownload, IconEye, IconDeviceGamepad2, IconKeyboard, IconLogout, IconRefresh, IconSettingsFilled,
+  IconPalette, IconPlayerPlay, IconUser, IconVolume,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
@@ -25,13 +26,13 @@ import { THEMES } from "~/lib/themes";
 import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
 import { IconSearch, IconSun, IconMoon, IconDevices } from "@tabler/icons-react";
 import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
-import type { CaretStyle, FontFamily, FontSizeKey, SoundVariant } from "~/lib/types";
+import type { CaretStyle, FontFamily, FontSizeKey, SoundVariant, AuthProvider } from "~/lib/types";
 import { FONTS } from "~/lib/fonts";
 import { CARET_STYLES, FONT_SIZES, SOUND_VARIANTS } from "~/lib/settings-options";
 import { useResultsStore } from "~/stores/results-store";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useUser } from "~/components/user-provider";
-import { updateUsername } from "~/server/auth";
+import { signOutFn, updateUsername } from "~/server/auth";
 import { deleteMyData } from "~/server/results";
 import { playKeypress, playError } from "~/lib/sound";
 
@@ -202,7 +203,7 @@ export default function SettingsPage() {
         <TabsContent value="account" className="flex w-full flex-col gap-4 outline-none">
           {user ? (
             <>
-              <AccountCard username={user.username} email={user.email} />
+              <AccountCard username={user.username} email={user.email} providers={user.providers} />
               <DataCard signedIn />
             </>
           ) : (
@@ -244,9 +245,11 @@ export default function SettingsPage() {
   );
 }
 
-function AccountCard({ username, email }: { username: string; email: string }) {
+function AccountCard({ username, email, providers }: { username: string; email: string; providers: AuthProvider[] }) {
+  const router = useRouter();
   const [value, setValue] = useState(username);
   const [saving, setSaving] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   async function save() {
     setSaving(true);
@@ -255,6 +258,15 @@ function AccountCard({ username, email }: { username: string; email: string }) {
       if (res.error) toast.error(res.error);
       else { toast.success("username updated"); setTimeout(() => window.location.reload(), 400); }
     } finally { setSaving(false); }
+  }
+async function signOut() {
+    setSigningOut(true);
+    try {
+      await signOutFn();
+      router.push("/");
+    } catch {
+      setSigningOut(false);
+    }
   }
 
   return (
@@ -271,6 +283,29 @@ function AccountCard({ username, email }: { username: string; email: string }) {
         </div>
         <Sep />
         <p className="text-muted-foreground text-xs">{email}</p>
+        <div className="flex items-center gap-2">
+          <span className="text-muted-foreground text-xs">signed in with</span>
+          {providers.length > 0 ? (
+            <span className="flex flex-wrap items-center gap-1">
+              {providers.map((p) => {
+                const ICON = p === "github" ? IconBrandGithubFilled : p === "google" ? IconBrandGoogleFilled : IconBrandDiscordFilled;
+                return (
+                  <span key={p} className="inline-flex items-center gap-1 rounded border border-border/40 bg-muted/40 px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                    <ICON className="size-3.5" /> {p}
+                  </span>
+                );
+              })}
+            </span>
+          ) : (
+            <span className="text-muted-foreground text-xs">email + password</span>
+          )}
+        </div>
+        <Sep />
+        <div className="flex justify-end">
+          <Button variant="outline" size="sm" onClick={signOut} disabled={signingOut}>
+            <IconLogout className="size-4" /> {signingOut ? "signing out…" : "sign out"}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

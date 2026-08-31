@@ -2,12 +2,16 @@
 
 import { headers } from "next/headers";
 import { getSupabaseServerClient } from "~/lib/supabase/server";
-import type { SessionUser } from "~/lib/types";
+import type { AuthProvider, SessionUser } from "~/lib/types";
+
+export type { AuthProvider } from "~/lib/types";
 
 function toSessionUser(user: {
   id: string;
   email?: string;
   user_metadata?: Record<string, unknown>;
+  app_metadata?: Record<string, unknown>;
+  identities?: Array<{ provider?: string }>;
 }): SessionUser {
   const meta = user.user_metadata ?? {};
   const username =
@@ -16,12 +20,17 @@ function toSessionUser(user: {
     (meta["name"] as string)?.replace(/\s+/g, "_").toLowerCase() ||
     user.email?.split("@")[0] ||
     `user_${user.id.slice(0, 6)}`;
+  // Providers this account signed in with (from linked identities)
+  const providers: AuthProvider[] =
+    (user.identities ?? []).map((i) => i["provider"] as string).filter((p): p is AuthProvider =>
+      p === "github" || p === "google" || p === "discord");
   return {
     id: user.id,
     email: user.email ?? "",
     username,
     avatarUrl:
       (meta["avatar_url"] as string) || (meta["picture"] as string) || null,
+    providers,
   };
 }
 
@@ -44,9 +53,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   }
 }
 
-export type AuthProvider = "github" | "google" | "discord";
-
-async function getOrigin(): Promise<string> {
+export async function getOrigin(): Promise<string> {
   // 1. Explicit env var (set in Vercel dashboard)
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
   // 2. Derive from request headers (works on Vercel, Railway, etc.)
