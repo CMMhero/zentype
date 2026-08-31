@@ -111,7 +111,7 @@ export function useTypingEngine({
   const progress =
     settings.mode === "time"
       ? Math.min(1, elapsedMs / 1000 / settings.duration)
-      : Math.min(1, history.length / settings.wordCount);
+      : Math.min(1, counts.correct / Math.max(1, words.slice(0, settings.wordCount).reduce((sum, w) => sum + w.length, 0)));
 
   const timeLeft = Math.max(0, settings.duration - elapsedMs / 1000);
 
