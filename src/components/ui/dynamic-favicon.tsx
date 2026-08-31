@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSettingsStore } from "~/stores/settings-store";
 import { getTheme } from "~/lib/themes";
 
@@ -33,8 +33,13 @@ export function DynamicFavicon() {
   const themeId = useSettingsStore((s) => s.settings.themeId);
   const prevUrlRef = useRef<string | null>(null);
   const svgCacheRef = useRef<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for hydration to complete before touching the DOM
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
+    if (!mounted) return;
     let cancelled = false;
 
     async function run() {
