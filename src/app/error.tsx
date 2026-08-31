@@ -46,9 +46,9 @@ export default function Error({
           <Button size="sm" className="gap-2" onClick={reset}>
             <IconRefresh className="size-4" /> try again
           </Button>
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground gap-1.5 text-xs" onClick={() => router.back()}>
+          <button type="button" className="text-primary inline-flex items-center gap-1 text-xs underline underline-offset-2" onClick={() => router.back()}>
             <IconArrowLeft className="size-3" /> go back
-          </Button>
+          </button>
         </div>
       </div>
     </div>
