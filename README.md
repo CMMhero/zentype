@@ -54,7 +54,6 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 | `esc` | cancel test (no results saved) |
 | `backspace` | fix current word |
 | `ctrl+backspace` | delete whole word |
-| `space` | submit word |
 | `ctrl/cmd + k` | command palette |
 | `?` | open keybinds |
 | `alt + 1..4` | test / leaderboard / profile / settings |
