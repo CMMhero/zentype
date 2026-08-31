@@ -442,6 +442,11 @@ html {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Force Sonner toasts to inherit the theme font */
+[data-sonner-toaster] {
+  font-family: inherit;
+}
+
 /* Prevent layout shift in tabs */
 [data-slot="tabs-content"] {
   animation: zt-tab-fade 0.2s ease-out;
