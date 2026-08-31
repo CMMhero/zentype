@@ -61,7 +61,7 @@ export default async function AboutPage() {
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             <ZentypeIcon className="text-primary size-4 inline" /> zentype is a typing test with speed and accuracy tracking, inspired by{" "}
             <a href="https://monkeytype.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline">monkeytype</a>.
-            XP, levels, 110+ achievements, streak heatmaps, and global leaderboards.
+            XP, levels, 100+ achievements, streak heatmaps, and global leaderboards.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Built with{" "}
@@ -100,12 +100,12 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconAward className="size-5" />}
               title="achievements"
-              description="110+ achievements: tests completed, WPM milestones, accuracy runs, streaks, consistency, account age, and more. XP per test, 500 per level."
+              description="100+ achievements: tests completed, WPM milestones, accuracy runs, streaks, consistency, account age, and more. XP per test, 500 per level."
             />
             <FeatureCard
               icon={<IconPalette className="size-5" />}
               title="customization"
-              description="80+ themes, 50+ fonts, 4 caret styles, virtual keyboard, WebAudio sounds, and a command palette (cmd+k)."
+              description="200+ themes, 80+ fonts, 4 caret styles, virtual keyboard, WebAudio sounds, and a command palette (cmd+k)."
             />
             <FeatureCard
               icon={<IconBrandGithub className="size-5" />}
