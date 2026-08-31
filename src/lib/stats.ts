@@ -46,15 +46,16 @@ export function charBreakdown(
   }
 
   // current in-flight word
+  let correctInCurrentWord = 0;
   const target = words[history.length] ?? "";
   const n = Math.min(current.length, target.length);
   for (let c = 0; c < n; c++) {
-    if (current[c] === target[c]) correct++;
+    if (current[c] === target[c]) { correct++; correctInCurrentWord++; }
     else incorrect++;
   }
   if (current.length > target.length) extra += current.length - target.length;
 
-  return { correct, incorrect, extra, missed };
+  return { correct, incorrect, extra, missed, correctInCurrentWord };
 }
 
 /** Net (correct-inclusive-of-spaces) characters — mirrors charBreakdown credit rules. */

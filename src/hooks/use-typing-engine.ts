@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { charBreakdown, finalStats, type KeystrokeState } from "~/lib/stats";
-import type { GameSettings, TimelinePoint } from "~/lib/types";
+import type { CharCounts, GameSettings, TimelinePoint } from "~/lib/types";
 
 export type EngineStatus = "idle" | "running" | "finished";
 
@@ -23,12 +23,7 @@ export interface EngineResult {
   rawWpm: number;
   accuracy: number;
   consistency: number;
-  chars: {
-    correct: number;
-    incorrect: number;
-    extra: number;
-    missed: number;
-  };
+  chars: CharCounts;
   timeline: TimelinePoint[];
 }
 
@@ -111,7 +106,19 @@ export function useTypingEngine({
   const progress =
     settings.mode === "time"
       ? Math.min(1, elapsedMs / 1000 / settings.duration)
-      : Math.min(1, counts.correct / Math.max(1, words.slice(0, settings.wordCount).reduce((sum, w) => sum + w.length, 0)));
+      : (() => {
+          // Word-count baseline: can never exceed actual words completed
+          const wordBaseline = Math.min(1, history.length / settings.wordCount);
+          // Character-based smoothness within the current word
+          const targetWord = words[history.length] ?? "";
+          const charInWord = targetWord.length > 0
+            ? Math.min(1, counts.correctInCurrentWord / targetWord.length)
+            : 0;
+          // Each word contributes 1/wordCount; current word fills its slot smoothly
+          const charProgress = (history.length + charInWord) / settings.wordCount;
+          // Clamp to word baseline so it can't jump ahead
+          return Math.min(wordBaseline + (charProgress - wordBaseline), 1);
+        })();
 
   const timeLeft = Math.max(0, settings.duration - elapsedMs / 1000);
 
