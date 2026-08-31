@@ -79,7 +79,7 @@ export default function SettingsPage() {
         </TabsList>
 
         <TabsContent value="gameplay" className="flex w-full flex-col gap-4 outline-none">
-          <Card className="w-full py-4">
+          <Card className="w-full gap-3 py-4">
             <SectionTitle icon={<IconVolume className="size-4" />} title="sound feedback" />
             <CardContent className="flex flex-col gap-3 px-4">
               <SettingRow label="enabled" hint="play sounds when you type">
@@ -114,7 +114,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="w-full py-4">
+          <Card className="w-full gap-3 py-4">
             <SectionTitle icon={<IconDeviceGamepad2 className="size-4" />} title="typing rules" />
             <CardContent className="flex flex-col gap-3 px-4">
               <SettingRow label="stop on error" hint="pause until you fix the wrong letter">
@@ -144,7 +144,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card className="w-full py-4">
+          <Card className="w-full gap-3 py-4">
             <SectionTitle icon={<IconEye className="size-4" />} title="display" />
             <CardContent className="flex flex-col gap-3 px-4">
               <SettingRow label="caret style">
@@ -221,7 +221,7 @@ export default function SettingsPage() {
         </TabsContent>
 
         <TabsContent value="keybinds" className="w-full outline-none">
-          <Card className="w-full py-4">
+          <Card className="w-full gap-3 py-4">
             <CardContent className="px-4">
               <div className="grid gap-x-8 gap-y-1 sm:grid-cols-2">
                 {KEYBINDS.map((kb) => (
@@ -283,7 +283,7 @@ async function signOut() {
   }
 
   return (
-    <Card className="w-full py-4">
+    <Card className="w-full gap-3 py-4">
       <CardHeader className="flex flex-row items-center justify-between px-4 pb-1">
         <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider"><IconUser className="size-4" /> profile</CardTitle>
         <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5 text-xs h-7" onClick={signOut} disabled={signingOut}>
@@ -347,7 +347,7 @@ function DataExportCard() {
     URL.revokeObjectURL(url);
   }
   return (
-    <Card className="w-full py-4">
+    <Card className="w-full gap-3 py-4">
       <SectionTitle icon={<IconDownload className="size-4" />} title="your data" />
       <CardContent className="px-4">
         <p className="text-muted-foreground mb-3 text-sm">download everything stored for you</p>
@@ -362,7 +362,7 @@ function GuestDataCard() {
   const clearLocal = useResultsStore((s) => s.clearLocal);
   if (local.length === 0) return null;
   return (
-    <Card className="w-full py-4">
+    <Card className="w-full gap-3 py-4">
       <SectionTitle icon={<IconAlertTriangle className="size-4" />} title={`local guest queue (${local.length} result${local.length === 1 ? "" : "s"})`} />
       <CardContent className="px-4">
         <p className="text-muted-foreground mb-3 text-sm">these will sync automatically when you log in.</p>
@@ -391,7 +391,7 @@ function GuestDataCard() {
 function DataCard({ signedIn }: { signedIn: boolean }) {
   if (!signedIn) return null;
   return (
-    <Card className="w-full border-destructive/40 py-4">
+    <Card className="w-full gap-3 border-destructive/40 py-4">
       <SectionTitle icon={<IconAlertTriangle className="size-4 text-destructive" />} title="danger zone" />
       <CardContent className="px-4">
         <AlertDialog>
@@ -419,7 +419,7 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
 
 function SectionTitle({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
-    <CardHeader className="px-4 pb-1">
+    <CardHeader className="px-4 pb-0">
       <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">{icon} {title}</CardTitle>
     </CardHeader>
   );
