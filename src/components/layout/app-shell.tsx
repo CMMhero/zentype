@@ -5,7 +5,10 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
-const CommandPalette = dynamic(() => import("~/components/layout/command-palette").then(m => m.CommandPalette), { ssr: false });
+const CommandPalette = dynamic(() => import("~/components/layout/command-palette").then(m => m.CommandPalette), {
+  ssr: false,
+  loading: () => null,
+});
 const HelpDialog = dynamic(() => import("~/components/layout/help-dialog").then(m => m.HelpDialog), { ssr: false });
 import {
   IconCommand, IconKeyboardFilled, IconLogout,
