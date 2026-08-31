@@ -23,6 +23,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Kbd } from "~/components/ui/kbd";
+import { Skeleton } from "~/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
 import { lcGet } from "~/lib/client-cache";
@@ -253,9 +254,13 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
             <AvatarFallback className="rounded text-[10px] uppercase">{user.username.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
-          <span className={`hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[9px] font-bold tracking-widest min-w-5 justify-center ${userLevel === null ? 'animate-pulse bg-muted text-transparent' : 'bg-secondary text-secondary-foreground'}`}>
-              {userLevel ?? ''}
+          {userLevel === null ? (
+            <Skeleton className="hidden sm:block h-[18px] min-w-[20px] rounded-full" />
+          ) : (
+            <span className="hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground min-w-5 justify-center">
+              {userLevel}
             </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
