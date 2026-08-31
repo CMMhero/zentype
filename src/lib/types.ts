@@ -87,7 +87,10 @@ export interface SessionUser {
   email: string;
   username: string;
   avatarUrl: string | null;
+  providers: AuthProvider[];
 }
+
+export type AuthProvider = "github" | "google" | "discord";
 
 export interface UserStats {
   testsStarted?: never;
