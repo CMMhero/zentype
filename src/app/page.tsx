@@ -443,8 +443,11 @@ export default function TestPage() {
 
           <div className={`mt-auto flex flex-col items-center gap-1.5 pt-4 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
             <p>press any key to start</p>
-            <p className="flex flex-wrap items-center justify-center gap-1.5 px-2 text-center">
-              <Kbd>tab</Kbd> new test <span className="hidden sm:inline">·</span> <Kbd className="hidden sm:inline-flex">esc</Kbd><span className="hidden sm:inline"> restart</span> <span className="hidden sm:inline">·</span> <Kbd className="hidden sm:inline-flex">?</Kbd><span className="hidden sm:inline"> shortcuts</span> <span className="hidden sm:inline">·</span> <Kbd className="hidden sm:inline-flex">{isMac ? "cmd" : "ctrl"}+k</Kbd><span className="hidden sm:inline"> command</span>
+            <p className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 px-2 text-center">
+              <span className="inline-flex items-center gap-1.5"><Kbd>tab</Kbd> new test</span>
+              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>esc</Kbd> restart</span>
+              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>?</Kbd> shortcuts</span>
+              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> command</span>
             </p>
           </div>
         </>
