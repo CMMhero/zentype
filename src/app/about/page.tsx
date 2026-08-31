@@ -90,7 +90,7 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconChartBar className="size-5" />}
               title="detailed stats"
-              description="Net and raw WPM, accuracy, kogasa consistency, character breakdown. Per-second timeline charts and personal bests per mode."
+              description="Net and raw WPM, accuracy, consistency (how steady your speed stays), character breakdown. Per-second timeline charts and personal bests per mode."
             />
             <FeatureCard
               icon={<IconTrophy className="size-5" />}
