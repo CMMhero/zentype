@@ -10,16 +10,23 @@ export interface Keybind {
 }
 
 export const KEYBINDS: Keybind[] = [
-  { keys: ["tab"], action: "restart / new test", keywords: ["restart", "new", "reset"] },
-  { keys: ["enter"], action: "next test (results screen)", keywords: ["next", "results"] },
-  { keys: ["ctrl", "k"], action: "command palette", keywords: ["command", "palette", "search"] },
-  { keys: ["?"], action: "open keybinds", keywords: ["keybinds", "shortcuts", "help"] },
-  { keys: ["esc"], action: "close dialogs", keywords: ["close", "dismiss", "pause"] },
+  // Test controls
+  { keys: ["tab"], action: "restart test", keywords: ["restart", "new", "reset"] },
+  { keys: ["enter"], action: "restart from results", keywords: ["restart", "next", "results", "again"] },
+  { keys: ["esc"], action: "cancel test (no results saved)", keywords: ["cancel", "escape", "abort", "stop"] },
+  { keys: ["backspace"], action: "fix current word", keywords: ["backspace", "delete", "fix", "word", "undo"] },
+  { keys: ["ctrl", "backspace"], action: "delete whole word", keywords: ["ctrl", "backspace", "delete", "word"] },
+  { keys: ["space"], action: "submit word", keywords: ["space", "submit", "word", "next"] },
+
+  // Navigation
   { keys: ["alt", "1"], action: "test page", keywords: ["navigate", "test"] },
   { keys: ["alt", "2"], action: "leaderboard", keywords: ["navigate", "leaderboard"] },
   { keys: ["alt", "3"], action: "profile", keywords: ["navigate", "profile"] },
   { keys: ["alt", "4"], action: "settings", keywords: ["navigate", "settings"] },
-  { keys: ["backspace"], action: "fix current word", keywords: ["backspace", "delete", "fix", "word"] },
+
+  // App
+  { keys: ["ctrl", "k"], action: "command palette", keywords: ["command", "palette", "search"] },
+  { keys: ["?"], action: "open keybinds", keywords: ["keybinds", "shortcuts", "help"] },
 ];
 
 /** Navigation keybinds (used in command palette navigate group) */
