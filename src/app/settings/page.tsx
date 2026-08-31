@@ -81,7 +81,7 @@ export default function SettingsPage() {
         <TabsContent value="gameplay" className="flex w-full flex-col gap-4 outline-none">
           <Card className="w-full py-4">
             <SectionTitle icon={<IconVolume className="size-4" />} title="sound feedback" />
-            <CardContent className="mt-3 flex flex-col gap-4 px-4">
+            <CardContent className="flex flex-col gap-3 px-4">
               <SettingRow label="enabled" hint="play sounds when you type">
                 <Switch checked={settings.sound.enabled} onCheckedChange={(v) => update({ sound: { ...settings.sound, enabled: v } })} />
               </SettingRow>
@@ -116,7 +116,7 @@ export default function SettingsPage() {
 
           <Card className="w-full py-4">
             <SectionTitle icon={<IconDeviceGamepad2 className="size-4" />} title="typing rules" />
-            <CardContent className="mt-3 flex flex-col gap-4 px-4">
+            <CardContent className="flex flex-col gap-3 px-4">
               <SettingRow label="stop on error" hint="pause until you fix the wrong letter">
                 <Switch checked={settings.stopOnError} onCheckedChange={(v) => update({ stopOnError: v })} />
               </SettingRow>
@@ -146,7 +146,7 @@ export default function SettingsPage() {
 
           <Card className="w-full py-4">
             <SectionTitle icon={<IconEye className="size-4" />} title="display" />
-            <CardContent className="mt-3 flex flex-col gap-4 px-4">
+            <CardContent className="flex flex-col gap-3 px-4">
               <SettingRow label="caret style">
                 <div className="flex items-center gap-3">
                   <CaretPreview style={settings.caretStyle} />
@@ -284,8 +284,13 @@ async function signOut() {
 
   return (
     <Card className="w-full py-4">
-      <SectionTitle icon={<IconUser className="size-4" />} title="profile" />
-      <CardContent className="mt-3 flex flex-col gap-3 px-4">
+      <CardHeader className="flex flex-row items-center justify-between px-4 pb-1">
+        <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider"><IconUser className="size-4" /> profile</CardTitle>
+        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 gap-1.5 text-xs h-7" onClick={signOut} disabled={signingOut}>
+          <IconLogout className="size-3.5" /> {signingOut ? "signing out…" : "sign out"}
+        </Button>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3 px-4">
         <div className="grid gap-1">
           <Label htmlFor="username" className="text-xs">display name</Label>
           <div className="flex gap-2">
@@ -324,9 +329,6 @@ async function signOut() {
             <span className="text-muted-foreground text-xs">email + password</span>
           )}
         </div>
-        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 self-start gap-2" onClick={signOut} disabled={signingOut}>
-          <IconLogout className="size-4" /> {signingOut ? "signing out…" : "sign out"}
-        </Button>
       </CardContent>
     </Card>
   );
@@ -347,7 +349,7 @@ function DataExportCard() {
   return (
     <Card className="w-full py-4">
       <SectionTitle icon={<IconDownload className="size-4" />} title="your data" />
-      <CardContent className="mt-3 px-4">
+      <CardContent className="px-4">
         <p className="text-muted-foreground mb-3 text-sm">download everything stored for you</p>
         <Button variant="outline" size="sm" onClick={exportAll}><IconDownload className="size-4" /> export json</Button>
       </CardContent>
@@ -362,7 +364,7 @@ function GuestDataCard() {
   return (
     <Card className="w-full py-4">
       <SectionTitle icon={<IconAlertTriangle className="size-4" />} title={`local guest queue (${local.length} result${local.length === 1 ? "" : "s"})`} />
-      <CardContent className="mt-3 px-4">
+      <CardContent className="px-4">
         <p className="text-muted-foreground mb-3 text-sm">these will sync automatically when you log in.</p>
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -391,7 +393,7 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
   return (
     <Card className="w-full border-destructive/40 py-4">
       <SectionTitle icon={<IconAlertTriangle className="size-4 text-destructive" />} title="danger zone" />
-      <CardContent className="mt-3 px-4">
+      <CardContent className="px-4">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="destructive" size="sm">delete all my test results</Button>
