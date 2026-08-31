@@ -263,13 +263,28 @@ export async function deleteMyData(): Promise<{ ok: boolean }> {
   return { ok: !error };
 }
 
+export interface PublicProfileResult {
+  id: string;
+  createdAt: string;
+  mode: GameMode;
+  variant: number;
+  wpm: number;
+  accuracy: number;
+}
+
 export interface PublicProfile {
   userId: string;
   username: string;
   avatarUrl: string | null;
   joinedAt: string | null;
   stats: AggregatedStats | null;
-  results: TestResult[];
+  /**
+   * Lightweight per-result summaries for the activity calendar.
+   * Deliberately excludes timeline/chars/rawWpm -- shipping them for 1000
+   * tests produced megabyte payloads that froze the browser's main thread
+   * while parsing (and again when caching to localStorage).
+   */
+  results: PublicProfileResult[];
 }
 
 export async function getMyJoinDate(): Promise<string | null> {
@@ -349,60 +364,64 @@ export async function getPublicProfile(
     };
   }
 
+  // Lightweight summaries only -- the profile UI just needs per-day counts
+  // for the activity calendar. 365 rows covers the 12-month view.
+  const toPublicResult = (r: Record<string, unknown>): PublicProfileResult => ({
+    id: r.id as string,
+    createdAt: r.created_at as string,
+    mode: r.mode as GameMode,
+    variant: r.variant as number,
+    wpm: r.wpm as number,
+    accuracy: r.accuracy as number,
+  });
+
   // Try RPC for results (bypasses RLS)
   const { data: rpcResults, error: rpcErr } = await supabase.rpc(
     "get_user_results_public",
-    { p_user_id: userId, p_limit: 1000 },
+    { p_user_id: userId, p_limit: 365 },
   );
-  let results: TestResult[] = [];
+  let results: PublicProfileResult[] = [];
   if (!rpcErr && rpcResults && rpcResults.length > 0) {
-    results = rpcResults.map((r: Record<string, unknown>) => ({
-      id: r.id as string,
-      createdAt: r.created_at as string,
-      mode: r.mode as GameMode,
-      variant: r.variant as number,
-      source: r.source as TestResult["source"],
-      punctuation: (r.punctuation as boolean) ?? false,
-      numbers: (r.numbers as boolean) ?? false,
-      wpm: r.wpm as number,
-      rawWpm: r.raw_wpm as number,
-      accuracy: r.accuracy as number,
-      consistency: r.consistency as number,
-      chars: r.chars as TestResult["chars"],
-      timeline: r.timeline as TestResult["timeline"],
-    }));
+    results = rpcResults.map(toPublicResult);
   } else {
     // Fallback: direct query
     const { data: rows } = await supabase
       .from("test_results")
-      .select(RESULT_COLUMNS)
+      .select("id,created_at,mode,variant,wpm,accuracy")
       .eq("user_id", userId)
       .order("created_at", { ascending: false })
-      .limit(1000);
-    results = (rows as unknown as DbResultRow[]).map(mapRow);
+      .limit(365);
+    results = ((rows ?? []) as unknown as Record<string, unknown>[]).map(toPublicResult);
   }
 
   if (results.length === 0 && !stats) {
     return { userId, username: username ?? "unknown", avatarUrl, joinedAt, stats: null, results: [] };
   }
 
-  // Compute stats from results if RPC didn't return them
+  // Compute stats from full rows if the stats RPC didn't return them
   if (!stats && results.length > 0) {
-    const last10 = results.slice(0, 10);
+    const { data: fullRows } = await supabase
+      .from("test_results")
+      .select(RESULT_COLUMNS)
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1000);
+    const full = (fullRows as unknown as DbResultRow[] | null)?.map(mapRow) ?? [];
+    const last10 = full.slice(0, 10);
     const bestByBoard: Record<string, number> = {};
-    for (const r of results) {
+    for (const r of full) {
       const k = boardKey(r.mode, r.variant);
       if (!bestByBoard[k] || r.wpm > bestByBoard[k]) bestByBoard[k] = r.wpm;
     }
     const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
     stats = {
-      testsCompleted: results.length,
-      timeTypedSeconds: sum(results.map((r) => (r.mode === "time" ? r.variant : 8))),
+      testsCompleted: full.length,
+      timeTypedSeconds: sum(full.map((r) => (r.mode === "time" ? r.variant : 8))),
       avgWpm10: Math.round(sum(last10.map((r) => r.wpm)) / last10.length),
-      avgWpmAll: Math.round(sum(results.map((r) => r.wpm)) / results.length),
-      avgAccuracy: Math.round(sum(results.map((r) => r.accuracy)) / results.length),
-      avgConsistency: Math.round(sum(results.map((r) => r.consistency)) / results.length),
-      charsTyped: sum(results.map((r) => r.chars.correct + r.chars.incorrect + r.chars.extra)),
+      avgWpmAll: Math.round(sum(full.map((r) => r.wpm)) / full.length),
+      avgAccuracy: Math.round(sum(full.map((r) => r.accuracy)) / full.length),
+      avgConsistency: Math.round(sum(full.map((r) => r.consistency)) / full.length),
+      charsTyped: sum(full.map((r) => r.chars.correct + r.chars.incorrect + r.chars.extra)),
       bestByBoard,
     };
   }
