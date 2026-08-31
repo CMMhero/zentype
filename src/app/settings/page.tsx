@@ -245,11 +245,23 @@ export default function SettingsPage() {
   );
 }
 
+const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
+
 function AccountCard({ username, email, providers }: { username: string; email: string; providers: AuthProvider[] }) {
   const router = useRouter();
   const [value, setValue] = useState(username);
   const [saving, setSaving] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+
+  const trimmed = value.trim();
+  const isSame = trimmed === username;
+  let usernameError: string | null = null;
+  if (trimmed.length > 0 && !isSame) {
+    if (trimmed.length < 3) usernameError = "too short — minimum 3 characters";
+    else if (trimmed.length > 24) usernameError = "too long — maximum 24 characters";
+    else if (!USERNAME_RE.test(trimmed)) usernameError = "only letters, numbers, and underscores allowed";
+  }
+  const hasError = !isSame && trimmed.length > 0 && usernameError !== null;
 
   async function save() {
     setSaving(true);
@@ -276,10 +288,21 @@ async function signOut() {
         <div className="grid gap-1">
           <Label htmlFor="username" className="text-xs">display name</Label>
           <div className="flex gap-2">
-            <Input id="username" value={value} onChange={(e) => setValue(e.target.value)} maxLength={24} className="max-w-64" />
-            <Button size="sm" onClick={save} disabled={saving || value === username}>{saving ? "saving…" : "save"}</Button>
+            <Input
+              id="username"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              maxLength={24}
+              className={`max-w-64 ${hasError ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              aria-invalid={hasError}
+            />
+            <Button size="sm" onClick={save} disabled={saving || isSame || hasError}>{saving ? "saving…" : "save"}</Button>
           </div>
-          <p className="text-muted-foreground mt-1 text-[11px]">3–24 characters, letters, numbers and underscores, shown on leaderboards</p>
+          {hasError ? (
+            <p className="text-destructive mt-1 text-[11px]">{usernameError}</p>
+          ) : (
+            <p className="text-muted-foreground mt-1 text-[11px]">3–24 characters, letters, numbers and underscores, shown on leaderboards</p>
+          )}
         </div>
         <Sep />
         <p className="text-muted-foreground text-xs">{email}</p>
