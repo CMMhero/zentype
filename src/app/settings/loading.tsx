@@ -36,7 +36,7 @@ export default function SettingsLoading() {
                 <IconVolume className="size-4" /> sound feedback
               </CardTitle>
             </CardHeader>
-            <CardContent className="mt-3 flex flex-col gap-4 px-4">
+            <CardContent className="flex flex-col gap-3 px-4">
               {[
                 { label: "enabled", hint: "play sounds when you type" },
                 { label: "volume" },
@@ -61,7 +61,7 @@ export default function SettingsLoading() {
                 <IconDeviceGamepad2 className="size-4" /> typing rules
               </CardTitle>
             </CardHeader>
-            <CardContent className="mt-3 flex flex-col gap-4 px-4">
+            <CardContent className="flex flex-col gap-3 px-4">
               {[
                 { label: "stop on error", hint: "pause until you fix the wrong letter" },
                 { label: "strict space", hint: "wrong words can't be skipped with space" },
