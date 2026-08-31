@@ -56,6 +56,7 @@ export interface CharCounts {
   incorrect: number;
   extra: number;
   missed: number;
+  correctInCurrentWord: number;
 }
 
 export interface TimelinePoint {
