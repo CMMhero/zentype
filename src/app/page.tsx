@@ -382,7 +382,9 @@ export default function TestPage() {
                 <span className="text-muted-foreground ml-1 text-xs font-medium">acc</span>
               </div>
             </div>
-            <div className="text-right">
+            <div className={`text-right transition-opacity duration-300 ${
+              settings.hideProgress && engine.status === "running" ? "pointer-events-none opacity-0" : "opacity-100"
+            }`}>
               {settings.mode === "time" ? (
                 <span className="text-2xl font-bold tabular-nums">
                   {Math.ceil(engine.timeLeft)}
@@ -398,7 +400,11 @@ export default function TestPage() {
             </div>
           </div>
 
-          <Progress value={engine.progress * 100} className="mb-3" indicatorClassName="transition-all duration-300 ease-out" aria-label="test progress" />
+          <div className={`transition-opacity duration-300 ${
+            settings.hideProgress && engine.status === "running" ? "pointer-events-none h-0 overflow-hidden opacity-0 mb-0" : "mb-3 opacity-100"
+          }`}>
+            <Progress value={engine.progress * 100} indicatorClassName="transition-all duration-300 ease-out" aria-label="test progress" />
+          </div>
 
           <div className="relative w-full p-4" onClick={() => { if (isMobile) inputEl.current?.focus(); }}>
             {loadingPrompt ? (

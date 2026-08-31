@@ -68,6 +68,7 @@ export default function SettingsLoading() {
                 { label: "free backspace", hint: "backspace at a word start restores the previous word" },
                 { label: "blind mode", hint: "don't show which letters are wrong while typing" },
                 { label: "hide live stats", hint: "don't show wpm/accuracy during the test" },
+                { label: "hide progress", hint: "don't show time/word count and progress bar" },
               ].map(({ label, hint }) => (
                 <div key={label} className="flex items-center justify-between gap-4 py-0.5">
                   <div className="min-w-0">

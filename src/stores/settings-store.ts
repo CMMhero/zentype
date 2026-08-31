@@ -22,6 +22,7 @@ const DEFAULT_SETTINGS: GameSettings = {
   showKeyboard: true,
   visibleLines: 3,
   hideLiveStats: false,
+  hideProgress: false,
   punctuation: false,
   numbers: false,
 };
