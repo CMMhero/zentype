@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useSettingsStore } from "~/stores/settings-store";
 import { getTheme } from "~/lib/themes";
 
@@ -32,29 +32,18 @@ function cleanForFavicon(raw: string): string {
 export function DynamicFavicon() {
   const themeId = useSettingsStore((s) => s.settings.themeId);
   const prevUrlRef = useRef<string | null>(null);
-  const svgCacheRef = useRef<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-
-  // Wait for hydration + React commit to complete before touching the DOM
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setMounted(true));
-    return () => cancelAnimationFrame(id);
-  }, []);
 
   useEffect(() => {
-    if (!mounted) return;
     let cancelled = false;
 
     async function run() {
-      // Fetch logo.svg once, cache the cleaned text
-      if (!svgCacheRef.current) {
-        try {
-          const res = await fetch("/logo.svg");
-          const raw = await res.text();
-          svgCacheRef.current = cleanForFavicon(raw);
-        } catch {
-          return;
-        }
+      let svgText: string;
+      try {
+        const res = await fetch("/logo.svg");
+        const raw = await res.text();
+        svgText = cleanForFavicon(raw);
+      } catch {
+        return;
       }
 
       if (cancelled) return;
@@ -63,8 +52,7 @@ export function DynamicFavicon() {
       const fg = hexToRgb(theme.vars["--primary"]);
       const bg = hexToRgb(theme.vars["--background"]);
 
-      // Replace original colors with theme colors
-      const svg = svgCacheRef.current!
+      const svg = svgText
         .replaceAll(ORIGINAL_BG, bg)
         .replaceAll(ORIGINAL_FG, fg);
 
@@ -79,7 +67,6 @@ export function DynamicFavicon() {
         .querySelectorAll("link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']")
         .forEach((el) => el.remove());
 
-      // Append dynamic favicon (overrides the static /favicon.ico)
       const link = document.createElement("link");
       link.rel = "icon";
       link.type = "image/svg+xml";
