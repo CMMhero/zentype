@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IconFileTextFilled, IconKeyboardFilled } from "@tabler/icons-react";
+import { IconArrowLeft, IconFileTextFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
@@ -90,8 +90,8 @@ export default function TermsPage() {
         </section>
 
         <div className="pt-4">
-          <Link href="/" className="text-primary text-xs underline underline-offset-2">
-            ← back to test
+          <Link href="/" className="text-primary inline-flex items-center gap-1 text-xs underline underline-offset-2">
+            <IconArrowLeft className="size-3" /> back to test
           </Link>
         </div>
       </div>

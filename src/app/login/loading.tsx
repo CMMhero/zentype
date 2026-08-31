@@ -51,7 +51,7 @@ export default function LoginLoading() {
           {/* Back link */}
           <Link
             href="/"
-            className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 text-xs transition-colors"
+            className="text-primary text-xs underline underline-offset-2 inline-flex items-center gap-1"
           >
             <IconArrowLeft className="size-3" />
             back to typing
