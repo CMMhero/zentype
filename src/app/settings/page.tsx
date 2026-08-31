@@ -324,12 +324,9 @@ async function signOut() {
             <span className="text-muted-foreground text-xs">email + password</span>
           )}
         </div>
-        <Sep />
-        <div className="flex justify-end">
-          <Button variant="outline" size="sm" onClick={signOut} disabled={signingOut}>
-            <IconLogout className="size-4" /> {signingOut ? "signing out…" : "sign out"}
-          </Button>
-        </div>
+        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 self-start gap-2" onClick={signOut} disabled={signingOut}>
+          <IconLogout className="size-4" /> {signingOut ? "signing out…" : "sign out"}
+        </Button>
       </CardContent>
     </Card>
   );
