@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import {
   IconAlertTriangle, IconArrowBackUp, IconArrowRight, IconAt, IconClock,
-  IconCode, IconCursorText, IconDownload, IconEye, IconEyeOff, IconFileText, IconHash, IconInfoCircle, IconKeyboardFilled,
+  IconCode, IconCursorText, IconDownload, IconEye, IconEyeOff, IconFileText, IconHash, IconInfoCircle, IconKeyboard,
   IconLetterT, IconList, IconLock, IconLogout, IconMoon, IconMusic, IconPointer, IconPlayerStop,
   IconRefresh, IconSearch, IconSettings, IconSpace, IconTextResize,
   IconTrophy, IconTypography, IconUser, IconVolume, IconVolumeOff,
@@ -303,7 +303,7 @@ export function CommandPalette() {
         {userQuery.trim().length >= 3 && <CommandSeparator />}
 
         <CommandGroup heading="navigate">
-          <CommandItem value="navigate test alt+1" keywords={["navigate", "test"]} onSelect={() => go("/")}><IconKeyboardFilled /> test<Shortcut>alt+1</Shortcut></CommandItem>
+          <CommandItem value="navigate test alt+1" keywords={["navigate", "test"]} onSelect={() => go("/")}><IconKeyboard /> test<Shortcut>alt+1</Shortcut></CommandItem>
           <CommandItem value="navigate leaderboard global bests alt+2" keywords={["navigate", "leaderboard"]} onSelect={() => go("/leaderboard")}><IconTrophy /> leaderboard<Shortcut>alt+2</Shortcut></CommandItem>
           <CommandItem value="navigate profile dashboard alt+3" keywords={["navigate", "profile"]} onSelect={() => go("/profile")}><IconUser /> profile<Shortcut>alt+3</Shortcut></CommandItem>
           <CommandItem value="navigate settings config alt+4" keywords={["navigate", "settings"]} onSelect={() => go("/settings")}><IconSettings /> settings<Shortcut>alt+4</Shortcut></CommandItem>
@@ -570,7 +570,7 @@ export function CommandPalette() {
             onSelect={toggleKeyboard}
             className={activeSet.showKeyboard ? "text-primary bg-primary/10" : ""}
           >
-            <IconKeyboardFilled /> virtual keyboard <ToggleBadge on={activeSet.showKeyboard} /><CommandDesc>show key highlighter</CommandDesc>
+            <IconKeyboard /> virtual keyboard <ToggleBadge on={activeSet.showKeyboard} /><CommandDesc>show key highlighter</CommandDesc>
           </CommandItem><CommandItem
               value="appearance smooth caret animate caret movement toggle on off"
               keywords={["appearance", "caret"]}
