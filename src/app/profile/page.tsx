@@ -686,7 +686,14 @@ export default function ProfilePage() {
               <DialogHeader>
                 <DialogTitle className="flex items-end gap-4 sm:gap-8">
                   <span className="flex flex-col">
-                    <span className="text-3xl font-bold tabular-nums text-primary sm:text-5xl">{selected.wpm}</span>
+                    <span className="flex items-center gap-2">
+                      <span className="text-3xl font-bold tabular-nums text-primary sm:text-5xl">{selected.wpm}</span>
+                      {pbIds.has(selected.id) && (
+                        <span className="inline-flex items-center gap-0.5 rounded bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground">
+                          <IconCrown className="size-3" /> PB
+                        </span>
+                      )}
+                    </span>
                     <span className="text-muted-foreground mt-1 text-xs tracking-wider">wpm</span>
                   </span>
                   <span className="flex flex-col">
