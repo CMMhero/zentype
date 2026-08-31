@@ -15,7 +15,6 @@ export const KEYBINDS: Keybind[] = [
   { keys: ["esc"], action: "cancel test (no results saved)", keywords: ["cancel", "escape", "abort", "stop"] },
   { keys: ["backspace"], action: "fix current word", keywords: ["backspace", "delete", "fix", "word", "undo"] },
   { keys: ["ctrl", "backspace"], action: "delete whole word", keywords: ["ctrl", "backspace", "delete", "word"] },
-  { keys: ["space"], action: "submit word", keywords: ["space", "submit", "word", "next"] },
 
   // Navigation
   { keys: ["alt", "1"], action: "test page", keywords: ["navigate", "test"] },

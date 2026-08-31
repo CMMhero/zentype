@@ -11,8 +11,9 @@ const ALL_KEYS = new Set([
   " ",
 ]);
 
-const ACTIVE_CLASSES = ["border-primary", "bg-primary", "text-primary-foreground", "scale-95"];
+const ACTIVE_CLASSES = ["border-primary", "bg-primary", "text-primary-foreground"];
 const INACTIVE_CLASSES = ["border-border", "bg-card", "text-muted-foreground"];
+const HOME_KEYS = new Set(["f", "j"]);
 
 function activateEl(el: HTMLElement | null) {
   if (!el) return;
@@ -95,9 +96,12 @@ export function VirtualKeyboard() {
               key={key}
               data-key={key}
               data-active="false"
-              className="flex size-8 sm:size-9 items-center justify-center rounded border text-xs font-medium transition-all duration-75 border-border bg-card text-muted-foreground"
+              className="flex size-8 sm:size-9 items-center justify-center rounded border text-xs font-medium transition-colors duration-75 border-border bg-card text-muted-foreground relative"
             >
               {key}
+              {HOME_KEYS.has(key) && (
+                <span className="absolute bottom-1 left-1/2 h-[2px] w-2 -translate-x-1/2 rounded-full bg-muted-foreground/50" />
+              )}
             </div>
           ))}
         </div>
@@ -105,7 +109,7 @@ export function VirtualKeyboard() {
       <div
         data-key="space"
         data-active="false"
-        className="h-8 w-56 sm:h-9 sm:w-64 rounded-md border transition-all duration-75 border-border bg-card"
+        className="h-8 w-56 sm:h-9 sm:w-64 rounded-md border transition-colors duration-75 border-border bg-card"
       />
     </div>
   );
