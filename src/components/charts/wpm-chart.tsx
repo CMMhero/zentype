@@ -18,7 +18,7 @@ import type { TimelinePoint } from "~/lib/types";
 const chartConfig = {
   wpm: { label: "wpm", color: "var(--chart-1)" },
   raw: { label: "raw", color: "var(--muted-foreground)" },
-  errors: { label: "errors", color: "var(--chart-5)" },
+  errors: { label: "errors", color: "var(--destructive)" },
 } satisfies ChartConfig;
 
 export function WpmChart({
