@@ -113,7 +113,7 @@
   --chart-2: #83a598;
   --chart-3: #8ec07c;
   --chart-4: #d3869b;
-  --chart-5: #fe8019;
+  --chart-5: #fb4934; /* matches --destructive -- chart-5 is reserved for error bars */
   --info: #458588;
   --info-foreground: #ebdbb2;
   --success: #b8bb26;
