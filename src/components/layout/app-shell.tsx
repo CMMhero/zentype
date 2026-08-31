@@ -23,6 +23,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Kbd } from "~/components/ui/kbd";
+import { Badge } from "~/components/ui/badge";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
@@ -257,9 +258,9 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
           {userLevel === null ? (
             <Skeleton className="hidden sm:block h-[18px] min-w-[20px] rounded-full" />
           ) : (
-            <span className="hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground min-w-5 justify-center">
+            <Badge variant="secondary" className="hidden sm:inline-flex rounded-full px-1.5 py-0 text-[9px] font-bold tracking-widest">
               {userLevel}
-            </span>
+            </Badge>
           )}
         </Button>
       </DropdownMenuTrigger>
