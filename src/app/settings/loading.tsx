@@ -30,7 +30,7 @@ export default function SettingsLoading() {
 
         {/* Gameplay tab content — all text and icons rendered, only controls skeleton */}
         <div className="flex w-full flex-col gap-4">
-          <Card className="w-full py-4">
+          <Card className="w-full gap-3 py-4">
             <CardHeader className="px-4 pb-0">
               <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">
                 <IconVolume className="size-4" /> sound feedback
@@ -55,7 +55,7 @@ export default function SettingsLoading() {
             </CardContent>
           </Card>
 
-          <Card className="w-full py-4">
+          <Card className="w-full gap-3 py-4">
             <CardHeader className="px-4 pb-0">
               <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">
                 <IconDeviceGamepad2 className="size-4" /> typing rules
