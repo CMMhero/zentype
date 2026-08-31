@@ -168,11 +168,8 @@ export function AppShell({
             <a href="https://github.com/CMMhero/zentype" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="GitHub">
               <IconCode className="size-4" />
             </a>
-            <span className="text-muted-foreground/50">·</span>
             <Link href="/about" className="hover:text-foreground underline underline-offset-2">about</Link>
-            <span className="text-muted-foreground/50">·</span>
             <Link href="/terms" className="hover:text-foreground underline underline-offset-2">terms</Link>
-            <span className="text-muted-foreground/50">·</span>
             <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">privacy</Link>
           </span>
           <span className="ml-auto hidden items-center gap-1 sm:flex">
