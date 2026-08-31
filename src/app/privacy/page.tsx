@@ -3,7 +3,7 @@ import Link from "next/link";
 import { IconArrowLeft, IconLockFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
+  title: "privacy policy",
   description: "Privacy Policy for zentype",
 };
 

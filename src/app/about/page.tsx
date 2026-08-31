@@ -6,7 +6,7 @@ import { getPublicStats } from "~/server/results";
 import { Skeleton } from "~/components/ui/skeleton";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "about",
   description: "About zentype - a customizable typing test with leaderboards, achievements, and stats",
 };
 
