@@ -46,16 +46,18 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 - Settings sync across devices via Supabase
 - JSON export and one-click data wipe
 
-**Keyboard shortcuts**
+**Keybinds**
 
 | keys | action |
 |---|---|
-| `tab` | restart / new test |
-| `enter` | next test (results screen) |
+| `tab` | new test |
+| `esc` | cancel test (no results saved) |
+| `backspace` | fix current word |
+| `ctrl+backspace` | delete whole word |
+| `space` | submit word |
 | `ctrl/cmd + k` | command palette |
-| `?` | shortcuts reference |
+| `?` | open keybinds |
 | `alt + 1..4` | test / leaderboard / profile / settings |
-| `esc` | close dialogs |
 
 ## Stack
 
