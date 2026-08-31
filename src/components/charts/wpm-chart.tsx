@@ -52,57 +52,74 @@ export function WpmChart({
   }));
 
   return (
-    <ChartContainer config={chartConfig} className={cn(compact ? "h-40 sm:h-56" : "h-56", "w-full", className)} role="img" aria-label="WPM performance chart">
-      <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-        <defs>
-          <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--color-wpm)" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="var(--color-wpm)" stopOpacity={0.1} />
-          </linearGradient>
-          <linearGradient id="fillRaw" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--color-raw)" stopOpacity={0.3} />
-            <stop offset="95%" stopColor="var(--color-raw)" stopOpacity={0.05} />
-          </linearGradient>
-          <linearGradient id="fillErrors" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--color-errors)" stopOpacity={0.9} />
-            <stop offset="95%" stopColor="var(--color-errors)" stopOpacity={0.3} />
-          </linearGradient>
-        </defs>
-        <CartesianGrid vertical={false} strokeDasharray="3 3" />
-        <XAxis
-          dataKey="Second"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={6}
-          minTickGap={24}
-          tickFormatter={(v: number) => `${v}s`}
-        />
-        <YAxis tickLine={false} axisLine={false} width={44} tickMargin={8} domain={[0, "auto"]} />
-        {/* Hidden right axis so the error bars scale independent of the wpm axis */}
-        <YAxis yAxisId="right" orientation="right" hide domain={[0, "auto"]} />
-        <ChartTooltip
-          cursor={{ stroke: "var(--border)" }}
-          content={<ChartTooltipContent labelFormatter={(l) => `${l}s`} indicator="dot" />}
-        />
-        <Bar dataKey="errors" fill="url(#fillErrors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
-        <Area
-          dataKey="raw"
-          type="monotone"
-          stroke="var(--color-raw)"
-          strokeWidth={1.5}
-          fill="url(#fillRaw)"
-          dot={false}
-        />
-        <Area
-          dataKey="wpm"
-          type="monotone"
-          stroke="var(--color-wpm)"
-          strokeWidth={2}
-          fill="url(#fillWpm)"
-          dot={false}
-          activeDot={{ r: 3 }}
-        />
-      </ComposedChart>
-    </ChartContainer>
+    <div className={cn("w-full", className)}>
+      <ChartContainer config={chartConfig} className={cn(compact ? "h-40 sm:h-56" : "h-56", "w-full")} role="img" aria-label="WPM performance chart">
+        <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+          <defs>
+            <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="var(--color-wpm)" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="var(--color-wpm)" stopOpacity={0.1} />
+            </linearGradient>
+            <linearGradient id="fillRaw" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="var(--color-raw)" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="var(--color-raw)" stopOpacity={0.05} />
+            </linearGradient>
+            <linearGradient id="fillErrors" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="var(--color-errors)" stopOpacity={0.9} />
+              <stop offset="95%" stopColor="var(--color-errors)" stopOpacity={0.3} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <XAxis
+            dataKey="Second"
+            tickLine={false}
+            axisLine={false}
+            tickMargin={6}
+            minTickGap={24}
+            tickFormatter={(v: number) => `${v}s`}
+          />
+          <YAxis tickLine={false} axisLine={false} width={44} tickMargin={8} domain={[0, "auto"]} />
+          {/* Hidden right axis so the error bars scale independent of the wpm axis */}
+          <YAxis yAxisId="right" orientation="right" hide domain={[0, "auto"]} />
+          <ChartTooltip
+            cursor={{ stroke: "var(--border)" }}
+            content={<ChartTooltipContent labelFormatter={(l) => `${l}s`} indicator="dot" />}
+          />
+          {/* Children order drives tooltip order: wpm, raw, errors */}
+          <Area
+            dataKey="wpm"
+            type="monotone"
+            stroke="var(--color-wpm)"
+            strokeWidth={2}
+            fill="url(#fillWpm)"
+            dot={false}
+            activeDot={{ r: 3 }}
+          />
+          <Area
+            dataKey="raw"
+            type="monotone"
+            stroke="var(--color-raw)"
+            strokeWidth={1.5}
+            fill="url(#fillRaw)"
+            dot={false}
+          />
+          <Bar dataKey="errors" fill="url(#fillErrors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
+        </ComposedChart>
+      </ChartContainer>
+      <div className="text-muted-foreground mt-1 flex items-center justify-center gap-4 text-[10px]" aria-hidden>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="size-2 rounded-[2px]" style={{ background: "var(--chart-1)" }} />
+          wpm
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="size-2 rounded-[2px]" style={{ background: "var(--muted-foreground)" }} />
+          raw
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="size-2 rounded-[2px]" style={{ background: "var(--chart-5)" }} />
+          errors
+        </span>
+      </div>
+    </div>
   );
 }
