@@ -57,8 +57,8 @@ export default function HomeLoading() {
         </div>
       </div>
 
-      {/* Progress bar — at 0%, matches Progress component bg-secondary */}
-      <div className="mb-3 bg-secondary relative h-1.5 w-full overflow-hidden rounded-full">
+      {/* Progress bar — at 0%, matches Progress component: bg-muted track, bg-primary indicator */}
+      <div className="mb-3 bg-muted relative h-1.5 w-full overflow-hidden rounded-full">
         <div className="bg-primary h-full w-full flex-1 transition-all" style={{ transform: 'translateX(-100%)' }} />
       </div>
 

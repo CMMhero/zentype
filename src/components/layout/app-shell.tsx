@@ -253,7 +253,7 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
             <AvatarFallback className="rounded text-[10px] uppercase">{user.username.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
-          <span className={`hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground ${userLevel === null ? 'invisible' : ''}`}>
+          <span className={`hidden sm:inline-flex shrink-0 items-center gap-0.5 rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground min-w-5 justify-center ${userLevel === null ? 'invisible' : ''}`}>
               {userLevel ?? ''}
             </span>
         </Button>
