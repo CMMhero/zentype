@@ -258,7 +258,7 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
           {userLevel === null ? (
             <Skeleton className="hidden sm:block h-[18px] min-w-[20px] rounded-full" />
           ) : (
-            <Badge variant="secondary" className="hidden sm:inline-flex rounded-full px-1.5 py-0 text-[9px] font-bold tracking-widest">
+            <Badge variant="secondary" className="hidden sm:inline-flex text-[9px] font-bold tracking-widest">
               {userLevel}
             </Badge>
           )}
