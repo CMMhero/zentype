@@ -256,7 +256,7 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
           </Avatar>
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
           {userLevel === null ? (
-            <Skeleton className="hidden sm:block h-[18px] min-w-[20px] rounded-full" />
+            <Skeleton className="hidden sm:block h-[18px] min-w-[20px] rounded" />
           ) : (
             <Badge variant="secondary" className="hidden sm:inline-flex text-[9px] font-bold tracking-widest">
               {userLevel}

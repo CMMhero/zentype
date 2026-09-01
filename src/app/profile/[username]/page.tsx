@@ -151,10 +151,17 @@ export default function PublicProfilePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      <header className="flex items-center justify-between">
+      <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconUserFilled className="text-primary size-5" /> profile
         </h1>
+        {isOwnProfile && currentUser && (
+          <Button variant="outline" size="sm" className="text-muted-foreground gap-2 text-xs" asChild>
+            <Link href="/profile">
+              <IconArrowLeft className="size-3.5" /> <span className="hidden sm:inline">my profile</span><span className="sm:hidden">me</span>
+            </Link>
+          </Button>
+        )}
       </header>
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
@@ -167,14 +174,7 @@ export default function PublicProfilePage() {
                 <AvatarFallback className="rounded text-xl font-bold uppercase">{name.slice(0, 2)}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-lg font-bold truncate">{name}</h1>
-                  {!isOwnProfile && currentUser && (
-                    <Button asChild variant="ghost" size="sm" className="text-muted-foreground h-6 gap-1 text-xs">
-                      <Link href="/profile"><IconArrowLeft className="size-3" /> my profile</Link>
-                    </Button>
-                  )}
-                </div>
+                <h1 className="text-lg font-bold truncate">{name}</h1>
                 <Badge variant="outline" className="text-[10px]">public profile</Badge>
                 {profile!.joinedAt && (
                   <p className="mt-1 text-[10px] text-muted-foreground/70">
@@ -251,7 +251,7 @@ export default function PublicProfilePage() {
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
             {achievements === null ? (
-              <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+              <Skeleton className="ml-auto h-[18px] w-12 rounded" />
             ) : (
               <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
             )}
@@ -444,7 +444,7 @@ function ProfileSkeleton() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
-            <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+            <Skeleton className="ml-auto h-[18px] w-12 rounded" />
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">

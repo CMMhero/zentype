@@ -469,7 +469,7 @@ export default function ProfilePage() {
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
             {achievements === null ? (
-              <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+              <Skeleton className="ml-auto h-[18px] w-12 rounded" />
             ) : (
               <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
             )}
