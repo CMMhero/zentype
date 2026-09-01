@@ -110,7 +110,7 @@ export default async function AboutPage() {
             <FeatureCard
               icon={<IconBrandGithub className="size-5" />}
               title="open source"
-              description={<>Next.js, Supabase, shadcn/ui, Tailwind CSS. Open source under the repo linked above.</>}
+              description={<>Next.js, Supabase, shadcn/ui, Tailwind CSS. <a href="https://github.com/CMMhero/zentype" target="_blank" rel="noreferrer" className="text-primary hover:underline">open source on github</a>.</>}
             />
           </div>
         </section>

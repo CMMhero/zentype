@@ -21,6 +21,7 @@ import { getBoardRanks } from "~/server/leaderboard";
 import { lcGet, lcSet } from "~/lib/client-cache";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
+import { useUser } from "~/components/user-provider";
 
 import { ACHIEVEMENTS } from "~/lib/achievements";
 
@@ -37,6 +38,7 @@ export default function PublicProfilePage() {
   
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
+  const currentUser = useUser();
 
   // Stale-while-revalidate: show cached data instantly, fetch fresh in background
   useEffect(() => {
@@ -145,7 +147,7 @@ export default function PublicProfilePage() {
     achievedAt: null as string | null, progress: 0, xp: a.xp,
   }));
   const unlockedAch = allAch.filter((a) => a.achievedAt !== null);
-  
+  const isOwnProfile = currentUser?.username === username;
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
@@ -165,7 +167,14 @@ export default function PublicProfilePage() {
                 <AvatarFallback className="rounded text-xl font-bold uppercase">{name.slice(0, 2)}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <h1 className="text-lg font-bold truncate">{name}</h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-lg font-bold truncate">{name}</h1>
+                  {!isOwnProfile && currentUser && (
+                    <Button asChild variant="ghost" size="sm" className="text-muted-foreground h-6 gap-1 text-xs">
+                      <Link href="/profile"><IconArrowLeft className="size-3" /> my profile</Link>
+                    </Button>
+                  )}
+                </div>
                 <Badge variant="outline" className="text-[10px]">public profile</Badge>
                 {profile!.joinedAt && (
                   <p className="mt-1 text-[10px] text-muted-foreground/70">
