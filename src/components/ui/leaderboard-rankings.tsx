@@ -188,7 +188,7 @@ const LeaderboardRankings = React.forwardRef<
 
                 <Avatar className="size-10">
                   {ranking.avatarUrl && <AvatarImage src={ranking.avatarUrl} alt={`${displayName} avatar`} />}
-                  <AvatarFallback className="rounded-full text-sm font-medium">
+                  <AvatarFallback className="text-sm font-medium">
                     {(ranking.userName ?? ranking.userId).charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
