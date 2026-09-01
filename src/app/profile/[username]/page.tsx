@@ -11,6 +11,7 @@ import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Progress } from "~/components/ui/progress";
 import { Skeleton } from "~/components/ui/skeleton";
 
 
@@ -193,9 +194,7 @@ export default function PublicProfilePage() {
             ) : points && points.totalXP > 0 ? (
               <div className="mt-4 flex items-center gap-3">
                 <span className="text-lg font-bold tabular-nums text-secondary">Lv. {points.level}</span>
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted/80">
-                  <div className="h-full rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all shadow-sm shadow-primary/30" style={{ width: `${points.progress}%` }} />
-                </div>
+                <Progress value={points.progress} className="h-1.5 flex-1 bg-muted/80" indicatorClassName="bg-gradient-to-r from-primary/80 to-primary shadow-sm shadow-primary/30 transition-all" />
                 <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
               </div>
             ) : (
