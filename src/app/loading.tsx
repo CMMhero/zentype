@@ -1,4 +1,5 @@
 import { Skeleton } from "~/components/ui/skeleton";
+import { Progress } from "~/components/ui/progress";
 import { IconClock, IconTypography, IconAt, IconHash } from "@tabler/icons-react";
 import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
 
@@ -20,7 +21,7 @@ export default function HomeLoading() {
           </PillGroup>
 
           {/* Variant selector */}
-          <PillGroup className="w-full min-w-0 overflow-hidden sm:w-64">
+          <PillGroup className="w-full min-w-0 sm:w-64">
             {[15, 30, 60, 120].map((t) => (
               <PillButton key={t} active={t === 30}>{t}s</PillButton>
             ))}
@@ -57,9 +58,8 @@ export default function HomeLoading() {
         </div>
       </div>
 
-      {/* Progress bar — at 0%, matches Progress component: bg-muted track, bg-primary indicator */}
-      <div className="mb-3 bg-muted relative h-1.5 w-full overflow-hidden rounded-full">
-        <div className="bg-primary h-full w-full flex-1 transition-all" style={{ transform: 'translateX(-100%)' }} />
+      <div className="mb-3 h-1.5 w-full">
+        <Progress value={0} className="h-full" aria-label="test progress" />
       </div>
 
       {/* Typing area — skeleton for words (the dynamic part) */}

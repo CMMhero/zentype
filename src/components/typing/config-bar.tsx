@@ -55,7 +55,7 @@ export function ConfigBar({
         </PillGroup>
 
         {/* Variant selector */}
-        <PillGroup className="w-full min-w-0 overflow-hidden sm:w-64">
+        <PillGroup className="w-full min-w-0 sm:w-64">
           {mode === "time"
             ? TIME_OPTIONS.map((t) => (
                 <PillButton
