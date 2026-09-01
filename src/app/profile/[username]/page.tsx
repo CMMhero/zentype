@@ -21,6 +21,7 @@ import { getBoardRanks } from "~/server/leaderboard";
 import { lcGet, lcSet } from "~/lib/client-cache";
 import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
+import { useUser } from "~/components/user-provider";
 
 import { ACHIEVEMENTS } from "~/lib/achievements";
 
@@ -37,6 +38,7 @@ export default function PublicProfilePage() {
   
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
+  const currentUser = useUser();
 
   // Stale-while-revalidate: show cached data instantly, fetch fresh in background
   useEffect(() => {
@@ -145,14 +147,21 @@ export default function PublicProfilePage() {
     achievedAt: null as string | null, progress: 0, xp: a.xp,
   }));
   const unlockedAch = allAch.filter((a) => a.achievedAt !== null);
-  
+  const isOwnProfile = currentUser?.username === username;
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      <header className="flex items-center justify-between">
+      <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconUserFilled className="text-primary size-5" /> profile
         </h1>
+        {isOwnProfile && currentUser && (
+          <Button variant="outline" size="sm" className="text-muted-foreground gap-2 text-xs" asChild>
+            <Link href="/profile">
+              <IconArrowLeft className="size-3.5" /> <span className="hidden sm:inline">my profile</span><span className="sm:hidden">me</span>
+            </Link>
+          </Button>
+        )}
       </header>
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
@@ -242,7 +251,7 @@ export default function PublicProfilePage() {
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
             {achievements === null ? (
-              <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+              <Skeleton className="ml-auto h-[18px] w-12 rounded" />
             ) : (
               <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
             )}
@@ -435,7 +444,7 @@ function ProfileSkeleton() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
-            <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+            <Skeleton className="ml-auto h-[18px] w-12 rounded" />
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">

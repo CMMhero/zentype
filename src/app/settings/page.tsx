@@ -33,7 +33,7 @@ import { useResultsStore } from "~/stores/results-store";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useUser } from "~/components/user-provider";
 import { signOutFn, updateUsername } from "~/server/auth";
-import { deleteMyData } from "~/server/results";
+import { deleteMyData, getUserResults } from "~/server/results";
 import { playKeypress, playError } from "~/lib/sound";
 import { KEYBINDS } from "~/lib/keybinds";
 
@@ -339,22 +339,36 @@ async function signOut() {
 
 function DataExportCard() {
   const local = useResultsStore((s) => s.local);
-  function exportAll() {
-    const payload = { exportedAt: new Date().toISOString(), app: "zentype", version: 2, localResults: local };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `zentype-export-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const settings = useSettingsStore((s) => s.settings);
+  const user = useUser();
+  const [exporting, setExporting] = useState(false);
+  async function exportAll() {
+    setExporting(true);
+    try {
+      const dbResults = user ? await getUserResults({ limit: 10000 }) : null;
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        profile: user ? { username: user.username, email: user.email, providers: user.providers } : null,
+        settings,
+        testResults: dbResults ?? local,
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `zentype-export-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
   }
   return (
     <Card className="w-full gap-3 py-4">
       <SectionTitle icon={<IconDownload className="size-4" />} title="your data" />
       <CardContent className="px-4">
         <p className="text-muted-foreground mb-3 text-sm">download everything stored for you</p>
-        <Button variant="outline" size="sm" onClick={exportAll}><IconDownload className="size-4" /> export json</Button>
+        <Button variant="outline" size="sm" onClick={exportAll} disabled={exporting}><IconDownload className="size-4" /> {exporting ? "exporting…" : "export json"}</Button>
       </CardContent>
     </Card>
   );

@@ -32,7 +32,7 @@ export default function SettingsLoading() {
         <div className="flex w-full flex-col gap-4">
           <Card className="w-full gap-3 py-4">
             <CardHeader className="px-4 pb-0">
-              <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
                 <IconVolume className="size-4" /> sound feedback
               </CardTitle>
             </CardHeader>
@@ -57,7 +57,7 @@ export default function SettingsLoading() {
 
           <Card className="w-full gap-3 py-4">
             <CardHeader className="px-4 pb-0">
-              <CardTitle className="flex items-center gap-2 text-xs tracking-widest uppercase">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
                 <IconDeviceGamepad2 className="size-4" /> typing rules
               </CardTitle>
             </CardHeader>

@@ -222,7 +222,14 @@ export function CommandPalette() {
   }, [close, reset]);
   const exportJson = useCallback(() => {
     close();
-    const payload = { exportedAt: new Date().toISOString(), app: "zentype", version: 2, localResults: local };
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      app: "zentype",
+      version: 2,
+      profile: user ? { username: user.username, email: user.email, providers: user.providers } : null,
+      settings,
+      localResults: local,
+    };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -230,7 +237,7 @@ export function CommandPalette() {
     a.download = `zentype-export-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
-  }, [close, local]);
+  }, [close, local, settings, user]);
   const deleteAllResults = useCallback(() => {
     setConfirmAction({
       title: "delete every saved result?",

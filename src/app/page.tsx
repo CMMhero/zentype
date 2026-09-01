@@ -21,6 +21,7 @@ import { randomWordSlice } from "~/lib/prompt-utils";
 import { getPrompt } from "~/server/prompts";
 import { mergeLocalResults, saveResult } from "~/server/results";
 import { processTestResult } from "~/server/gamification";
+import { calculateTestXP } from "~/lib/xp";
 import { useUser } from "~/components/user-provider";
 import type { GameSettings, TestResult } from "~/lib/types";
 import { lcGet } from "~/lib/client-cache";
@@ -146,6 +147,12 @@ export default function TestPage() {
     setResult(full);
     setSaveState("skipped");
     addLocal(full);
+
+    // Show immediate XP toast (client-side estimate, no DB wait)
+    if (user) {
+      const xp = calculateTestXP(full, 0);
+      toast.success(`+${xp} XP`, { duration: 2000 });
+    }
 
     if (!user) {
       setSaveState("guest");

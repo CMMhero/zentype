@@ -120,7 +120,7 @@ export default function ProfileLoading() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
-            <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+            <Skeleton className="ml-auto h-[18px] w-12 rounded" />
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
@@ -153,7 +153,7 @@ export default function ProfileLoading() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconHistory className="size-4" /> test history
-            <Skeleton className="ml-auto h-[18px] w-16 rounded-full" />
+            <Skeleton className="ml-auto h-[18px] w-16 rounded" />
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
