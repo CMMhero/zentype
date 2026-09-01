@@ -1,45 +1,49 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Toaster as Sonner, type ToasterProps } from "sonner";
+import { useTheme } from "next-themes"
+import { Toaster as Sonner, type ToasterProps } from "sonner"
+import { IconCircleCheck, IconInfoCircle, IconAlertTriangle, IconAlertOctagon, IconLoader } from "@tabler/icons-react"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  // Track the app's appearance (dark/light) so toasts match the selected theme.
-  const [appearance, setAppearance] = useState<"light" | "dark">("dark");
-  const [fontFamily, setFontFamily] = useState<string>(() =>
-    typeof window === "undefined" ? "inherit" : window.getComputedStyle(document.documentElement).fontFamily
-  );
-
-  useEffect(() => {
-    const root = document.documentElement;
-    const read = () => {
-      setAppearance(root.dataset.appearance === "light" ? "light" : "dark");
-      setFontFamily(window.getComputedStyle(root).fontFamily);
-    };
-    read();
-    const observer = new MutationObserver(read);
-    observer.observe(root, { attributes: true, attributeFilter: ["data-appearance", "data-font", "class"] });
-    return () => observer.disconnect();
-  }, []);
+  const { theme = "system" } = useTheme()
 
   return (
     <Sonner
-      theme={appearance}
+      theme={theme as ToasterProps["theme"]}
       className="toaster group"
+      icons={{
+        success: (
+          <IconCircleCheck className="size-4" />
+        ),
+        info: (
+          <IconInfoCircle className="size-4" />
+        ),
+        warning: (
+          <IconAlertTriangle className="size-4" />
+        ),
+        error: (
+          <IconAlertOctagon className="size-4" />
+        ),
+        loading: (
+          <IconLoader className="size-4 animate-spin" />
+        ),
+      }}
       style={
         {
-          fontFamily,
           "--normal-bg": "var(--popover)",
           "--normal-text": "var(--popover-foreground)",
           "--normal-border": "var(--border)",
           "--border-radius": "var(--radius)",
-          "--success": "var(--primary)",
-          "--error": "var(--destructive)",
         } as React.CSSProperties
       }
+      toastOptions={{
+        classNames: {
+          toast: "cn-toast",
+        },
+      }}
       {...props}
     />
-  );
-};
+  )
+}
 
-export { Toaster };
+export { Toaster }

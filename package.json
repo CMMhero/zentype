@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@base-ui/react": "^1.7.0",
     "@fontsource-variable/advent-pro": "^5.3.0",
     "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource-variable/asap": "^5.3.0",
@@ -133,10 +134,12 @@
     "cmdk": "^1.1.1",
     "fuse.js": "^7.5.0",
     "next": "^15.5.0",
+    "next-themes": "^0.4.6",
+    "radix-ui": "^1.6.7",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "recharts": "^3.2.1",
-    "shadcn": "^4.19.0",
+    "recharts": "3.8.0",
+    "shadcn": "^4.19.1",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "zustand": "^5.0.8"
