@@ -193,7 +193,7 @@ export default function PublicProfilePage() {
               </div>
             ) : points && points.totalXP > 0 ? (
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-lg font-bold tabular-nums text-secondary">Lv. {points.level}</span>
+                <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
                 <Progress value={points.progress} className="h-1.5 flex-1 bg-muted/80" indicatorClassName="bg-gradient-to-r from-primary/80 to-primary shadow-sm shadow-primary/30 transition-all" />
                 <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
               </div>
@@ -212,7 +212,7 @@ export default function PublicProfilePage() {
       </div>
 
       {/* Personal bests */}
-      <Card className="gap-3 py-4 bg-gradient-to-br from-secondary/40 via-card to-card">
+      <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconTrophy className="size-4" /> personal bests
@@ -248,7 +248,7 @@ export default function PublicProfilePage() {
       </Card>
 
       {/* Top achievements — uses AchievementGrid */}
-      <Card className="gap-3 py-4 bg-gradient-to-br from-secondary/40 via-card to-card">
+      <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
