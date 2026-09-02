@@ -61,11 +61,7 @@ export function AppShell({
   useEffect(() => {
     setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
   }, []);
-  const [userLevel, setUserLevel] = useState<number | null>(() => {
-    if (!user) return null;
-    const cached = lcGet<{ level: number }>(`${user.id}:profile-points`, 60 * 1000);
-    return cached ? cached.level : null;
-  });
+  const [userLevel, setUserLevel] = useState<number | null>(null);
   useEffect(() => {
     if (!user) { setUserLevel(null); return; }
     const cached = lcGet<{ level: number }>(`${user.id}:profile-points`, 60 * 1000);
