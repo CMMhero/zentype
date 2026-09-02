@@ -88,7 +88,7 @@ const AchievementUnlocked = React.forwardRef<
     return (
       <>
         <div
-          className="fixed inset-0 z-50 bg-black/80"
+          className="fixed inset-0 z-50 bg-black/30 supports-backdrop-filter:backdrop-blur-sm"
           onClick={() => onOpenChange(false)}
           aria-hidden="true"
         />
@@ -99,16 +99,16 @@ const AchievementUnlocked = React.forwardRef<
           aria-labelledby="achievement-title"
           className={cn(
             "fixed top-1/2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
-            "w-full max-w-md rounded-xl border bg-background p-6 shadow-2xl",
+            "w-full max-w-md rounded-4xl bg-popover p-6 text-popover-foreground shadow-xl ring-1 ring-foreground/5 dark:ring-foreground/10",
             className
           )}
         >
           <Button
             variant="ghost"
-            size="icon"
+            size="icon-sm"
             onClick={() => onOpenChange(false)}
             aria-label="Close"
-            className="absolute top-4 right-4"
+            className="absolute top-4 right-4 bg-secondary"
           >
             <IconX className="size-4" />
           </Button>
