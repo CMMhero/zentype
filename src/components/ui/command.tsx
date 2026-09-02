@@ -15,7 +15,7 @@ import {
   InputGroup,
   InputGroupAddon,
 } from "~/components/ui/input-group"
-import { IconSearch, IconCheck } from "@tabler/icons-react"
+import { IconSearch } from "@tabler/icons-react"
 
 function Command({
   className,
@@ -56,11 +56,10 @@ function CommandDialog({
       </DialogHeader>
       <DialogContent
         className={cn(
-          "top-1/3 translate-y-0 overflow-hidden rounded-4xl! p-0",
+          "overflow-hidden rounded-4xl! p-0",
           className
         )}
         showCloseButton={showCloseButton}
-        className={cn("overflow-hidden p-0", className)}
       >
         <Command filter={filter} className="[&[[cmdk-group-heading]]]:text-muted-foreground **:data-[slot=command-input-wrapper]:h-12 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [[cmdk-group]]:px-2 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-2.5">
           {children}

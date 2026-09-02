@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useMemo, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
+import { Button } from "~/components/ui/button";
 import {
   IconAlertTriangle, IconArrowBackUp, IconArrowRight, IconAt, IconClock,
   IconCode, IconCursorText, IconDownload, IconEye, IconEyeOff, IconFileText, IconHash, IconInfoCircle, IconKeyboard,
@@ -278,22 +279,24 @@ export function CommandPalette() {
         {/* Confirmation overlay for destructive actions */}
         {confirmAction && (
           <CommandGroup heading="confirm action" forceMount>
-            <div className="border-destructive/40 bg-destructive/5 rounded-md border px-3 py-3">
+            <div className="border-destructive/40 bg-destructive/5 rounded-2xl border px-3 py-3">
               <p className="text-sm font-medium lowercase">{confirmAction.title}</p>
               <p className="text-muted-foreground mt-0.5 text-xs">{confirmAction.description}</p>
               <div className="mt-2 flex gap-2">
-                <button
-                  className="bg-muted text-muted-foreground hover:bg-muted/80 rounded-md px-3 py-1.5 text-xs font-medium"
+                <Button
+                  variant="secondary"
+                  size="xs"
                   onClick={() => setConfirmAction(null)}
                 >
                   cancel
-                </button>
-                <button
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-md px-3 py-1.5 text-xs font-medium"
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="xs"
                   onClick={() => { confirmAction.onConfirm(); setConfirmAction(null); }}
                 >
                   {confirmAction.label}
-                </button>
+                </Button>
               </div>
             </div>
           </CommandGroup>
@@ -630,7 +633,7 @@ const UserResultItem = memo(function UserResultItem({ u, onSelect }: { u: UserRe
     >
       <Avatar className="size-5">
         {u.avatarUrl && <AvatarImage src={u.avatarUrl} alt="" />}
-        <AvatarFallback className="rounded text-[9px] uppercase">{u.username.slice(0, 2)}</AvatarFallback>
+        <AvatarFallback className="rounded-full text-[9px] uppercase">{u.username.slice(0, 2)}</AvatarFallback>
       </Avatar>
       <span>{u.username}</span>
       <CommandDesc><IconArrowRight className="size-3" /> view profile</CommandDesc>

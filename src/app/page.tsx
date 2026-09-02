@@ -459,10 +459,10 @@ export default function TestPage() {
             {!focused && runningOrIdle && !loadingPrompt && (
               <button
                 onClick={() => inputEl.current?.focus()}
-                className="absolute inset-0 z-10 flex items-center justify-center rounded-xl backdrop-blur-[2px]"
+                className="absolute inset-0 z-10 flex items-center justify-center rounded-4xl backdrop-blur-[2px]"
               >
-                <span className="border-border bg-card animate-pulse flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs">
-                  <IconPointer className="size-3.5" /> click here or press any key to focus
+                <span className="bg-card ring-foreground/5 shadow-sm animate-pulse flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs ring-1">
+                  <IconPointer className="text-primary size-3.5" /> click here or press any key to focus
                 </span>
               </button>
             )}

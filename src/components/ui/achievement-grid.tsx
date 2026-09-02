@@ -84,11 +84,11 @@ const AchievementGrid = React.forwardRef<HTMLDivElement, AchievementGridProps>(
                   />
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-[200px] text-center">
+              <TooltipContent side="top" className="flex max-w-[220px] flex-col gap-0.5 text-center">
                 <p className="font-medium">{achievement.name}</p>
-                <p className="text-muted-foreground">{tooltipContent}</p>
+                <p className="text-background/70">{tooltipContent}</p>
                 {achievement.rarity != null && (
-                  <p className="text-muted-foreground">{achievement.rarity}% of users</p>
+                  <p className="text-background/70">{achievement.rarity}% of users</p>
                 )}
               </TooltipContent>
             </Tooltip>

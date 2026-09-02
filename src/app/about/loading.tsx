@@ -1,4 +1,5 @@
 import { Skeleton } from "~/components/ui/skeleton";
+import { Card, CardContent } from "~/components/ui/card";
 import { IconInfoCircleFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export default function AboutLoading() {
@@ -23,10 +24,12 @@ export default function AboutLoading() {
           <h2 className="text-base font-semibold">community stats</h2>
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="rounded-lg border border-border/30 bg-card p-3 text-center">
-                <Skeleton className="mx-auto h-7 w-16" />
-                <Skeleton className="mx-auto mt-1 h-3 w-12" />
-              </div>
+              <Card key={i} size="sm" className="items-center py-3 text-center">
+                <CardContent className="flex w-full flex-col gap-1 px-3">
+                  <Skeleton className="mx-auto h-7 w-16" />
+                  <Skeleton className="mx-auto h-3 w-12" />
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>
@@ -35,16 +38,18 @@ export default function AboutLoading() {
           <h2 className="text-base font-semibold">features</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="rounded-lg border border-border/30 bg-card p-4">
-                <div className="flex items-center gap-2">
-                  <Skeleton className="size-5" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-                <div className="mt-2 space-y-1.5">
-                  <Skeleton className="h-3 w-full" />
-                  <Skeleton className="h-3 w-4/5" />
-                </div>
-              </div>
+              <Card key={i} size="sm">
+                <CardContent>
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="size-5" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                  <div className="mt-2 space-y-1.5">
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-4/5" />
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </section>
