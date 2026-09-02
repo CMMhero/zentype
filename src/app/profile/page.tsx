@@ -324,7 +324,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Personal bests */}
-      <Card className="gap-3 py-4 bg-gradient-to-br from-secondary/40 via-card to-card">
+      <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconTrophy className="size-4" /> personal bests
@@ -336,7 +336,7 @@ export default function ProfilePage() {
                 const wpm = stats?.bestByBoard?.[board];
                 const rank = boardRanks?.[board];
                 return (
-                  <Card key={board} size="sm" className={cn("items-center py-3 text-center transition-all", wpm ? "ring-primary/20 hover:ring-primary/40" : "bg-muted/20")}>
+                  <Card key={board} size="sm" className={cn("items-center rounded-2xl py-3 text-center transition-all", wpm ? "ring-primary/20 hover:ring-primary/40" : "bg-muted/20")}>
                     <CardContent className="flex flex-col items-center gap-1 px-3">
                       <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
                       {loading ? (
@@ -465,7 +465,7 @@ export default function ProfilePage() {
       </Card>
 
       {/* Top achievements — uses AchievementGrid */}
-      <Card className="gap-3 py-4 bg-gradient-to-br from-secondary/40 via-card to-card">
+      <Card className="gap-3 py-4">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
