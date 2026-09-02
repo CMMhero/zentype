@@ -40,7 +40,7 @@ import { getBoardRanks } from "~/server/leaderboard";
 import { lcGet, lcSet, lcDel } from "~/lib/client-cache";
 import { useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
-import { formatDateTime } from "~/lib/utils";
+import { formatDateTime, cn } from "~/lib/utils";
 import { ACHIEVEMENTS } from "~/lib/achievements";
 
 /** All board keys in display order */
@@ -283,7 +283,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4">
               <Avatar className="size-16 shrink-0 border-2 border-primary/30">
                 {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-                <AvatarFallback className="rounded text-xl font-bold uppercase">{user.username.slice(0, 2)}</AvatarFallback>
+                <AvatarFallback className="rounded-full text-xl font-bold uppercase">{user.username.slice(0, 2)}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <h1 className="text-lg font-bold truncate">{user.username}</h1>
@@ -324,7 +324,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Personal bests */}
-      <Card className="gap-3 py-4">
+      <Card className="gap-3 py-4 bg-gradient-to-br from-secondary/40 via-card to-card">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconTrophy className="size-4" /> personal bests
@@ -336,21 +336,23 @@ export default function ProfilePage() {
                 const wpm = stats?.bestByBoard?.[board];
                 const rank = boardRanks?.[board];
                 return (
-                  <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
-                    {loading ? (
-                      <Skeleton className="h-8 w-14" />
-                    ) : (
-                      <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
-                    )}
-                    {rank ? (
-                      <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-secondary px-1.5 text-[9px] font-bold leading-none tracking-widest text-secondary-foreground">
-                        #{rank}
-                      </span>
-                    ) : boardRanks === null ? (
-                      <Skeleton className="mt-0.5 h-[18px] w-9 rounded-full" />
-                    ) : null}
-                  </div>
+                  <Card key={board} size="sm" className={cn("items-center py-3 text-center transition-all", wpm ? "ring-primary/20 hover:ring-primary/40" : "bg-muted/20")}>
+                    <CardContent className="flex flex-col items-center gap-1 px-3">
+                      <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                      {loading ? (
+                        <Skeleton className="h-8 w-14" />
+                      ) : (
+                        <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
+                      )}
+                      {rank ? (
+                        <Badge variant="secondary" className="mt-0.5 min-w-9 text-[9px] font-bold tracking-widest">
+                          #{rank}
+                        </Badge>
+                      ) : boardRanks === null ? (
+                        <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
+                      ) : null}
+                    </CardContent>
+                  </Card>
                 );
               })}
             </div>
@@ -386,7 +388,7 @@ export default function ProfilePage() {
                 </ComposedChart>
               </ChartContainer>
             ) : (
-              <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+              <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-border/60 text-xs text-muted-foreground">
                 <IconTrendingUp className="mr-2 size-4" /> finish more tests
               </div>
             )}
@@ -420,7 +422,7 @@ export default function ProfilePage() {
                 </ComposedChart>
               </ChartContainer>
             ) : (
-              <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+              <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-border/60 text-xs text-muted-foreground">
                 <IconTarget className="mr-2 size-4" /> finish more tests
               </div>
             )}
@@ -455,7 +457,7 @@ export default function ProfilePage() {
               </BarChart>
             </ChartContainer>
           ) : (
-            <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+            <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-border/60 text-xs text-muted-foreground">
               <IconTrophy className="mr-2 size-4" /> no tests yet
             </div>
           )}
@@ -463,12 +465,12 @@ export default function ProfilePage() {
       </Card>
 
       {/* Top achievements — uses AchievementGrid */}
-      <Card className="gap-3 py-4">
+      <Card className="gap-3 py-4 bg-gradient-to-br from-secondary/40 via-card to-card">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
             {achievements === null ? (
-              <Skeleton className="ml-auto h-[18px] w-12 rounded" />
+              <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
             ) : (
               <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
             )}
@@ -478,7 +480,7 @@ export default function ProfilePage() {
           {achievements === null ? (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="h-28 w-full rounded-lg" />
+                <Skeleton key={i} className="h-28 w-full rounded-4xl" />
               ))}
             </div>
           ) : unlockedAch.length > 0 ? (
@@ -602,7 +604,7 @@ export default function ProfilePage() {
         <CardContent className="px-4">
           {loading ? (
             <div className="flex flex-col gap-2">
-              {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-11 rounded" />)}
+              {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-11 rounded-2xl" />)}
             </div>
           ) : (results ?? []).length === 0 ? (
             <div className="flex flex-col items-center gap-3 py-12 text-center">
@@ -630,9 +632,9 @@ export default function ProfilePage() {
                       <TableCell className="text-right font-bold tabular-nums text-primary">
                         <span className="inline-flex items-center justify-end gap-1.5">
                           {pbIds.has(r.id) && (
-                            <span className="inline-flex items-center gap-0.5 rounded bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground">
+                            <Badge variant="secondary" className="gap-0.5 text-[9px] font-bold tracking-widest">
                               <IconCrown className="size-3" /> PB
-                            </span>
+                            </Badge>
                           )}
                           {r.wpm}
                         </span>
@@ -688,9 +690,9 @@ export default function ProfilePage() {
                     <span className="flex items-center gap-2">
                       <span className="text-3xl font-bold tabular-nums text-primary sm:text-5xl">{selected.wpm}</span>
                       {pbIds.has(selected.id) && (
-                        <span className="inline-flex items-center gap-0.5 rounded bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground">
+                        <Badge variant="secondary" className="gap-0.5 text-[9px] font-bold tracking-widest">
                           <IconCrown className="size-3" /> PB
-                        </span>
+                        </Badge>
                       )}
                     </span>
                     <span className="text-muted-foreground mt-1 text-xs tracking-wider">wpm</span>
@@ -752,7 +754,7 @@ export default function ProfilePage() {
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
   return (
-    <Card className="gap-1 py-3 bg-card hover:bg-muted/30 transition-colors">
+    <Card className="gap-1 py-3">
       <CardContent className="flex flex-col gap-1 px-3">
         <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
           {icon} {label}
@@ -775,10 +777,12 @@ function AccCell({ value }: { value: number }) {
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded border border-border/30 bg-card p-2">
-      <div className="font-semibold tabular-nums">{value}</div>
-      <div className="text-[10px] tracking-wider text-muted-foreground">{label}</div>
-    </div>
+    <Card size="sm" className="items-center rounded-2xl py-2 text-center">
+      <CardContent className="flex flex-col gap-0.5 px-2">
+        <div className="font-semibold tabular-nums">{value}</div>
+        <div className="text-[10px] tracking-wider text-muted-foreground">{label}</div>
+      </CardContent>
+    </Card>
   );
 }
 
