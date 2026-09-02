@@ -3,7 +3,6 @@
 import * as React from "react"
 
 import { cn } from "~/lib/utils"
-import { IconArrowRight } from "@tabler/icons-react"
 import { AchievementBadge } from "~/components/ui/achievement-badge"
 import { AchievementList } from "~/components/ui/achievement-list"
 import { Button } from "~/components/ui/button"

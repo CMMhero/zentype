@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { BackToTyping } from "~/components/ui/back-to-typing";
-import { IconArrowLeft, IconLockFilled, IconKeyboardFilled } from "@tabler/icons-react";
+import { IconLockFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "privacy policy",

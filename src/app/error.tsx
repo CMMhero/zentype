@@ -11,8 +11,6 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const router = useRouter();
-
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4">
       <div className="relative flex flex-col items-center gap-8 text-center">
