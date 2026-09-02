@@ -140,7 +140,7 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                     alt={achievement.name}
                     className={cn(
                       badgeSizeMap[badgeSize],
-                      "shrink-0 rounded-xl object-cover",
+                      "shrink-0 rounded-full object-cover",
                       !isUnlocked && lockedStyle === "grayscale" && "grayscale",
                       !isUnlocked &&
                         lockedStyle === "silhouette" &&
@@ -152,7 +152,7 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                     aria-hidden="true"
                     className={cn(
                       badgeSizeMap[badgeSize],
-                      "flex shrink-0 items-center justify-center rounded-xl shadow-sm",
+                      "flex shrink-0 items-center justify-center rounded-full shadow-sm",
                       isUnlocked
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground grayscale"

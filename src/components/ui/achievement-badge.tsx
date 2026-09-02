@@ -101,7 +101,7 @@ const AchievementBadge = React.forwardRef<
             : undefined
         }
         className={cn(
-          "relative flex flex-col items-center justify-center gap-1 rounded-4xl bg-card ring-1 ring-foreground/5 transition-all duration-200 dark:ring-foreground/10",
+          "relative flex flex-col items-center justify-center gap-1 rounded-2xl ring-1 ring-foreground/5 transition-all duration-200 dark:ring-foreground/10",
           badgeSize === "xs" ? "h-20 w-20 p-2 gap-1" : badgeSize === "sm" ? "h-28 w-full p-4 gap-2" : "h-32 w-full p-4 gap-2",
           onAchievementClick && "cursor-pointer hover:scale-105 outline-none focus-visible:ring-2 focus-visible:ring-ring",
           isUnlocked
