@@ -138,6 +138,20 @@ const RESULT_COLUMNS =
 const LITE_COLUMNS =
   "id,created_at,mode,variant,source,punctuation,numbers,wpm,raw_wpm,accuracy,consistency";
 
+/** Fetch a single result by ID with full columns (chars + timeline). */
+export async function getResultById(id: string): Promise<TestResult | null> {
+  const ctx = await requireUser();
+  if (!ctx) return null;
+  const { data: row, error } = await ctx.supabase
+    .from("test_results")
+    .select(RESULT_COLUMNS)
+    .eq("id", id)
+    .eq("user_id", ctx.user.id)
+    .single();
+  if (error || !row) return null;
+  return mapRow(row as unknown as DbResultRow);
+}
+
 export async function getUserResults(opts?: {
   limit?: number;
   offset?: number;
