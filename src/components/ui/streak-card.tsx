@@ -113,9 +113,10 @@ const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
 
         {showHowItWorks && (
           <div className="mt-4 border-t pt-4">
-            <button
+            <Button
               type="button"
-              className="flex w-full items-center justify-between rounded-xl bg-muted px-4 py-3 text-left"
+              variant="ghost"
+              className="flex h-auto w-full items-center justify-between rounded-2xl bg-muted px-4 py-3 text-left hover:bg-muted dark:hover:bg-muted/50"
               onClick={() => setIsHowItWorksOpen((prev) => !prev)}
               aria-expanded={isHowItWorksOpen}
               aria-controls={howItWorksContentId}
@@ -128,7 +129,7 @@ const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
                 )}
                 aria-hidden="true"
               />
-            </button>
+            </Button>
 
             {isHowItWorksOpen && (
               <div id={howItWorksContentId} className="space-y-4 px-2 pt-4">

@@ -7,6 +7,7 @@ import {
   IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { BackToTyping } from "~/components/ui/back-to-typing";
 import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
@@ -16,6 +17,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { cn } from "~/lib/utils";
 import { getPublicProfile, type PublicProfile } from "~/server/results";
 import { getUserAchievementsByUsername, getUserPointsByUsername } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
@@ -105,9 +107,7 @@ export default function PublicProfilePage() {
                 <IconTrophy className="size-4" /> view leaderboard
               </Link>
             </Button>
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground gap-1.5 text-xs" onClick={() => history.back()}>
-              <IconArrowLeft className="size-3" /> go back
-            </Button>
+            <BackToTyping />
           </div>
         </div>
       </div>
@@ -172,7 +172,7 @@ export default function PublicProfilePage() {
             <div className="flex items-center gap-4">
               <Avatar className="size-16 shrink-0 border-2 border-primary/30">
                 {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}
-                <AvatarFallback className="rounded text-xl font-bold uppercase">{name.slice(0, 2)}</AvatarFallback>
+                <AvatarFallback className="rounded-full text-xl font-bold uppercase">{name.slice(0, 2)}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <h1 className="text-lg font-bold truncate">{name}</h1>
@@ -211,7 +211,8 @@ export default function PublicProfilePage() {
         </div>
       </div>
 
-      <Card className="gap-3 py-4">
+      {/* Personal bests */}
+      <Card className="gap-3 py-4 bg-gradient-to-br from-secondary/40 via-card to-card">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconTrophy className="size-4" /> personal bests
@@ -223,21 +224,23 @@ export default function PublicProfilePage() {
               const wpm = loading ? null : stats?.bestByBoard?.[board];
               const rank = boardRanks?.[board];
               return (
-                <div key={board} className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all ${wpm ? "border-primary/20 bg-gradient-to-b from-primary/5 to-transparent hover:border-primary/40" : "border-border/30 bg-muted/20"}`}>
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
-                  {loading ? (
-                    <Skeleton className="h-8 w-14" />
-                  ) : (
-                    <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
-                  )}
-                  {rank ? (
-                    <span className="mt-0.5 inline-flex h-[18px] min-w-9 items-center justify-center rounded-full bg-secondary px-1.5 text-[9px] font-bold leading-none tracking-widest text-secondary-foreground">
-                      #{rank}
-                    </span>
-                  ) : boardRanks === null ? (
-                    <Skeleton className="mt-0.5 h-[18px] w-9 rounded-full" />
-                  ) : null}
-                </div>
+                <Card key={board} size="sm" className={cn("items-center rounded-2xl py-3 text-center transition-all", wpm ? "ring-primary/20 hover:ring-primary/40" : "bg-muted/20")}>
+                  <CardContent className="flex flex-col items-center gap-1 px-3">
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                    {loading ? (
+                      <Skeleton className="h-8 w-14" />
+                    ) : (
+                      <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
+                    )}
+                    {rank ? (
+                      <Badge variant="secondary" className="mt-0.5 min-w-9 text-[9px] font-bold tracking-widest">
+                        #{rank}
+                      </Badge>
+                    ) : boardRanks === null ? (
+                      <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
+                    ) : null}
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
@@ -245,12 +248,12 @@ export default function PublicProfilePage() {
       </Card>
 
       {/* Top achievements — uses AchievementGrid */}
-      <Card className="gap-3 py-4">
+      <Card className="gap-3 py-4 bg-gradient-to-br from-secondary/40 via-card to-card">
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
             {achievements === null ? (
-              <Skeleton className="ml-auto h-[18px] w-12 rounded" />
+              <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
             ) : (
               <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
             )}
@@ -260,7 +263,7 @@ export default function PublicProfilePage() {
           {achievements === null ? (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="h-28 w-full rounded-lg" />
+                <Skeleton key={i} className="h-28 w-full rounded-4xl" />
               ))}
             </div>
           ) : unlockedAch.length > 0 ? (
@@ -341,7 +344,7 @@ export default function PublicProfilePage() {
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
   return (
-    <Card className="gap-1 py-3 bg-card hover:bg-muted/30 transition-colors">
+    <Card className="gap-1 py-3">
       <CardContent className="flex flex-col gap-1 px-3">
         <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
           {icon} {label}
@@ -382,7 +385,7 @@ function ProfileSkeleton() {
         <Card className="row-span-2 gap-3 py-3">
           <CardContent className="px-5 pt-2">
             <div className="flex items-center gap-4">
-              <Skeleton className="size-16 shrink-0 rounded-lg" />
+              <Skeleton className="size-16 shrink-0 rounded-full" />
               <div className="flex-1 min-w-0 space-y-2">
                 <Skeleton className="h-5 w-32" />
                 <Skeleton className="h-4 w-20" />
@@ -443,13 +446,13 @@ function ProfileSkeleton() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
-            <Skeleton className="ml-auto h-[18px] w-12 rounded" />
+            <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-28 w-full rounded-lg" />
+              <Skeleton key={i} className="h-28 w-full rounded-4xl" />
             ))}
           </div>
           <Skeleton className="mt-3 h-4 w-32" />

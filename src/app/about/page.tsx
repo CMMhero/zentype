@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BackToTyping } from "~/components/ui/back-to-typing";
 import { Suspense } from "react";
 import { IconArrowLeft, IconInfoCircleFilled, IconKeyboard, IconKeyboardFilled, IconTrophy, IconAward, IconChartBar, IconPalette, IconBrandGithub } from "@tabler/icons-react";
 import { getPublicStats } from "~/server/results";
+import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 
 export const metadata: Metadata = {
@@ -37,10 +39,12 @@ function CommunityStatsSkeleton() {
   return (
     <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="rounded-lg border border-border/30 bg-card p-3 text-center">
-          <Skeleton className="mx-auto h-7 w-16" />
-          <Skeleton className="mx-auto mt-1 h-3 w-12" />
-        </div>
+        <Card key={i} size="sm" className="items-center py-3 text-center">
+          <CardContent className="flex w-full flex-col gap-1 px-3">
+            <Skeleton className="mx-auto h-7 w-16" />
+            <Skeleton className="mx-auto h-3 w-12" />
+          </CardContent>
+        </Card>
       ))}
     </div>
   );
@@ -134,9 +138,7 @@ export default async function AboutPage() {
         </section>
 
         <div className="pt-4">
-          <Link href="/" className="text-primary inline-flex items-center gap-1 text-xs underline underline-offset-2">
-            <IconArrowLeft className="size-3" /> back to test
-          </Link>
+          <BackToTyping />
         </div>
       </div>
     </div>
@@ -148,23 +150,27 @@ function StatCard({ label, value }: { label: string; value: number | string }) {
     ? value
     : value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value.toLocaleString();
   return (
-    <div className="rounded-lg border border-border/30 bg-card p-3 text-center">
-      <div className="text-xl font-bold tabular-nums text-primary">
-        {display}
-      </div>
-      <div className="text-muted-foreground mt-1 text-[10px] tracking-wider">{label}</div>
-    </div>
+    <Card size="sm" className="items-center py-3 text-center">
+      <CardContent className="flex flex-col gap-1 px-3">
+        <div className="text-xl font-bold tabular-nums text-primary">
+          {display}
+        </div>
+        <div className="text-muted-foreground text-[10px] tracking-wider">{label}</div>
+      </CardContent>
+    </Card>
   );
 }
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-border/30 bg-card p-4">
-      <div className="flex items-center gap-2">
-        <span className="text-primary">{icon}</span>
-        <h3 className="text-sm font-semibold">{title}</h3>
-      </div>
-      <p className="text-muted-foreground mt-2 text-xs leading-relaxed">{description}</p>
-    </div>
+    <Card size="sm">
+      <CardContent>
+        <div className="flex items-center gap-2">
+          <span className="text-primary">{icon}</span>
+          <h3 className="text-sm font-semibold">{title}</h3>
+        </div>
+        <p className="text-muted-foreground mt-2 text-xs leading-relaxed">{description}</p>
+      </CardContent>
+    </Card>
   );
 }

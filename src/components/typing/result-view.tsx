@@ -4,6 +4,7 @@ import { IconPlayerSkipForward, IconAt, IconHash, IconCrown } from "@tabler/icon
 import dynamic from "next/dynamic";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Kbd } from "~/components/ui/kbd";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
@@ -39,9 +40,9 @@ export function ResultView({ result, saveState, isPB, onNext }: ResultViewProps)
           <span className="flex items-center gap-2">
             <span className="text-primary text-4xl leading-none font-bold tabular-nums sm:text-5xl">{result.wpm}</span>
             {isPB && (
-              <span className="inline-flex items-center gap-0.5 rounded bg-secondary px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-secondary-foreground">
+              <Badge variant="secondary" className="gap-0.5 text-[9px] font-bold tracking-widest">
                 <IconCrown className="size-3" /> PB
-              </span>
+              </Badge>
             )}
           </span>
           <span className="text-muted-foreground mt-1.5 text-xs tracking-wider">wpm</span>
@@ -108,9 +109,11 @@ export function ResultView({ result, saveState, isPB, onNext }: ResultViewProps)
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border-border/30 bg-card rounded border p-2">
-      <div className="font-semibold tabular-nums">{value}</div>
-      <div className="text-muted-foreground text-[10px] tracking-wider">{label}</div>
-    </div>
+    <Card size="sm" className="items-center rounded-2xl py-2 text-center">
+      <CardContent className="flex flex-col gap-0.5 px-2">
+        <div className="font-semibold tabular-nums">{value}</div>
+        <div className="text-muted-foreground text-[10px] tracking-wider">{label}</div>
+      </CardContent>
+    </Card>
   );
 }

@@ -3,6 +3,7 @@
 import * as React from "react"
 
 import { cn } from "~/lib/utils"
+import { IconArrowRight } from "@tabler/icons-react"
 import { AchievementBadge } from "~/components/ui/achievement-badge"
 import { AchievementList } from "~/components/ui/achievement-list"
 import { Button } from "~/components/ui/button"
@@ -49,7 +50,7 @@ const AchievementCard = React.forwardRef<HTMLDivElement, AchievementCardProps>(
     return (
       <div
         ref={ref}
-        className={cn("rounded-2xl border bg-card p-6 shadow-sm", className)}
+        className={cn("rounded-4xl bg-card p-6 shadow-sm ring-1 ring-foreground/5 dark:ring-foreground/10", className)}
         {...props}
       >
         <div className="text-center">

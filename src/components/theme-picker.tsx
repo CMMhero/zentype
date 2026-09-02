@@ -3,9 +3,11 @@
 import { useState, useMemo } from "react";
 import Fuse from "fuse.js";
 import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
 import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
 import { IconSearch, IconSun, IconMoon, IconDevices } from "@tabler/icons-react";
 import type { ThemePalette } from "~/lib/themes";
+import { cn } from "~/lib/utils";
 
 type Filter = "all" | "light" | "dark";
 
@@ -65,15 +67,15 @@ export function ThemePicker({ themes, selectedId, onSelect }: ThemePickerProps) 
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
         {filtered.map((t) => (
-          <button
+          <Button
             key={t.id}
             type="button"
+            variant="outline"
             onClick={() => onSelect(t.id)}
-            className={`h-auto w-full min-w-0 justify-start gap-2 rounded-md border border-border bg-transparent p-2 text-left shadow-none transition-[color,box-shadow] hover:bg-transparent ${
-              selectedId === t.id
-                ? "border-primary ring-ring/40 ring-1"
-                : "hover:border-primary"
-            }`}
+            className={cn(
+              "h-auto w-full min-w-0 justify-start gap-2 rounded-2xl bg-transparent p-2 text-left font-medium shadow-none hover:bg-transparent",
+              selectedId === t.id ? "border-primary ring-ring/40 ring-1" : "hover:border-primary"
+            )}
           >
             <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
               <span className="size-5" style={{ background: t.vars["--background"] }} />
@@ -81,7 +83,7 @@ export function ThemePicker({ themes, selectedId, onSelect }: ThemePickerProps) 
               <span className="size-5" style={{ background: t.vars["--secondary"] }} />
             </span>
             <span className="min-w-0 flex-1 truncate text-xs">{t.label}</span>
-          </button>
+          </Button>
         ))}
       </div>
 

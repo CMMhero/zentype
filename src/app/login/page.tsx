@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { BackToTyping } from "~/components/ui/back-to-typing";
 import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconKeyboardFilled, IconArrowLeft } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
@@ -74,13 +75,7 @@ export default function LoginPage() {
           </div>
 
           {/* Back link */}
-          <Link
-            href="/"
-            className="text-primary text-xs underline underline-offset-2 inline-flex items-center gap-1"
-          >
-            <IconArrowLeft className="size-3" />
-            back to typing
-          </Link>
+          <BackToTyping />
         </div>
       </div>
     </div>

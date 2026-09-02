@@ -14,8 +14,8 @@ export default function ProfileLoading() {
           <IconUserFilled className="text-primary size-5" /> profile
         </h1>
         <div className="flex items-center gap-2">
-          <Skeleton className="h-8 w-32 rounded-md" />
-          <Skeleton className="h-8 w-20 rounded-md" />
+          <Skeleton className="h-8 w-32 rounded-4xl" />
+          <Skeleton className="h-8 w-20 rounded-4xl" />
         </div>
       </header>
 
@@ -24,7 +24,7 @@ export default function ProfileLoading() {
         <Card className="row-span-2 gap-3 py-3">
           <CardContent className="px-5 pt-2">
             <div className="flex items-center gap-4">
-              <Skeleton className="size-16 shrink-0 rounded border-2 border-transparent" />
+              <Skeleton className="size-16 shrink-0 rounded-full" />
               <div className="flex-1 min-w-0 space-y-2">
                 <Skeleton className="h-5 w-32" />
                 <Skeleton className="h-3 w-40" />
@@ -45,7 +45,7 @@ export default function ProfileLoading() {
             { icon: <IconTarget className="size-4" />, label: "avg accuracy" },
             { icon: <IconStopwatch className="size-4" />, label: "time typed" },
           ].map(({ icon, label }) => (
-            <Card key={label} className="gap-1 py-3 bg-gradient-to-br from-card to-muted/30">
+            <Card key={label} className="gap-1 py-3">
               <CardContent className="flex flex-col gap-1 px-3">
                 <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
                   {icon} {label}
@@ -69,11 +69,13 @@ export default function ProfileLoading() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {["15s", "30s", "60s", "120s", "10w", "25w", "50w", "100w"].map((label) => (
-              <div key={label} className="flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-muted/20 p-3 text-center">
-                <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{label}</span>
-                <Skeleton className="h-8 w-14" />
-                <Skeleton className="mt-0.5 h-[18px] w-9 rounded-full" />
-              </div>
+              <Card key={label} size="sm" className="items-center bg-muted/20 py-3 text-center">
+                <CardContent className="flex flex-col items-center gap-1 px-3">
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{label}</span>
+                  <Skeleton className="h-8 w-14" />
+                  <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
+                </CardContent>
+              </Card>
             ))}
           </div>
         </CardContent>
@@ -88,7 +90,7 @@ export default function ProfileLoading() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4">
-            <Skeleton className="h-40 w-full rounded-md" />
+            <Skeleton className="h-40 w-full rounded-2xl" />
           </CardContent>
         </Card>
         <Card className="gap-3 py-4">
@@ -98,7 +100,7 @@ export default function ProfileLoading() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4">
-            <Skeleton className="h-40 w-full rounded-md" />
+            <Skeleton className="h-40 w-full rounded-2xl" />
           </CardContent>
         </Card>
       </div>
@@ -111,7 +113,7 @@ export default function ProfileLoading() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <Skeleton className="h-40 w-full rounded-md" />
+          <Skeleton className="h-40 w-full rounded-2xl" />
         </CardContent>
       </Card>
 
@@ -120,13 +122,13 @@ export default function ProfileLoading() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconAward className="size-4" /> achievements
-            <Skeleton className="ml-auto h-[18px] w-12 rounded" />
+            <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-28 w-full rounded-lg" />
+              <Skeleton key={i} className="h-28 w-full rounded-4xl" />
             ))}
           </div>
         </CardContent>
@@ -144,7 +146,7 @@ export default function ProfileLoading() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <Skeleton className="h-24 w-full rounded-md" />
+          <Skeleton className="h-24 w-full rounded-2xl" />
         </CardContent>
       </Card>
 
@@ -153,7 +155,7 @@ export default function ProfileLoading() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconHistory className="size-4" /> test history
-            <Skeleton className="ml-auto h-[18px] w-16 rounded" />
+            <Skeleton className="ml-auto h-[18px] w-16 rounded-full" />
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">

@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 import { IconCheck, IconSnowflake } from "@tabler/icons-react"
 
 import { cn } from "~/lib/utils"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip"
 
 // Types (inlined - only fields used by this component)
 interface StreakPeriod {
@@ -82,27 +82,6 @@ interface StreakCalendarProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const WEEKDAYS_SUNDAY = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
 const WEEKDAYS_MONDAY = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
-
-const TooltipProvider = TooltipPrimitive.Provider
-const Tooltip = TooltipPrimitive.Root
-const TooltipTrigger = TooltipPrimitive.Trigger
-const TooltipContent = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
-  <TooltipPrimitive.Content
-    ref={ref}
-    sideOffset={sideOffset}
-    className={cn(
-      "bg-popover text-popover-foreground z-50 overflow-hidden rounded-md border px-3 py-1.5 text-xs shadow-md",
-      "animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-      "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      className
-    )}
-    {...props}
-  />
-))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
 function getDateKey(date: Date): string {
   return formatDateKey(date)
@@ -343,8 +322,8 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                     onClick={() => onDayClick?.(date, isActive)}
                     disabled={isFuture}
                     className={cn(
-                      "relative flex aspect-square items-center justify-center rounded-lg text-sm transition-colors",
-                      "hover:bg-muted focus-visible:ring-ring p-1 focus-visible:ring-2 focus-visible:outline-none",
+                      "relative flex aspect-square items-center justify-center rounded-xl text-sm transition-colors",
+                      "hover:bg-foreground hover:text-background focus-visible:ring-ring p-1 focus-visible:ring-2 focus-visible:outline-none",
                       isToday &&
                         "ring-primary !bg-primary-foreground !text-primary ring-2 ring-inset",
                       isFuture && "text-muted-foreground/50 cursor-not-allowed",
@@ -518,21 +497,21 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                     })}
                   </div>
                 </TooltipProvider>
-                <div
-                  className={cn(
-                    "text-muted-foreground mt-2 flex items-center justify-start gap-1.5 text-[10px]",
-                    compact && "text-[9px]"
-                  )}
-                  aria-hidden
-                >
-                  <span className="mr-1">less</span>
-                  <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-muted/40")} />
-                  <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary/40 border-primary/40")} />
-                  <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary/70 border-primary/70")} />
-                  <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary border-primary")} />
-                  <span className="ml-1">more</span>
-                </div>
               </div>
+            </div>
+            <div
+              className={cn(
+                "text-muted-foreground mt-2 flex items-center justify-start gap-1.5 text-[10px]",
+                compact && "text-[9px]"
+              )}
+              aria-hidden
+            >
+              <span className="mr-1">less</span>
+              <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-muted/40")} />
+              <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary/40 border-primary/40")} />
+              <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary/70 border-primary/70")} />
+              <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary border-primary")} />
+              <span className="ml-1">more</span>
             </div>
           </>
         )}
