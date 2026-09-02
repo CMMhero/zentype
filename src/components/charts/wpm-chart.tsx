@@ -43,12 +43,20 @@ export function WpmChart({
     );
   }
 
-  const data = timeline.map((p) => ({
+  // Total errors across the test (exclude last point — it's a finish
+  // snapshot and may contain cumulative totals in older saved data).
+  const totalErrors = timeline
+    .slice(0, -1)
+    .reduce((sum, p) => sum + (p.errors || 0), 0);
+
+  const data = timeline.map((p, i) => ({
     t: `${p.t}s`,
     Second: p.t,
     wpm: p.wpm,
     raw: p.raw,
-    errors: p.errors || null,
+    // Skip error bar for the last point — it's a finish snapshot and may
+    // contain cumulative totals in older saved data.
+    errors: i < timeline.length - 1 ? (p.errors || null) : null,
   }));
 
   return (
@@ -76,7 +84,7 @@ export function WpmChart({
           />
           <YAxis tickLine={false} axisLine={false} width={44} tickMargin={8} domain={[0, "auto"]} />
           {/* Hidden right axis so the error bars scale independent of the wpm axis */}
-          <YAxis yAxisId="right" orientation="right" hide domain={[0, "auto"]} />
+          <YAxis yAxisId="right" orientation="right" hide domain={[0, totalErrors || 1]} />
           <ChartTooltip
             cursor={{ stroke: "var(--border)" }}
             content={<ChartTooltipContent labelFormatter={(l) => `${l}s`} indicator="dot" />}
@@ -102,7 +110,6 @@ export function WpmChart({
           <Bar dataKey="errors" fill="var(--color-errors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
         </ComposedChart>
       </ChartContainer>
-     
     </div>
   );
 }
