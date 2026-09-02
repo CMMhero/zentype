@@ -284,6 +284,7 @@
   html {
     color-scheme: dark;
     overflow-x: clip;
+    scrollbar-gutter: stable;
     @apply font-sans;
   }
   html[data-appearance="light"] {
@@ -295,6 +296,11 @@
     background-attachment: fixed;
     font-feature-settings: "zero" 1, "ss01" 1;
     overflow-y: scroll;
+  }
+  /* Lock body scroll when any dialog / command palette is open */
+  body:has([role="dialog"][data-state="open"]),
+  body:has([role="alertdialog"][data-state="open"]) {
+    overflow: hidden;
   }
   ::selection {
     background-color: color-mix(in srgb, var(--primary) 35%, transparent);
@@ -468,12 +474,16 @@ html {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Force Sonner toasts to inherit the theme font */
+/* Force Sonner toasts to inherit the theme font and match theme rounding */
 [data-sonner-toaster] {
-  font-family: inherit;
+  font-family: inherit !important;
+}
+[data-sonner-toast] {
+  border-radius: var(--radius-3xl) !important;
 }
 [data-sonner-toast] [data-title],
 [data-sonner-toast] [data-description] {
+  font-family: inherit;
   text-transform: lowercase;
 }
 
