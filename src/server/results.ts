@@ -135,17 +135,23 @@ function mapRow(r: DbResultRow): TestResult {
 const RESULT_COLUMNS =
   "id,created_at,mode,variant,source,punctuation,numbers,wpm,raw_wpm,accuracy,consistency,chars,timeline";
 
+const LITE_COLUMNS =
+  "id,created_at,mode,variant,source,punctuation,numbers,wpm,raw_wpm,accuracy,consistency";
+
 export async function getUserResults(opts?: {
   limit?: number;
   offset?: number;
   since?: string;
+  /** When true, omit timeline and chars (heavy JSON) for list views */
+  lite?: boolean;
 }): Promise<TestResult[]> {
   const ctx = await requireUser();
   if (!ctx) return [];
   const data = opts ?? {};
+  const columns = data.lite ? LITE_COLUMNS : RESULT_COLUMNS;
   let q = ctx.supabase
     .from("test_results")
-    .select(RESULT_COLUMNS)
+    .select(columns)
     .eq("user_id", ctx.user.id)
     .order("created_at", { ascending: false })
     .limit(Math.min(data.limit ?? 100, 500));
@@ -179,9 +185,13 @@ export async function getUserStats(): Promise<AggregatedStats | null> {
   const cached = await cacheGet<AggregatedStats>(cacheKey);
   if (cached) return cached;
 
+  // Select only columns needed for aggregation — omitting timeline (large JSON)
+  // and source/punctuation/numbers which aren't used in stats.
+  const STATS_COLUMNS =
+    "id,created_at,mode,variant,wpm,raw_wpm,accuracy,consistency,chars";
   const { data: rows, error } = await ctx.supabase
     .from("test_results")
-    .select(RESULT_COLUMNS)
+    .select(STATS_COLUMNS)
     .eq("user_id", ctx.user.id)
     .order("created_at", { ascending: false })
     .limit(1000);

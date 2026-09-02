@@ -108,7 +108,7 @@ export default function ProfilePage() {
     // Fetch all data in parallel (single round-trip for everything)
     void Promise.all([
       getUserStats(),
-      getUserResults({ limit: 200 }),
+      getUserResults({ limit: 200, lite: true }),
       user ? getUserPoints() : Promise.resolve(null),
       user ? getUserAchievements() : Promise.resolve(null),
       user ? getMyJoinDate() : Promise.resolve(null),

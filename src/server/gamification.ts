@@ -330,12 +330,14 @@ async function buildAchievementStats(
   const cached = await cacheGet<AchievementCheckInput>(cacheKey);
   if (cached) return cached;
 
-  const RESULT_COLUMNS =
-    "id,created_at,mode,variant,source,wpm,raw_wpm,accuracy,consistency,chars,timeline";
+  // Select only columns needed for achievement checks — omitting timeline
+  // (large JSON) and source which aren't used in progress calculations.
+  const ACH_STATS_COLUMNS =
+    "id,created_at,mode,variant,wpm,raw_wpm,accuracy,consistency,chars";
 
   const { data: rows } = await supabase
     .from("test_results")
-    .select(RESULT_COLUMNS)
+    .select(ACH_STATS_COLUMNS)
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .limit(2000);
