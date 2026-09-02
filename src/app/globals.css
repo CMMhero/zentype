@@ -280,11 +280,10 @@
     @apply border-border outline-ring/50;
     scrollbar-width: thin;
     scrollbar-color: var(--muted) var(--background);
-    scrollbar-gutter: stable;
   }
   html {
     color-scheme: dark;
-    overflow-x: hidden;
+    overflow-x: clip;
     @apply font-sans;
   }
   html[data-appearance="light"] {
@@ -296,7 +295,6 @@
     background-attachment: fixed;
     font-feature-settings: "zero" 1, "ss01" 1;
     overflow-y: scroll;
-    scrollbar-gutter: stable;
   }
   ::selection {
     background-color: color-mix(in srgb, var(--primary) 35%, transparent);
