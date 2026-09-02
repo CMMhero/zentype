@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { IconArrowLeft, IconKeyboardFilled } from "@tabler/icons-react";
-import { Button } from "~/components/ui/button";
+import { BackToTyping } from "~/components/ui/back-to-typing";
 
 export default function NotFound() {
   return (
@@ -30,14 +28,7 @@ export default function NotFound() {
 
         {/* Actions */}
         <div className="flex flex-col items-center gap-4">
-          <Button asChild size="sm" className="gap-2">
-            <Link href="/">
-              <IconKeyboardFilled className="size-4" /> start typing
-            </Link>
-          </Button>
-          <button type="button" className="text-primary inline-flex items-center gap-1 text-xs underline underline-offset-2" onClick={() => history.back()}>
-            <IconArrowLeft className="size-3" /> go back
-          </button>
+          <BackToTyping />
         </div>
       </div>
     </div>

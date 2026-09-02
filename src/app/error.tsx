@@ -1,8 +1,8 @@
 "use client";
 
-import { IconRefresh, IconArrowLeft } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
+import { IconRefresh } from "@tabler/icons-react";
 import { Button } from "~/components/ui/button";
+import { BackToTyping } from "~/components/ui/back-to-typing";
 
 export default function Error({
   error,
@@ -46,9 +46,7 @@ export default function Error({
           <Button size="sm" className="gap-2" onClick={reset}>
             <IconRefresh className="size-4" /> try again
           </Button>
-          <button type="button" className="text-primary inline-flex items-center gap-1 text-xs underline underline-offset-2" onClick={() => router.back()}>
-            <IconArrowLeft className="size-3" /> go back
-          </button>
+          <BackToTyping />
         </div>
       </div>
     </div>

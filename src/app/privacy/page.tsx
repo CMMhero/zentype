@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BackToTyping } from "~/components/ui/back-to-typing";
 import { IconArrowLeft, IconLockFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
@@ -97,9 +98,7 @@ export default function PrivacyPage() {
         </section>
 
         <div className="pt-4">
-          <Link href="/" className="text-primary inline-flex items-center gap-1 text-xs underline underline-offset-2">
-            <IconArrowLeft className="size-3" /> back to test
-          </Link>
+          <BackToTyping />
         </div>
       </div>
     </div>
