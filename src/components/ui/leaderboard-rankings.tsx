@@ -166,7 +166,7 @@ const LeaderboardRankings = React.forwardRef<
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 transition-colors",
                   isCurrentUser &&
-                    "border-primary/50 bg-primary/5 rounded-md border-2",
+                    "border-primary/50 bg-primary/5 rounded-2xl border-2",
                   showCrown && ranking.rank === 1 && "bg-gradient-to-r from-yellow-500/10 via-amber-500/5 to-transparent",
                   showCrown && ranking.rank === 2 && "bg-gradient-to-r from-gray-300/10 via-gray-400/5 to-transparent",
                   showCrown && ranking.rank === 3 && "bg-gradient-to-r from-orange-400/10 via-orange-500/5 to-transparent",
