@@ -15,6 +15,76 @@ import { IconChevronDown, IconX, IconCheck } from "@tabler/icons-react"
 
 const Combobox = ComboboxPrimitive.Root
 
+export interface ComboboxSelectOption {
+  value: string
+  label: string
+  leading?: React.ReactNode
+  fontCssVar?: string
+}
+
+/**
+ * High-level single-select combobox with search, built on the Base UI primitives.
+ * Restores the original `items`/`value`/`onValueChange`/`placeholder` API used
+ * across the app.
+ */
+function ComboboxSelect({
+  items,
+  value,
+  onValueChange,
+  placeholder,
+  searchPlaceholder,
+  className,
+}: {
+  items: ComboboxSelectOption[]
+  value: string | null | undefined
+  onValueChange: (value: string) => void
+  placeholder?: string
+  searchPlaceholder?: string
+  className?: string
+}) {
+  const selected = items.find((item) => item.value === value) ?? null
+
+  return (
+    <Combobox
+      items={items}
+      value={selected}
+      itemToStringLabel={(item) => (item as ComboboxSelectOption | null)?.label ?? ""}
+      onValueChange={(next) => {
+        if (next) onValueChange((next as ComboboxSelectOption).value)
+      }}
+    >
+      <ComboboxTrigger
+        className={cn(
+          "flex h-9 w-fit max-w-full min-w-0 items-center justify-between gap-2 rounded-3xl border border-input bg-transparent px-3 text-sm font-medium whitespace-nowrap outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30 data-[pressed]:bg-muted [&>svg]:size-4 [&>svg]:text-muted-foreground",
+          className
+        )}
+      >
+        {selected?.leading}
+        <span className="min-w-0 truncate" style={selected?.fontCssVar ? { fontFamily: selected.fontCssVar } : undefined}>
+          {selected?.label ?? placeholder}
+        </span>
+      </ComboboxTrigger>
+      <ComboboxContent className="w-auto max-w-(--available-width)">
+        <ComboboxInput placeholder={searchPlaceholder} showTrigger={false} />
+        <ComboboxList>
+          {(item: ComboboxSelectOption) => (
+            <ComboboxItem key={item.value} value={item}>
+              {item.leading}
+              <span
+                className="min-w-0 flex-1 whitespace-nowrap"
+                style={item.fontCssVar ? { fontFamily: item.fontCssVar } : undefined}
+              >
+                {item.label}
+              </span>
+            </ComboboxItem>
+          )}
+        </ComboboxList>
+        <ComboboxEmpty>no matches</ComboboxEmpty>
+      </ComboboxContent>
+    </Combobox>
+  )
+}
+
 function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
   return <ComboboxPrimitive.Value data-slot="combobox-value" {...props} />
 }
@@ -281,6 +351,7 @@ function useComboboxAnchor() {
 
 export {
   Combobox,
+  ComboboxSelect,
   ComboboxInput,
   ComboboxContent,
   ComboboxList,

@@ -26,12 +26,13 @@ import { Kbd } from "~/components/ui/kbd";
 import { Badge } from "~/components/ui/badge";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
+import { ComboboxSelect, type ComboboxSelectOption } from "~/components/ui/combobox";
 import { lcGet } from "~/lib/client-cache";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useUiStore } from "~/stores/ui-store";
 import { signOutFn } from "~/server/auth";
 import { THEMES, getTheme } from "~/lib/themes";
+import { cn } from "~/lib/utils";
 import { useGlobalHotkeys } from "~/hooks/use-global-hotkeys";
 import { useSettingsSync } from "~/hooks/use-settings-sync";
 import { useUser } from "~/components/user-provider";
@@ -123,7 +124,10 @@ export function AppShell({
                     <Link
                       href={item.to}
                       aria-label={item.label}
-                      className={`rounded p-1.5 transition-colors ${active ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
+                      className={cn(
+                        "rounded-3xl p-1.5 transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30",
+                        active ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      )}
                       onClick={(e) => {
                         if (pathname === item.to) {
                           e.preventDefault();
@@ -177,20 +181,20 @@ export function AppShell({
             <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">privacy</Link>
           </span>
           <span className="ml-auto hidden items-center gap-1 sm:flex">
-            <Combobox
+            <ComboboxSelect
               items={THEME_FOOTER_ITEMS}
               value={themeId}
               onValueChange={(v) => updateSettings({ themeId: v })}
-              placeholder="Theme"
-              searchPlaceholder="Search themes…"
+              placeholder="theme"
+              searchPlaceholder="search themes…"
               className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
             />
-            <Combobox
+            <ComboboxSelect
               items={FONT_FOOTER_ITEMS}
               value={fontFamily}
               onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}
-              placeholder="Font"
-              searchPlaceholder="Search fonts…"
+              placeholder="font"
+              searchPlaceholder="search fonts…"
               className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
             />
           </span>
@@ -211,7 +215,10 @@ export function AppShell({
                 key={item.to}
                 href={item.to}
                 aria-label={item.label}
-                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 transition-colors ${active ? "text-primary" : "text-muted-foreground"}`}
+                className={cn(
+                  "flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1.5 transition-colors",
+                  active ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
               >
                 <item.icon className="size-5" stroke={active ? 2 : 1.5} />
                 <span className="text-[10px]">{item.label}</span>
@@ -224,7 +231,7 @@ export function AppShell({
   );
 }
 
-const THEME_FOOTER_ITEMS: ComboboxItem[] = [...THEMES]
+const THEME_FOOTER_ITEMS: ComboboxSelectOption[] = [...THEMES]
   .sort((a, b) => a.label.localeCompare(b.label))
   .map((t) => ({
     value: t.id,
@@ -238,7 +245,7 @@ const THEME_FOOTER_ITEMS: ComboboxItem[] = [...THEMES]
     ),
   }));
 
-const FONT_FOOTER_ITEMS: ComboboxItem[] = FONTS.map((f) => ({
+const FONT_FOOTER_ITEMS: ComboboxSelectOption[] = FONTS.map((f) => ({
   value: f.value,
   label: f.label,
   fontCssVar: f.cssVar,
@@ -249,14 +256,14 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="hover:bg-muted h-auto gap-2 rounded-md px-1 py-1 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50" aria-label="Account menu">
+        <Button variant="ghost" className="h-auto gap-2 rounded-3xl px-1.5 py-1" aria-label="Account menu">
           <Avatar className="size-6">
             {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-            <AvatarFallback className="rounded text-[10px] uppercase">{user.username.slice(0, 2)}</AvatarFallback>
+            <AvatarFallback className="rounded-full text-[10px] uppercase">{user.username.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
           {userLevel === null ? (
-            <Skeleton className="hidden sm:block h-[18px] min-w-[20px] rounded" />
+            <Skeleton className="hidden h-[18px] min-w-[20px] rounded-full sm:block" />
           ) : (
             <Badge variant="secondary" className="hidden sm:inline-flex text-[9px] font-bold tracking-widest">
               {userLevel}

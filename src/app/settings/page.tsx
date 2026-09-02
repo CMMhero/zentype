@@ -8,6 +8,8 @@ import {
   IconPalette, IconPlayerPlay, IconUser, IconVolume,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { cn } from "~/lib/utils";
+import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
@@ -25,7 +27,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { THEMES } from "~/lib/themes";
 import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
 import { IconSearch, IconSun, IconMoon, IconDevices } from "@tabler/icons-react";
-import { Combobox, type ComboboxItem } from "~/components/ui/combobox";
+import { ComboboxSelect, type ComboboxSelectOption } from "~/components/ui/combobox";
 import type { CaretStyle, FontFamily, FontSizeKey, SoundVariant, AuthProvider } from "~/lib/types";
 import { FONTS } from "~/lib/fonts";
 import { CARET_STYLES, FONT_SIZES, SOUND_VARIANTS } from "~/lib/settings-options";
@@ -168,12 +170,12 @@ export default function SettingsPage() {
               </SettingRow>
 
               <SettingRow label="font">
-                <Combobox
+                <ComboboxSelect
                   items={FONT_ITEMS}
                   value={settings.fontFamily}
                   onValueChange={(v) => update({ fontFamily: v as FontFamily })}
-                  placeholder="Font"
-                  searchPlaceholder="Search fonts…"
+                  placeholder="font"
+                  searchPlaceholder="search fonts…"
                   className="h-8 w-full sm:w-56"
                 />
               </SettingRow>
@@ -322,8 +324,10 @@ async function signOut() {
               {providers.map((p) => {
                 const ICON = p === "github" ? IconBrandGithubFilled : p === "google" ? IconBrandGoogleFilled : IconBrandDiscordFilled;
                 return (
-                  <span key={p} className="inline-flex items-center gap-1 rounded border border-border/40 bg-muted/40 px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                    <ICON className="size-3.5" /> {p}
+                  <span key={p} className="inline-flex items-center gap-1">
+                    <Badge variant="secondary" className="gap-1 text-[10px] font-medium normal-case">
+                      <ICON className="size-3" /> {p}
+                    </Badge>
                   </span>
                 );
               })}
@@ -456,7 +460,7 @@ function SettingRow({ label, hint, children }: { label: string; hint?: string; c
 
 function CaretPreview({ style }: { style: CaretStyle }) {
   return (
-    <div className="bg-muted/50 flex h-9 w-16 items-center justify-center rounded border border-border/50">
+    <div className="flex h-9 w-16 items-center justify-center rounded-2xl bg-muted/50 ring-1 ring-foreground/5">
       {style === "off" ? (
         <span className="text-muted-foreground text-[10px]">none</span>
       ) : (
@@ -508,7 +512,7 @@ function ThemeSearch() {
       </div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
         {filtered.map((t) => (
-          <Button key={t.id} variant="outline" onClick={() => update({ themeId: t.id })} className={`h-auto w-full min-w-0 justify-start gap-2 rounded-md border-border bg-transparent p-2 text-left shadow-none hover:bg-transparent ${settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : "hover:border-primary"}`}>
+          <Button key={t.id} variant="outline" onClick={() => update({ themeId: t.id })} className={cn("h-auto w-full min-w-0 justify-start gap-2 rounded-2xl border-border bg-transparent p-2 text-left shadow-none hover:bg-transparent", settings.themeId === t.id ? "border-primary ring-ring/40 ring-1" : "hover:border-primary")}>
             <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">
               <span className="size-5" style={{ background: t.vars["--background"] }} />
               <span className="size-5" style={{ background: t.vars["--primary"] }} />
@@ -523,7 +527,7 @@ function ThemeSearch() {
   );
 }
 
-const FONT_ITEMS: ComboboxItem[] = FONTS.map((f) => ({
+const FONT_ITEMS: ComboboxSelectOption[] = FONTS.map((f) => ({
   value: f.value,
   label: f.label,
   fontCssVar: f.cssVar,
