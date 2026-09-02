@@ -96,7 +96,7 @@ export function ResultView({ result, saveState, isPB, onNext }: ResultViewProps)
 
       {/* Next test */}
       <div className="flex items-center justify-end">
-        <Button size="lg" onClick={onNext} className="gap-2.5">
+        <Button size="default" onClick={onNext} className="gap-2">
           <IconPlayerSkipForward /> next test{" "}
           <Kbd className="ml-1 border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground">
             tab

@@ -30,11 +30,26 @@ import type { AggregatedStats } from "~/server/results";
 /** Detect mobile/touch device for keyboard input routing */
 const isMobile = typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-/** Check if a result is a personal best by comparing against cached stats */
-function isResultPB(result: TestResult): boolean {
-  const stats = lcGet<AggregatedStats>("profile-stats", 5 * 60 * 1000);
-  if (!stats) return false;
+/** Check if a result is a personal best by comparing against local results and cached server stats. */
+function isResultPB(result: TestResult, userId: string | null): boolean {
   const board = `${result.mode}:${result.variant}`;
+
+  // 1. Check local (guest) results in the store
+  const localResults = useResultsStore.getState().local;
+  for (const r of localResults) {
+    if (r.id === result.id) continue;
+    if (`${r.mode}:${r.variant}` === board && r.wpm >= result.wpm) return false;
+  }
+
+  // 2. Check cached server stats (namespaced by user id, falls back to old key)
+  const FIVE_MIN = 5 * 60 * 1000;
+  const stats = userId
+    ? (lcGet<AggregatedStats>(`${userId}:profile-stats`, FIVE_MIN) ?? lcGet<AggregatedStats>("profile-stats", FIVE_MIN))
+    : lcGet<AggregatedStats>("profile-stats", FIVE_MIN);
+  if (!stats) {
+    // No server stats cached yet — PB only if no local result is higher
+    return true;
+  }
   const best = stats.bestByBoard[board];
   if (best === undefined) return true; // no previous result on this board
   return result.wpm > best;
@@ -379,7 +394,7 @@ export default function TestPage() {
             <ResultView
               result={result}
               saveState={saveState}
-              isPB={isResultPB(result)}
+              isPB={isResultPB(result, user?.id ?? null)}
               onNext={() => restartRef.current()}
             />
           </div>
@@ -480,7 +495,7 @@ export default function TestPage() {
               <span className="inline-flex items-center gap-1.5"><Kbd>tab</Kbd> new test</span>
               <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>esc</Kbd> cancel test</span>
               <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>?</Kbd> keybinds</span>
-              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>{isMac ? "cmd" : "ctrl"}+k</Kbd> command</span>
+              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>{isMac ? "cmd" : "ctrl"} k</Kbd> commands</span>
             </p>
           </div>
         </>

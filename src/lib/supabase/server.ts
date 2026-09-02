@@ -50,7 +50,7 @@ export async function getSupabaseServerClient() {
       setAll(cookies: Array<{ name: string; value: string; options?: Record<string, unknown> }>) {
         try {
           cookies.forEach((cookie) => {
-            cookieStore.set(cookie.name, cookie.value);
+            cookieStore.set(cookie.name, cookie.value, cookie.options as Parameters<typeof cookieStore.set>[2]);
           });
         } catch {
           // setAll is called from Server Component — ignore

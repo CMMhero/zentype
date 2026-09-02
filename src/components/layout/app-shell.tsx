@@ -57,11 +57,11 @@ export function AppShell({
   const fontFamily = useSettingsStore((s) => s.settings.fontFamily);
   const updateSettings = useSettingsStore((s) => s.update);
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
-  const [userLevel, setUserLevel] = useState<number | null>(() => {
-    if (!user) return null;
-    const cached = lcGet<{ level: number }>(`${user.id}:profile-points`, 60 * 1000);
-    return cached ? cached.level : null;
-  });
+  const [isMac, setIsMac] = useState(false);
+  useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
+  }, []);
+  const [userLevel, setUserLevel] = useState<number | null>(null);
   useEffect(() => {
     if (!user) { setUserLevel(null); return; }
     const cached = lcGet<{ level: number }>(`${user.id}:profile-points`, 60 * 1000);
@@ -99,7 +99,7 @@ export function AppShell({
         Skip to content
       </a>
       <header className="bg-background/80 sticky top-0 z-40 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60" role="banner">
-        <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4">
+        <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
           <Link
             href="/"
             className="group flex shrink-0 items-center gap-2"
@@ -150,7 +150,7 @@ export function AppShell({
           <div className="ml-auto flex items-center gap-2">
             <Button variant="outline" size="sm" className="gap-2 text-xs hidden sm:inline-flex" onClick={() => setPaletteOpen(true)} aria-label="Open command palette (Ctrl+K)">
               <span className="text-muted-foreground">commands</span>
-              <Kbd><IconCommand className="size-3" />k</Kbd>
+              <Kbd>{isMac ? "cmd": "ctrl"} k</Kbd>
             </Button>
             <Button variant="default" size="sm" className="sm:hidden" onClick={() => setPaletteOpen(true)} aria-label="Open command palette">
               <IconCommand className="size-4" />
@@ -207,7 +207,7 @@ export function AppShell({
 
       {/* Mobile bottom nav - normal flow, not fixed */}
       <nav className="shrink-0 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation">
-        <div className="flex h-14 items-center justify-around">
+        <div className="flex h-14 items-center justify-around" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           {NAV.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
             return (

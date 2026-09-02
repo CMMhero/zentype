@@ -3,7 +3,9 @@
 import { useEffect, useState, useRef, useMemo, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
+import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { Kbd } from "~/components/ui/kbd";
 import {
   IconAlertTriangle, IconArrowBackUp, IconArrowRight, IconAt, IconClock,
   IconCode, IconCursorText, IconDownload, IconEye, IconEyeOff, IconFileText, IconHash, IconInfoCircle, IconKeyboard,
@@ -40,7 +42,6 @@ const STATIC_ITEMS = (() => {
     { id: "nav-lb", group: "navigate", value: "navigate leaderboard global bests alt+2", keywords: "navigate leaderboard", label: "leaderboard" },
     { id: "nav-profile", group: "navigate", value: "navigate profile dashboard alt+3", keywords: "navigate profile", label: "profile" },
     { id: "nav-settings", group: "navigate", value: "navigate settings config alt+4", keywords: "navigate settings", label: "settings" },
-    { id: "act-restart", group: "actions", value: "actions restart test tab", keywords: "actions restart", label: "restart test" },
     ...TIME_OPTIONS.map((t) => ({ id: `mode-time-${t}`, group: "mode", value: `mode time ${t}s type for ${t} seconds`, keywords: `mode time ${t}s`, label: `${t}s time` })),
     ...WORD_OPTIONS.map((w) => ({ id: `mode-words-${w}`, group: "mode", value: `mode words ${w} words type ${w} words`, keywords: `mode words ${w}`, label: `${w} words` })),
     ...THEMES.map((t) => ({ id: `theme-${t.id}`, group: "theme", value: `theme appearance ${t.label} ${t.appearance} ${t.id}`, keywords: `theme appearance ${t.label} ${t.appearance}`, label: t.label })),
@@ -205,7 +206,6 @@ export function CommandPalette() {
   const toggleSmoothCaret = useCallback(() => update({ smoothCaret: !settings.smoothCaret }), [update, settings.smoothCaret]);
   const togglePunctuation = useCallback(() => update({ punctuation: !settings.punctuation }), [update, settings.punctuation]);
   const toggleNumbers = useCallback(() => update({ numbers: !settings.numbers }), [update, settings.numbers]);
-  const restartTest = useCallback(() => { close(); window.dispatchEvent(new CustomEvent("zt:restart")); }, [close]);
 
   // ─── Account / data actions ────────────────────────────────────────
   const user = useUser();
@@ -276,32 +276,6 @@ export function CommandPalette() {
       <CommandList>
         <CommandEmpty>no matching command</CommandEmpty>
 
-        {/* Confirmation overlay for destructive actions */}
-        {confirmAction && (
-          <CommandGroup heading="confirm action" forceMount>
-            <div className="border-destructive/40 bg-destructive/5 rounded-2xl border px-3 py-3">
-              <p className="text-sm font-medium lowercase">{confirmAction.title}</p>
-              <p className="text-muted-foreground mt-0.5 text-xs">{confirmAction.description}</p>
-              <div className="mt-2 flex gap-2">
-                <Button
-                  variant="secondary"
-                  size="xs"
-                  onClick={() => setConfirmAction(null)}
-                >
-                  cancel
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="xs"
-                  onClick={() => { confirmAction.onConfirm(); setConfirmAction(null); }}
-                >
-                  {confirmAction.label}
-                </Button>
-              </div>
-            </div>
-          </CommandGroup>
-        )}
-
         {/* User search results — shown after 3+ chars */}
         {userQuery.trim().length >= 3 && (
           <CommandGroup heading="users" forceMount>
@@ -335,19 +309,20 @@ export function CommandPalette() {
         <CommandSeparator />
 
         <CommandGroup heading="actions">
-          <CommandItem value="actions restart test tab" keywords={["actions", "restart"]} onSelect={restartTest}>
-            <IconRefresh /> restart test<Shortcut>tab</Shortcut>
-          </CommandItem>
           <CommandItem value="actions restore defaults reset settings" keywords={["actions", "restore", "defaults", "reset"]} onSelect={restoreDefaults}>
             <IconRefresh /> restore defaults<CommandDesc>reset theme, font, sound, and gameplay</CommandDesc>
           </CommandItem>
+          {confirmAction?.title === "restore all settings to defaults?" && <ConfirmBox confirm={confirmAction} onCancel={() => setConfirmAction(null)} />}
           <CommandItem value="actions export json data download" keywords={["actions", "export", "json", "data", "download"]} onSelect={exportJson}>
             <IconDownload /> export json<CommandDesc>download all your data as a file</CommandDesc>
           </CommandItem>
           {user && (
+            <>
             <CommandItem value="actions delete all results history remove" keywords={["actions", "delete", "results", "history"]} onSelect={deleteAllResults} className="text-destructive focus:text-destructive">
               <IconAlertTriangle /> delete all results<CommandDesc>permanently erase everything</CommandDesc>
             </CommandItem>
+              {confirmAction?.title === "delete every saved result?" && <ConfirmBox confirm={confirmAction} onCancel={() => setConfirmAction(null)} />}
+            </>
           )}
           {user && (
             <CommandItem value="actions sign out log out logout" keywords={["actions", "sign", "out", "logout"]} onSelect={handleSignOut}>
@@ -355,9 +330,12 @@ export function CommandPalette() {
             </CommandItem>
           )}
           {local.length > 0 && (
-            <CommandItem value="actions discard local guest results" keywords={["actions", "discard", "local", "guest"]} onSelect={discardLocal} className="text-destructive focus:text-destructive">
-              <IconAlertTriangle /> discard local results<CommandDesc>delete {local.length} unsynced guest result{local.length === 1 ? "" : "s"}</CommandDesc>
-            </CommandItem>
+            <>
+              <CommandItem value="actions discard local guest results" keywords={["actions", "discard", "local", "guest"]} onSelect={discardLocal} className="text-destructive focus:text-destructive">
+                <IconAlertTriangle /> discard local results<CommandDesc>delete {local.length} unsynced guest result{local.length === 1 ? "" : "s"}</CommandDesc>
+              </CommandItem>
+              {confirmAction?.title.startsWith("discard") && <ConfirmBox confirm={confirmAction} onCancel={() => setConfirmAction(null)} />}
+            </>
           )}
         </CommandGroup>
 
@@ -642,7 +620,7 @@ const UserResultItem = memo(function UserResultItem({ u, onSelect }: { u: UserRe
 });
 
 function Shortcut({ children }: { children: React.ReactNode }) {
-  return <span className="text-muted-foreground ml-auto text-[10px] shrink-0">{children}</span>;
+  return <Kbd className="ml-auto">{children}</Kbd>;
 }
 
 function CommandDesc({ children }: { children: React.ReactNode }) {
@@ -651,8 +629,21 @@ function CommandDesc({ children }: { children: React.ReactNode }) {
 
 function ToggleBadge({ on }: { on: boolean }) {
   return (
-    <span className={`ml-1 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase leading-none ${on ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
+    <Badge variant={on ? "default" : "secondary"} className="ml-1 h-4 px-1.5 py-0 text-[10px] font-semibold uppercase">
       {on ? "on" : "off"}
-    </span>
+    </Badge>
+  );
+}
+
+function ConfirmBox({ confirm, onCancel }: { confirm: { title: string; label: string; description: string; onConfirm: () => void }; onCancel: () => void }) {
+  return (
+    <div className="border-destructive/40 bg-destructive/5 ml-6 mt-1 rounded-2xl border px-3 py-2.5">
+      <p className="text-sm font-medium lowercase">{confirm.title}</p>
+      <p className="text-muted-foreground mt-0.5 text-xs">{confirm.description}</p>
+      <div className="mt-2 flex gap-2">
+        <Button variant="secondary" size="xs" onClick={onCancel}>cancel</Button>
+        <Button variant="destructive" size="xs" onClick={() => { confirm.onConfirm(); onCancel(); }}>{confirm.label}</Button>
+      </div>
+    </div>
   );
 }

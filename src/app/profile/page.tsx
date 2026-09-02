@@ -33,8 +33,8 @@ import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { AchievementList } from "~/components/ui/achievement-list";
 import dynamic from "next/dynamic";
-const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-40 w-full" /> });
-import { getMyJoinDate, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
+const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-56 w-full" /> });
+import { getMyJoinDate, getResultById, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
 import { lcGet, lcSet, lcDel } from "~/lib/client-cache";
@@ -81,6 +81,7 @@ export default function ProfilePage() {
   const [historyCount, setHistoryCount] = useState(10);
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
 
+
   // Stale-while-revalidate: show cached data instantly, fetch fresh in background
   useEffect(() => {
     let cancelled = false;
@@ -105,10 +106,10 @@ export default function ProfilePage() {
     if (cAchievements) setAchievements(cAchievements);
     if (cJoinDate) setJoinedAt(cJoinDate);
 
-    // Fetch all data in parallel (single round-trip for everything)
+    // Fast fetch: stats + 10 results for quick initial render
     void Promise.all([
       getUserStats(),
-      getUserResults({ limit: 200 }),
+      getUserResults({ limit: 10, lite: true }),
       user ? getUserPoints() : Promise.resolve(null),
       user ? getUserAchievements() : Promise.resolve(null),
       user ? getMyJoinDate() : Promise.resolve(null),
@@ -119,6 +120,12 @@ export default function ProfilePage() {
       if (p) { setPoints(p); lcSet(ck("profile-points"), p); }
       if (a) { setAchievements(a); lcSet(ck("profile-achievements"), a); }
       if (j) { setJoinedAt(j); lcSet(ck("profile-join-date"), j); }
+      // Background: fetch full results for accurate charts, PBs, and streaks
+      void getUserResults({ limit: 200, lite: true }).then((full) => {
+        if (cancelled || !full) return;
+        setResults(full);
+        lcSet(ck("profile-results"), full);
+      });
     });
 
     return () => { cancelled = true; };
@@ -142,7 +149,7 @@ export default function ProfilePage() {
     return null;
   }
 
-  const loading = stats === null || results === null;
+  const loading = stats === null;
   const chartData = (results ?? []).slice(0, 100).reverse();
 
   // Streak data
@@ -627,7 +634,14 @@ export default function ProfilePage() {
                 </TableHeader>
                 <TableBody>
                   {visibleHistory.map((r) => (
-                    <TableRow key={r.id} onClick={() => setSelected(r)} className="cursor-pointer">
+                    <TableRow key={r.id} onClick={() => {
+                      // Open immediately with lite data
+                      setSelected(r);
+                      // Fetch full data (chars + timeline) in background
+                      getResultById(r.id).then((full) => {
+                        if (full) setSelected(full);
+                      });
+                    }} className="cursor-pointer">
                       <TableCell className="text-xs text-muted-foreground">{formatDateTime(r.createdAt)}</TableCell>
                       <TableCell className="text-right font-bold tabular-nums text-primary">
                         <span className="inline-flex items-center justify-end gap-1.5">
@@ -669,8 +683,21 @@ export default function ProfilePage() {
               </Table>
               {(results?.length ?? 0) > historyCount && (
                 <div className="mt-3 flex justify-center">
-                  <Button variant="outline" size="sm" onClick={() => setHistoryCount((c) => Math.min(c + 10, results?.length ?? c))}>
-                    load more ({(results?.length ?? 0) - historyCount} remaining)
+                  <Button variant="outline" size="sm" onClick={async () => {
+                    const nextCount = historyCount + 10;
+                    if ((results?.length ?? 0) >= nextCount) {
+                      // Data already loaded, just reveal more
+                      setHistoryCount(nextCount);
+                    } else {
+                      // Fetch next batch from server
+                      const more = await getUserResults({ limit: 10, offset: results?.length ?? 0, lite: true });
+                      if (more && more.length > 0) {
+                        setResults((prev) => [...(prev ?? []), ...more]);
+                      }
+                      setHistoryCount(nextCount);
+                    }
+                  }}>
+                    load more
                   </Button>
                 </div>
               )}
@@ -733,14 +760,29 @@ export default function ProfilePage() {
                   </span>
                 </DialogDescription>
               </DialogHeader>
-              <WpmChart timeline={selected.timeline} compact />
+              {selected.timeline ? (
+                <WpmChart timeline={selected.timeline} compact />
+              ) : (
+                <Skeleton className="h-56 w-full rounded-2xl" />
+              )}
               <div className="grid grid-cols-3 gap-2 text-center sm:grid-cols-6 sm:gap-3">
                 <Mini label="raw" value={String(selected.rawWpm)} />
                 <Mini label="cons" value={`${selected.consistency}%`} />
-                <Mini label="correct" value={String(selected.chars.correct)} />
-                <Mini label="errors" value={String(selected.chars.incorrect)} />
-                <Mini label="extra" value={String(selected.chars.extra)} />
-                <Mini label="missed" value={String(selected.chars.missed)} />
+                {selected.chars ? (
+                  <>
+                    <Mini label="correct" value={String(selected.chars.correct)} />
+                    <Mini label="errors" value={String(selected.chars.incorrect)} />
+                    <Mini label="extra" value={String(selected.chars.extra)} />
+                    <Mini label="missed" value={String(selected.chars.missed)} />
+                  </>
+                ) : (
+                  <>
+                    <MiniSkeleton label="correct" />
+                    <MiniSkeleton label="errors" />
+                    <MiniSkeleton label="extra" />
+                    <MiniSkeleton label="missed" />
+                  </>
+                )}
               </div>
             </>
           )}
@@ -780,6 +822,17 @@ function Mini({ label, value }: { label: string; value: string }) {
     <Card size="sm" className="items-center rounded-2xl py-2 text-center">
       <CardContent className="flex flex-col gap-0.5 px-2">
         <div className="font-semibold tabular-nums">{value}</div>
+        <div className="text-[10px] tracking-wider text-muted-foreground">{label}</div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function MiniSkeleton({ label }: { label: string }) {
+  return (
+    <Card size="sm" className="items-center rounded-2xl py-2 text-center">
+      <CardContent className="flex flex-col gap-0.5 px-2">
+        <Skeleton className="mx-auto h-4 w-8 mb-1" />
         <div className="text-[10px] tracking-wider text-muted-foreground">{label}</div>
       </CardContent>
     </Card>

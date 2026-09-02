@@ -63,40 +63,47 @@ export async function getBoardRanks(
 ): Promise<Record<string, number>> {
   const supabase = getSupabasePublicClient();
   if (!supabase || boards.length === 0) return {};
-  const result: Record<string, number> = {};
-  for (const board of boards) {
-    const [mode, variantStr] = board.split(":");
-    const variant = Number(variantStr);
-    if (!mode || !variant) continue;
-    // Try RPC first
-    const { data: rpcRows, error: rpcErr } = await supabase.rpc(
-      "get_wpm_leaderboard",
-      { p_mode: mode, p_variant: variant, p_limit: 500 },
-    );
-    if (!rpcErr && rpcRows && rpcRows.length > 0) {
-      const idx = rpcRows.findIndex((r: Record<string, unknown>) => r.user_id === userId);
-      if (idx !== -1) result[board] = idx + 1;
-      continue;
-    }
-    // Fallback: direct query
-    const { data: rows } = await supabase
-      .from("test_results")
-      .select("user_id,wpm,accuracy")
-      .eq("mode", mode)
-      .eq("variant", variant)
-      .order("wpm", { ascending: false })
-      .limit(500);
-    if (!rows || rows.length === 0) continue;
-    const best = new Map<string, { wpm: number; acc: number }>();
-    for (const r of rows) {
-      const cur = best.get(r.user_id as string);
-      if (!cur || (r.wpm as number) > cur.wpm || ((r.wpm as number) === cur.wpm && (r.accuracy as number) > cur.acc)) {
-        best.set(r.user_id as string, { wpm: r.wpm as number, acc: r.accuracy as number });
+
+  // Parallelize all board rank lookups instead of sequential for-loop
+  const entries = await Promise.all(
+    boards.map(async (board) => {
+      const [mode, variantStr] = board.split(":");
+      const variant = Number(variantStr);
+      if (!mode || !variant) return [board, undefined] as const;
+      // Try RPC first
+      const { data: rpcRows, error: rpcErr } = await supabase.rpc(
+        "get_wpm_leaderboard",
+        { p_mode: mode, p_variant: variant, p_limit: 500 },
+      );
+      if (!rpcErr && rpcRows && rpcRows.length > 0) {
+        const idx = rpcRows.findIndex((r: Record<string, unknown>) => r.user_id === userId);
+        return [board, idx !== -1 ? idx + 1 : undefined] as const;
       }
-    }
-    const sorted = [...best.entries()].sort((a, b) => b[1].wpm - a[1].wpm || b[1].acc - a[1].acc);
-    const idx = sorted.findIndex(([id]) => id === userId);
-    if (idx !== -1) result[board] = idx + 1;
+      // Fallback: direct query
+      const { data: rows } = await supabase
+        .from("test_results")
+        .select("user_id,wpm,accuracy")
+        .eq("mode", mode)
+        .eq("variant", variant)
+        .order("wpm", { ascending: false })
+        .limit(500);
+      if (!rows || rows.length === 0) return [board, undefined] as const;
+      const best = new Map<string, { wpm: number; acc: number }>();
+      for (const r of rows) {
+        const cur = best.get(r.user_id as string);
+        if (!cur || (r.wpm as number) > cur.wpm || ((r.wpm as number) === cur.wpm && (r.accuracy as number) > cur.acc)) {
+          best.set(r.user_id as string, { wpm: r.wpm as number, acc: r.accuracy as number });
+        }
+      }
+      const sorted = [...best.entries()].sort((a, b) => b[1].wpm - a[1].wpm || b[1].acc - a[1].acc);
+      const idx = sorted.findIndex(([id]) => id === userId);
+      return [board, idx !== -1 ? idx + 1 : undefined] as const;
+    }),
+  );
+
+  const result: Record<string, number> = {};
+  for (const [board, rank] of entries) {
+    if (rank !== undefined) result[board] = rank;
   }
   return result;
 }
