@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { BackToTyping } from "~/components/ui/back-to-typing";
-import { IconArrowLeft, IconFileTextFilled, IconKeyboardFilled } from "@tabler/icons-react";
+import { IconFileTextFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "terms of service",
