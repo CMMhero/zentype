@@ -102,20 +102,7 @@ export function WpmChart({
           <Bar dataKey="errors" fill="var(--color-errors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
         </ComposedChart>
       </ChartContainer>
-      <div className="text-muted-foreground mt-1 flex items-center justify-center gap-4 text-[10px]" aria-hidden>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="size-2 rounded-[2px]" style={{ background: "var(--chart-1)" }} />
-          wpm
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="size-2 rounded-[2px]" style={{ background: "var(--muted-foreground)" }} />
-          raw
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="size-2 rounded-[2px]" style={{ background: "var(--chart-5)" }} />
-          errors
-        </span>
-      </div>
+     
     </div>
   );
 }
