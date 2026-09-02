@@ -118,7 +118,7 @@ const LeaderboardRankings = React.forwardRef<
     return (
       <div
         ref={ref}
-        className={cn("bg-card w-full rounded-xl border", className)}
+        className={cn("bg-card w-full rounded-2xl border shadow-sm", className)}
         {...props}
       >
         <div
@@ -267,7 +267,7 @@ const LeaderboardRankings = React.forwardRef<
                 size="icon"
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="hover:bg-muted rounded-md border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                className="hover:bg-muted rounded-2xl border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <IconChevronLeft className="size-4" />
               </Button>
@@ -283,7 +283,7 @@ const LeaderboardRankings = React.forwardRef<
                   setCurrentPage((p) => Math.min(totalPages, p + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="hover:bg-muted rounded-md border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                className="hover:bg-muted rounded-2xl border p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <IconChevronRight className="size-4" />
               </Button>

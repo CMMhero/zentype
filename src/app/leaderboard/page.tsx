@@ -166,7 +166,7 @@ function LeaderboardContent() {
       )}
 
       {myRankItem && (
-        <div className="flex items-center gap-3 rounded-xl border-2 border-primary bg-primary/5 px-4 py-3">
+        <div className="flex items-center gap-3 rounded-2xl border-2 border-primary bg-primary/5 px-4 py-3">
           <span className="text-xs font-bold tracking-widest uppercase text-primary">your rank</span>
           <span className="ml-2 flex items-center gap-1 text-sm font-bold tabular-nums">
             #{myRankItem.rank} <span className="text-muted-foreground font-normal">{myRankItem.byline}</span>
@@ -180,7 +180,7 @@ function LeaderboardContent() {
       {loading ? (
         <LeaderboardSkeleton />
       ) : activeEmpty ? (
-        <div className="rounded-md border border-dashed border-border/60 p-12 text-center text-sm text-muted-foreground">
+        <div className="rounded-2xl border border-dashed border-border/60 p-12 text-center text-sm text-muted-foreground">
           {isLevel ? "no levels yet. finish a test to earn xp." : "no entries yet. finish a test while signed in to claim rank #1."}
         </div>
       ) : (
