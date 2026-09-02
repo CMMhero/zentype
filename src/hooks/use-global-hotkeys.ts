@@ -32,6 +32,7 @@ export function useGlobalHotkeys() {
         const idx = Number(e.key);
         if (idx >= 1 && idx <= routes.length) {
           e.preventDefault();
+          setPaletteOpen(false);
           router.push(routes[idx - 1]);
           return;
         }
