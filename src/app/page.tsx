@@ -51,29 +51,41 @@ function rememberPrompt(cfg: Pick<GameSettings, "mode" | "duration" | "wordCount
   }
 }
 
-/** Check if a result is a personal best by comparing against local results and cached server stats. */
-function isResultPB(result: TestResult, userId: string | null): boolean {
+/**
+ * Best-effort PB check for the just-finished test. Returns:
+ * - false when a known local/cached result on the same board is faster or equal
+ * - true when nothing faster is known (guests: full local history; signed-in
+ *   users: no prior result on the board in cached stats)
+ * - null when the account history is unknown (cache cleared by a recent save)
+ *   — the caller should then use the server verdict from saveResult.
+ */
+function computeResultPB(result: TestResult, userId: string | null): boolean | null {
   const board = `${result.mode}:${result.variant}`;
 
-  // 1. Check local (guest) results in the store
+  // 1. Local results: guests keep their whole history here, and it also covers
+  //    pending cloud saves — anything faster/equal means this isn't a PB.
   const localResults = useResultsStore.getState().local;
   for (const r of localResults) {
     if (r.id === result.id) continue;
     if (`${r.mode}:${r.variant}` === board && r.wpm >= result.wpm) return false;
   }
 
-  // 2. Check cached server stats (namespaced by user id, falls back to old key)
+  // 2. Guests have no server history — nothing local higher means it's a PB.
+  if (!userId) return true;
+
+  // 3. Signed in: compare against cached account stats when available
+  //    (namespaced by user id, falls back to the old key).
   const FIVE_MIN = 5 * 60 * 1000;
-  const stats = userId
-    ? (lcGet<AggregatedStats>(`${userId}:profile-stats`, FIVE_MIN) ?? lcGet<AggregatedStats>("profile-stats", FIVE_MIN))
-    : lcGet<AggregatedStats>("profile-stats", FIVE_MIN);
-  if (!stats) {
-    // No server stats cached yet — PB only if no local result is higher
-    return true;
+  const stats = lcGet<AggregatedStats>(`${userId}:profile-stats`, FIVE_MIN)
+    ?? lcGet<AggregatedStats>("profile-stats", FIVE_MIN);
+  if (stats) {
+    const best = stats.bestByBoard[board];
+    if (best === undefined) return true; // never played this board → PB
+    return result.wpm > best;
   }
-  const best = stats.bestByBoard[board];
-  if (best === undefined) return true; // no previous result on this board
-  return result.wpm > best;
+
+  // 4. No cached account stats — the server reports isPB once saveResult resolves.
+  return null;
 }
 
 export default function TestPage() {
@@ -94,6 +106,7 @@ export default function TestPage() {
   const [loadingPrompt, setLoadingPrompt] = useState(() => !initialPrompt);
   const [result, setResult] = useState<TestResult | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("skipped");
+  const [isPB, setIsPB] = useState(false);
   const [focused, setFocused] = useState(true);
   const [isMac, setIsMac] = useState(false);
   useEffect(() => {
@@ -190,6 +203,10 @@ export default function TestPage() {
     };
     setResult(full);
     setSaveState("skipped");
+    // Guests and users with cached stats get an instant verdict; users whose
+    // stats cache was cleared wait for the server answer after the save.
+    const verdict = computeResultPB(full, user?.id ?? null);
+    if (verdict !== null) setIsPB(verdict);
     addLocal(full);
     // Finished prompts shouldn't replay — the next visit fetches a fresh set
     promptCache.delete(promptCacheKey(settingsRef.current));
@@ -209,6 +226,8 @@ export default function TestPage() {
         if (res.saved) {
           removeLocal(full.id);
           setSaveState("cloud");
+          // Authoritative PB verdict from the server (pre-save board best)
+          if (typeof res.isPB === "boolean") setIsPB(res.isPB);
           // Drop cached profile data so the next visit refetches fresh stats
           if (user) invalidateProfileCaches(user.id, user.username);
           // Process gamification (XP + achievements) silently - no popup/sonner to avoid interrupting chained tests
@@ -433,7 +452,7 @@ export default function TestPage() {
             <ResultView
               result={result}
               saveState={saveState}
-              isPB={isResultPB(result, user?.id ?? null)}
+              isPB={isPB}
               onNext={() => restartRef.current()}
             />
           </div>

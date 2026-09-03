@@ -24,12 +24,31 @@ async function requireUser() {
 
 export async function saveResult(
   data: SaveInput,
-): Promise<{ saved: boolean; id: string | null; reason?: string }> {
+): Promise<{ saved: boolean; id: string | null; reason?: string; isPB?: boolean }> {
   if (!isPlausible({ ...data, mode: data.mode })) {
     return { saved: false, id: null, reason: "implausible" };
   }
   const ctx = await requireUser();
   if (!ctx) return { saved: false, id: null, reason: "guest" };
+
+  // Capture the previous best on this board (mode + variant, matching the
+  // stats bestByBoard keying) before inserting, so the caller can tell
+  // whether this test is a new personal best.
+  let prevBest = 0;
+  try {
+    const { data: prev } = await ctx.supabase
+      .from("test_results")
+      .select("wpm")
+      .eq("user_id", ctx.user.id)
+      .eq("mode", data.mode)
+      .eq("variant", data.variant)
+      .order("wpm", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (prev) prevBest = Number(prev.wpm) || 0;
+  } catch (e) {
+    console.warn("[zentype] prev best lookup failed:", e);
+  }
 
   const row = {
     user_id: ctx.user.id,
@@ -102,7 +121,7 @@ export async function saveResult(
   ).toLowerCase();
   if (uname) await cacheDel(`pub-profile:${uname}`);
 
-  return { saved: true, id: inserted.id };
+  return { saved: true, id: inserted.id, isPB: data.wpm > prevBest };
 }
 
 interface DbResultRow {
