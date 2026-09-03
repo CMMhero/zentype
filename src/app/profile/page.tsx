@@ -19,7 +19,7 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import { Skeleton } from "~/components/ui/skeleton";
+import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "~/components/ui/table";
@@ -627,7 +627,7 @@ export default function ProfilePage() {
             )}
             <div className="ml-auto">
               {loading || resultsLoading ? (
-                <Skeleton className="h-7 w-36" />
+                <SelectSkeleton className="w-36" />
               ) : (
                 <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
                   <SelectTrigger size="sm" className="h-7 w-36 text-xs">
