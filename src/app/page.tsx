@@ -25,6 +25,7 @@ import { calculateTestXP } from "~/lib/xp";
 import { useUser } from "~/components/user-provider";
 import type { GameSettings, TestResult } from "~/lib/types";
 import { lcGet } from "~/lib/client-cache";
+import { invalidateProfileCaches } from "~/lib/profile-cache";
 import type { AggregatedStats } from "~/server/results";
 
 /** Detect mobile/touch device for keyboard input routing */
@@ -178,6 +179,8 @@ export default function TestPage() {
         if (res.saved) {
           removeLocal(full.id);
           setSaveState("cloud");
+          // Drop cached profile data so the next visit refetches fresh stats
+          if (user) invalidateProfileCaches(user.id, user.username);
           // Process gamification (XP + achievements) silently - no popup/sonner to avoid interrupting chained tests
           // Defer gamification to next frame so result view paints without jank
           requestAnimationFrame(() => {

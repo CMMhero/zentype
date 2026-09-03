@@ -9,16 +9,29 @@ interface CacheEntry<T> {
  * Get a cached value from localStorage. Returns null on miss or expired.
  */
 export function lcGet<T>(key: string, ttlMs: number): T | null {
+  const entry = lcGetEntry<T>(key, ttlMs);
+  return entry ? entry.data : null;
+}
+
+/**
+ * Like lcGet, but also returns the entry's age so callers can decide whether
+ * the cached value is fresh enough to skip a network refetch entirely.
+ */
+export function lcGetEntry<T>(
+  key: string,
+  ttlMs: number,
+): { data: T; ageMs: number } | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(`${PREFIX}${key}`);
     if (!raw) return null;
     const entry: CacheEntry<T> = JSON.parse(raw);
-    if (Date.now() - entry.ts > ttlMs) {
+    const ageMs = Date.now() - entry.ts;
+    if (ageMs > ttlMs) {
       localStorage.removeItem(`${PREFIX}${key}`);
       return null;
     }
-    return entry.data;
+    return { data: entry.data, ageMs };
   } catch {
     return null;
   }

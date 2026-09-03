@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -37,7 +37,12 @@ const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) 
 import { getMyJoinDate, getResultById, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
-import { lcGet, lcSet, lcDel } from "~/lib/client-cache";
+import { lcGet, lcSet, lcDel, lcGetEntry } from "~/lib/client-cache";
+import {
+  PROFILE_CACHE_TTL, PROFILE_FRESH_MS, RESULT_DETAIL_TTL,
+  isFresh, ownStatsKey, ownResultsKey, ownPointsKey, ownAchKey, ownJoinKey, ownRanksKey,
+  readOwnProfileCache, toPublicProfile, writePublicProfileCache,
+} from "~/lib/profile-cache";
 import { useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
 import { formatDateTime, cn } from "~/lib/utils";
@@ -81,30 +86,49 @@ export default function ProfilePage() {
   const [historyCount, setHistoryCount] = useState(10);
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
 
+  // Hydrate from localStorage before the first paint, so a refresh or
+  // navigation renders cached data immediately instead of flashing skeletons.
+  useLayoutEffect(() => {
+    const uid = user?.id ?? "anon";
+    const c = readOwnProfileCache(uid);
+    if (c.stats) setStats(c.stats.data);
+    if (c.results) setResults(c.results.data);
+    if (c.points) setPoints(c.points.data);
+    if (c.achievements) setAchievements(c.achievements.data);
+    if (c.joinDate) setJoinedAt(c.joinDate.data);
+    const ranks = lcGetEntry<Record<string, number>>(ownRanksKey(uid), PROFILE_CACHE_TTL);
+    if (ranks) setBoardRanks(ranks.data);
+  }, [user?.id]);
 
-  // Stale-while-revalidate: show cached data instantly, fetch fresh in background
+  // Stale-while-revalidate: show cached data instantly, fetch fresh in background.
+  // The own and public profile views share the same cache keys, so toggling
+  // between them never refetches while the cache is still fresh.
   useEffect(() => {
     let cancelled = false;
-    const FIVE_MIN = 5 * 60 * 1000;
-    const ONE_MIN = 60 * 1000;
     // Namespace cache keys by user ID to prevent cross-user data leakage
     const uid = user?.id ?? "anon";
-    const ck = (suffix: string) => `${uid}:${suffix}`;
+    const username = user?.username ?? null;
     // Clean up old non-namespaced keys from before this fix
     ["profile-stats", "profile-results", "profile-points", "profile-achievements", "profile-join-date"].forEach((k) => lcDel(k));
 
-    // Load cached data immediately (no loading state)
-    const cStats = lcGet<AggregatedStats>(ck("profile-stats"), FIVE_MIN);
-    const cResults = lcGet<TestResult[]>(ck("profile-results"), FIVE_MIN);
-    const cPoints = lcGet<{ totalXP: number; level: number; progress: number }>(ck("profile-points"), ONE_MIN);
-    const cAchievements = lcGet<Array<{ id: string; name: string; description: string; trigger: "metric" | "streak" | "api"; achievedAt: string | null; progress: number; xp: number }>>(ck("profile-achievements"), FIVE_MIN);
-    const cJoinDate = lcGet<string>(ck("profile-join-date"), FIVE_MIN);
+    const c = readOwnProfileCache(uid);
 
-    if (cStats) setStats(cStats);
-    if (cResults) setResults(cResults);
-    if (cPoints) setPoints(cPoints);
-    if (cAchievements) setAchievements(cAchievements);
-    if (cJoinDate) setJoinedAt(cJoinDate);
+    // Warm the public-profile cache so "view public profile" renders instantly
+    if (username && c.stats && c.results && c.joinDate) {
+      writePublicProfileCache(username, {
+        profile: toPublicProfile({
+          userId: uid, username, avatarUrl: user?.avatarUrl ?? null,
+          joinedAt: c.joinDate.data, stats: c.stats.data, results: c.results.data,
+        }),
+      });
+    }
+    if (username && c.points) writePublicProfileCache(username, { points: c.points.data });
+    if (username && c.achievements) writePublicProfileCache(username, { achievements: c.achievements.data });
+
+    // Everything is fresh — skip the refetch entirely (fast profile ↔ public toggle)
+    if (isFresh(c.stats) && isFresh(c.results) && isFresh(c.points) && isFresh(c.achievements) && isFresh(c.joinDate)) {
+      return () => { cancelled = true; };
+    }
 
     // Fast fetch: stats + 10 results for quick initial render
     void Promise.all([
@@ -115,16 +139,37 @@ export default function ProfilePage() {
       user ? getMyJoinDate() : Promise.resolve(null),
     ]).then(([s, r, p, a, j]) => {
       if (cancelled) return;
-      if (s) { setStats(s); lcSet(ck("profile-stats"), s); }
-      if (r) { setResults(r); lcSet(ck("profile-results"), r); }
-      if (p) { setPoints(p); lcSet(ck("profile-points"), p); }
-      if (a) { setAchievements(a); lcSet(ck("profile-achievements"), a); }
-      if (j) { setJoinedAt(j); lcSet(ck("profile-join-date"), j); }
+      if (s) { setStats(s); lcSet(ownStatsKey(uid), s); }
+      if (r) setResults(r); // cache only the full batch below
+      if (p) { setPoints(p); lcSet(ownPointsKey(uid), p); }
+      if (a) { setAchievements(a); lcSet(ownAchKey(uid), a); }
+      if (j) { setJoinedAt(j); lcSet(ownJoinKey(uid), j); }
+      // Warm the public cache with fresh data too
+      if (username) {
+        if (s && r && j) {
+          writePublicProfileCache(username, {
+            profile: toPublicProfile({
+              userId: uid, username, avatarUrl: user?.avatarUrl ?? null,
+              joinedAt: j, stats: s, results: r,
+            }),
+          });
+        }
+        if (p) writePublicProfileCache(username, { points: p });
+        if (a) writePublicProfileCache(username, { achievements: a });
+      }
       // Background: fetch full results for accurate charts, PBs, and streaks
       void getUserResults({ limit: 200, lite: true }).then((full) => {
         if (cancelled || !full) return;
         setResults(full);
-        lcSet(ck("profile-results"), full);
+        lcSet(ownResultsKey(uid), full);
+        if (username && s && j) {
+          writePublicProfileCache(username, {
+            profile: toPublicProfile({
+              userId: uid, username, avatarUrl: user?.avatarUrl ?? null,
+              joinedAt: j, stats: s, results: full,
+            }),
+          });
+        }
       });
     });
 
@@ -136,7 +181,18 @@ export default function ProfilePage() {
     if (!user || !stats) return;
     const boards = Object.keys(stats.bestByBoard);
     if (boards.length === 0) return;
-    void getBoardRanks(user.id, boards).then(setBoardRanks);
+    const key = ownRanksKey(user.id);
+    const cached = lcGetEntry<Record<string, number>>(key, PROFILE_CACHE_TTL);
+    if (cached) {
+      setBoardRanks(cached.data);
+      if (cached.ageMs < PROFILE_FRESH_MS) return; // fresh — skip refetch
+    }
+    void getBoardRanks(user.id, boards).then((ranks) => {
+      setBoardRanks(ranks);
+      lcSet(key, ranks);
+      // Keep the public-profile view warm too
+      if (user.username) writePublicProfileCache(user.username, { ranks });
+    });
   }, [user, stats]);
 
   useEffect(() => {
@@ -635,11 +691,19 @@ export default function ProfilePage() {
                 <TableBody>
                   {visibleHistory.map((r) => (
                     <TableRow key={r.id} onClick={() => {
-                      // Open immediately with lite data
+                      // Full details are immutable — reuse them if already fetched
+                      const cached = lcGet<TestResult>(`result:${r.id}`, RESULT_DETAIL_TTL);
+                      if (cached) {
+                        setSelected(cached);
+                        return;
+                      }
+                      // Open immediately with lite data, fetch full in background
                       setSelected(r);
-                      // Fetch full data (chars + timeline) in background
                       getResultById(r.id).then((full) => {
-                        if (full) setSelected(full);
+                        if (full) {
+                          setSelected(full);
+                          lcSet(`result:${r.id}`, full);
+                        }
                       });
                     }} className="cursor-pointer">
                       <TableCell className="text-xs text-muted-foreground">{formatDateTime(r.createdAt)}</TableCell>
