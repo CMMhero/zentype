@@ -1,15 +1,15 @@
 # zentype Git & Development Workflow Guide
 
-This document outlines the Git workflow, branching strategy, commit conventions, and development procedures for zentype. **All developers and AI agents must reference and follow these rules.**
+How zentype is developed: the branch strategy, commit conventions, and release flow. Anyone working on the repo, human or AI, should follow it.
 
 ---
 
 ## 1. Branch Strategy (`dev` $\rightarrow$ `main`)
 
-zentype uses a safe and lightweight two-branch model tailored for agile solo development:
+zentype uses a simple two-branch model:
 
-- **`main`**: **Production branch**. Always deployable, stable, and protected. Pushing or merging to `main` triggers automated production deployments. **Never commit directly to `main`.**
-- **`dev`**: **Active development branch**. All day-to-day coding, feature building, bug fixing, and continuous commits happen here.
+- **`main`**: production. Always deployable. Pushing or merging here triggers an automated production deploy, so nothing lands on it directly.
+- **`dev`**: where day-to-day work happens. Features, fixes, and routine commits all go here.
 
 ```mermaid
 gitGraph
@@ -38,10 +38,10 @@ git pull origin dev
 Make changes, test locally, and verify compilation and types:
 ```bash
 # Typecheck
-npx tsc --noEmit
+bunx tsc --noEmit
 
 # Production build check (optional for large changes)
-npm run build
+bun run build
 ```
 
 ### Step 3: Semantic Commit & Push
@@ -94,8 +94,8 @@ When undertaking massive architectural rewrites or risky experiments that might 
 2. **Develop and test inside `../zentype-experiment`:**
    ```bash
    cd ../zentype-experiment
-   npx tsc --noEmit
-   npm run build
+   bunx tsc --noEmit
+   bun run build
    ```
 3. **Merge back to `dev` once validated:**
    ```bash
@@ -113,7 +113,7 @@ When undertaking massive architectural rewrites or risky experiments that might 
 
 ## 5. Commit Message Conventions (Semantic Commits)
 
-Commit messages follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
 <type>(<optional scope>): <description in lowercase>
@@ -144,4 +144,4 @@ AI agents operating on the zentype codebase must:
 1. **Work on `dev`**: Never commit directly to `main`.
 2. **Auto-commit**: Immediately stage and commit changes after making code edits.
 3. **Strict Semantic Commits**: Always format commits with standard semantic types and descriptive summaries.
-4. **Verify Safety**: Run `npx tsc --noEmit` on TypeScript changes to guarantee zero type errors before committing.
+4. **Verify Safety**: Run `bunx tsc --noEmit` on TypeScript changes to guarantee zero type errors before committing.
