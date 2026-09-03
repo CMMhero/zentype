@@ -273,8 +273,13 @@ export function MobileNav() {
                   />
                   <item.iconOutline
                     className={cn(
-                      "relative size-5 text-foreground transition-all duration-300 ease-out",
-                      active ? "absolute opacity-0" : "opacity-100",
+                      "relative size-5 text-foreground",
+                      // Hide instantly on activation (no transition) so the tab
+                      // press feels immediate; keep the fade-in when returning
+                      // to the inactive state.
+                      active
+                        ? "absolute opacity-0"
+                        : "transition-all duration-300 ease-out opacity-100",
                     )}
                   />
                 </span>
