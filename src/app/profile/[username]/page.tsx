@@ -319,7 +319,7 @@ export default function PublicProfilePage() {
           {achievements === null ? (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="h-28 w-full rounded-4xl" />
+                <Skeleton key={i} className="h-28 w-full rounded-2xl" />
               ))}
             </div>
           ) : unlockedAch.length > 0 ? (
@@ -510,13 +510,13 @@ function ProfileSkeleton() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {ALL_BOARDS.map((board) => (
-              <div key={board} className="flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-muted/20 p-3 text-center">
-                <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
-                <div className="flex h-8 items-center">
-                  <Skeleton className="h-4 w-12" />
-                </div>
-                <Skeleton className="mt-0.5 h-[18px] w-9 rounded-full" />
-              </div>
+              <Card key={board} size="sm" className="items-center rounded-2xl bg-muted/20 py-3 text-center">
+                <CardContent className="flex flex-col items-center gap-1 px-3">
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                  <Skeleton className="h-8 w-14" />
+                  <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
+                </CardContent>
+              </Card>
             ))}
           </div>
         </CardContent>
@@ -533,7 +533,7 @@ function ProfileSkeleton() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-28 w-full rounded-4xl" />
+              <Skeleton key={i} className="h-28 w-full rounded-2xl" />
             ))}
           </div>
           <Skeleton className="mt-3 h-4 w-32" />
