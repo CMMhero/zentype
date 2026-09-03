@@ -40,6 +40,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Kbd } from "~/components/ui/kbd";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "~/components/ui/navigation-menu";
 import { SelectSkeleton, Skeleton } from "~/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { useAuth } from "~/components/user-provider";
@@ -160,39 +166,55 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="text-sm font-semibold tracking-tight">zentype</span>
           </Link>
 
-          <nav className="ml-4 hidden items-center gap-2.5 md:flex" aria-label="Primary">
-            {NAV.map((item, i) => {
-              const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-              return (
-                <Tooltip key={item.to}>
-                  <TooltipTrigger asChild>
-                    <Link
-                      href={item.to}
-                      aria-label={item.label}
-                      className={cn(
-                        "rounded-3xl p-1.5 transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30",
-                        active
-                          ? "text-primary"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                      )}
-                      onClick={(e) => {
-                        if (pathname === item.to) {
-                          e.preventDefault();
-                          window.dispatchEvent(new Event("zt:restart"));
-                        }
-                      }}
-                    >
-                      <item.icon className="size-5" stroke={1} />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="flex items-center gap-1.5">
-                    {item.label}
-                    <Kbd>alt</Kbd>+<Kbd>{i + 1}</Kbd>
-                  </TooltipContent>
-                </Tooltip>
-              );
-            })}
-          </nav>
+          <div className="ml-4 hidden md:block">
+            <NavigationMenu aria-label="Primary">
+              <NavigationMenuList className="gap-2.5">
+                {NAV.map((item, i) => {
+                  const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+                  return (
+                    <NavigationMenuItem key={item.to}>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={
+                            <NavigationMenuLink
+                              className={cn(
+                                "rounded-3xl p-1.5 transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/30",
+                                active
+                                  ? "text-primary"
+                                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                              )}
+                              render={
+                                <Link
+                                  href={item.to}
+                                  aria-label={item.label}
+                                  onClick={(e) => {
+                                    if (pathname === item.to) {
+                                      e.preventDefault();
+                                      window.dispatchEvent(new Event("zt:restart"));
+                                    }
+                                  }}
+                                />
+                              }
+                            >
+                              <item.icon className="size-5" stroke={1} />
+                            </NavigationMenuLink>
+                          }
+                        />
+                        <TooltipContent
+                          side="bottom"
+                          showArrow={false}
+                          className="flex items-center gap-1.5"
+                        >
+                          {item.label}
+                          <Kbd>alt</Kbd>+<Kbd>{i + 1}</Kbd>
+                        </TooltipContent>
+                      </Tooltip>
+                    </NavigationMenuItem>
+                  );
+                })}
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
 
           <div className="ml-auto flex items-center gap-2">
             <Button
@@ -220,8 +242,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             ) : user ? (
               <UserMenu user={user} onSignOut={handleSignOut} userLevel={userLevel} />
             ) : (
-              <Button variant="secondary" size="sm" asChild className="text-xs">
-                <Link href="/login">sign in</Link>
+              <Button
+                variant="secondary"
+                size="sm"
+                render={<Link href="/login" />}
+                className="text-xs"
+              >
+                sign in
               </Button>
             )}
           </div>
@@ -357,30 +384,32 @@ function UserMenu({
   const router = useRouter();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="h-auto gap-2 rounded-3xl px-1.5 py-1"
-          aria-label="Account menu"
-        >
-          <Avatar className="size-6">
-            {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-            <AvatarFallback className="rounded-full text-[10px] uppercase">
-              {user.username.slice(0, 2)}
-            </AvatarFallback>
-          </Avatar>
-          <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
-          {userLevel === null ? (
-            <Skeleton className="hidden h-[18px] min-w-[28px] rounded-full sm:block" />
-          ) : (
-            <Badge
-              variant="secondary"
-              className="hidden sm:inline-flex text-[9px] font-bold tracking-widest"
-            >
-              {userLevel}
-            </Badge>
-          )}
-        </Button>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="ghost"
+            className="h-auto gap-2 rounded-3xl px-1.5 py-1"
+            aria-label="Account menu"
+          />
+        }
+      >
+        <Avatar className="size-6">
+          {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+          <AvatarFallback className="rounded-full text-[10px] uppercase">
+            {user.username.slice(0, 2)}
+          </AvatarFallback>
+        </Avatar>
+        <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
+        {userLevel === null ? (
+          <Skeleton className="hidden h-[18px] min-w-[28px] rounded-full sm:block" />
+        ) : (
+          <Badge
+            variant="secondary"
+            className="hidden sm:inline-flex text-[9px] font-bold tracking-widest"
+          >
+            {userLevel}
+          </Badge>
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuLabel className="text-xs">
