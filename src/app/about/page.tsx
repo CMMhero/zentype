@@ -13,6 +13,7 @@ import { CommunityStats } from "~/components/community-stats";
 import { BackToTyping } from "~/components/ui/back-to-typing";
 import { Card, CardContent } from "~/components/ui/card";
 import { InlineCode } from "~/components/ui/inline-code";
+import { TextLink } from "~/components/ui/text-link";
 
 export const metadata: Metadata = {
   title: "about",
@@ -45,54 +46,29 @@ export default function AboutPage() {
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             <ZentypeIcon className="text-primary size-4 inline" /> zentype is a typing test with
             speed and accuracy tracking, inspired by{" "}
-            <a
-              href="https://monkeytype.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://monkeytype.com/" target="_blank" rel="noreferrer">
               monkeytype
-            </a>
+            </TextLink>
             . it layers on XP and levels, 110+ achievements, streak heatmaps, and global
             leaderboards.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Built with{" "}
-            <a
-              href="https://nextjs.org/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://nextjs.org/" target="_blank" rel="noreferrer">
               Next.js
-            </a>
+            </TextLink>
             ,{" "}
-            <a
-              href="https://supabase.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://supabase.com/" target="_blank" rel="noreferrer">
               Supabase
-            </a>
+            </TextLink>
             ,{" "}
-            <a
-              href="https://ui.shadcn.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://ui.shadcn.com/" target="_blank" rel="noreferrer">
               shadcn/ui
-            </a>
+            </TextLink>
             , and{" "}
-            <a
-              href="https://tailwindcss.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://tailwindcss.com/" target="_blank" rel="noreferrer">
               Tailwind CSS
-            </a>
+            </TextLink>
             . Open source and free to use.
           </p>
         </section>
@@ -147,14 +123,14 @@ export default function AboutPage() {
               description={
                 <>
                   Next.js, Supabase, shadcn/ui, Tailwind CSS.{" "}
-                  <a
+                  <TextLink
                     href="https://github.com/CMMhero/zentype"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-primary hover:underline"
+                    className="text-xs"
                   >
                     open source on github
-                  </a>
+                  </TextLink>
                   .
                 </>
               }
@@ -166,26 +142,16 @@ export default function AboutPage() {
           <h2 className="text-base font-semibold">credits</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Built by{" "}
-            <a
-              href="https://cmmhero.top"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://cmmhero.top" target="_blank" rel="noreferrer">
               CMMhero
-            </a>
+            </TextLink>
             . Full-stack typing test with cloud sync, XP, and leaderboards.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Trophy UI components by{" "}
-            <a
-              href="https://ui.trophy.so"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://ui.trophy.so" target="_blank" rel="noreferrer">
               trophyso/ui
-            </a>
+            </TextLink>
             .
           </p>
         </section>
