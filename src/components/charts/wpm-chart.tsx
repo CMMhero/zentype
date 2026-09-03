@@ -83,7 +83,15 @@ export function WpmChart({
           <YAxis yAxisId="right" orientation="right" hide domain={[0, totalErrors || 1]} />
           <ChartTooltip
             cursor={{ stroke: "var(--border)" }}
-            content={<ChartTooltipContent labelFormatter={(l) => `${l}s`} indicator="dot" />}
+            content={
+              <ChartTooltipContent
+                // Without a labelKey the tooltip falls back to the first
+                // series' config label ("wpm"), so read the timeline second
+                // straight from the hovered data point.
+                labelFormatter={(_value, payload) => `${payload?.[0]?.payload?.Second ?? ""}s`}
+                indicator="dot"
+              />
+            }
           />
           {/* Children order drives tooltip order: wpm, raw, errors */}
           <Area
