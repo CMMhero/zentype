@@ -739,14 +739,18 @@ export default function ProfilePage() {
                       });
                     }} className="cursor-pointer">
                       <TableCell className="text-xs text-muted-foreground">{formatDateTime(r.createdAt)}</TableCell>
-                      <TableCell className="text-right font-bold tabular-nums text-primary">
+                      <TableCell className="text-right">
                         <span className="inline-flex items-center justify-end gap-1.5">
-                          {pbIds.has(r.id) && (
-                            <Badge variant="secondary" className="gap-0.5 text-[9px] font-bold tracking-widest">
+                          {pbIds.has(r.id) ? (
+                            <Badge variant="secondary" className="w-9 shrink-0 justify-center gap-0.5 px-0 text-[9px] font-bold tracking-widest">
                               <IconCrown className="size-3" /> PB
                             </Badge>
+                          ) : (
+                            // Reserve the same width on non-PB rows so the wpm
+                            // numbers (and PB badges) align across every row.
+                            <span aria-hidden="true" className="w-9 shrink-0" />
                           )}
-                          {r.wpm}
+                          <span className="font-bold tabular-nums text-primary">{r.wpm}</span>
                         </span>
                       </TableCell>
                       <TableCell className="text-right tabular-nums text-muted-foreground">{r.rawWpm}</TableCell>
