@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Geist } from "next/font/google";
 import { AppShell } from "~/components/layout/app-shell";
 import { DynamicFavicon } from "~/components/ui/dynamic-favicon";
 import { Toaster } from "~/components/ui/sonner";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { UserProvider } from "~/components/user-provider";
 import { DEFAULT_THEME_ID, THEMES, themeStyleSheet } from "~/lib/themes";
+import { cn } from "~/lib/utils";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const appearanceMap: Record<string, string> = Object.fromEntries(
   THEMES.map((t) => [t.id, t.appearance]),
@@ -129,7 +133,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content="#282828" />
