@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -43,10 +43,11 @@ import {
   isFresh, ownStatsKey, ownResultsKey, ownPointsKey, ownAchKey, ownJoinKey, ownRanksKey,
   readOwnProfileCache, toPublicProfile, writePublicProfileCache,
 } from "~/lib/profile-cache";
-import { useUser } from "~/components/user-provider";
+import { useAuthStatus, useUser } from "~/components/user-provider";
 import { modeLabel, type TestResult } from "~/lib/types";
 import { formatDateTime, cn } from "~/lib/utils";
 import { ACHIEVEMENTS } from "~/lib/achievements";
+import ProfileLoading from "./loading";
 
 /** All board keys in display order */
 const ALL_BOARDS = [
@@ -85,6 +86,11 @@ export default function ProfilePage() {
   const [joinedAt, setJoinedAt] = useState<string | null>(null);
   const [historyCount, setHistoryCount] = useState(10);
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
+  // Tracks the results currently rendered, so a background refetch can tell
+  // whether the UI would actually change before calling setResults. Prevents
+  // the cached -> 10 results -> full results flash.
+  const resultsRef = useRef<TestResult[] | null>(null);
+  const authStatus = useAuthStatus();
 
   // Hydrate from localStorage before the first paint, so a refresh or
   // navigation renders cached data immediately instead of flashing skeletons.
@@ -92,7 +98,10 @@ export default function ProfilePage() {
     const uid = user?.id ?? "anon";
     const c = readOwnProfileCache(uid);
     if (c.stats) setStats(c.stats.data);
-    if (c.results) setResults(c.results.data);
+    if (c.results) {
+      resultsRef.current = c.results.data;
+      setResults(c.results.data);
+    }
     if (c.points) setPoints(c.points.data);
     if (c.achievements) setAchievements(c.achievements.data);
     if (c.joinDate) setJoinedAt(c.joinDate.data);
@@ -104,6 +113,9 @@ export default function ProfilePage() {
   // The own and public profile views share the same cache keys, so toggling
   // between them never refetches while the cache is still fresh.
   useEffect(() => {
+    // Wait for the client-side session to settle so we never fetch or cache
+    // under the "anon" placeholder key, then re-run once the real user lands.
+    if (authStatus !== "ready") return;
     let cancelled = false;
     // Namespace cache keys by user ID to prevent cross-user data leakage
     const uid = user?.id ?? "anon";
@@ -140,27 +152,35 @@ export default function ProfilePage() {
     ]).then(([s, r, p, a, j]) => {
       if (cancelled) return;
       if (s) { setStats(s); lcSet(ownStatsKey(uid), s); }
-      if (r) setResults(r); // cache only the full batch below
+      if (r) {
+        // Results already rendered from cache? Don't swap in the partial
+        // 10-result batch — that would flash the UI. The full batch below is
+        // the only thing that updates results once data is on screen.
+        if (resultsRef.current === null) {
+          resultsRef.current = r;
+          setResults(r);
+        }
+      }
       if (p) { setPoints(p); lcSet(ownPointsKey(uid), p); }
       if (a) { setAchievements(a); lcSet(ownAchKey(uid), a); }
       if (j) { setJoinedAt(j); lcSet(ownJoinKey(uid), j); }
-      // Warm the public cache with fresh data too
+      // Warm the public cache with fresh data too. The public profile object
+      // is only written by the full batch below — writing the partial
+      // 10-result profile here could downgrade a cached full profile and
+      // flash the public view mid-refresh.
       if (username) {
-        if (s && r && j) {
-          writePublicProfileCache(username, {
-            profile: toPublicProfile({
-              userId: uid, username, avatarUrl: user?.avatarUrl ?? null,
-              joinedAt: j, stats: s, results: r,
-            }),
-          });
-        }
         if (p) writePublicProfileCache(username, { points: p });
         if (a) writePublicProfileCache(username, { achievements: a });
       }
       // Background: fetch full results for accurate charts, PBs, and streaks
       void getUserResults({ limit: 200, lite: true }).then((full) => {
         if (cancelled || !full) return;
-        setResults(full);
+        // Revalidation that returns identical data must not cause a visible
+        // re-render — keep showing what's already on screen.
+        if (!resultsEqual(full, resultsRef.current)) {
+          resultsRef.current = full;
+          setResults(full);
+        }
         lcSet(ownResultsKey(uid), full);
         if (username && s && j) {
           writePublicProfileCache(username, {
@@ -174,7 +194,7 @@ export default function ProfilePage() {
     });
 
     return () => { cancelled = true; };
-  }, [user]);
+  }, [user, authStatus]);
 
   // Board ranks depend on stats (use latest from state, whether cached or fresh)
   useEffect(() => {
@@ -196,13 +216,17 @@ export default function ProfilePage() {
   }, [user, stats]);
 
   useEffect(() => {
-    if (!user) {
+    // Only redirect once the client-side session has settled, so a logged-in
+    // user isn't bounced to /login while auth is still resolving.
+    if (authStatus === "ready" && !user) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, authStatus, router]);
 
   if (!user) {
-    return null;
+    // While the client-side session is still resolving, mirror the route
+    // loading skeleton so a refresh doesn't flash a blank page.
+    return authStatus === "loading" ? <ProfileLoading /> : null;
   }
 
   const loading = stats === null;
@@ -921,4 +945,26 @@ function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
   if (m < 60) return `${m}m`;
   return `${Math.floor(m / 60)}h ${m % 60}m`;
+}
+
+/**
+ * Compare two lite result lists for equality, ignoring row order (queries are
+ * ordered by created_at, so ties can come back in any order between calls).
+ * Used to skip state updates when a background refetch returns unchanged data.
+ */
+function resultsEqual(a: TestResult[] | null, b: TestResult[] | null): boolean {
+  if (a === b) return true;
+  if (!a || !b || a.length !== b.length) return false;
+  const canon = (arr: TestResult[]) =>
+    [...arr]
+      .sort((x, y) => (x.id < y.id ? -1 : x.id > y.id ? 1 : 0))
+      .map((r) =>
+        JSON.stringify([
+          r.id, r.createdAt, r.mode, r.variant, r.source,
+          r.punctuation, r.numbers, r.wpm, r.rawWpm, r.accuracy, r.consistency,
+        ]),
+      );
+  const ca = canon(a);
+  const cb = canon(b);
+  return ca.every((s, i) => s === cb[i]);
 }

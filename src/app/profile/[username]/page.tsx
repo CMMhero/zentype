@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import {
   IconArrowLeft, IconAward, IconClock, IconGauge,
@@ -47,13 +47,17 @@ export default function PublicProfilePage() {
   
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
+  // Tracks the profile currently rendered, so a background refetch can tell
+  // whether the UI would actually change before calling setProfile. Prevents
+  // a cached -> identical refetch from replacing rendered data.
+  const profileRef = useRef<PublicProfile | null>(null);
   const currentUser = useUser();
 
   // Hydrate from localStorage before the first paint, so a refresh renders
   // cached data immediately instead of flashing the skeleton.
   useLayoutEffect(() => {
     const c = readPublicProfileCache(username);
-    if (c.profile) { setProfile(c.profile.data); setLoading(false); }
+    if (c.profile) { profileRef.current = c.profile.data; setProfile(c.profile.data); setLoading(false); }
     if (c.points) setPoints(c.points.data);
     if (c.achievements) setAchievements(c.achievements.data);
     const isOwn = currentUser?.username === username;
@@ -91,7 +95,16 @@ export default function PublicProfilePage() {
       getUserAchievementsByUsername(username),
     ]).then(([p, pt, a]) => {
       if (cancelled) return;
-      if (p) { setProfile(p); setLoading(false); lcSet(pubProfileKey(username), p); }
+      if (p) {
+        // Revalidation that returns identical data must not cause a visible
+        // re-render — keep showing what's already on screen.
+        if (!publicProfileEqual(p, profileRef.current)) {
+          profileRef.current = p;
+          setProfile(p);
+        }
+        setLoading(false);
+        lcSet(pubProfileKey(username), p);
+      }
       if (pt) { setPoints(pt); lcSet(pubPointsKey(username), pt); }
       if (a) { setAchievements(a); lcSet(pubAchKey(username), a); }
       // Mirror into the full-profile cache when this is your own profile
@@ -408,6 +421,31 @@ function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
   if (m < 60) return `${m}m`;
   return `${Math.floor(m / 60)}h ${m % 60}m`;
+}
+
+/**
+ * Compare two public profiles for equality, ignoring result order (queries are
+ * ordered by created_at, so ties can come back in any order between calls).
+ * Used to skip state updates when a background refetch returns unchanged data.
+ */
+function publicProfileEqual(a: PublicProfile | null, b: PublicProfile | null): boolean {
+  if (a === b) return true;
+  if (!a || !b) return false;
+  if (
+    a.userId !== b.userId || a.username !== b.username ||
+    a.avatarUrl !== b.avatarUrl || a.joinedAt !== b.joinedAt ||
+    JSON.stringify(a.stats) !== JSON.stringify(b.stats) ||
+    a.results.length !== b.results.length
+  ) return false;
+  const canon = (arr: PublicProfile["results"]) =>
+    [...arr]
+      .sort((x, y) => (x.id < y.id ? -1 : x.id > y.id ? 1 : 0))
+      .map((r) =>
+        JSON.stringify([r.id, r.createdAt, r.mode, r.variant, r.wpm, r.accuracy]),
+      );
+  const ca = canon(a.results);
+  const cb = canon(b.results);
+  return ca.every((s, i) => s === cb[i]);
 }
 
 const ALL_BOARDS = [
