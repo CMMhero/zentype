@@ -13,20 +13,21 @@ import { Toaster as Sonner, type ToasterProps } from "sonner";
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme();
-  const [position, setPosition] = useState<ToasterProps["position"]>("bottom-right");
-  const [offset, setOffset] = useState<number>(24);
+  const [position, setPosition] = useState<ToasterProps["position"]>("top-center");
+  const [offset, setOffset] = useState<number>(56);
 
   // On mobile, dock toasts at the top just below the sticky navbar; on larger
-  // screens keep them at the bottom-right. The navbar height is measured at
-  // runtime so the offset accounts for the safe-area inset on notched phones.
+  // screens keep them at the bottom-right. The offset is the navbar's rendered
+  // bottom edge plus a small gap, so it tracks the safe-area inset and any
+  // navbar height change; it is recomputed on resize/orientation too.
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
     const apply = () => {
       if (mq.matches) {
         const nav = document.querySelector('header[role="banner"]');
-        const navHeight = nav ? nav.getBoundingClientRect().height : 48;
+        const bottom = nav ? nav.getBoundingClientRect().bottom : 56;
         setPosition("top-center");
-        setOffset(navHeight + 8);
+        setOffset(bottom + 8);
       } else {
         setPosition("bottom-right");
         setOffset(24);
@@ -34,7 +35,11 @@ const Toaster = ({ ...props }: ToasterProps) => {
     };
     apply();
     mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
+    window.addEventListener("resize", apply);
+    return () => {
+      mq.removeEventListener("change", apply);
+      window.removeEventListener("resize", apply);
+    };
   }, []);
 
   return (

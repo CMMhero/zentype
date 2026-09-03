@@ -228,10 +228,10 @@ Settings tabs and the config bar both use pill rails. `TabsList` is `rounded-ful
 
 ### Mobile Bottom Nav
 
-- In normal document flow (not fixed) below `<main>`, visible only under `md`
+- `sticky bottom-0` in normal document flow below `<main>`, visible only under `md`; pins to the viewport bottom while the page scrolls
 - `shrink-0 border-t border-border/40 bg-background/95 backdrop-blur-xl`, row `h-14`, `justify-around`
 - Items: icon + `text-[10px]` label, active `text-primary`
-- `main` owns the scroll (`flex-1 overflow-y-auto`) inside a `h-dvh` flex column
+- The document owns the scroll: the shell is a `min-h-dvh` flex column (so short pages still fill the viewport and taller pages scroll natively, letting mobile browsers hide their address bar); the sticky navbar pins top, the sticky bottom nav pins bottom
 
 ### Footer
 

@@ -227,7 +227,7 @@ export function MobileNav() {
     <NavigationMenu
       aria-label="Mobile navigation"
       viewport={false}
-      className="bg-background/95 flex-none border-t border-border/40 backdrop-blur-xl max-w-full md:hidden w-full"
+      className="bg-background/95 sticky bottom-0 flex-none border-t border-border/40 backdrop-blur-xl max-w-full md:hidden w-full"
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <NavigationMenuList className="flex h-16 w-full items-center justify-between">
@@ -268,13 +268,13 @@ export function MobileNav() {
                     key={active ? `pop-${presses[item.to] ?? 0}` : "idle"}
                     className={cn(
                       "relative size-5 text-primary transition-all duration-300 ease-out",
-                      active ? "zt-icon-pop scale-100 opacity-100" : "absolute scale-75 opacity-0",
+                      active ? "zt-icon-pop opacity-100" : "absolute opacity-0",
                     )}
                   />
                   <item.iconOutline
                     className={cn(
                       "relative size-5 text-foreground transition-all duration-300 ease-out",
-                      active ? "absolute scale-75 opacity-0" : "scale-100 opacity-100",
+                      active ? "absolute opacity-0" : "opacity-100",
                     )}
                   />
                 </span>

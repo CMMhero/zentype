@@ -443,7 +443,15 @@ export default function TestPage() {
           const printable = e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey;
           if (printable) return;
           if (!e.repeat) {
-            if (e.key === "Backspace") mobileBackspaceRef.current = true;
+            if (e.key === "Backspace") {
+              // The real keydown already bubbles to the window listener, which
+              // erases a single char. Dispatching a synthetic one here would
+              // erase twice. Flag it so onInput's deleteContentBackward
+              // fallback doesn't dispatch an extra erase on browsers that
+              // never fire keydown (e.g. Firefox mobile).
+              mobileBackspaceRef.current = true;
+              return;
+            }
             window.dispatchEvent(
               new KeyboardEvent("keydown", {
                 key: e.key,
