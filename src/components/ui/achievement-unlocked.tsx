@@ -68,13 +68,17 @@ const AchievementUnlocked = React.forwardRef<HTMLDivElement, AchievementUnlocked
     }, [open, onOpenChange]);
 
     React.useEffect(() => {
+      // Lock the viewport scroll directly on the root element; body-level
+      // locking depends on overflow propagation to the viewport and is less
+      // reliable across browsers.
+      const root = document.documentElement;
       if (open) {
-        document.body.style.overflow = "hidden";
+        root.style.overflow = "hidden";
       } else {
-        document.body.style.overflow = "";
+        root.style.overflow = "";
       }
       return () => {
-        document.body.style.overflow = "";
+        root.style.overflow = "";
       };
     }, [open]);
 
