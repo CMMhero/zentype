@@ -10,7 +10,9 @@ import { Kbd } from "~/components/ui/kbd";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { modeLabel, type TestResult } from "~/lib/types";
 
-const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-40 w-full" /> });
+// Non-compact WpmChart renders at h-56 — the loader skeleton must match so
+// the layout doesn't jump when the lazy chunk finishes loading.
+const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-56 w-full" /> });
 
 export type SaveState = "cloud" | "guest" | "failed" | "skipped" | "invalid";
 
