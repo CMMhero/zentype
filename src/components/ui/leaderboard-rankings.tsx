@@ -231,10 +231,10 @@ const LeaderboardRankings = React.forwardRef<HTMLDivElement, LeaderboardRankings
                 <SelectTrigger size="sm">
                   <SelectValue />
                 </SelectTrigger>
-                {/* popper (not item-aligned): the app scrolls inside <main>, so a
-                    viewport-anchored item-aligned list gets cut off at the bottom
-                    of the page — popper flips/collides against the viewport. */}
-                <SelectContent position="popper" align="start">
+                {/* Anchor to the trigger (not the selected item): the app scrolls
+                    inside <main>, so an item-aligned list gets cut off at the bottom
+                    of the page — the positioner flips/collides against the viewport. */}
+                <SelectContent align="start" alignItemWithTrigger={false}>
                   {pageSizeOptions.map((option) => (
                     <SelectItem key={option} value={String(option)}>
                       {option}

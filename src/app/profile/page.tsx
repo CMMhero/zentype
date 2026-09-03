@@ -43,6 +43,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "~/components/ui/empty";
 import { Progress } from "~/components/ui/progress";
 import {
   Select,
@@ -469,13 +477,11 @@ export default function ProfilePage() {
               variant="outline"
               size="sm"
               className="text-muted-foreground gap-2 text-xs"
-              asChild
+              render={<Link href={`/profile/${user.username}`} />}
             >
-              <Link href={`/profile/${user.username}`}>
-                <IconEye className="size-3.5" />{" "}
-                <span className="hidden sm:inline">view public profile</span>
-                <span className="sm:hidden">public</span>
-              </Link>
+              <IconEye className="size-3.5" />{" "}
+              <span className="hidden sm:inline">view public profile</span>
+              <span className="sm:hidden">public</span>
             </Button>
             <Button
               variant="outline"
@@ -671,9 +677,14 @@ export default function ProfilePage() {
                 </ComposedChart>
               </ChartContainer>
             ) : (
-              <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-border/60 text-xs text-muted-foreground">
-                <IconTrendingUp className="mr-2 size-4" /> finish more tests
-              </div>
+              <Empty className="h-40 gap-1 rounded-2xl border border-dashed border-border/60 p-0">
+                <EmptyHeader className="gap-1.5">
+                  <EmptyMedia variant="icon" className="size-8">
+                    <IconTrendingUp className="size-4" />
+                  </EmptyMedia>
+                  <EmptyTitle className="text-xs font-medium">finish more tests</EmptyTitle>
+                </EmptyHeader>
+              </Empty>
             )}
           </CardContent>
         </Card>
@@ -719,9 +730,14 @@ export default function ProfilePage() {
                 </ComposedChart>
               </ChartContainer>
             ) : (
-              <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-border/60 text-xs text-muted-foreground">
-                <IconTarget className="mr-2 size-4" /> finish more tests
-              </div>
+              <Empty className="h-40 gap-1 rounded-2xl border border-dashed border-border/60 p-0">
+                <EmptyHeader className="gap-1.5">
+                  <EmptyMedia variant="icon" className="size-8">
+                    <IconTarget className="size-4" />
+                  </EmptyMedia>
+                  <EmptyTitle className="text-xs font-medium">finish more tests</EmptyTitle>
+                </EmptyHeader>
+              </Empty>
             )}
           </CardContent>
         </Card>
@@ -754,9 +770,14 @@ export default function ProfilePage() {
               </BarChart>
             </ChartContainer>
           ) : (
-            <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-border/60 text-xs text-muted-foreground">
-              <IconTrophy className="mr-2 size-4" /> no tests yet
-            </div>
+            <Empty className="h-40 gap-1 rounded-2xl border border-dashed border-border/60 p-0">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon" className="size-8">
+                  <IconChartBar className="size-4" />
+                </EmptyMedia>
+                <EmptyTitle className="text-xs font-medium">no tests yet</EmptyTitle>
+              </EmptyHeader>
+            </Empty>
           )}
         </CardContent>
       </Card>
@@ -801,9 +822,17 @@ export default function ProfilePage() {
               badgeSize="sm"
             />
           ) : (
-            <p className="text-xs text-muted-foreground">
-              no achievements yet. finish tests to earn badges.
-            </p>
+            <Empty className="gap-1.5 rounded-2xl py-6">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon" className="size-8">
+                  <IconAward className="size-4" />
+                </EmptyMedia>
+                <EmptyTitle className="text-sm font-semibold">no achievements yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  finish tests to earn badges.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           )}
           {achievements === null ? (
             <Skeleton className="mt-3 h-4 w-32" />
@@ -839,17 +868,39 @@ export default function ProfilePage() {
             </TabsList>
           </Tabs>
           <div className="flex-1 overflow-y-auto pr-1">
-            <AchievementList
-              achievements={filteredAch.map((a) => ({
-                id: a.id,
-                name: a.name,
-                description: a.description,
-                trigger: a.trigger,
-                achievedAt: a.achievedAt,
-                progress: a.progress,
-              }))}
-              badgeSize="sm"
-            />
+            {filteredAch.length === 0 ? (
+              <Empty className="gap-1.5 rounded-2xl py-10">
+                <EmptyHeader className="gap-1.5">
+                  <EmptyMedia variant="icon" className="size-8">
+                    {achTab === "unlocked" ? (
+                      <IconAward className="size-4" />
+                    ) : (
+                      <IconTrophy className="size-4" />
+                    )}
+                  </EmptyMedia>
+                  <EmptyTitle className="text-sm font-semibold">
+                    {achTab === "unlocked" ? "nothing unlocked yet" : "all achievements unlocked"}
+                  </EmptyTitle>
+                  {achTab === "unlocked" && (
+                    <EmptyDescription className="text-xs">
+                      finish tests to earn badges.
+                    </EmptyDescription>
+                  )}
+                </EmptyHeader>
+              </Empty>
+            ) : (
+              <AchievementList
+                achievements={filteredAch.map((a) => ({
+                  id: a.id,
+                  name: a.name,
+                  description: a.description,
+                  trigger: a.trigger,
+                  achievedAt: a.achievedAt,
+                  progress: a.progress,
+                }))}
+                badgeSize="sm"
+              />
+            )}
           </div>
         </DialogContent>
       </Dialog>
@@ -861,39 +912,60 @@ export default function ProfilePage() {
             <IconClock className="size-4" /> activity
             {loading || resultsLoading ? (
               <Skeleton className="ml-2 h-3 w-28" />
-            ) : (
+            ) : (results ?? []).length > 0 ? (
               <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
                 {totalTestsInStreakPeriod} tests{" "}
                 {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
               </span>
-            )}
-            <div className="ml-auto">
-              {loading || resultsLoading ? (
-                <SelectSkeleton className="w-36" />
-              ) : (
-                <Select
-                  value={String(streakYear)}
-                  onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}
-                >
-                  <SelectTrigger size="sm" className="h-7 w-36 text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="last12">last 12 months</SelectItem>
-                    {availableYears.map((y) => (
-                      <SelectItem key={y} value={String(y)}>
-                        {y}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
+            ) : null}
+            {loading || resultsLoading || (results ?? []).length > 0 ? (
+              <div className="ml-auto">
+                {loading || resultsLoading ? (
+                  <SelectSkeleton className="w-36" />
+                ) : (
+                  <Select
+                    value={String(streakYear)}
+                    onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}
+                  >
+                    <SelectTrigger size="sm" className="h-7 w-36 text-xs">
+                      <SelectValue>
+                        {(val) => (val === "last12" ? "last 12 months" : (val ?? ""))}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="last12">last 12 months</SelectItem>
+                      {availableYears.map((y) => (
+                        <SelectItem key={y} value={String(y)}>
+                          {y}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            ) : null}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
           {loading || resultsLoading ? (
             <StreakCalendarSkeleton />
+          ) : (results ?? []).length === 0 ? (
+            <Empty className="gap-1.5 rounded-2xl py-10">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon">
+                  <IconClock className="size-5" />
+                </EmptyMedia>
+                <EmptyTitle className="text-sm font-semibold">no activity yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  finish a typing test to start tracking your streak.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent className="gap-2">
+                <Button size="sm" className="gap-2" render={<Link href="/" />}>
+                  start typing <IconArrowRight className="size-4" />
+                </Button>
+              </EmptyContent>
+            </Empty>
           ) : (
             <StreakCalendar
               streak={streakPeriods}
@@ -929,13 +1001,22 @@ export default function ProfilePage() {
               ))}
             </div>
           ) : (results ?? []).length === 0 ? (
-            <div className="flex flex-col items-center gap-3 py-12 text-center">
-              <IconHistory className="size-8 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">no tests recorded yet</p>
-              <Link href="/" className="text-sm text-primary hover:underline">
-                start typing →
-              </Link>
-            </div>
+            <Empty className="gap-3 rounded-2xl py-14">
+              <EmptyHeader className="gap-2">
+                <EmptyMedia variant="icon">
+                  <IconHistory className="size-5" />
+                </EmptyMedia>
+                <EmptyTitle className="text-base">no tests recorded yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  your completed typing tests will show up here.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent className="gap-2">
+                <Button size="sm" className="gap-2" render={<Link href="/" />}>
+                  start typing <IconArrowRight className="size-4" />
+                </Button>
+              </EmptyContent>
+            </Empty>
           ) : (
             <div className="overflow-x-auto">
               <Table>
@@ -1003,17 +1084,17 @@ export default function ProfilePage() {
                           {modeLabel(r)}
                           {r.punctuation && (
                             <Tooltip>
-                              <TooltipTrigger asChild>
-                                <IconAt className="size-3 text-muted-foreground/70" />
-                              </TooltipTrigger>
+                              <TooltipTrigger
+                                render={<IconAt className="size-3 text-muted-foreground/70" />}
+                              />
                               <TooltipContent>punctuation</TooltipContent>
                             </Tooltip>
                           )}
                           {r.numbers && (
                             <Tooltip>
-                              <TooltipTrigger asChild>
-                                <IconHash className="size-3 text-muted-foreground/70" />
-                              </TooltipTrigger>
+                              <TooltipTrigger
+                                render={<IconHash className="size-3 text-muted-foreground/70" />}
+                              />
                               <TooltipContent>numbers</TooltipContent>
                             </Tooltip>
                           )}
@@ -1097,27 +1178,31 @@ export default function ProfilePage() {
                       </Badge>
                       {selected.punctuation && (
                         <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge
-                              variant="outline"
-                              className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
-                            >
-                              <IconAt className="size-3" />
-                            </Badge>
-                          </TooltipTrigger>
+                          <TooltipTrigger
+                            render={
+                              <Badge
+                                variant="outline"
+                                className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
+                              >
+                                <IconAt className="size-3" />
+                              </Badge>
+                            }
+                          />
                           <TooltipContent>punctuation</TooltipContent>
                         </Tooltip>
                       )}
                       {selected.numbers && (
                         <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge
-                              variant="outline"
-                              className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
-                            >
-                              <IconHash className="size-3" />
-                            </Badge>
-                          </TooltipTrigger>
+                          <TooltipTrigger
+                            render={
+                              <Badge
+                                variant="outline"
+                                className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
+                              >
+                                <IconHash className="size-3" />
+                              </Badge>
+                            }
+                          />
                           <TooltipContent>numbers</TooltipContent>
                         </Tooltip>
                       )}

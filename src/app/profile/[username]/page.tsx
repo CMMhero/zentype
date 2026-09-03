@@ -20,6 +20,13 @@ import { BackToTyping } from "~/components/ui/back-to-typing";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "~/components/ui/empty";
 import { Progress } from "~/components/ui/progress";
 
 import {
@@ -86,13 +93,23 @@ export default function PublicProfilePage() {
       profileRef.current = c.profile.data;
       setProfile(c.profile.data);
       setLoading(false);
+    } else {
+      // Navigating between usernames reuses this component instance, so drop
+      // any previously rendered profile (e.g. from the last username) and
+      // fall back to the skeleton until the fetch resolves.
+      profileRef.current = null;
+      setProfile(null);
+      setLoading(true);
     }
     if (c.points) setPoints(c.points.data);
+    else setPoints(null);
     if (c.achievements) setAchievements(c.achievements.data);
+    else setAchievements(null);
     const isOwn = currentUser?.username === username;
     const ranksKey = isOwn && currentUser ? ownRanksKey(currentUser.id) : pubRanksKey(username);
     const ranks = lcGetEntry<Record<string, number>>(ranksKey, PROFILE_CACHE_TTL);
     if (ranks) setBoardRanks(ranks.data);
+    else setBoardRanks(null);
   }, [username, currentUser]);
 
   // Stale-while-revalidate: show cached data instantly, fetch fresh in background.
@@ -141,6 +158,10 @@ export default function PublicProfilePage() {
           }
           setLoading(false);
           lcSet(pubProfileKey(username), p);
+        } else {
+          // Server reported no account for this username — stop loading so
+          // the "user not found" state renders instead of a permanent skeleton.
+          setLoading(false);
         }
         if (pt) {
           setPoints(pt);
@@ -205,10 +226,8 @@ export default function PublicProfilePage() {
             </p>
           </div>
           <div className="flex flex-col items-center gap-4">
-            <Button asChild size="sm" className="gap-2">
-              <Link href="/leaderboard">
-                <IconTrophy className="size-4" /> view leaderboard
-              </Link>
+            <Button size="sm" className="gap-2" render={<Link href="/leaderboard" />}>
+              <IconTrophy className="size-4" /> view leaderboard
             </Button>
             <BackToTyping />
           </div>
@@ -276,13 +295,11 @@ export default function PublicProfilePage() {
             variant="outline"
             size="sm"
             className="text-muted-foreground gap-2 text-xs"
-            asChild
+            render={<Link href="/profile" />}
           >
-            <Link href="/profile">
-              <IconArrowLeft className="size-3.5" />{" "}
-              <span className="hidden sm:inline">my profile</span>
-              <span className="sm:hidden">me</span>
-            </Link>
+            <IconArrowLeft className="size-3.5" />{" "}
+            <span className="hidden sm:inline">my profile</span>
+            <span className="sm:hidden">me</span>
           </Button>
         )}
       </header>
@@ -457,7 +474,17 @@ export default function PublicProfilePage() {
               badgeSize="sm"
             />
           ) : (
-            <p className="text-xs text-muted-foreground">no achievements yet</p>
+            <Empty className="gap-1.5 rounded-2xl py-6">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon" className="size-8">
+                  <IconAward className="size-4" />
+                </EmptyMedia>
+                <EmptyTitle className="text-sm font-semibold">no achievements yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  finish tests to earn badges.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           )}
         </CardContent>
       </Card>
@@ -468,39 +495,55 @@ export default function PublicProfilePage() {
             <IconClock className="size-4" /> activity
             {loading ? (
               <Skeleton className="ml-2 h-3 w-28" />
-            ) : (
+            ) : safeResults.length > 0 ? (
               <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
                 {totalTestsInStreakPeriod} tests{" "}
                 {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
               </span>
-            )}
-            <div className="ml-auto">
-              {loading ? (
-                <SelectSkeleton className="w-36" />
-              ) : (
-                <Select
-                  value={String(streakYear)}
-                  onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}
-                >
-                  <SelectTrigger size="sm" className="h-7 w-36 text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="last12">last 12 months</SelectItem>
-                    {availableYears.map((y) => (
-                      <SelectItem key={y} value={String(y)}>
-                        {y}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
+            ) : null}
+            {loading || safeResults.length > 0 ? (
+              <div className="ml-auto">
+                {loading ? (
+                  <SelectSkeleton className="w-36" />
+                ) : (
+                  <Select
+                    value={String(streakYear)}
+                    onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}
+                  >
+                    <SelectTrigger size="sm" className="h-7 w-36 text-xs">
+                      <SelectValue>
+                        {(val) => (val === "last12" ? "last 12 months" : (val ?? ""))}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="last12">last 12 months</SelectItem>
+                      {availableYears.map((y) => (
+                        <SelectItem key={y} value={String(y)}>
+                          {y}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            ) : null}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
           {loading ? (
             <StreakCalendarSkeleton />
+          ) : safeResults.length === 0 ? (
+            <Empty className="gap-1.5 rounded-2xl py-10">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon">
+                  <IconClock className="size-5" />
+                </EmptyMedia>
+                <EmptyTitle className="text-sm font-semibold">no activity yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  no typing tests recorded yet.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           ) : (
             <StreakCalendar
               streak={streakPeriods}

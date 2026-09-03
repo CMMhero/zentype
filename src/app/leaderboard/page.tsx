@@ -4,12 +4,23 @@ import {
   IconBolt,
   IconCalendar,
   IconCalendarMonth,
+  IconKeyboard,
   IconTrophy,
   IconTrophyFilled,
 } from "@tabler/icons-react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, useTransition } from "react";
 import { LeaderboardSkeleton } from "~/components/leaderboard-skeleton";
+import { Button } from "~/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "~/components/ui/empty";
 import {
   type LeaderboardRankingItem,
   LeaderboardRankings,
@@ -201,7 +212,12 @@ function LeaderboardContent() {
       {!isLevel && (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-2">
-            <Select value={mode} onValueChange={(v) => setParam("mode", v)}>
+            <Select
+              value={mode}
+              onValueChange={(v) => {
+                if (v) setParam("mode", v);
+              }}
+            >
               <SelectTrigger size="sm" className="w-24 sm:w-28">
                 <SelectValue />
               </SelectTrigger>
@@ -210,7 +226,12 @@ function LeaderboardContent() {
                 <SelectItem value="words">words</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={String(variant)} onValueChange={(v) => setParam("variant", v)}>
+            <Select
+              value={String(variant)}
+              onValueChange={(v) => {
+                if (v) setParam("variant", v);
+              }}
+            >
               <SelectTrigger size="sm" aria-label="variant filter" className="w-20">
                 <SelectValue />
               </SelectTrigger>
@@ -268,11 +289,26 @@ function LeaderboardContent() {
       {loading ? (
         <LeaderboardSkeleton />
       ) : activeEmpty ? (
-        <div className="rounded-2xl border border-dashed border-border/60 p-12 text-center text-sm text-muted-foreground">
-          {isLevel
-            ? "no levels yet. finish a test to earn xp."
-            : "no entries yet. finish a test while signed in to claim rank #1."}
-        </div>
+        <Empty className="gap-3 rounded-2xl border border-dashed border-border/60 py-14">
+          <EmptyHeader className="gap-2">
+            <EmptyMedia variant="icon">
+              {isLevel ? <IconBolt className="size-5" /> : <IconTrophy className="size-5" />}
+            </EmptyMedia>
+            <EmptyTitle className="text-base">
+              {isLevel ? "no levels yet" : "no entries yet"}
+            </EmptyTitle>
+            <EmptyDescription className="max-w-xs">
+              {isLevel
+                ? "finish a test to earn xp and climb the ranks."
+                : "finish a test while signed in to claim rank #1."}
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent className="gap-2">
+            <Button size="sm" className="gap-2" render={<Link href="/" />}>
+              <IconKeyboard className="size-4" /> start typing
+            </Button>
+          </EmptyContent>
+        </Empty>
       ) : (
         <LeaderboardRankings
           rankings={activeRankings}
