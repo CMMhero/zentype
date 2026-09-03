@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, useMemo, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
 import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
 import { Kbd } from "~/components/ui/kbd";
 import {
   IconAlertTriangle, IconArrowBackUp, IconArrowRight, IconAt, IconClock,
@@ -16,13 +15,15 @@ import {
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator,
 } from "~/components/ui/command";
+import { DeleteAccountDialog } from "~/components/ui/delete-account-dialog";
+import { RestoreDefaultsDialog } from "~/components/ui/restore-defaults-dialog";
+import { DiscardLocalResultsDialog } from "~/components/ui/discard-local-results-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { useUiStore } from "~/stores/ui-store";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useResultsStore } from "~/stores/results-store";
 import { useAuth, useUser } from "~/components/user-provider";
 import { signOutFn } from "~/server/auth";
-import { deleteMyData } from "~/server/results";
 import { toast } from "sonner";
 import { THEMES } from "~/lib/themes";
 import {
@@ -64,7 +65,7 @@ const STATIC_ITEMS = (() => {
     { id: "app-smooth", group: "appearance", value: "appearance smooth caret animate caret movement toggle on off", keywords: "appearance smooth caret toggle on off", label: "smooth caret" },
     { id: "act-restore", group: "actions", value: "actions restore defaults reset settings", keywords: "actions restore defaults reset settings", label: "restore defaults" },
     { id: "act-export", group: "actions", value: "actions export json data download", keywords: "actions export json data download", label: "export json" },
-    { id: "act-delete", group: "actions", value: "actions delete all results history remove", keywords: "actions delete results history", label: "delete all results" },
+    { id: "act-delete-account", group: "actions", value: "actions delete account permanently remove profile data", keywords: "actions delete account profile data", label: "delete account" },
     { id: "act-signout", group: "actions", value: "actions sign out log out logout", keywords: "actions sign out log out logout", label: "sign out" },
     { id: "act-discard", group: "actions", value: "actions discard local guest results", keywords: "actions discard local guest results", label: "discard local results" },
     { id: "link-about", group: "links", value: "link about page info", keywords: "link about page info", label: "about" },
@@ -98,7 +99,9 @@ export function CommandPalette() {
   const [userQuery, setUserQuery] = useState("");
   const [userResults, setUserResults] = useState<UserResult[]>([]);
   const [userLoading, setUserLoading] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<null | { title: string; label: string; description: string; onConfirm: () => void }>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [restoreOpen, setRestoreOpen] = useState(false);
+  const [discardOpen, setDiscardOpen] = useState(false);
   const [contentReady, setContentReady] = useState(false);
 
   // Defer heavy theme/font groups until after dialog opens
@@ -156,8 +159,7 @@ export function CommandPalette() {
   // Key insight: cmdk calls this function N times per keystroke (once per
   // CommandItem). We compute the match set ONCE and cache it so subsequent
   // calls are O(1) Set lookups instead of O(N) fuse searches.
-  // Clear confirmation when searching
-  const onValueChange = useCallback((v: string) => { setUserQuery(v); if (confirmAction) setConfirmAction(null); }, [confirmAction]);
+  const onValueChange = useCallback((v: string) => { setUserQuery(v); }, []);
 
   const fuzzyFilter = useCallback((value: string, search: string) => {
     if (!search) return 1;
@@ -211,16 +213,10 @@ export function CommandPalette() {
   const user = useUser();
   const local = useResultsStore((s) => s.local);
   const clearLocal = useResultsStore((s) => s.clearLocal);
-  const reset = useSettingsStore((s) => s.reset);
 
   const restoreDefaults = useCallback(() => {
-    setConfirmAction({
-      title: "restore all settings to defaults?",
-      label: "yes, restore",
-      description: "resets your theme, font, sound, and gameplay settings.",
-      onConfirm: () => { close(); reset(); toast.info("settings restored to defaults"); },
-    });
-  }, [close, reset]);
+    setRestoreOpen(true);
+  }, []);
   const exportJson = useCallback(() => {
     close();
     const payload = {
@@ -239,18 +235,9 @@ export function CommandPalette() {
     a.click();
     URL.revokeObjectURL(url);
   }, [close, local, settings, user]);
-  const deleteAllResults = useCallback(() => {
-    setConfirmAction({
-      title: "delete every saved result?",
-      label: "yes, delete everything",
-      description: "permanently removes all test history from the server. cannot be undone.",
-      onConfirm: async () => {
-        close();
-        const res = await deleteMyData();
-        toast[res.ok ? "success" : "error"](res.ok ? "all results deleted" : "deletion failed");
-      },
-    });
-  }, [close]);
+  const openDeleteAccount = useCallback(() => {
+    setDeleteOpen(true);
+  }, []);
   const { refresh: refreshUser } = useAuth();
   const handleSignOut = useCallback(() => {
     close();
@@ -259,20 +246,22 @@ export function CommandPalette() {
       .then(() => router.push("/"));
   }, [close, router, refreshUser]);
   const discardLocal = useCallback(() => {
-    setConfirmAction({
-      title: `discard ${local.length} local result${local.length === 1 ? "" : "s"}?`,
-      label: "yes, discard",
-      description: "permanently deletes your local guest results. cannot be recovered.",
-      onConfirm: () => { close(); clearLocal(); toast.success("local results discarded"); },
-    });
-  }, [close, clearLocal, local.length]);
+    setDiscardOpen(true);
+  }, []);
+  const confirmDiscardLocal = useCallback(() => {
+    clearLocal();
+    close();
+    toast.success("local results discarded");
+  }, [clearLocal, close]);
 
-  // Clear fuse cache when dialog closes
+  // Clear fuse cache when the palette closes
   useEffect(() => {
     if (!open) {
       matchCacheRef.current.clear();
       setUserQuery("");
-      setConfirmAction(null);
+      setDeleteOpen(false);
+      setRestoreOpen(false);
+      setDiscardOpen(false);
     }
   }, [open]);
 
@@ -318,17 +307,13 @@ export function CommandPalette() {
           <CommandItem value="actions restore defaults reset settings" keywords={["actions", "restore", "defaults", "reset"]} onSelect={restoreDefaults}>
             <IconRefresh /> restore defaults<CommandDesc>reset theme, font, sound, and gameplay</CommandDesc>
           </CommandItem>
-          {confirmAction?.title === "restore all settings to defaults?" && <ConfirmBox confirm={confirmAction} onCancel={() => setConfirmAction(null)} />}
           <CommandItem value="actions export json data download" keywords={["actions", "export", "json", "data", "download"]} onSelect={exportJson}>
             <IconDownload /> export json<CommandDesc>download all your data as a file</CommandDesc>
           </CommandItem>
           {user && (
-            <>
-            <CommandItem value="actions delete all results history remove" keywords={["actions", "delete", "results", "history"]} onSelect={deleteAllResults} className="text-destructive focus:text-destructive">
-              <IconAlertTriangle /> delete all results<CommandDesc>permanently erase everything</CommandDesc>
+            <CommandItem value="actions delete account permanently remove profile data" keywords={["actions", "delete", "account", "profile", "data"]} onSelect={openDeleteAccount} className="text-destructive focus:text-destructive">
+              <IconAlertTriangle /> delete account<CommandDesc>permanently delete profile, results, and xp</CommandDesc>
             </CommandItem>
-              {confirmAction?.title === "delete every saved result?" && <ConfirmBox confirm={confirmAction} onCancel={() => setConfirmAction(null)} />}
-            </>
           )}
           {user && (
             <CommandItem value="actions sign out log out logout" keywords={["actions", "sign", "out", "logout"]} onSelect={handleSignOut}>
@@ -336,12 +321,9 @@ export function CommandPalette() {
             </CommandItem>
           )}
           {local.length > 0 && (
-            <>
-              <CommandItem value="actions discard local guest results" keywords={["actions", "discard", "local", "guest"]} onSelect={discardLocal} className="text-destructive focus:text-destructive">
-                <IconAlertTriangle /> discard local results<CommandDesc>delete {local.length} unsynced guest result{local.length === 1 ? "" : "s"}</CommandDesc>
-              </CommandItem>
-              {confirmAction?.title.startsWith("discard") && <ConfirmBox confirm={confirmAction} onCancel={() => setConfirmAction(null)} />}
-            </>
+            <CommandItem value="actions discard local guest results" keywords={["actions", "discard", "local", "guest"]} onSelect={discardLocal} className="text-destructive focus:text-destructive">
+              <IconAlertTriangle /> discard local results<CommandDesc>delete {local.length} unsynced guest result{local.length === 1 ? "" : "s"}</CommandDesc>
+            </CommandItem>
           )}
         </CommandGroup>
 
@@ -602,6 +584,18 @@ export function CommandPalette() {
           </CommandItem>
         </CommandGroup>
       </CommandList>
+      <RestoreDefaultsDialog
+        open={restoreOpen}
+        onOpenChange={setRestoreOpen}
+        onConfirmed={() => close()}
+      />
+      <DiscardLocalResultsDialog
+        open={discardOpen}
+        count={local.length}
+        onOpenChange={setDiscardOpen}
+        onConfirm={confirmDiscardLocal}
+      />
+      {user && <DeleteAccountDialog open={deleteOpen} onOpenChange={setDeleteOpen} />}
     </CommandDialog>
   );
 }
@@ -641,15 +635,4 @@ function ToggleBadge({ on }: { on: boolean }) {
   );
 }
 
-function ConfirmBox({ confirm, onCancel }: { confirm: { title: string; label: string; description: string; onConfirm: () => void }; onCancel: () => void }) {
-  return (
-    <div className="border-destructive/40 bg-destructive/5 ml-6 mt-1 rounded-2xl border px-3 py-2.5">
-      <p className="text-sm font-medium lowercase">{confirm.title}</p>
-      <p className="text-muted-foreground mt-0.5 text-xs">{confirm.description}</p>
-      <div className="mt-2 flex gap-2">
-        <Button variant="secondary" size="xs" onClick={onCancel}>cancel</Button>
-        <Button variant="destructive" size="xs" onClick={() => { confirm.onConfirm(); onCancel(); }}>{confirm.label}</Button>
-      </div>
-    </div>
-  );
-}
+

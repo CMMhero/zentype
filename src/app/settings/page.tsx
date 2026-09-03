@@ -24,6 +24,7 @@ import { Separator as Sep } from "~/components/ui/separator";
 import { Slider } from "~/components/ui/slider";
 import { Switch } from "~/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { DeleteAccountDialog } from "~/components/ui/delete-account-dialog";
 import { THEMES } from "~/lib/themes";
 import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
 import { IconSearch, IconSun, IconMoon, IconDevices } from "@tabler/icons-react";
@@ -35,7 +36,7 @@ import { useResultsStore } from "~/stores/results-store";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useAuth, useUser } from "~/components/user-provider";
 import { signOutFn, updateUsername } from "~/server/auth";
-import { deleteMyData, getUserResults } from "~/server/results";
+import { getUserResults } from "~/server/results";
 import { playKeypress, playError } from "~/lib/sound";
 import { KEYBINDS } from "~/lib/keybinds";
 
@@ -412,29 +413,15 @@ function GuestDataCard() {
 }
 
 function DataCard({ signedIn }: { signedIn: boolean }) {
+  const [deleteOpen, setDeleteOpen] = useState(false);
   if (!signedIn) return null;
   return (
     <Card className="w-full gap-3 border-destructive/40 py-4">
       <SectionTitle icon={<IconAlertTriangle className="size-4 text-destructive" />} title="danger zone" />
       <CardContent className="px-4">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="sm">delete all my test results</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>delete every saved result?</AlertDialogTitle>
-              <AlertDialogDescription>permanently removes all test history from the server. cannot be undone.</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>cancel</AlertDialogCancel>
-              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={async () => {
-                const res = await deleteMyData();
-                toast[res.ok ? "success" : "error"](res.ok ? "all results deleted" : "deletion failed");
-              }}>yes, delete everything</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <p className="text-muted-foreground mb-3 text-sm">permanently deletes your account and all associated data.</p>
+        <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)}>delete my account</Button>
+        <DeleteAccountDialog open={deleteOpen} onOpenChange={setDeleteOpen} />
       </CardContent>
     </Card>
   );

@@ -76,7 +76,7 @@ export async function getUserPointsByUsername(
         : { totalXP: 0, level: 1, progress: 0 }; // RPC succeeded but no points row yet
   } else {
     console.error(
-      "[zentype] get_user_points_by_id RPC failed — did you apply supabase/migrations/0006_leaderboard_rpc.sql?",
+      "[zentype] get_user_points_by_id RPC failed — did you apply supabase/migrations/0002_functions.sql?",
       rpcErr?.message,
     );
     // Fallback: direct query
@@ -209,7 +209,7 @@ export async function getUserAchievementsByUsername(
     unlockedRows = rpcData;
   } else {
     console.error(
-      "[zentype] get_user_achievements_by_id RPC failed — did you apply supabase/migrations/0006_leaderboard_rpc.sql?",
+      "[zentype] get_user_achievements_by_id RPC failed — did you apply supabase/migrations/0002_functions.sql?",
       rpcErr?.message,
     );
     // Fallback: direct query (works if RLS policies allow public read)

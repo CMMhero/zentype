@@ -2,13 +2,14 @@
 
 import { IconPlayerSkipForward, IconAt, IconHash, IconCrown } from "@tabler/icons-react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Kbd } from "~/components/ui/kbd";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-import { modeLabel, type TestResult } from "~/lib/types";
+import { modeLabel, type SessionUser, type TestResult } from "~/lib/types";
 
 // Non-compact WpmChart renders at h-56 — the loader skeleton must match so
 // the layout doesn't jump when the lazy chunk finishes loading.
@@ -20,6 +21,8 @@ interface ResultViewProps {
   result: TestResult;
   saveState: SaveState;
   isPB?: boolean;
+  /** Signed-in user, when present. Guests get a sign-in hint instead. */
+  user?: SessionUser | null;
   onNext: () => void;
 }
 
@@ -31,8 +34,11 @@ const SAVE_BADGE: Record<SaveState, { label: string; variant: "default" | "secon
   skipped: { label: "not saved", variant: "secondary" },
 };
 
-export function ResultView({ result, saveState, isPB, onNext }: ResultViewProps) {
+export function ResultView({ result, saveState, isPB, user, onNext }: ResultViewProps) {
   const { label, variant } = SAVE_BADGE[saveState];
+  // Guests who aren't saving to the cloud get a hint to sign in and keep
+  // their history. (A "failed" state with a signed-in user is transient.)
+  const showLoginHint = !user && (saveState === "guest" || saveState === "failed");
 
   return (
     <div className="zt-fade-in mx-auto flex w-full max-w-4xl flex-col gap-6 py-6" role="region" aria-label="Test results">
@@ -97,7 +103,18 @@ export function ResultView({ result, saveState, isPB, onNext }: ResultViewProps)
       </div>
 
       {/* Next test */}
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-between gap-3">
+        {showLoginHint ? (
+          <p className="text-muted-foreground flex items-center gap-1 text-xs">
+            <Button variant="link" size="sm" asChild className="h-auto p-0 text-xs">
+              <Link href="/login">sign in</Link>
+            </Button>
+            to save your result
+          </p>
+        ) : (
+          // Reserve the space so "next test" stays right-aligned either way
+          <span aria-hidden="true" />
+        )}
         <Button size="default" onClick={onNext} className="gap-2">
           <IconPlayerSkipForward /> next test{" "}
           <Kbd className="ml-1 border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground">

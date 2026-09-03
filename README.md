@@ -15,7 +15,7 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 
 **Gamification**
 - XP and levels with streak bonuses and perfect-test bonus
-- 100+ achievements across tiers: tests, WPM, accuracy, consistency, streak, time, chars, level, account age
+- 110+ achievements across tiers: tests, WPM, accuracy, consistency, streak, time, chars, level, account age
 - Real-time progress tracking on every achievement
 - Silent XP/achievement processing -- no popups interrupting chained tests
 
@@ -28,23 +28,23 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 
 **Leaderboards**
 - Global rankings by WPM (all-time, this week, today) and level/XP
-- Redis-backed with Postgres fallback, 80% accuracy floor
+- All-time boards live in Redis sorted sets and only accept results at 80%+ accuracy; this-week and today boards read Postgres directly
 - Your rank highlight, pagination, mode/variant/period filters
 
 **Command palette**
-- Fuzzy search across navigation, actions, themes (200+), fonts (80+), settings
+- Fuzzy search across navigation, actions, themes (200+), fonts (90+), settings
 - User search for visiting public profiles
 
 **Appearance**
 - 200+ themes via CSS custom properties (gruvbox, nord, dracula, catppuccin, tokyo night, and more)
-- 80+ fonts via fontsource (geist-mono, inter, jetbrains-mono, work-sans, sora, and more)
+- 90+ fonts via fontsource (geist-mono, inter, jetbrains-mono, work-sans, sora, and more)
 - Dynamic favicon that adapts to the active theme
 
 **Account**
 - GitHub, Google, and Discord OAuth via Supabase (PKCE, httpOnly cookies)
 - Guest mode with local results that sync on first login
 - Settings sync across devices via Supabase
-- JSON export and one-click data wipe
+- JSON export, restore-defaults confirmations, and account deletion with typed confirmation (`yes, delete my account`)
 
 **Keybinds**
 
@@ -90,7 +90,7 @@ Runs fully without backend keys. Guest mode, local results, English prompts, and
 ### Upstash setup (optional)
 
 1. Create a database at [console.upstash.com](https://console.upstash.com). Copy the REST URL and token into `.env`.
-2. Done. Leaderboards use Redis sorted sets; prompts get per-IP pools.
+2. Done. Leaderboards and cached stats live in Redis sorted sets; everything falls back to Postgres when Redis is unavailable.
 
 ### Env
 
@@ -107,10 +107,12 @@ UPSTASH_REDIS_REST_TOKEN=
 src/
 ├── app/                        # Next.js App Router pages
 │   ├── page.tsx                # typing test engine
-│   ├── about/                  # about page with stats
+│   ├── about/                  # about page with community stats
 │   ├── leaderboard/            # global rankings
 │   ├── profile/                # own dashboard + public profiles
 │   ├── settings/               # gameplay, appearance, account
+│   ├── terms/                  # terms of service
+│   ├── privacy/                # privacy policy
 │   ├── auth/callback/          # PKCE exchange
 │   └── login/                  # OAuth login
 ├── components/
@@ -119,14 +121,14 @@ src/
 │   ├── typing/                 # config bar, typing display, virtual keyboard, result view
 │   └── charts/                 # WPM timeline chart
 ├── hooks/                      # typing engine, hotkeys, settings sync
-├── lib/                        # achievements, XP, stats, themes, words, sounds, types
+├── lib/                        # achievements, XP, stats, themes, fonts, words, sounds, types
 ├── server/                     # auth, results, gamification, leaderboards, prompts
-├── stores/                     # Zustand stores (settings, results, UI)
-└── supabase/migrations/        # database schema and RPC functions
+└── stores/                     # Zustand stores (settings, results, UI)
 public/
 ├── robots.txt
 ├── favicon.ico
 └── logo.svg
+supabase/migrations/            # database schema and RPC functions
 ```
 
 ## Stats methodology

@@ -453,6 +453,7 @@ export default function TestPage() {
               result={result}
               saveState={saveState}
               isPB={isPB}
+              user={user}
               onNext={() => restartRef.current()}
             />
           </div>
