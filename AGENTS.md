@@ -21,7 +21,7 @@ A clean, customizable typing test with cloud stats (Supabase), Redis-backed lead
 ## project stack
 
 - Next.js 16 App Router (Turbopack builds) + Server Actions, React 19 with the React Compiler enabled
-- shadcn/ui primitives on the `radix-ui` umbrella (Base UI for combobox), Tailwind CSS v4
+- shadcn/ui primitives on the Base UI umbrella (`@base-ui/react`), Tailwind CSS v4
 - TypeScript 5.9, Biome for lint + format (config: `biome.json`)
 - Supabase (auth + Postgres), Upstash Redis (REST), Zustand, Recharts, Tabler icons
 - package manager: **bun** — Node 22+
