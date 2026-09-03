@@ -12,7 +12,7 @@ function BackToTyping({ className }: { className?: string }) {
       variant="link"
       size="sm"
       render={<Link href="/" />}
-      className={cn("h-auto gap-1 p-0 text-xs", className)}
+      className={cn("h-auto gap-1 p-0", className)}
     >
       <IconArrowLeft className="size-3" /> back to typing
     </Button>

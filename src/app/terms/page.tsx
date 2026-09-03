@@ -2,6 +2,7 @@ import { IconArrowRight, IconFileTextFilled, IconKeyboardFilled } from "@tabler/
 import type { Metadata } from "next";
 import { BackToTyping } from "~/components/ui/back-to-typing";
 import { InlineCode } from "~/components/ui/inline-code";
+import { TextLink } from "~/components/ui/text-link";
 
 export const metadata: Metadata = {
   title: "terms of service",
@@ -25,14 +26,9 @@ export default function TermsPage() {
               <IconKeyboardFilled className="text-primary size-3.5 inline" /> zentype
             </strong>{" "}
             (&quot;Service&quot;), operated by{" "}
-            <a
-              href="https://cmmhero.top"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://cmmhero.top" target="_blank" rel="noreferrer">
               CMMhero
-            </a>
+            </TextLink>
             . By accessing or using <IconKeyboardFilled className="text-primary size-3.5 inline" />{" "}
             zentype, you agree to these Terms. If you do not agree, do not use the Service.
           </p>
@@ -108,19 +104,10 @@ export default function TermsPage() {
           <h2 className="text-base font-semibold">7. contact</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Questions? Visit{" "}
-            <a
-              href="https://cmmhero.top"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://cmmhero.top" target="_blank" rel="noreferrer">
               cmmhero.top
-            </a>{" "}
-            or email{" "}
-            <a href="mailto:contact@cmmhero.top" className="text-primary hover:underline">
-              contact@cmmhero.top
-            </a>
-            .
+            </TextLink>{" "}
+            or email <TextLink href="mailto:contact@cmmhero.top">contact@cmmhero.top</TextLink>.
           </p>
         </section>
 

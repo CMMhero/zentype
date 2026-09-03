@@ -2,6 +2,7 @@ import { IconArrowRight, IconKeyboardFilled, IconLockFilled } from "@tabler/icon
 import type { Metadata } from "next";
 import { BackToTyping } from "~/components/ui/back-to-typing";
 import { InlineCode } from "~/components/ui/inline-code";
+import { TextLink } from "~/components/ui/text-link";
 
 export const metadata: Metadata = {
   title: "privacy policy",
@@ -24,14 +25,9 @@ export default function PrivacyPage() {
               <IconKeyboardFilled className="text-primary size-3.5 inline" /> zentype
             </strong>{" "}
             is built by{" "}
-            <a
-              href="https://cmmhero.top"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://cmmhero.top" target="_blank" rel="noreferrer">
               CMMhero
-            </a>
+            </TextLink>
             . We collect only what is needed to run the Service. This policy explains what we
             collect, how we use it, and your choices.
           </p>
@@ -125,19 +121,10 @@ export default function PrivacyPage() {
           <h2 className="text-base font-semibold">8. contact</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Visit{" "}
-            <a
-              href="https://cmmhero.top"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:underline"
-            >
+            <TextLink href="https://cmmhero.top" target="_blank" rel="noreferrer">
               cmmhero.top
-            </a>{" "}
-            or email{" "}
-            <a href="mailto:contact@cmmhero.top" className="text-primary hover:underline">
-              contact@cmmhero.top
-            </a>
-            .
+            </TextLink>{" "}
+            or email <TextLink href="mailto:contact@cmmhero.top">contact@cmmhero.top</TextLink>.
           </p>
         </section>
 

@@ -18,6 +18,7 @@ import { isDialogOpen, isTypingTarget } from "~/lib/keyboard";
 import { invalidateProfileCaches } from "~/lib/profile-cache";
 import { randomWordSlice } from "~/lib/prompt-utils";
 import { playError, playKeypress } from "~/lib/sound";
+import { isPlausible } from "~/lib/stats";
 import type { GameSettings, TestResult } from "~/lib/types";
 import { calculateTestXP } from "~/lib/xp";
 import { processTestResult } from "~/server/gamification";
@@ -231,9 +232,18 @@ export default function TestPage() {
     // stats cache was cleared wait for the server answer after the save.
     const verdict = computeResultPB(full, user?.id ?? null);
     if (verdict !== null) setIsPB(verdict);
-    addLocal(full);
     // Finished prompts shouldn't replay — the next visit fetches a fresh set
     promptCache.delete(promptCacheKey(settingsRef.current));
+
+    // Mirror the server-side plausibility gate: implausible tests are rejected
+    // before any DB write, so they must not earn an XP toast or enter the
+    // local sync buffer either.
+    if (!isPlausible(full)) {
+      setSaveState("invalid");
+      return;
+    }
+
+    addLocal(full);
 
     // Show immediate XP toast (client-side estimate, no DB wait)
     if (user) {
