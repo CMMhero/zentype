@@ -1,6 +1,7 @@
 "use server";
 
 import { getRedis, lbDecode } from "~/lib/redis";
+import { cacheGet, cacheSet } from "~/lib/cache";
 import { getSupabasePublicClient } from "~/lib/supabase/server";
 import { boardKey, type GameMode, type LeaderboardEntry } from "~/lib/types";
 
@@ -14,15 +15,23 @@ export interface LevelLeaderboardEntry {
 }
 
 export async function getLevelLeaderboard(limit = 50): Promise<LevelLeaderboardEntry[]> {
+  // Cache for 60s — this is a global community board and only changes when
+  // users earn XP, so it doesn't need a fresh query on every page load.
+  const cacheKey = `level-lb:${limit}`;
+  const cached = await cacheGet<LevelLeaderboardEntry[]>(cacheKey);
+  if (cached) return cached;
+
   const supabase = getSupabasePublicClient();
   if (!supabase) return [];
+
+  let entries: LevelLeaderboardEntry[] = [];
   // Try RPC first (bypasses RLS via SECURITY DEFINER)
   const { data: rpcData, error: rpcError } = await supabase.rpc(
     "get_level_leaderboard",
     { p_limit: limit },
   );
   if (!rpcError && rpcData && rpcData.length > 0) {
-    return rpcData.map((r: Record<string, unknown>, i: number) => ({
+    entries = rpcData.map((r: Record<string, unknown>, i: number) => ({
       rank: i + 1,
       userId: r.user_id as string,
       username: (r.username as string) ?? "anon",
@@ -30,41 +39,75 @@ export async function getLevelLeaderboard(limit = 50): Promise<LevelLeaderboardE
       level: r.level as number,
       totalXP: r.total_xp as number,
     }));
+  } else {
+    // Fallback: direct query (works if migration 0004/0005 RLS policies exist)
+    const { data, error } = await supabase
+      .from("user_points")
+      .select("user_id, total_xp, level")
+      .order("total_xp", { ascending: false })
+      .limit(limit);
+    if (!error && data && data.length > 0) {
+      const ids = data.map((r) => r.user_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id,username,avatar_url")
+        .in("id", ids);
+      const profileMap = new Map((profiles ?? []).map((p) => [p.id, p]));
+      entries = data.map((r, i) => {
+        const p = profileMap.get(r.user_id);
+        return {
+          rank: i + 1,
+          userId: r.user_id as string,
+          username: p?.username ?? "anon",
+          avatarUrl: p?.avatar_url ?? null,
+          level: r.level as number,
+          totalXP: r.total_xp as number,
+        };
+      });
+    }
   }
-  // Fallback: direct query (works if migration 0004/0005 RLS policies exist)
-  const { data, error } = await supabase
-    .from("user_points")
-    .select("user_id, total_xp, level")
-    .order("total_xp", { ascending: false })
-    .limit(limit);
-  if (error || !data || data.length === 0) return [];
-  const ids = data.map((r) => r.user_id);
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id,username,avatar_url")
-    .in("id", ids);
-  const profileMap = new Map((profiles ?? []).map((p) => [p.id, p]));
-  return data.map((r, i) => {
-    const p = profileMap.get(r.user_id);
-    return {
-      rank: i + 1,
-      userId: r.user_id as string,
-      username: p?.username ?? "anon",
-      avatarUrl: p?.avatar_url ?? null,
-      level: r.level as number,
-      totalXP: r.total_xp as number,
-    };
-  });
+
+  if (entries.length > 0) await cacheSet(cacheKey, entries, 60);
+  return entries;
 }
 
 export async function getBoardRanks(
   userId: string,
   boards: string[],
 ): Promise<Record<string, number>> {
-  const supabase = getSupabasePublicClient();
-  if (!supabase || boards.length === 0) return {};
+  if (boards.length === 0) return {};
 
-  // Parallelize all board rank lookups instead of sequential for-loop
+  // Fast path: ranks come straight from the Redis sorted sets (all-time),
+  // whose score encodes wpm*1000 + accuracy — the same tie-break ordering
+  // as the Postgres fallback below. O(log n) per board instead of pulling
+  // up to 500 rows per board from Postgres.
+  const redis = getRedis();
+  if (redis) {
+    try {
+      const entries = await Promise.all(
+        boards.map(async (board) => {
+          const [mode, variantStr] = board.split(":");
+          const variant = Number(variantStr);
+          if (!mode || !variant) return [board, undefined] as const;
+          const key = `lb:${boardKey(mode as GameMode, variant)}`;
+          const rank = await redis.zrevrank(key, userId);
+          return [board, rank !== null && rank !== undefined ? rank + 1 : undefined] as const;
+        }),
+      );
+      const result: Record<string, number> = {};
+      for (const [board, rank] of entries) {
+        if (rank !== undefined) result[board] = rank;
+      }
+      return result;
+    } catch (e) {
+      console.warn("[zentype] redis rank lookup failed, using Postgres:", e);
+    }
+  }
+
+  const supabase = getSupabasePublicClient();
+  if (!supabase) return {};
+
+  // Fallback: parallelize all board rank lookups instead of sequential for-loop
   const entries = await Promise.all(
     boards.map(async (board) => {
       const [mode, variantStr] = board.split(":");

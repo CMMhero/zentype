@@ -91,9 +91,16 @@ export async function saveResult(
     console.warn("[zentype] leaderboard update skipped:", e);
   }
 
-  // Invalidate stats cache so profile shows fresh data
+  // Invalidate caches so profile shows fresh data
   await cacheDel(`stats:${ctx.user.id}`);
   await cacheDel(`ach-stats:${ctx.user.id}`);
+  await cacheDel(`pub-profile:${ctx.user.id}`);
+  const uname = (
+    (ctx.user.user_metadata?.["user_name"] as string) ||
+    ctx.user.email?.split("@")[0] ||
+    ""
+  ).toLowerCase();
+  if (uname) await cacheDel(`pub-profile:${uname}`);
 
   return { saved: true, id: inserted.id };
 }
@@ -321,12 +328,18 @@ export interface PublicProfile {
 export async function getMyJoinDate(): Promise<string | null> {
   const ctx = await requireUser();
   if (!ctx) return null;
+  // Join date is immutable — cache it for a day
+  const cacheKey = `joindate:${ctx.user.id}`;
+  const cached = await cacheGet<string>(cacheKey);
+  if (cached) return cached;
   const { data } = await ctx.supabase
     .from("profiles")
     .select("created_at")
     .eq("id", ctx.user.id)
     .maybeSingle();
-  return (data?.created_at as string | null) ?? null;
+  const joinedAt = (data?.created_at as string | null) ?? null;
+  if (joinedAt) await cacheSet(cacheKey, joinedAt, 86400);
+  return joinedAt;
 }
 
 export async function getPublicProfile(
@@ -468,30 +481,40 @@ export async function searchUsers(
 ): Promise<Array<{ userId: string; username: string; avatarUrl: string | null }>> {
   const supabase = getSupabasePublicClient();
   if (!supabase || !query.trim()) return [];
+  // Cache 60s — the command palette re-queries on every keystroke
+  const cacheKey = `search:${query.trim().toLowerCase()}`;
+  const cached = await cacheGet<Array<{ userId: string; username: string; avatarUrl: string | null }>>(cacheKey);
+  if (cached) return cached;
+
+  let result: Array<{ userId: string; username: string; avatarUrl: string | null }> = [];
   // Try RPC first
   const { data: rpcData, error: rpcErr } = await supabase.rpc("search_users", {
     p_query: query.trim(),
     p_limit: 8,
   });
   if (!rpcErr && rpcData && rpcData.length > 0) {
-    return rpcData.map((r: Record<string, unknown>) => ({
+    result = rpcData.map((r: Record<string, unknown>) => ({
       userId: r.id as string,
       username: r.username as string,
       avatarUrl: (r.avatar_url as string) ?? null,
     }));
+  } else {
+    // Fallback: direct query
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id,username,avatar_url")
+      .ilike("username", `%${query.trim()}%`)
+      .limit(8);
+    if (profiles) {
+      result = profiles.map((p) => ({
+        userId: p.id,
+        username: p.username,
+        avatarUrl: p.avatar_url,
+      }));
+    }
   }
-  // Fallback: direct query
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id,username,avatar_url")
-    .ilike("username", `%${query.trim()}%`)
-    .limit(8);
-  if (!profiles) return [];
-  return profiles.map((p) => ({
-    userId: p.id,
-    username: p.username,
-    avatarUrl: p.avatar_url,
-  }));
+  if (result.length > 0) await cacheSet(cacheKey, result, 60);
+  return result;
 }
 
 export async function getPublicStats(): Promise<{

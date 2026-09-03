@@ -16,7 +16,7 @@ async function requireUser() {
   return data.user ? { supabase, user: data.user } : null;
 }
 
-/** Get user's total XP and level */
+/** Get user's total XP and level (Redis-cached 30s; invalidated on XP award) */
 export async function getUserPoints(): Promise<{
   totalXP: number;
   level: number;
@@ -24,17 +24,23 @@ export async function getUserPoints(): Promise<{
 } | null> {
   const ctx = await requireUser();
   if (!ctx) return null;
+  const cacheKey = `points:${ctx.user.id}`;
+  const cached = await cacheGet<{ totalXP: number; level: number; progress: number }>(cacheKey);
+  if (cached) return cached;
   const { data } = await ctx.supabase
     .from("user_points")
     .select("total_xp,level")
     .eq("user_id", ctx.user.id)
     .maybeSingle();
-  if (!data) return { totalXP: 0, level: 1, progress: 0 };
-  return {
-    totalXP: data.total_xp,
-    level: data.level,
-    progress: xpProgress(data.total_xp),
-  };
+  const result = !data
+    ? { totalXP: 0, level: 1, progress: 0 }
+    : {
+        totalXP: data.total_xp,
+        level: data.level,
+        progress: xpProgress(data.total_xp),
+      };
+  await cacheSet(cacheKey, result, 30);
+  return result;
 }
 
 /** Get user's points by username (for public profiles) */
@@ -54,34 +60,37 @@ export async function getUserPointsByUsername(
     .ilike("username", username)
     .maybeSingle();
   if (!profile) return null;
+  // Shared cache with getUserPoints — keyed by user id so both paths hit it
+  const cacheKey = `points:${profile.id}`;
+  const cached = await cacheGet<{ totalXP: number; level: number; progress: number }>(cacheKey);
+  if (cached) return cached;
   // Try RPC first (bypasses RLS)
   const { data: rpcData, error: rpcErr } = await supabase.rpc("get_user_points_by_id", {
     p_user_id: profile.id,
   });
+  let result: { totalXP: number; level: number; progress: number };
   if (!rpcErr && rpcData) {
-    if (rpcData.length > 0) {
-      const d = rpcData[0];
-      return { totalXP: d.total_xp, level: d.level, progress: xpProgress(d.total_xp) };
-    }
-    // RPC succeeded but user has no points row yet
-    return { totalXP: 0, level: 1, progress: 0 };
+    result =
+      rpcData.length > 0
+        ? { totalXP: rpcData[0].total_xp, level: rpcData[0].level, progress: xpProgress(rpcData[0].total_xp) }
+        : { totalXP: 0, level: 1, progress: 0 }; // RPC succeeded but no points row yet
+  } else {
+    console.error(
+      "[zentype] get_user_points_by_id RPC failed — did you apply supabase/migrations/0006_leaderboard_rpc.sql?",
+      rpcErr?.message,
+    );
+    // Fallback: direct query
+    const { data } = await supabase
+      .from("user_points")
+      .select("total_xp,level")
+      .eq("user_id", profile.id)
+      .maybeSingle();
+    result = !data
+      ? { totalXP: 0, level: 1, progress: 0 }
+      : { totalXP: data.total_xp, level: data.level, progress: xpProgress(data.total_xp) };
   }
-  console.error(
-    "[zentype] get_user_points_by_id RPC failed — did you apply supabase/migrations/0006_leaderboard_rpc.sql?",
-    rpcErr?.message,
-  );
-  // Fallback: direct query
-  const { data } = await supabase
-    .from("user_points")
-    .select("total_xp,level")
-    .eq("user_id", profile.id)
-    .maybeSingle();
-  if (!data) return { totalXP: 0, level: 1, progress: 0 };
-  return {
-    totalXP: data.total_xp,
-    level: data.level,
-    progress: xpProgress(data.total_xp),
-  };
+  await cacheSet(cacheKey, result, 30);
+  return result;
 }
 
 /** Get user's unlocked achievements */
@@ -181,6 +190,15 @@ export async function getUserAchievementsByUsername(
       trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
     }));
   }
+  // Cache 30s — public profile views hit this on every visit
+  const cacheKey = `pub-ach:${username.toLowerCase()}`;
+  const cached = await cacheGet<
+    Array<{
+      id: string; name: string; description: string; trigger: "metric" | "streak" | "api";
+      achievedAt: string | null; progress: number; xp: number;
+    }>
+  >(cacheKey);
+  if (cached) return cached;
   // Try RPC first (bypasses RLS)
   const { data: rpcData, error: rpcErr } = await supabase.rpc(
     "get_user_achievements_by_id",
@@ -202,7 +220,7 @@ export async function getUserAchievementsByUsername(
     unlockedRows = rows ?? [];
   }
   const unlockedMap = new Map(unlockedRows.map((r) => [r.achievement_id, r]));
-  return ACHIEVEMENTS.map((a) => {
+  const result = ACHIEVEMENTS.map((a) => {
     const u = unlockedMap.get(a.id);
     if (u) {
       return {
@@ -215,6 +233,8 @@ export async function getUserAchievementsByUsername(
       trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
     };
   });
+  await cacheSet(cacheKey, result, 30);
+  return result;
 }
 
 /** Get point event history */
@@ -317,6 +337,14 @@ export async function processTestResult(
 
   // Invalidate stats cache so next achievement check uses fresh data
   await cacheDel(`ach-stats:${ctx.user.id}`);
+  // XP/achievements changed — drop the cached points + public achievements
+  await cacheDel(`points:${ctx.user.id}`);
+  const uname = (
+    (ctx.user.user_metadata?.["user_name"] as string) ||
+    ctx.user.email?.split("@")[0] ||
+    ""
+  ).toLowerCase();
+  if (uname) await cacheDel(`pub-ach:${uname}`);
 
   return { xpEarned, newAchievements };
 }
