@@ -8,9 +8,8 @@ import {
   IconTarget,
   IconUserPlus,
 } from "@tabler/icons-react";
-import { Tooltip as TooltipPrimitive } from "radix-ui";
 import * as React from "react";
-
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { cn } from "~/lib/utils";
 
 export interface PointsAwardTrigger {
@@ -42,27 +41,6 @@ interface PointsAwardsProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Format the award `date` for the first column (default: short locale date). */
   formatDate?: (isoDate: string) => string;
 }
-
-const TooltipProvider = TooltipPrimitive.Provider;
-const Tooltip = TooltipPrimitive.Root;
-const TooltipTrigger = TooltipPrimitive.Trigger;
-const TooltipContent = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 6, ...props }, ref) => (
-  <TooltipPrimitive.Content
-    ref={ref}
-    sideOffset={sideOffset}
-    className={cn(
-      "bg-popover text-popover-foreground z-50 max-w-xs overflow-hidden rounded-md border px-3 py-1.5 text-xs shadow-md",
-      "animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-      "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      className,
-    )}
-    {...props}
-  />
-));
-TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
 type TriggerIcon = React.ComponentType<{ className?: string }>;
 
@@ -125,54 +103,54 @@ const PointsAwards = React.forwardRef<HTMLDivElement, PointsAwardsProps>(
 
     return (
       <div ref={ref} className={cn("bg-card w-full rounded-xl border", className)} {...props}>
-        <TooltipProvider>
-          <div role="list" aria-label="Points awards history" className="divide-border divide-y">
-            {awards.map((award) => {
-              const awardedLabel = formatAwardedPoints
-                ? formatAwardedPoints(award.awarded)
-                : defaultFormatAwardedPoints(award.awarded);
-              const totalLabel = formatTotalPoints
-                ? formatTotalPoints(award.total)
-                : award.total.toLocaleString();
-              const description = awardActionDescription(award.trigger);
-              const tooltip = `${awardedLabel}: ${description}`;
-              const Icon = triggerIcon(award.trigger.type);
+        <div role="list" aria-label="Points awards history" className="divide-border divide-y">
+          {awards.map((award) => {
+            const awardedLabel = formatAwardedPoints
+              ? formatAwardedPoints(award.awarded)
+              : defaultFormatAwardedPoints(award.awarded);
+            const totalLabel = formatTotalPoints
+              ? formatTotalPoints(award.total)
+              : award.total.toLocaleString();
+            const description = awardActionDescription(award.trigger);
+            const tooltip = `${awardedLabel}: ${description}`;
+            const Icon = triggerIcon(award.trigger.type);
 
-              return (
-                <div
-                  key={award.id}
-                  role="listitem"
-                  className="grid grid-cols-[7rem_minmax(0,1fr)_minmax(0,1fr)] items-center gap-4 px-3 py-3"
-                >
-                  <span className="text-muted-foreground truncate text-sm">
-                    {formatRowDate(award.date)}
+            return (
+              <div
+                key={award.id}
+                role="listitem"
+                className="grid grid-cols-[7rem_minmax(0,1fr)_minmax(0,1fr)] items-center gap-4 px-3 py-3"
+              >
+                <span className="text-muted-foreground truncate text-sm">
+                  {formatRowDate(award.date)}
+                </span>
+
+                <p className="flex items-center gap-2">
+                  <span className="text-foreground justify-self-center font-bold tabular-nums">
+                    {totalLabel}
                   </span>
+                  <span className="text-success font-medium tabular-nums">{awardedLabel}</span>
+                </p>
 
-                  <p className="flex items-center gap-2">
-                    <span className="text-foreground justify-self-center font-bold tabular-nums">
-                      {totalLabel}
-                    </span>
-                    <span className="text-success font-medium tabular-nums">{awardedLabel}</span>
-                  </p>
-
-                  <div className="flex items-center justify-end gap-2">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
+                <div className="flex items-center justify-end gap-2">
+                  <Tooltip>
+                    <TooltipTrigger
+                      render={
                         <span
                           aria-label={tooltip}
                           className="bg-muted text-foreground inline-flex h-6 w-6 items-center justify-center rounded-full"
                         >
                           <Icon className="size-3" aria-hidden="true" />
                         </span>
-                      </TooltipTrigger>
-                      <TooltipContent side="top">{tooltip}</TooltipContent>
-                    </Tooltip>
-                  </div>
+                      }
+                    />
+                    <TooltipContent side="top">{tooltip}</TooltipContent>
+                  </Tooltip>
                 </div>
-              );
-            })}
-          </div>
-        </TooltipProvider>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   },

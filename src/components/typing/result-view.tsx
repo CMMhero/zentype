@@ -85,27 +85,31 @@ export function ResultView({ result, saveState, isPB, user, onNext }: ResultView
         </Badge>
         {result.punctuation && (
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Badge
-                variant="outline"
-                className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
-              >
-                <IconAt className="size-3" />
-              </Badge>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Badge
+                  variant="outline"
+                  className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
+                >
+                  <IconAt className="size-3" />
+                </Badge>
+              }
+            />
             <TooltipContent>punctuation</TooltipContent>
           </Tooltip>
         )}
         {result.numbers && (
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Badge
-                variant="outline"
-                className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
-              >
-                <IconHash className="size-3" />
-              </Badge>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Badge
+                  variant="outline"
+                  className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
+                >
+                  <IconHash className="size-3" />
+                </Badge>
+              }
+            />
             <TooltipContent>numbers</TooltipContent>
           </Tooltip>
         )}
@@ -131,8 +135,13 @@ export function ResultView({ result, saveState, isPB, user, onNext }: ResultView
       <div className="flex items-center justify-between gap-3">
         {showLoginHint ? (
           <p className="text-muted-foreground flex items-center gap-1 text-xs">
-            <Button variant="link" size="sm" asChild className="h-auto p-0 text-xs">
-              <Link href="/login">sign in</Link>
+            <Button
+              variant="link"
+              size="sm"
+              render={<Link href="/login" />}
+              className="h-auto p-0 text-xs"
+            >
+              sign in
             </Button>
             to save your result
           </p>

@@ -82,8 +82,10 @@ function InputGroupButton({
   variant = "ghost",
   size = "xs",
   ...props
-}: Omit<React.ComponentProps<typeof Button>, "size"> &
-  VariantProps<typeof inputGroupButtonVariants>) {
+}: Omit<React.ComponentProps<typeof Button>, "size" | "type"> &
+  VariantProps<typeof inputGroupButtonVariants> & {
+    type?: "button" | "submit" | "reset";
+  }) {
   return (
     <Button
       type={type}
@@ -112,11 +114,7 @@ function InputGroupInput({ className, ...props }: React.ComponentProps<"input">)
     <Input
       data-slot="input-group-control"
       className={cn(
-        // min-w-0: inside a combobox popup the raw input's intrinsic default
-        // width (~170px) would otherwise drive the popup's shrink-to-fit width,
-        // making it wider than the longest list item. The input still grows
-        // (flex-1) to fill whatever width the items settle on.
-        "flex-1 min-w-0 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent",
+        "flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent",
         className,
       )}
       {...props}
@@ -144,4 +142,5 @@ export {
   InputGroupInput,
   InputGroupText,
   InputGroupTextarea,
+  inputGroupButtonVariants,
 };

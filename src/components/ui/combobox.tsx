@@ -3,12 +3,13 @@
 import { Combobox as ComboboxPrimitive } from "@base-ui/react";
 import { IconCheck, IconChevronDown, IconX } from "@tabler/icons-react";
 import * as React from "react";
-import { Button } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
+  inputGroupButtonVariants,
 } from "~/components/ui/input-group";
 import { cn } from "~/lib/utils";
 
@@ -136,16 +137,15 @@ function ComboboxInput({
       <ComboboxPrimitive.Input render={<InputGroupInput disabled={disabled} />} {...props} />
       <InputGroupAddon align="inline-end">
         {showTrigger && (
-          <InputGroupButton
-            size="icon-xs"
-            variant="ghost"
-            asChild
-            data-slot="input-group-button"
-            className="group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent"
+          <ComboboxTrigger
             disabled={disabled}
-          >
-            <ComboboxTrigger />
-          </InputGroupButton>
+            data-slot="input-group-button"
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "icon-xs" }),
+              inputGroupButtonVariants({ size: "icon-xs" }),
+              "group-has-data-[slot=combobox-clear]/input-group:hidden data-pressed:bg-transparent",
+            )}
+          />
         )}
         {showClear && <ComboboxClear disabled={disabled} />}
       </InputGroupAddon>

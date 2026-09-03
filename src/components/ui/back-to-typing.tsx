@@ -8,10 +8,13 @@ import { cn } from "~/lib/utils";
  */
 function BackToTyping({ className }: { className?: string }) {
   return (
-    <Button variant="link" size="sm" asChild className={cn("h-auto gap-1 p-0 text-xs", className)}>
-      <Link href="/">
-        <IconArrowLeft className="size-3" /> back to typing
-      </Link>
+    <Button
+      variant="link"
+      size="sm"
+      render={<Link href="/" />}
+      className={cn("h-auto gap-1 p-0 text-xs", className)}
+    >
+      <IconArrowLeft className="size-3" /> back to typing
     </Button>
   );
 }

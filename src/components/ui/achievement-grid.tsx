@@ -66,15 +66,17 @@ const AchievementGrid = React.forwardRef<HTMLDivElement, AchievementGridProps>(
             achievement.description || (achievement.achievedAt ? "Earned" : "Locked");
           return (
             <Tooltip key={achievement.id}>
-              <TooltipTrigger asChild>
-                <div>
-                  <AchievementBadge
-                    achievement={achievement}
-                    badgeSize={badgeSize}
-                    onAchievementClick={onAchievementClick}
-                  />
-                </div>
-              </TooltipTrigger>
+              <TooltipTrigger
+                render={
+                  <div>
+                    <AchievementBadge
+                      achievement={achievement}
+                      badgeSize={badgeSize}
+                      onAchievementClick={onAchievementClick}
+                    />
+                  </div>
+                }
+              />
               <TooltipContent
                 side="top"
                 className="flex max-w-[220px] flex-col gap-0.5 text-center"

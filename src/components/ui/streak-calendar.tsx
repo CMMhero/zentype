@@ -491,23 +491,25 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                             : `${count} tests on ${dateLabel}`;
                       return (
                         <Tooltip key={dateKey}>
-                          <TooltipTrigger asChild>
-                            <button
-                              type="button"
-                              role="gridcell"
-                              aria-current={isToday ? "date" : undefined}
-                              aria-label={`${tooltipText}, ${usedFreeze ? "freeze used" : isActive ? "streak active" : "no activity"}`}
-                              onClick={() => onDayClick?.(date, isActive)}
-                              className={cn(
-                                "border-border/50 transition-colors",
-                                cellClass,
-                                "hover:ring-ring hover:ring-1",
-                                isToday && "!bg-primary-foreground !text-primary border-primary",
-                                !isToday && intensityClass,
-                              )}
-                              style={usedFreeze ? freezeColorStyles : undefined}
-                            />
-                          </TooltipTrigger>
+                          <TooltipTrigger
+                            render={
+                              <button
+                                type="button"
+                                role="gridcell"
+                                aria-current={isToday ? "date" : undefined}
+                                aria-label={`${tooltipText}, ${usedFreeze ? "freeze used" : isActive ? "streak active" : "no activity"}`}
+                                onClick={() => onDayClick?.(date, isActive)}
+                                className={cn(
+                                  "border-border/50 transition-colors",
+                                  cellClass,
+                                  "hover:ring-ring hover:ring-1",
+                                  isToday && "!bg-primary-foreground !text-primary border-primary",
+                                  !isToday && intensityClass,
+                                )}
+                                style={usedFreeze ? freezeColorStyles : undefined}
+                              />
+                            }
+                          />
                           <TooltipContent side="top">{tooltipText}</TooltipContent>
                         </Tooltip>
                       );
