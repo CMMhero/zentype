@@ -248,15 +248,18 @@ const LeaderboardRankings = React.forwardRef<
                   setPageSize(Number(v) as 10 | 25 | 50 | 100)
                 }
               >
-                <SelectTrigger size="sm" className="w-16">
+                <SelectTrigger size="sm">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                {/* popper (not item-aligned): the app scrolls inside <main>, so a
+                    viewport-anchored item-aligned list gets cut off at the bottom
+                    of the page — popper flips/collides against the viewport. */}
+                <SelectContent position="popper" align="start">
                   {pageSizeOptions.map((option) => (
                     <SelectItem key={option} value={String(option)}>
                       {option}
-                  </SelectItem>
-                ))}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
