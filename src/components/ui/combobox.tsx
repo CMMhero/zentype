@@ -64,7 +64,10 @@ function ComboboxSelect({
           {selected?.label ?? placeholder}
         </span>
       </ComboboxTrigger>
-      <ComboboxContent className="w-auto max-w-(--available-width)">
+      {/* Size the popup to the longest list item (w-max), not to the trigger
+          width or the search input's intrinsic width — min-w-0 also lets the
+          input shrink so it never stretches the popup. */}
+      <ComboboxContent className="w-max min-w-0 max-w-(--available-width)">
         <ComboboxInput placeholder={searchPlaceholder} showTrigger={false} />
         <ComboboxList>
           {(item: ComboboxSelectOption) => (
