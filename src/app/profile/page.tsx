@@ -29,7 +29,7 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { StreakCalendar } from "~/components/ui/streak-calendar";
+import { StreakCalendar, StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { AchievementList } from "~/components/ui/achievement-list";
 import dynamic from "next/dynamic";
@@ -206,6 +206,10 @@ export default function ProfilePage() {
   }
 
   const loading = stats === null;
+  // Results arrive separately from stats (e.g. when coming from the public
+  // profile, whose cache has no history) — skeleton until they load rather
+  // than showing a wrong "no data" empty state.
+  const resultsLoading = results === null;
   const chartData = (results ?? []).slice(0, 100).reverse();
 
   // Streak data
@@ -431,7 +435,7 @@ export default function ProfilePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4">
-            {loading ? (
+            {loading || resultsLoading ? (
               <Skeleton className="h-40 w-full" />
             ) : wpmWithAvgData.length >= 2 ? (
               <ChartContainer config={wpmConfig} className="h-40 w-full">
@@ -465,7 +469,7 @@ export default function ProfilePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-4">
-            {loading ? (
+            {loading || resultsLoading ? (
               <Skeleton className="h-40 w-full" />
             ) : chartData.length >= 2 ? (
               <ChartContainer config={accConfig} className="h-40 w-full">
@@ -501,7 +505,7 @@ export default function ProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          {loading ? (
+          {loading || resultsLoading ? (
             <Skeleton className="h-40 w-full" />
           ) : distributionData.length >= 1 ? (
             <ChartContainer config={distConfig} className="h-40 w-full">
@@ -614,7 +618,7 @@ export default function ProfilePage() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconClock className="size-4" /> activity
-            {loading ? (
+            {loading || resultsLoading ? (
               <Skeleton className="ml-2 h-3 w-28" />
             ) : (
               <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
@@ -622,7 +626,7 @@ export default function ProfilePage() {
               </span>
             )}
             <div className="ml-auto">
-              {loading ? (
+              {loading || resultsLoading ? (
                 <Skeleton className="h-7 w-36" />
               ) : (
                 <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
@@ -641,8 +645,8 @@ export default function ProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          {loading ? (
-            <Skeleton className="h-24 w-full" />
+          {loading || resultsLoading ? (
+            <StreakCalendarSkeleton />
           ) : (
             <StreakCalendar
               streak={streakPeriods}
@@ -661,11 +665,15 @@ export default function ProfilePage() {
         <CardHeader className="px-4">
           <CardTitle className="flex items-center gap-2 text-sm font-semibold tracking-wider">
             <IconHistory className="size-4" /> test history
-            <Badge variant="secondary" className="ml-auto text-[10px]">{results?.length ?? 0} tests</Badge>
+            {resultsLoading ? (
+              <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
+            ) : (
+              <Badge variant="secondary" className="ml-auto text-[10px]">{results?.length ?? 0} tests</Badge>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          {loading ? (
+          {loading || resultsLoading ? (
             <div className="flex flex-col gap-2">
               {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-11 rounded-2xl" />)}
             </div>

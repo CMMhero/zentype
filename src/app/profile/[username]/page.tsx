@@ -28,7 +28,7 @@ import {
   pubProfileKey, pubPointsKey, pubAchKey, pubRanksKey,
   readPublicProfileCache, writeOwnProfileCache, writePublicProfileCache,
 } from "~/lib/profile-cache";
-import { StreakCalendar } from "~/components/ui/streak-calendar";
+import { StreakCalendar, StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { useUser } from "~/components/user-provider";
 
@@ -368,7 +368,7 @@ export default function PublicProfilePage() {
         </CardHeader>
         <CardContent className="px-4">
           {loading ? (
-            <Skeleton className="h-24 w-full" />
+            <StreakCalendarSkeleton />
           ) : (
             <StreakCalendar
               streak={streakPeriods}

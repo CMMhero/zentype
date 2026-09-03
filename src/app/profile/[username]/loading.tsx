@@ -1,4 +1,5 @@
 import { Skeleton } from "~/components/ui/skeleton";
+import { StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   IconAward, IconClock, IconGauge, IconTarget, IconStopwatch, IconTrendingUp,
@@ -105,7 +106,7 @@ export default function PublicProfileLoading() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <Skeleton className="h-24 w-full rounded-2xl" />
+          <StreakCalendarSkeleton />
         </CardContent>
       </Card>
     </div>
