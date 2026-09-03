@@ -161,6 +161,36 @@ function getGitCells(
   return { cells, dates }
 }
 
+// Gradual intensity ramp for year-view contribution cells: five primary
+// alpha stops between "a little" and "the busiest day in the window".
+const GIT_INTENSITY_STOPS = [
+  "bg-primary/35",
+  "bg-primary/55",
+  "bg-primary/75",
+  "bg-primary/90",
+  "bg-primary",
+]
+
+/**
+ * Map a day's test count to a ramp stop, relative to the busiest day shown
+ * in the current window. The denominator has a floor so a quiet month still
+ * gets a gradual ramp instead of everything collapsing onto one stop.
+ */
+function gitIntensityClass(count: number, maxCount: number, isActive: boolean): string {
+  if (count <= 0) {
+    // Streak-active day with no recorded tests — a faint tint so it still
+    // reads as part of the streak rather than an empty day.
+    return isActive ? "bg-primary/25" : "bg-muted/40"
+  }
+  const denom = Math.max(maxCount, 4)
+  const ratio = count / denom
+  const idx = Math.min(
+    GIT_INTENSITY_STOPS.length - 1,
+    Math.max(0, Math.round(ratio * (GIT_INTENSITY_STOPS.length - 1)))
+  )
+  return GIT_INTENSITY_STOPS[idx]
+}
+
 const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
   (
     {
@@ -204,6 +234,12 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
     // Contribution cells are styled like the theme swatch chips (footer theme
     // selector): size-3 tiles with a hairline border and subtle rounding.
     const cellClass = "size-3 rounded-sm border"
+    // Intensity is relative to the busiest day actually shown in this window,
+    // so a light month reads differently from a heavy one.
+    const gitMaxCount = gitDates.reduce(
+      (max, d) => Math.max(max, countsMap[getDateKey(d)] ?? 0),
+      0
+    )
     const gitMonthLabels: Array<{ column: number; label: string }> = []
     const seenGitMonths = new Set<string>()
 
@@ -462,13 +498,9 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                         day: "numeric",
                         year: "numeric",
                       })
-                      const intensityClass =
-                        usedFreeze ? "border-[var(--freeze-color)] bg-[var(--freeze-color)]"
-                        : count >= 4 ? "bg-primary"
-                        : count >= 2 ? "bg-primary/70"
-                        : count === 1 ? "bg-primary/40"
-                        : isActive ? "bg-primary/30"
-                        : "bg-muted/40"
+                      const intensityClass = usedFreeze
+                        ? "border-[var(--freeze-color)] bg-[var(--freeze-color)]"
+                        : gitIntensityClass(count, gitMaxCount, isActive)
                       const tooltipText =
                         count === 0 ? `No tests on ${dateLabel}`
                         : count === 1 ? `1 test on ${dateLabel}`
@@ -510,10 +542,9 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
               aria-hidden
             >
               <span className="mr-1">less</span>
-              <span className="size-3 rounded-sm border border-border/50 bg-muted/40" />
-              <span className="size-3 rounded-sm border border-border/50 bg-primary/40" />
-              <span className="size-3 rounded-sm border border-border/50 bg-primary/70" />
-              <span className="size-3 rounded-sm border border-border/50 bg-primary" />
+              {["bg-muted/40", ...GIT_INTENSITY_STOPS].map((fill) => (
+                <span key={fill} className={cn("size-3 rounded-sm border border-border/50", fill)} />
+              ))}
               <span className="ml-1">more</span>
             </div>
           </>
@@ -592,10 +623,9 @@ function StreakCalendarSkeleton() {
         {/* Legend is static chrome — render it as-is (same markup as the real view) */}
         <div className="text-muted-foreground mt-2 flex items-center justify-start gap-1.5 text-[9px]">
           <span className="mr-1">less</span>
-          <span className="size-3 rounded-sm border border-border/50 bg-muted/40" />
-          <span className="size-3 rounded-sm border border-border/50 bg-primary/40" />
-          <span className="size-3 rounded-sm border border-border/50 bg-primary/70" />
-          <span className="size-3 rounded-sm border border-border/50 bg-primary" />
+          {["bg-muted/40", ...GIT_INTENSITY_STOPS].map((fill) => (
+            <span key={fill} className={cn("size-3 rounded-sm border border-border/50", fill)} />
+          ))}
           <span className="ml-1">more</span>
         </div>
       </div>
