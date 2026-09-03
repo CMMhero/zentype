@@ -61,7 +61,7 @@ export default function SettingsPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>restore all settings to defaults?</AlertDialogTitle>
               <AlertDialogDescription>
-                Resets your theme, font, sound, and gameplay settings.
+                resets your theme, font, sound, and gameplay settings.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -216,7 +216,7 @@ export default function SettingsPage() {
             <Card className="w-full py-6">
               <CardContent className="flex flex-col items-center gap-3 px-4 text-center">
                 <IconUser className="text-muted-foreground size-6" />
-                <p className="text-muted-foreground text-sm">you're typing as a guest. results live in this browser only.</p>
+                <p className="text-muted-foreground text-sm">you're typing as a guest.<br/>results live in this browser only.</p>
                 <Button asChild size="sm"><a href="/login">sign in</a></Button>
               </CardContent>
             </Card>
