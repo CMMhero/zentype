@@ -1,4 +1,5 @@
-import { Skeleton } from "~/components/ui/skeleton";
+import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
+import { StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   IconAward, IconClock, IconGauge, IconTarget, IconStopwatch, IconTrendingUp,
@@ -100,12 +101,12 @@ export default function PublicProfileLoading() {
             <IconClock className="size-4" /> activity
             <Skeleton className="ml-2 h-3 w-28" />
             <div className="ml-auto">
-              <Skeleton className="h-7 w-36" />
+              <SelectSkeleton className="w-36" />
             </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-          <Skeleton className="h-24 w-full rounded-2xl" />
+          <StreakCalendarSkeleton />
         </CardContent>
       </Card>
     </div>

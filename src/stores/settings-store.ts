@@ -29,21 +29,29 @@ const DEFAULT_SETTINGS: GameSettings = {
 
 interface SettingsState {
   settings: GameSettings;
+  /** True once persisted settings have been rehydrated from storage */
+  hasHydrated: boolean;
   update: (patch: Partial<GameSettings>) => void;
   reset: () => void;
+  setHasHydrated: (v: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
       settings: DEFAULT_SETTINGS,
+      hasHydrated: false,
       update: (patch) =>
         set((s) => ({ settings: { ...s.settings, ...patch } })),
       reset: () => set({ settings: DEFAULT_SETTINGS }),
+      setHasHydrated: (v) => set({ hasHydrated: v }),
     }),
     {
       name: "zentype-settings",
       version: 5,
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
       migrate: (persistedState) => {
         // persistedState may be { settings: {...} } or legacy flat shape
         const raw = (persistedState ?? {}) as Record<string, unknown>;

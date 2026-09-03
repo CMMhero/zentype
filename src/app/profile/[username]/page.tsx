@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
   IconArrowLeft, IconAward, IconClock, IconGauge,
@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import { Skeleton } from "~/components/ui/skeleton";
+import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
 
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
@@ -21,8 +21,14 @@ import { cn } from "~/lib/utils";
 import { getPublicProfile, type PublicProfile } from "~/server/results";
 import { getUserAchievementsByUsername, getUserPointsByUsername } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
-import { lcGet, lcSet } from "~/lib/client-cache";
-import { StreakCalendar } from "~/components/ui/streak-calendar";
+import { lcGetEntry, lcSet } from "~/lib/client-cache";
+import {
+  PROFILE_CACHE_TTL, PROFILE_FRESH_MS,
+  isFresh, ownRanksKey,
+  pubProfileKey, pubPointsKey, pubAchKey, pubRanksKey,
+  readPublicProfileCache, writeOwnProfileCache, writePublicProfileCache,
+} from "~/lib/profile-cache";
+import { StreakCalendar, StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { useUser } from "~/components/user-provider";
 
@@ -43,21 +49,40 @@ export default function PublicProfilePage() {
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
   const currentUser = useUser();
 
-  // Stale-while-revalidate: show cached data instantly, fetch fresh in background
+  // Hydrate from localStorage before the first paint, so a refresh renders
+  // cached data immediately instead of flashing the skeleton.
+  useLayoutEffect(() => {
+    const c = readPublicProfileCache(username);
+    if (c.profile) { setProfile(c.profile.data); setLoading(false); }
+    if (c.points) setPoints(c.points.data);
+    if (c.achievements) setAchievements(c.achievements.data);
+    const isOwn = currentUser?.username === username;
+    const ranksKey = isOwn && currentUser ? ownRanksKey(currentUser.id) : pubRanksKey(username);
+    const ranks = lcGetEntry<Record<string, number>>(ranksKey, PROFILE_CACHE_TTL);
+    if (ranks) setBoardRanks(ranks.data);
+  }, [username, currentUser]);
+
+  // Stale-while-revalidate: show cached data instantly, fetch fresh in background.
+  // Your own public profile shares cache keys with the full profile page, so
+  // toggling between the two never refetches while the cache is still fresh.
   useEffect(() => {
     let cancelled = false;
-    const FIVE_MIN = 5 * 60 * 1000;
-    const ONE_MIN = 60 * 1000;
-    const cacheKey = `pub-${username}`;
+    const isOwn = currentUser?.username === username;
 
-    // Load cached data immediately
-    const cProfile = lcGet<PublicProfile>(cacheKey, FIVE_MIN);
-    const cPoints = lcGet<{ totalXP: number; level: number; progress: number }>(`${cacheKey}-points`, ONE_MIN);
-    const cAch = lcGet<Array<{ id: string; name: string; description: string; trigger: "metric" | "streak" | "api"; achievedAt: string | null; progress: number; xp: number }>>(`${cacheKey}-ach`, FIVE_MIN);
+    const c = readPublicProfileCache(username);
 
-    if (cProfile) { setProfile(cProfile); setLoading(false); }
-    if (cPoints) setPoints(cPoints);
-    if (cAch) setAchievements(cAch);
+    // Viewing your own public profile? Keep the full-profile cache warm so
+    // "my profile" renders instantly when you head back.
+    if (isOwn && currentUser) {
+      if (c.profile) writeOwnProfileCache(currentUser.id, { stats: c.profile.data.stats, joinDate: c.profile.data.joinedAt });
+      if (c.points) writeOwnProfileCache(currentUser.id, { points: c.points.data });
+      if (c.achievements) writeOwnProfileCache(currentUser.id, { achievements: c.achievements.data });
+    }
+
+    // Everything is fresh — skip the refetch entirely (fast profile ↔ public toggle)
+    if (isFresh(c.profile) && isFresh(c.points) && isFresh(c.achievements)) {
+      return () => { cancelled = true; };
+    }
 
     // Fetch all data in parallel
     void Promise.all([
@@ -66,23 +91,41 @@ export default function PublicProfilePage() {
       getUserAchievementsByUsername(username),
     ]).then(([p, pt, a]) => {
       if (cancelled) return;
-      if (p) { setProfile(p); setLoading(false); lcSet(cacheKey, p); }
-      if (pt) { setPoints(pt); lcSet(`${cacheKey}-points`, pt); }
-      if (a) { setAchievements(a); lcSet(`${cacheKey}-ach`, a); }
+      if (p) { setProfile(p); setLoading(false); lcSet(pubProfileKey(username), p); }
+      if (pt) { setPoints(pt); lcSet(pubPointsKey(username), pt); }
+      if (a) { setAchievements(a); lcSet(pubAchKey(username), a); }
+      // Mirror into the full-profile cache when this is your own profile
+      if (isOwn && currentUser) {
+        if (p) writeOwnProfileCache(currentUser.id, { stats: p.stats, joinDate: p.joinedAt });
+        if (pt) writeOwnProfileCache(currentUser.id, { points: pt });
+        if (a) writeOwnProfileCache(currentUser.id, { achievements: a });
+      }
     }).catch(() => {
       if (!cancelled) setLoading(false);
     });
 
     return () => { cancelled = true; };
-  }, [username]);
+  }, [username, currentUser]);
 
-  // Board ranks depend on profile stats
+  // Board ranks depend on profile stats (cached; fresh skips the refetch)
   useEffect(() => {
     if (!profile?.stats) return;
     const boards = Object.keys(profile.stats.bestByBoard);
     if (boards.length === 0 || !profile.userId) return;
-    void getBoardRanks(profile.userId, boards).then(setBoardRanks);
-  }, [profile]);
+    const isOwn = currentUser?.username === username;
+    const key = isOwn && currentUser ? ownRanksKey(currentUser.id) : pubRanksKey(username);
+    const cached = lcGetEntry<Record<string, number>>(key, PROFILE_CACHE_TTL);
+    if (cached) {
+      setBoardRanks(cached.data);
+      if (cached.ageMs < PROFILE_FRESH_MS) return; // fresh — skip refetch
+    }
+    void getBoardRanks(profile.userId, boards).then((ranks) => {
+      setBoardRanks(ranks);
+      lcSet(key, ranks);
+      // Keep the other namespace warm when viewing your own profile
+      if (isOwn && currentUser) writePublicProfileCache(username, { ranks });
+    });
+  }, [profile, username, currentUser]);
 
   if (!profile) {
     if (loading) return <ProfileSkeleton />;
@@ -306,7 +349,7 @@ export default function PublicProfilePage() {
             )}
             <div className="ml-auto">
               {loading ? (
-                <Skeleton className="h-7 w-36" />
+                <SelectSkeleton className="w-36" />
               ) : (
                 <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
                   <SelectTrigger size="sm" className="h-7 w-36 text-xs">
@@ -325,7 +368,7 @@ export default function PublicProfilePage() {
         </CardHeader>
         <CardContent className="px-4">
           {loading ? (
-            <Skeleton className="h-24 w-full" />
+            <StreakCalendarSkeleton />
           ) : (
             <StreakCalendar
               streak={streakPeriods}

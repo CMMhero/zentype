@@ -4,6 +4,7 @@ import * as React from "react"
 import { IconCheck, IconSnowflake } from "@tabler/icons-react"
 
 import { cn } from "~/lib/utils"
+import { Skeleton } from "~/components/ui/skeleton"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip"
 
 // Types (inlined - only fields used by this component)
@@ -521,5 +522,43 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
 )
 StreakCalendar.displayName = "StreakCalendar"
 
-export { StreakCalendar }
+/**
+ * Loading placeholder that mirrors the year-view calendar's shape:
+ * a row of month labels, a 7×N contribution grid, and the less→more legend.
+ */
+function StreakCalendarSkeleton() {
+  const MONTH_LABELS = 12
+  const COLS = 53 // ceil(365 / 7)
+  const ROWS = 7
+  return (
+    <div className="w-full overflow-x-auto" aria-hidden>
+      <div className="inline-block min-w-full pr-4">
+        <div className="mb-2 flex gap-3">
+          {Array.from({ length: MONTH_LABELS }, (_, i) => (
+            <Skeleton key={i} className="h-3 w-6 rounded" />
+          ))}
+        </div>
+        <div
+          className="grid grid-flow-col grid-rows-7 gap-[3px]"
+          style={{ gridTemplateColumns: `repeat(${COLS}, 0.75rem)` }}
+        >
+          {Array.from({ length: COLS * ROWS }, (_, i) => (
+            <Skeleton key={i} className="size-3 rounded-[0.2rem]" />
+          ))}
+        </div>
+        <div className="mt-2 flex items-center justify-start gap-1.5">
+          <Skeleton className="h-[9px] w-6 rounded" />
+          {Array.from({ length: 4 }, (_, i) => (
+            <Skeleton key={i} className="size-[0.55rem] rounded-[2px]" />
+          ))}
+          <Skeleton className="h-[9px] w-6 rounded" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+StreakCalendar.displayName = "StreakCalendar"
+
+export { StreakCalendar, StreakCalendarSkeleton }
 export type { StreakCalendarProps, StreakPeriod }

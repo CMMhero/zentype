@@ -24,7 +24,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Kbd } from "~/components/ui/kbd";
 import { Badge } from "~/components/ui/badge";
-import { Skeleton } from "~/components/ui/skeleton";
+import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { ComboboxSelect, type ComboboxSelectOption } from "~/components/ui/combobox";
 import { lcGet } from "~/lib/client-cache";
@@ -55,6 +55,7 @@ export function AppShell({
   const router = useRouter();
   const themeId = useSettingsStore((s) => s.settings.themeId);
   const fontFamily = useSettingsStore((s) => s.settings.fontFamily);
+  const settingsHydrated = useSettingsStore((s) => s.hasHydrated);
   const updateSettings = useSettingsStore((s) => s.update);
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
   const [isMac, setIsMac] = useState(false);
@@ -181,22 +182,32 @@ export function AppShell({
             <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">privacy</Link>
           </span>
           <span className="ml-auto hidden items-center gap-1 sm:flex">
-            <ComboboxSelect
-              items={THEME_FOOTER_ITEMS}
-              value={themeId}
-              onValueChange={(v) => updateSettings({ themeId: v })}
-              placeholder="theme"
-              searchPlaceholder="search themes…"
-              className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
-            />
-            <ComboboxSelect
-              items={FONT_FOOTER_ITEMS}
-              value={fontFamily}
-              onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}
-              placeholder="font"
-              searchPlaceholder="search fonts…"
-              className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
-            />
+            {settingsHydrated ? (
+              <>
+                <ComboboxSelect
+                  items={THEME_FOOTER_ITEMS}
+                  value={themeId}
+                  onValueChange={(v) => updateSettings({ themeId: v })}
+                  placeholder="theme"
+                  searchPlaceholder="search themes…"
+                  className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
+                />
+                <ComboboxSelect
+                  items={FONT_FOOTER_ITEMS}
+                  value={fontFamily}
+                  onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}
+                  placeholder="font"
+                  searchPlaceholder="search fonts…"
+                  className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
+                />
+              </>
+            ) : (
+              <>
+                {/* Settings not loaded yet — don't show the default theme/font */}
+                <SelectSkeleton className="h-7 w-16 px-2" />
+                <SelectSkeleton className="h-7 w-14 px-2" />
+              </>
+            )}
           </span>
         </div>
       </footer>
@@ -263,7 +274,7 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
           </Avatar>
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
           {userLevel === null ? (
-            <Skeleton className="hidden h-[18px] min-w-[20px] rounded-full sm:block" />
+            <Skeleton className="hidden h-[18px] min-w-[28px] rounded-full sm:block" />
           ) : (
             <Badge variant="secondary" className="hidden sm:inline-flex text-[9px] font-bold tracking-widest">
               {userLevel}
