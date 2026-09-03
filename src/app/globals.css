@@ -288,9 +288,6 @@
        to the viewport while html is visible in both axes, and clip on the root
        is interpreted as hidden on the viewport (blocking page scroll). */
     scrollbar-width: none;
-    /* Root overscroll-behavior applies to the viewport: never let a swipe at
-       the top trigger pull-to-refresh and abort a typing test. */
-    overscroll-behavior-y: none;
     @apply font-sans;
   }
   html[data-appearance="light"] {
