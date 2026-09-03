@@ -1,4 +1,4 @@
-import { lcGetEntry, lcSet, lcDel } from "./client-cache";
+import { lcGetEntry, lcSet, lcDel, lcDelPrefix } from "./client-cache";
 import type { AggregatedStats, PublicProfile } from "~/server/results";
 import type { TestResult } from "./types";
 
@@ -155,4 +155,6 @@ export function invalidateProfileCaches(uid: string, username: string | null): v
     lcDel(pubAchKey(username));
     lcDel(pubRanksKey(username));
   }
+  // Leaderboard ranks changed with the new test too
+  lcDelPrefix("lb");
 }

@@ -59,6 +59,24 @@ export function lcDel(key: string): void {
 }
 
 /**
+ * Delete every cached value whose key starts with the given prefix.
+ */
+export function lcDelPrefix(prefix: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const full = `${PREFIX}${prefix}`;
+    const toRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith(full)) toRemove.push(k);
+    }
+    for (const k of toRemove) localStorage.removeItem(k);
+  } catch {
+    // ignore
+  }
+}
+
+/**
  * Stale-while-revalidate: returns cached data immediately if available,
  * then fetches fresh data and calls setter when done.
  * Returns true if fresh data was fetched (for knowing when loading is done).

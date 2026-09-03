@@ -10,6 +10,7 @@ import {
 import { LeaderboardRankings, type LeaderboardRankingItem } from "~/components/ui/leaderboard-rankings";
 import { LeaderboardSkeleton } from "~/components/leaderboard-skeleton";
 import { getLeaderboard, getLevelLeaderboard, type LevelLeaderboardEntry } from "~/server/leaderboard";
+import { lcGetEntry, lcSet } from "~/lib/client-cache";
 import { useUser } from "~/components/user-provider";
 import type { GameMode, LeaderboardEntry } from "~/lib/types";
 
@@ -55,31 +56,57 @@ function LeaderboardContent() {
   const [pending, startTransition] = useTransition();
   const [loaded, setLoaded] = useState(false);
 
+  // Stale-while-revalidate: each board/mode/variant/period combo is cached in
+  // localStorage, so switching tabs or periods renders instantly and skips the
+  // refetch entirely while the cache is still fresh (30s).
   useEffect(() => {
     let cancelled = false;
+    const FRESH = 30_000;
+    const TTL = 60_000;
     setLoaded(false);
+
     if (boardTab === "level") {
-      startTransition(() => { setLevelEntries([]); });
+      const key = "lblevel:50";
+      const cached = lcGetEntry<LevelLeaderboardEntry[]>(key, TTL);
+      if (cached) {
+        startTransition(() => setLevelEntries(cached.data));
+        setLoaded(true);
+        if (cached.ageMs < FRESH) return () => { cancelled = true; }; // fresh — skip refetch
+      } else {
+        startTransition(() => { setLevelEntries([]); });
+      }
       void getLevelLeaderboard(50).then((data) => {
         if (!cancelled) {
           startTransition(() => setLevelEntries(data));
+          if (data.length > 0) lcSet(key, data);
           setLoaded(true);
         }
       }).catch(() => { if (!cancelled) setLoaded(true); });
       return () => { cancelled = true; };
     }
-    startTransition(() => { setEntries([]); });
+
+    const key = `lbwpm:${mode}:${variant}:${period}`;
+    const cached = lcGetEntry<LeaderboardEntry[]>(key, TTL);
+    if (cached) {
+      startTransition(() => setEntries(cached.data));
+      setLoaded(true);
+      if (cached.ageMs < FRESH) return () => { cancelled = true; }; // fresh — skip refetch
+    } else {
+      startTransition(() => { setEntries([]); });
+    }
     const since = periodToDate(period);
     void getLeaderboard({ mode, variant, limit: 50, since }).then((data) => {
       if (!cancelled) {
         startTransition(() => setEntries(data));
+        if (data.length > 0) lcSet(key, data);
         setLoaded(true);
       }
     }).catch((err) => {
       console.error("[zentype] leaderboard load failed:", err);
       if (!cancelled) setLoaded(true);
     });
-    return () => { cancelled = true; };  }, [mode, variant, period, boardTab]);
+    return () => { cancelled = true; };
+  }, [mode, variant, period, boardTab]);
 
   const loading = pending || !loaded;
 
