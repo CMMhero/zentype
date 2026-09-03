@@ -2,10 +2,14 @@
 
 import {
   IconCommand,
+  IconKeyboard,
   IconKeyboardFilled,
   IconLogout,
+  IconSettings,
   IconSettingsFilled,
+  IconTrophy,
   IconTrophyFilled,
+  IconUser,
   IconUserFilled,
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -46,10 +50,10 @@ import { signOutFn } from "~/server/auth";
 import { useUiStore } from "~/stores/ui-store";
 
 const NAV = [
-  { to: "/", label: "test", icon: IconKeyboardFilled },
-  { to: "/leaderboard", label: "leaderboard", icon: IconTrophyFilled },
-  { to: "/profile", label: "profile", icon: IconUserFilled },
-  { to: "/settings", label: "settings", icon: IconSettingsFilled },
+  { to: "/", label: "test", icon: IconKeyboardFilled, iconOutline: IconKeyboard },
+  { to: "/leaderboard", label: "leaderboard", icon: IconTrophyFilled, iconOutline: IconTrophy },
+  { to: "/profile", label: "profile", icon: IconUserFilled, iconOutline: IconUser },
+  { to: "/settings", label: "settings", icon: IconSettingsFilled, iconOutline: IconSettings },
 ] as const;
 
 function isActive(pathname: string, to: string) {
@@ -196,7 +200,7 @@ export function Navbar() {
           </Button>
 
           {authStatus === "loading" ? (
-            <Skeleton className="h-8 w-8 rounded-full sm:h-8 sm:w-20" />
+            <Skeleton className="h-8 w-9 rounded-3xl sm:h-8 sm:w-20" />
           ) : user ? (
             <UserMenu user={user} onSignOut={handleSignOut} userLevel={userLevel} />
           ) : (
@@ -218,29 +222,65 @@ export function Navbar() {
 /** Mobile bottom navigation - normal flow, not fixed. */
 export function MobileNav() {
   const pathname = usePathname();
+  const [presses, setPresses] = useState<Record<string, number>>({});
   return (
     <NavigationMenu
       aria-label="Mobile navigation"
       viewport={false}
-      className="bg-background/95 w-full flex-none border-t border-border/40 backdrop-blur-xl md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+      className="bg-background/95 flex-none border-t border-border/40 backdrop-blur-xl max-w-full md:hidden w-full"
+      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <NavigationMenuList className="flex h-14 w-full items-center justify-around px-2">
+      <NavigationMenuList className="flex h-16 w-full items-center justify-between">
         {NAV.map((item) => {
           const active = isActive(pathname, item.to);
           return (
             <NavigationMenuItem key={item.to}>
               <NavigationMenuLink
                 className={cn(
-                  "flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1.5 transition-colors",
-                  active
-                    ? "text-primary"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  "flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 transition-colors",
+                  !active && "hover:bg-muted",
                 )}
-                render={<Link href={item.to} aria-label={item.label} />}
+                render={
+                  <Link
+                    href={item.to}
+                    aria-label={item.label}
+                    onClick={(e) => {
+                      // Pressing the already-active tab replays the icon "pop".
+                      if (active) {
+                        e.preventDefault();
+                        setPresses((p) => ({ ...p, [item.to]: (p[item.to] ?? 0) + 1 }));
+                      }
+                    }}
+                  />
+                }
               >
-                <item.icon className="size-5" stroke={active ? 2 : 1.5} />
-                <span className="text-[10px]">{item.label}</span>
+                <span className="relative flex items-center justify-center rounded-full px-5 py-1">
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "absolute inset-0 rounded-full bg-primary/10",
+                      active
+                        ? "zt-pill-pop"
+                        : "scale-0 opacity-0 transition-all duration-300 ease-out",
+                    )}
+                  />
+                  <item.icon
+                    key={active ? `pop-${presses[item.to] ?? 0}` : "idle"}
+                    className={cn(
+                      "relative size-5 text-primary transition-all duration-300 ease-out",
+                      active ? "zt-icon-pop scale-100 opacity-100" : "absolute scale-75 opacity-0",
+                    )}
+                  />
+                  <item.iconOutline
+                    className={cn(
+                      "relative size-5 text-foreground transition-all duration-300 ease-out",
+                      active ? "absolute scale-75 opacity-0" : "scale-100 opacity-100",
+                    )}
+                  />
+                </span>
+                <span className={cn("text-[10px] text-foreground", active && "font-bold")}>
+                  {item.label}
+                </span>
               </NavigationMenuLink>
             </NavigationMenuItem>
           );
