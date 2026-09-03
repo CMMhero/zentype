@@ -13,7 +13,7 @@ const DEFAULT_SETTINGS: GameSettings = {
   strictSpace: false,
   freeBackspace: true,
   sound: { enabled: false, volume: 0.5, variant: "click" },
-  soundOnError: true,
+  soundOnError: false,
   themeId: DEFAULT_THEME_ID,
   caretStyle: "block",
   smoothCaret: true,
