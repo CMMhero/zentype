@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BackToTyping } from "~/components/ui/back-to-typing";
-import { IconFileTextFilled, IconKeyboardFilled } from "@tabler/icons-react";
+import { InlineCode } from "~/components/ui/inline-code";
+import { IconArrowRight, IconFileTextFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "terms of service",
@@ -32,7 +33,7 @@ export default function TermsPage() {
           <ul className="text-muted-foreground mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed">
             <li>You must be at least 13 years old to create an account.</li>
             <li>You are responsible for activity under your account and for keeping credentials secure.</li>
-            <li>Do not abuse, scrape, or attempt to disrupt the Service, leaderboards, or rate limits.</li>
+            <li>Do not abuse, scrape, or attempt to disrupt the Service or its leaderboards.</li>
             <li>Typing results are subject to a server-side plausibility check; implausible results may be rejected.</li>
           </ul>
         </section>
@@ -40,14 +41,14 @@ export default function TermsPage() {
         <section>
           <h2 className="text-base font-semibold">2. accounts & data</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            Authentication is via Supabase Auth (GitHub/Google OAuth). Profiles store your username and avatar. Test results, XP, achievements, and settings are tied to your user ID and protected by Row Level Security. You may export your data (Settings → Your data) or delete all results via the Danger Zone.
+            Authentication is via <InlineCode>Supabase Auth</InlineCode> (<InlineCode>GitHub</InlineCode>, <InlineCode>Google</InlineCode>, or <InlineCode>Discord</InlineCode> OAuth). Profiles store your username and avatar. Test results, XP, achievements, and settings are tied to your user ID and protected by <InlineCode>Row Level Security</InlineCode>. You may export your data (Settings <IconArrowRight className="text-muted-foreground size-3 inline" /> Your data) or delete your account entirely (Settings <IconArrowRight className="text-muted-foreground size-3 inline" /> Danger Zone or the command palette, with a typed confirmation).
           </p>
         </section>
 
         <section>
           <h2 className="text-base font-semibold">3. content</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            Prompts are sourced from offline word lists and optional external providers. Leaderboards reflect user-submitted results and are not editorial content. You retain rights to your typing data; you grant us a license to store and display it as part of the Service (e.g., leaderboards, profiles).
+            Test text comes from a built-in English word list; prompts are generated on the fly and nothing you type is mined for content. Leaderboards reflect user-submitted results and are not editorial content. You retain rights to your typing data; you grant us a license to store and display it as part of the Service (e.g., leaderboards, profiles).
           </p>
         </section>
 
@@ -56,7 +57,7 @@ export default function TermsPage() {
           <ul className="text-muted-foreground mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed">
             <li>No cheating tools, bots, or automated input.</li>
             <li>No harassment, impersonation, or unlawful content.</li>
-            <li>We may rate-limit, shadow-filter, or remove abusive accounts or entries.</li>
+            <li>We may remove abusive accounts or entries.</li>
           </ul>
         </section>
 

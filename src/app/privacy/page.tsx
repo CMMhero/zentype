@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BackToTyping } from "~/components/ui/back-to-typing";
-import { IconLockFilled, IconKeyboardFilled } from "@tabler/icons-react";
+import { InlineCode } from "~/components/ui/inline-code";
+import { IconArrowRight, IconLockFilled, IconKeyboardFilled } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "privacy policy",
@@ -30,12 +31,12 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-base font-semibold">1. data we collect</h2>
           <ul className="text-muted-foreground mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed">
-            <li><strong>Account</strong>: email, username, avatar URL via Supabase Auth (GitHub/Google/Discord OAuth). Stored in <code>profiles</code>.</li>
-            <li><strong>Typing results</strong>: WPM, accuracy, consistency, chars, timeline, mode/variant, timestamp in <code>test_results</code>.</li>
-            <li><strong>Gamification</strong>: XP, level, achievements, streaks in <code>user_points</code>/<code>point_events</code>/<code>user_achievements</code>.</li>
-            <li><strong>Settings</strong>: theme, font, gameplay prefs in <code>user_settings</code> (jsonb).</li>
+            <li><strong>Account</strong>: email, username, avatar URL via Supabase Auth (GitHub/Google/Discord OAuth). Stored in <InlineCode>profiles</InlineCode>.</li>
+            <li><strong>Typing results</strong>: WPM, accuracy, consistency, chars, timeline, mode/variant, timestamp in <InlineCode>test_results</InlineCode>.</li>
+            <li><strong>Gamification</strong>: XP, level, achievements, streaks in <InlineCode>user_points</InlineCode>/<InlineCode>point_events</InlineCode>/<InlineCode>user_achievements</InlineCode>.</li>
+            <li><strong>Settings</strong>: theme, font, gameplay prefs in <InlineCode>user_settings</InlineCode> (<InlineCode>jsonb</InlineCode>).</li>
             <li><strong>Local</strong>: guest results and settings cached in your browser (Zustand + localStorage) before login.</li>
-            <li><strong>Operational</strong>: Upstash Redis for leaderboards and rate limiting; no third-party analytics.</li>
+            <li><strong>Operational</strong>: Upstash Redis for leaderboards and caching; no third-party analytics.</li>
           </ul>
         </section>
 
@@ -56,7 +57,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-base font-semibold">4. retention & deletion</h2>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-            Data is retained while your account exists. You can export JSON or delete all results in Settings → Danger Zone (deletes <code>test_results</code> for your user). Account deletion removes related rows via cascade.
+            Data is retained while your account exists. You can export JSON anytime. Account deletion (Settings <IconArrowRight className="text-muted-foreground size-3 inline" /> Danger Zone, or the command palette) requires typing <InlineCode>yes, delete my account</InlineCode> and removes your auth user, so every related row (<InlineCode>profiles</InlineCode>, <InlineCode>test_results</InlineCode>, <InlineCode>user_settings</InlineCode>, gamification data) is removed via cascade.
           </p>
         </section>
 

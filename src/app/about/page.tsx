@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BackToTyping } from "~/components/ui/back-to-typing";
+import { InlineCode } from "~/components/ui/inline-code";
 import { IconInfoCircleFilled, IconKeyboard, IconKeyboardFilled, IconTrophy, IconAward, IconChartBar, IconPalette, IconBrandGithub } from "@tabler/icons-react";
 import { CommunityStats } from "~/components/community-stats";
 import { Card, CardContent } from "~/components/ui/card";
@@ -28,7 +29,7 @@ export default function AboutPage() {
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             <ZentypeIcon className="text-primary size-4 inline" /> zentype is a typing test with speed and accuracy tracking, inspired by{" "}
             <a href="https://monkeytype.com/" target="_blank" rel="noreferrer" className="text-primary hover:underline">monkeytype</a>.
-            XP, levels, 100+ achievements, streak heatmaps, and global leaderboards.
+            it layers on XP and levels, 110+ achievements, streak heatmaps, and global leaderboards.
           </p>
           <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
             Built with{" "}
@@ -50,7 +51,7 @@ export default function AboutPage() {
             <FeatureCard
               icon={<IconKeyboard className="size-5" />}
               title="typing modes"
-              description="Time (15/30/60/120s) and word (10/25/50/100) modes. Punctuation and numbers toggles. Blind mode, stop on error, strict space. Works on phone and desktop."
+              description={<>Time (<InlineCode>15/30/60/120s</InlineCode>) and words (<InlineCode>10/25/50/100</InlineCode>) modes. Punctuation and numbers toggles. Blind mode, stop on error, strict space. Works on phone and desktop.</>}
             />
             <FeatureCard
               icon={<IconChartBar className="size-5" />}
@@ -60,17 +61,17 @@ export default function AboutPage() {
             <FeatureCard
               icon={<IconTrophy className="size-5" />}
               title="leaderboards"
-              description="Global leaderboards ranked by mode and variant. Weekly and all-time views. Redis-backed with Postgres fallback."
+              description="Global leaderboards ranked by mode and variant. All-time, this week, and today views. Redis-backed with Postgres fallback."
             />
             <FeatureCard
               icon={<IconAward className="size-5" />}
               title="achievements"
-              description="100+ achievements: tests completed, WPM milestones, accuracy runs, streaks, consistency, account age, and more. XP per test, 500 per level."
+              description="110+ achievements: tests completed, WPM milestones, accuracy runs, streaks, consistency, account age, and more. XP per test, 500 per level."
             />
             <FeatureCard
               icon={<IconPalette className="size-5" />}
               title="customization"
-              description="200+ themes, 80+ fonts, 4 caret styles, virtual keyboard, WebAudio sounds, and a command palette (cmd+k)."
+              description={<>200+ themes, 90+ fonts, 4 caret styles, virtual keyboard, WebAudio sounds, and a command palette.</>}
             />
             <FeatureCard
               icon={<IconBrandGithub className="size-5" />}
