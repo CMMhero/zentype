@@ -82,10 +82,12 @@ export default function SettingsPage() {
           <IconSettingsFilled className="text-primary size-5" /> settings
         </h1>
         <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs">
-              <IconRefresh className="size-3.5" /> restore defaults
-            </Button>
+          <AlertDialogTrigger
+            render={
+              <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs" />
+            }
+          >
+            <IconRefresh className="size-3.5" /> restore defaults
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -146,7 +148,10 @@ export default function SettingsPage() {
                   min={0}
                   max={100}
                   value={[Math.round(settings.sound.volume * 100)]}
-                  onValueChange={([v]) => update({ sound: { ...settings.sound, volume: v / 100 } })}
+                  onValueChange={(value) => {
+                    const v = Array.isArray(value) ? (value[0] ?? 0) : value;
+                    update({ sound: { ...settings.sound, volume: v / 100 } });
+                  }}
                 />
               </SettingRow>
               <SettingRow label="variant">
@@ -317,7 +322,9 @@ export default function SettingsPage() {
                   onValueChange={(v) => update({ visibleLines: Number(v) as 1 | 2 | 3 })}
                 >
                   <SelectTrigger size="sm">
-                    <SelectValue />
+                    <SelectValue>
+                      {(val) => (val ? `${val} line${val === "1" ? "" : "s"}` : null)}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">1 line</SelectItem>
@@ -351,8 +358,8 @@ export default function SettingsPage() {
                   <br />
                   results live in this browser only.
                 </p>
-                <Button asChild size="sm">
-                  <a href="/login">sign in</a>
+                <Button size="sm" render={<a href="/login" />}>
+                  sign in
                 </Button>
               </CardContent>
             </Card>
@@ -575,10 +582,8 @@ function GuestDataCard() {
           these will sync automatically when you log in.
         </p>
         <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="sm">
-              discard local results
-            </Button>
+          <AlertDialogTrigger render={<Button variant="destructive" size="sm" />}>
+            discard local results
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -714,14 +719,21 @@ function ThemeSearch() {
             className="h-8 pl-8 text-xs"
           />
         </div>
-        <PillGroup className="shrink-0">
-          <PillButton active={filter === "all"} onClick={() => setFilter("all")}>
+        <PillGroup
+          className="shrink-0"
+          value={[filter]}
+          onValueChange={(v) => {
+            const next = v[0];
+            if (next) setFilter(next as "all" | "light" | "dark");
+          }}
+        >
+          <PillButton value="all">
             <IconDevices className="size-3.5" />
           </PillButton>
-          <PillButton active={filter === "light"} onClick={() => setFilter("light")}>
+          <PillButton value="light">
             <IconSun className="size-3.5" />
           </PillButton>
-          <PillButton active={filter === "dark"} onClick={() => setFilter("dark")}>
+          <PillButton value="dark">
             <IconMoon className="size-3.5" />
           </PillButton>
         </PillGroup>

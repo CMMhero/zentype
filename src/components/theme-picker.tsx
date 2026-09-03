@@ -59,14 +59,21 @@ export function ThemePicker({ themes, selectedId, onSelect }: ThemePickerProps) 
             className="h-8 pl-8 text-xs"
           />
         </div>
-        <PillGroup className="shrink-0">
-          <PillButton active={filter === "all"} onClick={() => setFilter("all")}>
+        <PillGroup
+          className="shrink-0"
+          value={[filter]}
+          onValueChange={(v) => {
+            const next = v[0];
+            if (next) setFilter(next as Filter);
+          }}
+        >
+          <PillButton value="all">
             <IconDevices className="size-3.5" />
           </PillButton>
-          <PillButton active={filter === "light"} onClick={() => setFilter("light")}>
+          <PillButton value="light">
             <IconSun className="size-3.5" />
           </PillButton>
-          <PillButton active={filter === "dark"} onClick={() => setFilter("dark")}>
+          <PillButton value="dark">
             <IconMoon className="size-3.5" />
           </PillButton>
         </PillGroup>

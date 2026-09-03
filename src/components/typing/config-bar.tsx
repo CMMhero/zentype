@@ -39,43 +39,39 @@ export function ConfigBar({
     >
       <div className="grid w-full grid-cols-[3fr_7fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
         {/* Mode selector */}
-        <PillGroup>
-          <PillButton
-            active={mode === "time"}
-            onClick={() => onChange({ mode: "time" })}
-            aria-label="time mode"
-          >
+        <PillGroup
+          value={[mode]}
+          onValueChange={(v) => {
+            const next = v[0];
+            if (next) onChange({ mode: next as GameMode });
+          }}
+        >
+          <PillButton value="time" aria-label="time mode">
             <IconClock className="size-3.5" /> time
           </PillButton>
-          <PillButton
-            active={mode === "words"}
-            onClick={() => onChange({ mode: "words" })}
-            aria-label="words mode"
-          >
+          <PillButton value="words" aria-label="words mode">
             <IconTypography className="size-3.5" /> words
           </PillButton>
         </PillGroup>
 
         {/* Variant selector */}
-        <PillGroup className="w-full min-w-0 sm:w-64">
+        <PillGroup
+          className="w-full min-w-0 sm:w-64"
+          value={[String(mode === "time" ? duration : wordCount)]}
+          onValueChange={(v) => {
+            const next = v[0];
+            if (next)
+              onChange(mode === "time" ? { duration: Number(next) } : { wordCount: Number(next) });
+          }}
+        >
           {mode === "time"
             ? TIME_OPTIONS.map((t) => (
-                <PillButton
-                  key={t}
-                  active={duration === t}
-                  onClick={() => onChange({ duration: t })}
-                  aria-label={`${t} seconds`}
-                >
+                <PillButton key={t} value={String(t)} aria-label={`${t} seconds`}>
                   {t}s
                 </PillButton>
               ))
             : WORD_OPTIONS.map((w) => (
-                <PillButton
-                  key={w}
-                  active={wordCount === w}
-                  onClick={() => onChange({ wordCount: w })}
-                  aria-label={`${w} words`}
-                >
+                <PillButton key={w} value={String(w)} aria-label={`${w} words`}>
                   {w}
                 </PillButton>
               ))}
@@ -83,19 +79,20 @@ export function ConfigBar({
       </div>
 
       {/* Punctuation & numbers toggles */}
-      <PillGroup>
-        <PillButton
-          active={punctuation}
-          onClick={() => onChange({ punctuation: !punctuation })}
-          aria-label="toggle punctuation"
-        >
+      <PillGroup
+        multiple
+        value={[punctuation ? "punctuation" : "", numbers ? "numbers" : ""].filter(Boolean)}
+        onValueChange={(v) =>
+          onChange({
+            punctuation: v.includes("punctuation"),
+            numbers: v.includes("numbers"),
+          })
+        }
+      >
+        <PillButton value="punctuation" aria-label="toggle punctuation">
           <IconAt className="size-3.5" /> punct
         </PillButton>
-        <PillButton
-          active={numbers}
-          onClick={() => onChange({ numbers: !numbers })}
-          aria-label="toggle numbers"
-        >
+        <PillButton value="numbers" aria-label="toggle numbers">
           <IconHash className="size-3.5" /> nums
         </PillButton>
       </PillGroup>
