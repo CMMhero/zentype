@@ -297,6 +297,8 @@
     background-attachment: fixed;
     font-feature-settings: "zero" 1, "ss01" 1;
     overflow-y: scroll;
+    /* Document owns the scroll; never let a swipe at the top trigger pull-to-refresh */
+    overscroll-behavior-y: none;
   }
   /* Lock body scroll when any dialog / command palette is open */
   body:has([role="dialog"][data-state="open"]),

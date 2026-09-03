@@ -227,7 +227,7 @@ export function MobileNav() {
     <NavigationMenu
       aria-label="Mobile navigation"
       viewport={false}
-      className="bg-background/95 flex-none border-t border-border/40 backdrop-blur-xl max-w-full md:hidden w-full"
+      className="bg-background/95 sticky bottom-0 flex-none border-t border-border/40 backdrop-blur-xl max-w-full md:hidden w-full"
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <NavigationMenuList className="flex h-16 w-full items-center justify-between">

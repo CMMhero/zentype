@@ -40,7 +40,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [fontFamily]);
 
   return (
-    <div className="flex h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
@@ -48,7 +48,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
       <Navbar />
-      <main id="main-content" className="flex flex-1 flex-col overflow-y-auto">
+      <main id="main-content" className="flex flex-1 flex-col">
         {children}
         <Footer />
         <CommandPalette />
