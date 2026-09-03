@@ -523,42 +523,83 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
 StreakCalendar.displayName = "StreakCalendar"
 
 /**
- * Loading placeholder that mirrors the year-view calendar's shape:
- * a row of month labels, a 7×N contribution grid, and the less→more legend.
+ * Loading placeholder that mirrors the compact year view's layout: month
+ * labels anchored to their month's column over the same grid, the 7-row
+ * contribution grid (including the leading gutter cells), and the real
+ * less→more legend. Month columns are computed from the same 365-day window
+ * the calendar uses so the skeleton settles into the loaded view.
  */
 function StreakCalendarSkeleton() {
-  const MONTH_LABELS = 12
-  const COLS = 53 // ceil(365 / 7)
   const ROWS = 7
+  const CELL_SIZE = "0.75rem" // compact year-view cell size
+  // Last 365 days ending today, with leading gutter cells so the first column
+  // aligns to the week start (Sunday), exactly like StreakCalendar's year view.
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const first = new Date(today)
+  first.setDate(today.getDate() - 364)
+  const leadingEmpty = first.getDay()
+  const totalCells = leadingEmpty + 365
+  const cols = Math.ceil(totalCells / ROWS)
+  const gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE})`
+
+  // Column of each month's first day (mirrors the year view's label logic)
+  const monthCols: number[] = []
+  const seen = new Set<string>()
+  for (let i = 0; i < 365; i++) {
+    const d = new Date(first)
+    d.setDate(first.getDate() + i)
+    const key = `${d.getFullYear()}-${d.getMonth()}`
+    if (!seen.has(key) && d.getDate() === 1) {
+      seen.add(key)
+      monthCols.push(Math.floor((leadingEmpty + i) / ROWS))
+    }
+  }
+  // Window usually starts mid-month — anchor that month at column 0 too
+  const firstKey = `${first.getFullYear()}-${first.getMonth()}`
+  if (!seen.has(firstKey)) monthCols.unshift(0)
+  if (monthCols.length > 12) monthCols.shift()
+
   return (
     <div className="w-full overflow-x-auto" aria-hidden>
       <div className="inline-block min-w-full pr-4">
-        <div className="mb-2 flex gap-3">
-          {Array.from({ length: MONTH_LABELS }, (_, i) => (
-            <Skeleton key={i} className="h-3 w-6 rounded" />
+        <div className="mb-2 grid gap-[3px]" style={{ gridTemplateColumns }}>
+          {monthCols.map((column, i) => (
+            <Skeleton
+              key={i}
+              className="h-3 w-5 rounded-sm"
+              style={{ gridColumnStart: column + 1 }}
+            />
           ))}
         </div>
         <div
           className="grid grid-flow-col grid-rows-7 gap-[3px]"
-          style={{ gridTemplateColumns: `repeat(${COLS}, 0.75rem)` }}
+          style={{ gridTemplateColumns }}
         >
-          {Array.from({ length: COLS * ROWS }, (_, i) => (
-            <Skeleton key={i} className="size-3 rounded-[0.2rem]" />
-          ))}
+          {Array.from({ length: totalCells }, (_, i) =>
+            i < leadingEmpty ? (
+              <div key={`empty-${i}`} className="h-[0.55rem] w-[0.55rem]" />
+            ) : (
+              <Skeleton
+                key={i}
+                className="size-3 rounded-[0.2rem] border-[0.5px] border-border/40"
+              />
+            )
+          )}
         </div>
-        <div className="mt-2 flex items-center justify-start gap-1.5">
-          <Skeleton className="h-[9px] w-6 rounded" />
-          {Array.from({ length: 4 }, (_, i) => (
-            <Skeleton key={i} className="size-[0.55rem] rounded-[2px]" />
-          ))}
-          <Skeleton className="h-[9px] w-6 rounded" />
+        {/* Legend is static chrome — render it as-is (same markup as the real view) */}
+        <div className="text-muted-foreground mt-2 flex items-center justify-start gap-1.5 text-[9px]">
+          <span className="mr-1">less</span>
+          <span className="border-border/40 size-[0.55rem] rounded-[2px] border bg-muted/40" />
+          <span className="border-border/40 size-[0.55rem] rounded-[2px] border bg-primary/40" />
+          <span className="border-border/40 size-[0.55rem] rounded-[2px] border bg-primary/70" />
+          <span className="border-border/40 size-[0.55rem] rounded-[2px] border bg-primary" />
+          <span className="ml-1">more</span>
         </div>
       </div>
     </div>
   )
 }
-
-StreakCalendar.displayName = "StreakCalendar"
 
 export { StreakCalendar, StreakCalendarSkeleton }
 export type { StreakCalendarProps, StreakPeriod }
