@@ -268,13 +268,13 @@ export function MobileNav() {
                     key={active ? `pop-${presses[item.to] ?? 0}` : "idle"}
                     className={cn(
                       "relative size-5 text-primary transition-all duration-300 ease-out",
-                      active ? "zt-icon-pop scale-100 opacity-100" : "absolute scale-75 opacity-0",
+                      active ? "zt-icon-pop opacity-100" : "absolute opacity-0",
                     )}
                   />
                   <item.iconOutline
                     className={cn(
                       "relative size-5 text-foreground transition-all duration-300 ease-out",
-                      active ? "absolute scale-75 opacity-0" : "scale-100 opacity-100",
+                      active ? "absolute opacity-0" : "opacity-100",
                     )}
                   />
                 </span>
