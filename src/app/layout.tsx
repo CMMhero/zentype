@@ -159,7 +159,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <UserProvider>
             <AppShell>{children}</AppShell>
           </UserProvider>
-          <Toaster position="bottom-right" />
+          <Toaster />
         </TooltipProvider>
       </body>
     </html>
