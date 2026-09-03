@@ -20,7 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { useUiStore } from "~/stores/ui-store";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useResultsStore } from "~/stores/results-store";
-import { useUser } from "~/components/user-provider";
+import { useAuth, useUser } from "~/components/user-provider";
 import { signOutFn } from "~/server/auth";
 import { deleteMyData } from "~/server/results";
 import { toast } from "sonner";
@@ -251,7 +251,13 @@ export function CommandPalette() {
       },
     });
   }, [close]);
-  const handleSignOut = useCallback(() => { close(); signOutFn().then(() => router.push("/")); }, [close, router]);
+  const { refresh: refreshUser } = useAuth();
+  const handleSignOut = useCallback(() => {
+    close();
+    signOutFn()
+      .then(() => refreshUser()) // drop the client-side user so the header updates without a reload
+      .then(() => router.push("/"));
+  }, [close, router, refreshUser]);
   const discardLocal = useCallback(() => {
     setConfirmAction({
       title: `discard ${local.length} local result${local.length === 1 ? "" : "s"}?`,

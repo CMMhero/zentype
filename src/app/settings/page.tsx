@@ -33,7 +33,7 @@ import { FONTS } from "~/lib/fonts";
 import { CARET_STYLES, FONT_SIZES, SOUND_VARIANTS } from "~/lib/settings-options";
 import { useResultsStore } from "~/stores/results-store";
 import { useSettingsStore } from "~/stores/settings-store";
-import { useUser } from "~/components/user-provider";
+import { useAuth, useUser } from "~/components/user-provider";
 import { signOutFn, updateUsername } from "~/server/auth";
 import { deleteMyData, getUserResults } from "~/server/results";
 import { playKeypress, playError } from "~/lib/sound";
@@ -255,6 +255,7 @@ const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
 
 function AccountCard({ username, email, providers }: { username: string; email: string; providers: AuthProvider[] }) {
   const router = useRouter();
+  const { refresh: refreshUser } = useAuth();
   const [value, setValue] = useState(username);
   const [saving, setSaving] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -281,6 +282,8 @@ async function signOut() {
     setSigningOut(true);
     try {
       await signOutFn();
+      // Drop the client-side user so the UI updates without a reload
+      await refreshUser();
       router.push("/");
     } catch {
       setSigningOut(false);
