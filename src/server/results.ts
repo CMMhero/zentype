@@ -3,7 +3,7 @@
 import { getSupabaseServerClient, getSupabasePublicClient } from "~/lib/supabase/server";
 import { getRedis, lbScore } from "~/lib/redis";
 import { isPlausible } from "~/lib/stats";
-import { boardKey, type GameMode, type TestResult } from "~/lib/types";
+import { boardKey, TIME_OPTIONS, WORD_OPTIONS, type GameMode, type TestResult } from "~/lib/types";
 import { cacheGet, cacheSet, cacheDel } from "~/lib/cache";
 
 type SaveInput = Omit<TestResult, "id" | "createdAt">;
@@ -310,14 +310,58 @@ export async function mergeLocalResults(
   return { merged: rows.length };
 }
 
-export async function deleteMyData(): Promise<{ ok: boolean }> {
+/**
+ * Delete the signed-in user's account: removes them from the Redis
+ * leaderboards, invalidates their caches, and deletes the auth user so every
+ * related row (profiles, test_results, user_settings, gamification) cascades.
+ */
+export async function deleteAccount(): Promise<{ ok: boolean; error?: string }> {
   const ctx = await requireUser();
-  if (!ctx) return { ok: false };
-  const { error } = await ctx.supabase
-    .from("test_results")
-    .delete()
-    .eq("user_id", ctx.user.id);
-  return { ok: !error };
+  if (!ctx) return { ok: false, error: "not signed in" };
+  const { supabase, user } = ctx;
+  const username = (
+    (user.user_metadata?.["user_name"] as string) ||
+    user.email?.split("@")[0] ||
+    ""
+  ).toLowerCase();
+
+  // Best-effort: drop this user from every Redis leaderboard + metadata hash
+  try {
+    const redis = getRedis();
+    if (redis) {
+      const boards: string[] = [
+        ...TIME_OPTIONS.map((v) => boardKey("time", v)),
+        ...WORD_OPTIONS.map((v) => boardKey("words", v)),
+      ];
+      const keys = boards.map((b) => `lb:${b}`);
+      // zrem accepts [key, member] tuples
+      await Promise.all(keys.map((k) => redis.zrem(k, user.id)));
+      await Promise.all(keys.map((k) => redis.hdel(`${k}:meta`, user.id)));
+    }
+  } catch (e) {
+    console.warn("[zentype] redis cleanup on account delete skipped:", e);
+  }
+
+  // Best-effort: drop server-side caches keyed to this user
+  await cacheDel(`stats:${user.id}`);
+  await cacheDel(`ach-stats:${user.id}`);
+  await cacheDel(`points:${user.id}`);
+  await cacheDel(`joindate:${user.id}`);
+  if (username) {
+    await cacheDel(`pub-profile:${user.id}`);
+    await cacheDel(`pub-profile:${username}`);
+    await cacheDel(`pub-ach:${username}`);
+  }
+
+  // Delete the auth user — RLS/cascades remove every owned row. The RPC is
+  // security definer and only deletes auth.uid(), so it can't touch others.
+  const { error } = await supabase.rpc("delete_account");
+  if (error) {
+    console.error("[zentype] delete_account RPC failed:", error.message);
+    return { ok: false, error: error.message };
+  }
+  await supabase.auth.signOut();
+  return { ok: true };
 }
 
 export interface PublicProfileResult {
