@@ -176,7 +176,6 @@ export default function SettingsPage() {
                   onValueChange={(v) => update({ fontFamily: v as FontFamily })}
                   placeholder="font"
                   searchPlaceholder="search fonts…"
-                  className="h-8 w-full sm:w-56"
                 />
               </SettingRow>
               <SettingRow label="font size">
