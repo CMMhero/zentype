@@ -1,7 +1,5 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 import {
   IconAward,
   IconClock,
@@ -9,43 +7,45 @@ import {
   IconSparkles,
   IconTarget,
   IconUserPlus,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
+import { Tooltip as TooltipPrimitive } from "radix-ui";
+import * as React from "react";
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
 
 export interface PointsAwardTrigger {
-  id: string
-  type: string
-  points: number
-  metricName?: string | null
-  metricThreshold?: number | null
-  achievementName?: string | null
-  streakLengthThreshold?: number | null
-  timeUnit?: "hour" | "day"
-  timeInterval?: number | null
+  id: string;
+  type: string;
+  points: number;
+  metricName?: string | null;
+  metricThreshold?: number | null;
+  achievementName?: string | null;
+  streakLengthThreshold?: number | null;
+  timeUnit?: "hour" | "day";
+  timeInterval?: number | null;
 }
 
 export interface PointsAward {
-  id: string
-  awarded: number
+  id: string;
+  awarded: number;
   /** ISO 8601 datetime */
-  date: string
+  date: string;
   /** User's total points after this award */
-  total: number
-  trigger: PointsAwardTrigger
+  total: number;
+  trigger: PointsAwardTrigger;
 }
 
 interface PointsAwardsProps extends React.HTMLAttributes<HTMLDivElement> {
-  awards: PointsAward[]
-  formatTotalPoints?: (value: number) => string
-  formatAwardedPoints?: (value: number) => string
+  awards: PointsAward[];
+  formatTotalPoints?: (value: number) => string;
+  formatAwardedPoints?: (value: number) => string;
   /** Format the award `date` for the first column (default: short locale date). */
-  formatDate?: (isoDate: string) => string
+  formatDate?: (isoDate: string) => string;
 }
 
-const TooltipProvider = TooltipPrimitive.Provider
-const Tooltip = TooltipPrimitive.Root
-const TooltipTrigger = TooltipPrimitive.Trigger
+const TooltipProvider = TooltipPrimitive.Provider;
+const Tooltip = TooltipPrimitive.Root;
+const TooltipTrigger = TooltipPrimitive.Trigger;
 const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
@@ -57,111 +57,86 @@ const TooltipContent = React.forwardRef<
       "bg-popover text-popover-foreground z-50 max-w-xs overflow-hidden rounded-md border px-3 py-1.5 text-xs shadow-md",
       "animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
       "data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      className
+      className,
     )}
     {...props}
   />
-))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
+));
+TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const triggerIconMap: Record<string, any> = {
+type TriggerIcon = React.ComponentType<{ className?: string }>;
+
+const triggerIconMap: Record<string, TriggerIcon> = {
   metric: IconTarget,
   achievement: IconAward,
   streak: IconFlame,
   time: IconClock,
   user_creation: IconUserPlus,
-}
+};
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function triggerIcon(type: string): any {
-  return triggerIconMap[type] ?? IconSparkles
+function triggerIcon(type: string): TriggerIcon {
+  return triggerIconMap[type] ?? IconSparkles;
 }
 
 /** Human-readable action line for tooltips — prefers `metricName` when present. */
 function awardActionDescription(trigger: PointsAwardTrigger): string {
   if (trigger.metricName) {
-    if (
-      trigger.metricThreshold != null &&
-      trigger.metricThreshold !== undefined
-    ) {
-      return `${trigger.metricName} · threshold ${Number(trigger.metricThreshold).toLocaleString()}`
+    if (trigger.metricThreshold != null && trigger.metricThreshold !== undefined) {
+      return `${trigger.metricName} · threshold ${Number(trigger.metricThreshold).toLocaleString()}`;
     }
-    return trigger.metricName
+    return trigger.metricName;
   }
   if (trigger.type === "achievement") {
-    return trigger.achievementName ?? "Achievement"
+    return trigger.achievementName ?? "Achievement";
   }
   if (trigger.type === "streak") {
     return trigger.streakLengthThreshold != null
       ? `Streak · ${trigger.streakLengthThreshold.toLocaleString()}`
-      : "Streak"
+      : "Streak";
   }
-  if (
-    trigger.type === "time" &&
-    trigger.timeInterval != null &&
-    trigger.timeUnit
-  ) {
-    return `Every ${trigger.timeInterval} ${trigger.timeUnit}(s)`
+  if (trigger.type === "time" && trigger.timeInterval != null && trigger.timeUnit) {
+    return `Every ${trigger.timeInterval} ${trigger.timeUnit}(s)`;
   }
   if (trigger.type === "user_creation") {
-    return "Account created"
+    return "Account created";
   }
-  return trigger.type.replace(/_/g, " ")
+  return trigger.type.replace(/_/g, " ");
 }
 
 function defaultFormatAwardedPoints(value: number) {
-  return value > 0 ? `+${value.toLocaleString()}` : value.toLocaleString()
+  return value > 0 ? `+${value.toLocaleString()}` : value.toLocaleString();
 }
 
 function defaultFormatAwardDate(iso: string) {
-  const d = new Date(iso)
+  const d = new Date(iso);
   if (Number.isNaN(d.getTime())) {
-    return iso.length >= 10 ? iso.slice(0, 10) : iso
+    return iso.length >= 10 ? iso.slice(0, 10) : iso;
   }
   return d.toLocaleDateString(undefined, {
     month: "short",
     day: "numeric",
     year: "numeric",
-  })
+  });
 }
 
 const PointsAwards = React.forwardRef<HTMLDivElement, PointsAwardsProps>(
-  (
-    {
-      className,
-      awards,
-      formatTotalPoints,
-      formatAwardedPoints,
-      formatDate,
-      ...props
-    },
-    ref
-  ) => {
-    const formatRowDate = formatDate ?? defaultFormatAwardDate
+  ({ className, awards, formatTotalPoints, formatAwardedPoints, formatDate, ...props }, ref) => {
+    const formatRowDate = formatDate ?? defaultFormatAwardDate;
 
     return (
-      <div
-        ref={ref}
-        className={cn("bg-card w-full rounded-xl border", className)}
-        {...props}
-      >
+      <div ref={ref} className={cn("bg-card w-full rounded-xl border", className)} {...props}>
         <TooltipProvider>
-          <div
-            role="list"
-            aria-label="Points awards history"
-            className="divide-border divide-y"
-          >
+          <div role="list" aria-label="Points awards history" className="divide-border divide-y">
             {awards.map((award) => {
               const awardedLabel = formatAwardedPoints
                 ? formatAwardedPoints(award.awarded)
-                : defaultFormatAwardedPoints(award.awarded)
+                : defaultFormatAwardedPoints(award.awarded);
               const totalLabel = formatTotalPoints
                 ? formatTotalPoints(award.total)
-                : award.total.toLocaleString()
-              const description = awardActionDescription(award.trigger)
-              const tooltip = `${awardedLabel}: ${description}`
-              const Icon = triggerIcon(award.trigger.type)
+                : award.total.toLocaleString();
+              const description = awardActionDescription(award.trigger);
+              const tooltip = `${awardedLabel}: ${description}`;
+              const Icon = triggerIcon(award.trigger.type);
 
               return (
                 <div
@@ -177,9 +152,7 @@ const PointsAwards = React.forwardRef<HTMLDivElement, PointsAwardsProps>(
                     <span className="text-foreground justify-self-center font-bold tabular-nums">
                       {totalLabel}
                     </span>
-                    <span className="text-success font-medium tabular-nums">
-                      {awardedLabel}
-                    </span>
+                    <span className="text-success font-medium tabular-nums">{awardedLabel}</span>
                   </p>
 
                   <div className="flex items-center justify-end gap-2">
@@ -196,16 +169,16 @@ const PointsAwards = React.forwardRef<HTMLDivElement, PointsAwardsProps>(
                     </Tooltip>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </TooltipProvider>
       </div>
-    )
-  }
-)
+    );
+  },
+);
 
-PointsAwards.displayName = "PointsAwards"
+PointsAwards.displayName = "PointsAwards";
 
-export { PointsAwards }
-export type { PointsAwardsProps }
+export type { PointsAwardsProps };
+export { PointsAwards };

@@ -1,46 +1,64 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 
-const CommandPalette = dynamic(() => import("~/components/layout/command-palette").then(m => m.CommandPalette), {
-  ssr: false,
-  loading: () => null,
-});
-const HelpDialog = dynamic(() => import("~/components/layout/help-dialog").then(m => m.HelpDialog), { ssr: false });
+const CommandPalette = dynamic(
+  () => import("~/components/layout/command-palette").then((m) => m.CommandPalette),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
+const HelpDialog = dynamic(
+  () => import("~/components/layout/help-dialog").then((m) => m.HelpDialog),
+  { ssr: false },
+);
+
 import {
-  IconCommand, IconKeyboardFilled, IconLogout,
-  IconSettingsFilled, IconTrophyFilled, IconUserFilled,
   IconCode,
+  IconCommand,
+  IconKeyboardFilled,
+  IconLogout,
+  IconSettingsFilled,
+  IconTrophyFilled,
+  IconUserFilled,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
-import { FONTS } from "~/lib/fonts";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { ComboboxSelect, type ComboboxSelectOption } from "~/components/ui/combobox";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Kbd } from "~/components/ui/kbd";
-import { Badge } from "~/components/ui/badge";
-import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
+import { SelectSkeleton, Skeleton } from "~/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-import { ComboboxSelect, type ComboboxSelectOption } from "~/components/ui/combobox";
-import { lcGetEntry, lcSet } from "~/lib/client-cache";
-import {
-  ownPointsKey, POINTS_CACHE_TTL, PROFILE_FRESH_MS,
-  type ProfilePoints,
-} from "~/lib/profile-cache";
-import { useSettingsStore } from "~/stores/settings-store";
-import { useUiStore } from "~/stores/ui-store";
-import { signOutFn } from "~/server/auth";
-import { THEMES, getTheme } from "~/lib/themes";
-import { cn } from "~/lib/utils";
+import { useAuth } from "~/components/user-provider";
 import { useGlobalHotkeys } from "~/hooks/use-global-hotkeys";
 import { useSettingsSync } from "~/hooks/use-settings-sync";
-import { useAuth } from "~/components/user-provider";
+import { lcGetEntry, lcSet } from "~/lib/client-cache";
+import { FONTS } from "~/lib/fonts";
+import {
+  ownPointsKey,
+  POINTS_CACHE_TTL,
+  PROFILE_FRESH_MS,
+  type ProfilePoints,
+} from "~/lib/profile-cache";
+import { getTheme, THEMES } from "~/lib/themes";
 import type { FontFamily, SessionUser } from "~/lib/types";
+import { cn } from "~/lib/utils";
+import { signOutFn } from "~/server/auth";
+import { useSettingsStore } from "~/stores/settings-store";
+import { useUiStore } from "~/stores/ui-store";
 
 const NAV = [
   { to: "/", label: "test", icon: IconKeyboardFilled },
@@ -49,11 +67,7 @@ const NAV = [
   { to: "/settings", label: "settings", icon: IconSettingsFilled },
 ] as const;
 
-export function AppShell({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, status: authStatus, refresh: refreshUser } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
@@ -68,7 +82,10 @@ export function AppShell({
   }, []);
   const [userLevel, setUserLevel] = useState<number | null>(null);
   useEffect(() => {
-    if (!user) { setUserLevel(null); return; }
+    if (!user) {
+      setUserLevel(null);
+      return;
+    }
     // Read the shared points cache (the profile page writes it) so the badge
     // renders instantly and skips the network fetch entirely while it's fresh.
     const entry = lcGetEntry<ProfilePoints>(ownPointsKey(user.id), POINTS_CACHE_TTL);
@@ -83,9 +100,11 @@ export function AppShell({
         setUserLevel(p.level);
         // Write through to the shared cache so the profile page benefits too
         lcSet(ownPointsKey(user.id), p);
-      })
+      }),
     );
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   useGlobalHotkeys();
@@ -112,11 +131,20 @@ export function AppShell({
 
   return (
     <div className="flex h-dvh flex-col">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+      >
         Skip to content
       </a>
-      <header className="bg-background/80 sticky top-0 z-40 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60" role="banner">
-        <div className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+      <header
+        className="bg-background/80 sticky top-0 z-40 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
+        role="banner"
+      >
+        <div
+          className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4"
+          style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+        >
           <Link
             href="/"
             className="group flex shrink-0 items-center gap-2"
@@ -143,7 +171,9 @@ export function AppShell({
                       aria-label={item.label}
                       className={cn(
                         "rounded-3xl p-1.5 transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30",
-                        active ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        active
+                          ? "text-primary"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground",
                       )}
                       onClick={(e) => {
                         if (pathname === item.to) {
@@ -165,11 +195,23 @@ export function AppShell({
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
-            <Button variant="outline" size="sm" className="gap-2 text-xs hidden sm:inline-flex" onClick={() => setPaletteOpen(true)} aria-label="Open command palette (Ctrl+K)">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 text-xs hidden sm:inline-flex"
+              onClick={() => setPaletteOpen(true)}
+              aria-label="Open command palette (Ctrl+K)"
+            >
               <span className="text-muted-foreground">commands</span>
-              <Kbd>{isMac ? "cmd": "ctrl"} k</Kbd>
+              <Kbd>{isMac ? "cmd" : "ctrl"} k</Kbd>
             </Button>
-            <Button variant="default" size="sm" className="sm:hidden" onClick={() => setPaletteOpen(true)} aria-label="Open command palette">
+            <Button
+              variant="default"
+              size="sm"
+              className="sm:hidden"
+              onClick={() => setPaletteOpen(true)}
+              aria-label="Open command palette"
+            >
               <IconCommand className="size-4" />
             </Button>
 
@@ -186,57 +228,75 @@ export function AppShell({
         </div>
       </header>
 
-      <main id="main-content" className="flex flex-1 flex-col overflow-y-auto" role="main">
+      <main id="main-content" className="flex flex-1 flex-col overflow-y-auto">
         {children}
 
         <footer className="text-muted-foreground mt-auto shrink-0" role="contentinfo">
-        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
-          <span className="flex items-center gap-2">
-            <a href="https://github.com/CMMhero/zentype" target="_blank" rel="noreferrer" className="hover:text-foreground" aria-label="GitHub">
-              <IconCode className="size-4" />
-            </a>
-            <Link href="/about" className="hover:text-foreground underline underline-offset-2">about</Link>
-            <Link href="/terms" className="hover:text-foreground underline underline-offset-2">terms</Link>
-            <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">privacy</Link>
-          </span>
-          <span className="ml-auto hidden items-center gap-1 sm:flex">
-            {settingsHydrated ? (
-              <>
-                <ComboboxSelect
-                  items={THEME_FOOTER_ITEMS}
-                  value={themeId}
-                  onValueChange={(v) => updateSettings({ themeId: v })}
-                  placeholder="theme"
-                  searchPlaceholder="search themes…"
-                  className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
-                />
-                <ComboboxSelect
-                  items={FONT_FOOTER_ITEMS}
-                  value={fontFamily}
-                  onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}
-                  placeholder="font"
-                  searchPlaceholder="search fonts…"
-                  className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
-                />
-              </>
-            ) : (
-              <>
-                {/* Settings not loaded yet — don't show the default theme/font */}
-                <SelectSkeleton className="h-7 w-16 px-2" />
-                <SelectSkeleton className="h-7 w-14 px-2" />
-              </>
-            )}
-          </span>
-        </div>
-      </footer>
+          <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 text-[11px] sm:justify-start">
+            <span className="flex items-center gap-2">
+              <a
+                href="https://github.com/CMMhero/zentype"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-foreground"
+                aria-label="GitHub"
+              >
+                <IconCode className="size-4" />
+              </a>
+              <Link href="/about" className="hover:text-foreground underline underline-offset-2">
+                about
+              </Link>
+              <Link href="/terms" className="hover:text-foreground underline underline-offset-2">
+                terms
+              </Link>
+              <Link href="/privacy" className="hover:text-foreground underline underline-offset-2">
+                privacy
+              </Link>
+            </span>
+            <span className="ml-auto hidden items-center gap-1 sm:flex">
+              {settingsHydrated ? (
+                <>
+                  <ComboboxSelect
+                    items={THEME_FOOTER_ITEMS}
+                    value={themeId}
+                    onValueChange={(v) => updateSettings({ themeId: v })}
+                    placeholder="theme"
+                    searchPlaceholder="search themes…"
+                    className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
+                  />
+                  <ComboboxSelect
+                    items={FONT_FOOTER_ITEMS}
+                    value={fontFamily}
+                    onValueChange={(v) => updateSettings({ fontFamily: v as FontFamily })}
+                    placeholder="font"
+                    searchPlaceholder="search fonts…"
+                    className="h-7 border-0 bg-transparent shadow-none hover:bg-muted px-2 text-[11px]"
+                  />
+                </>
+              ) : (
+                <>
+                  {/* Settings not loaded yet — don't show the default theme/font */}
+                  <SelectSkeleton className="h-7 w-16 px-2" />
+                  <SelectSkeleton className="h-7 w-14 px-2" />
+                </>
+              )}
+            </span>
+          </div>
+        </footer>
 
         <CommandPalette />
         <HelpDialog />
       </main>
 
       {/* Mobile bottom nav - normal flow, not fixed */}
-      <nav className="shrink-0 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden" aria-label="Mobile navigation">
-        <div className="flex h-14 items-center justify-around" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+      <nav
+        className="shrink-0 border-t border-border/40 bg-background/95 backdrop-blur-xl md:hidden"
+        aria-label="Mobile navigation"
+      >
+        <div
+          className="flex h-14 items-center justify-around"
+          style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+        >
           {NAV.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
             return (
@@ -246,7 +306,9 @@ export function AppShell({
                 aria-label={item.label}
                 className={cn(
                   "flex flex-col items-center gap-0.5 rounded-2xl px-3 py-1.5 transition-colors",
-                  active ? "text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  active
+                    ? "text-primary"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
               >
                 <item.icon className="size-5" stroke={active ? 2 : 1.5} />
@@ -267,7 +329,10 @@ const THEME_FOOTER_ITEMS: ComboboxSelectOption[] = [...THEMES]
     label: t.label,
     leading: (
       <span className="flex shrink-0 gap-0.5">
-        <span className="size-3 rounded-sm border border-border/50" style={{ background: t.vars["--background"] }} />
+        <span
+          className="size-3 rounded-sm border border-border/50"
+          style={{ background: t.vars["--background"] }}
+        />
         <span className="size-3 rounded-sm" style={{ background: t.vars["--primary"] }} />
         <span className="size-3 rounded-sm" style={{ background: t.vars["--secondary"] }} />
       </span>
@@ -280,21 +345,38 @@ const FONT_FOOTER_ITEMS: ComboboxSelectOption[] = FONTS.map((f) => ({
   fontCssVar: f.cssVar,
 }));
 
-function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut: () => void; userLevel: number | null }) {
+function UserMenu({
+  user,
+  onSignOut,
+  userLevel,
+}: {
+  user: SessionUser;
+  onSignOut: () => void;
+  userLevel: number | null;
+}) {
   const router = useRouter();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-auto gap-2 rounded-3xl px-1.5 py-1" aria-label="Account menu">
+        <Button
+          variant="ghost"
+          className="h-auto gap-2 rounded-3xl px-1.5 py-1"
+          aria-label="Account menu"
+        >
           <Avatar className="size-6">
             {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-            <AvatarFallback className="rounded-full text-[10px] uppercase">{user.username.slice(0, 2)}</AvatarFallback>
+            <AvatarFallback className="rounded-full text-[10px] uppercase">
+              {user.username.slice(0, 2)}
+            </AvatarFallback>
           </Avatar>
           <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
           {userLevel === null ? (
             <Skeleton className="hidden h-[18px] min-w-[28px] rounded-full sm:block" />
           ) : (
-            <Badge variant="secondary" className="hidden sm:inline-flex text-[9px] font-bold tracking-widest">
+            <Badge
+              variant="secondary"
+              className="hidden sm:inline-flex text-[9px] font-bold tracking-widest"
+            >
               {userLevel}
             </Badge>
           )}
@@ -307,10 +389,16 @@ function UserMenu({ user, onSignOut, userLevel }: { user: SessionUser; onSignOut
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/profile")}><IconUserFilled className="size-4" /> profile</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings")}><IconSettingsFilled className="size-4" /> settings</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/profile")}>
+          <IconUserFilled className="size-4" /> profile
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/settings")}>
+          <IconSettingsFilled className="size-4" /> settings
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={onSignOut}><IconLogout className="size-4" /> sign out</DropdownMenuItem>
+        <DropdownMenuItem variant="destructive" onClick={onSignOut}>
+          <IconLogout className="size-4" /> sign out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

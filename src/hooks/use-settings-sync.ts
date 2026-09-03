@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSettingsStore } from "~/stores/settings-store";
 import { useUser } from "~/components/user-provider";
 import { loadUserSettings, saveUserSettings } from "~/server/settings";
+import { useSettingsStore } from "~/stores/settings-store";
 
 export function useSettingsSync() {
   const user = useUser();
@@ -35,8 +35,7 @@ export function useSettingsSync() {
       .finally(() => {
         loadingRef.current = false;
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  }, [user, update]);
 
   // Debounce save to DB on settings change (only when logged in)
   // Ensures every field in GameSettings is persisted as a single jsonb blob.

@@ -1,35 +1,36 @@
 "use client";
 
+import { IconPointer } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ConfigBar } from "~/components/typing/config-bar";
+import { ResultView, type SaveState } from "~/components/typing/result-view";
 import { TypingDisplay } from "~/components/typing/typing-display";
 import { VirtualKeyboard } from "~/components/typing/virtual-keyboard";
-import { ResultView, type SaveState } from "~/components/typing/result-view";
+import { Kbd } from "~/components/ui/kbd";
 import { Progress } from "~/components/ui/progress";
 import { Skeleton } from "~/components/ui/skeleton";
-import { Kbd } from "~/components/ui/kbd";
-import { IconPointer } from "@tabler/icons-react";
+import { useUser } from "~/components/user-provider";
 import { useTypingEngine } from "~/hooks/use-typing-engine";
-import { useSettingsStore } from "~/stores/settings-store";
-import { useResultsStore } from "~/stores/results-store";
-import { useUiStore } from "~/stores/ui-store";
+import { lcGet } from "~/lib/client-cache";
 import { cryptoUuid } from "~/lib/id";
 import { isDialogOpen, isTypingTarget } from "~/lib/keyboard";
-import { playError, playKeypress } from "~/lib/sound";
-import { randomWordSlice } from "~/lib/prompt-utils";
-import { getPrompt } from "~/server/prompts";
-import { mergeLocalResults, saveResult } from "~/server/results";
-import { processTestResult } from "~/server/gamification";
-import { calculateTestXP } from "~/lib/xp";
-import { useUser } from "~/components/user-provider";
-import type { GameSettings, TestResult } from "~/lib/types";
-import { lcGet } from "~/lib/client-cache";
 import { invalidateProfileCaches } from "~/lib/profile-cache";
+import { randomWordSlice } from "~/lib/prompt-utils";
+import { playError, playKeypress } from "~/lib/sound";
+import type { GameSettings, TestResult } from "~/lib/types";
+import { calculateTestXP } from "~/lib/xp";
+import { processTestResult } from "~/server/gamification";
+import { getPrompt } from "~/server/prompts";
 import type { AggregatedStats } from "~/server/results";
+import { mergeLocalResults, saveResult } from "~/server/results";
+import { useResultsStore } from "~/stores/results-store";
+import { useSettingsStore } from "~/stores/settings-store";
+import { useUiStore } from "~/stores/ui-store";
 
 /** Detect mobile/touch device for keyboard input routing */
-const isMobile = typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isMobile =
+  typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 /**
  * Session-scoped in-memory prompt cache. Navigating away and back to the test
@@ -39,11 +40,23 @@ const isMobile = typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|i
  */
 const promptCache = new Map<string, string[]>();
 
-function promptCacheKey(cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">): string {
-  return [cfg.mode, cfg.duration, cfg.wordCount, cfg.source, cfg.punctuation ? "punct" : "plain", cfg.numbers ? "nums" : "no-nums"].join(":");
+function promptCacheKey(
+  cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">,
+): string {
+  return [
+    cfg.mode,
+    cfg.duration,
+    cfg.wordCount,
+    cfg.source,
+    cfg.punctuation ? "punct" : "plain",
+    cfg.numbers ? "nums" : "no-nums",
+  ].join(":");
 }
 
-function rememberPrompt(cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">, words: string[]): void {
+function rememberPrompt(
+  cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">,
+  words: string[],
+): void {
   promptCache.set(promptCacheKey(cfg), words);
   if (promptCache.size > 8) {
     const oldest = promptCache.keys().next().value;
@@ -76,8 +89,9 @@ function computeResultPB(result: TestResult, userId: string | null): boolean | n
   // 3. Signed in: compare against cached account stats when available
   //    (namespaced by user id, falls back to the old key).
   const FIVE_MIN = 5 * 60 * 1000;
-  const stats = lcGet<AggregatedStats>(`${userId}:profile-stats`, FIVE_MIN)
-    ?? lcGet<AggregatedStats>("profile-stats", FIVE_MIN);
+  const stats =
+    lcGet<AggregatedStats>(`${userId}:profile-stats`, FIVE_MIN) ??
+    lcGet<AggregatedStats>("profile-stats", FIVE_MIN);
   if (stats) {
     const best = stats.bestByBoard[board];
     if (best === undefined) return true; // never played this board → PB
@@ -123,12 +137,16 @@ export default function TestPage() {
   const prefetchedRef = useRef<string[] | null>(null);
 
   const fetchWords = useCallback(
-    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">) => {
+    async (
+      cfg: Pick<
+        GameSettings,
+        "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers"
+      >,
+    ) => {
       const want =
-        cfg.mode === "time"
-          ? Math.min(220, Math.ceil(cfg.duration * 3.2))
-          : cfg.wordCount + 10;
-      if (cfg.source === "words") return randomWordSlice(want, { punctuation: cfg.punctuation, numbers: cfg.numbers });
+        cfg.mode === "time" ? Math.min(220, Math.ceil(cfg.duration * 3.2)) : cfg.wordCount + 10;
+      if (cfg.source === "words")
+        return randomWordSlice(want, { punctuation: cfg.punctuation, numbers: cfg.numbers });
       try {
         const res = await getPrompt(cfg.source, want);
         const w = res.text.split(/\s+/).filter(Boolean);
@@ -148,7 +166,12 @@ export default function TestPage() {
   const loadPromptIdRef = useRef(0);
 
   const loadPrompt = useCallback(
-    async (cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">) => {
+    async (
+      cfg: Pick<
+        GameSettings,
+        "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers"
+      >,
+    ) => {
       const id = ++loadPromptIdRef.current;
       setLoadingPrompt(true);
       if (prefetchedRef.current) {
@@ -156,7 +179,9 @@ export default function TestPage() {
         rememberPrompt(cfg, prefetchedRef.current);
         prefetchedRef.current = null;
         setLoadingPrompt(false);
-        void fetchWords(cfg).then((w) => { if (id === loadPromptIdRef.current) prefetchedRef.current = w; });
+        void fetchWords(cfg).then((w) => {
+          if (id === loadPromptIdRef.current) prefetchedRef.current = w;
+        });
         return;
       }
       const w = await fetchWords(cfg);
@@ -164,7 +189,9 @@ export default function TestPage() {
       setWords(w);
       rememberPrompt(cfg, w);
       setLoadingPrompt(false);
-      void fetchWords(cfg).then((next) => { if (id === loadPromptIdRef.current) prefetchedRef.current = next; });
+      void fetchWords(cfg).then((next) => {
+        if (id === loadPromptIdRef.current) prefetchedRef.current = next;
+      });
     },
     [fetchWords],
   );
@@ -174,9 +201,7 @@ export default function TestPage() {
   const addLocal = useResultsStore((s) => s.addLocal);
   const removeLocal = useResultsStore((s) => s.removeLocal);
 
-  const onFinishRef = useRef<(r: Omit<TestResult, "id" | "createdAt">) => void>(
-    () => {},
-  );
+  const onFinishRef = useRef<(r: Omit<TestResult, "id" | "createdAt">) => void>(() => {});
 
   const engine = useTypingEngine({
     words,
@@ -185,8 +210,7 @@ export default function TestPage() {
       if (soundOnErrorRef.current && soundRef.current.enabled) playError(soundRef.current.volume);
     },
     onKeypress: () => {
-      if (soundRef.current.enabled)
-        playKeypress(soundRef.current.variant, soundRef.current.volume);
+      if (soundRef.current.enabled) playKeypress(soundRef.current.variant, soundRef.current.volume);
     },
     onFinish: (r) => onFinishRef.current(r),
   });
@@ -233,7 +257,9 @@ export default function TestPage() {
           // Process gamification (XP + achievements) silently - no popup/sonner to avoid interrupting chained tests
           // Defer gamification to next frame so result view paints without jank
           requestAnimationFrame(() => {
-            void processTestResult(full).catch((err) => console.error("[zentype] processTestResult failed:", err));
+            void processTestResult(full).catch((err) =>
+              console.error("[zentype] processTestResult failed:", err),
+            );
           });
         } else if (res.reason === "guest") {
           setSaveState("guest");
@@ -277,6 +303,7 @@ export default function TestPage() {
   settingsRef.current = settings;
   restartRef.current = restart;
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: must only re-run when the test config changes; other settings (font, theme, sound, …) change frequently and must not restart a running test
   useEffect(() => {
     prefetchedRef.current = null;
     engineRef.current.reset();
@@ -284,15 +311,24 @@ export default function TestPage() {
     // Mounted with words from the session cache for this config? Nothing to
     // fetch — just warm the next prompt in the background.
     if (initialPrompt && promptCacheKey(settings) === initialPrompt.key) {
-      void fetchWords(settings).then((next) => { prefetchedRef.current = next; });
+      void fetchWords(settings).then((next) => {
+        prefetchedRef.current = next;
+      });
       return;
     }
     void loadPrompt(settings);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.source, settings.punctuation, settings.numbers, settings.mode, settings.duration, settings.wordCount]);
+  }, [
+    settings.source,
+    settings.punctuation,
+    settings.numbers,
+    settings.mode,
+    settings.duration,
+    settings.wordCount,
+  ]);
 
   /* ---------- extend words during long time-mode tests ---------- */
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: polling effect keyed off engine progress; words/settings are read reactively each run and re-listing them would restart the poll on unrelated changes
   useEffect(() => {
     if (engine.status !== "running" || settings.mode !== "time") return;
     if (words.length - engine.activeIndex > 40 || words.length === 0) return;
@@ -312,8 +348,9 @@ export default function TestPage() {
       }
     };
     void extend();
-    return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      cancelled = true;
+    };
   }, [engine.activeIndex, engine.status]);
 
   /* ---------- global key handling for the test ---------- */
@@ -374,11 +411,16 @@ export default function TestPage() {
   const runningOrIdle = engine.status !== "finished";
 
   return (
-    <div className={`mx-auto flex w-full flex-1 flex-col ${!runningOrIdle ? "items-center" : "max-w-5xl"} px-4 py-6 md:py-6`} role="region" aria-label="Typing test">
+    <div
+      className={`mx-auto flex w-full flex-1 flex-col ${!runningOrIdle ? "items-center" : "max-w-5xl"} px-4 py-6 md:py-6`}
+      role="region"
+      aria-label="Typing test"
+    >
       <input
         ref={inputEl}
         className="absolute left-1/2 top-1/2 -z-10 h-px w-px -translate-x-1/2 -translate-y-1/2 opacity-0"
         aria-hidden="true"
+        tabIndex={-1}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
@@ -392,7 +434,15 @@ export default function TestPage() {
           if (printable) return;
           if (!e.repeat) {
             if (e.key === "Backspace") mobileBackspaceRef.current = true;
-            window.dispatchEvent(new KeyboardEvent("keydown", { key: e.key, code: e.code, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey }));
+            window.dispatchEvent(
+              new KeyboardEvent("keydown", {
+                key: e.key,
+                code: e.code,
+                ctrlKey: e.ctrlKey,
+                metaKey: e.metaKey,
+                altKey: e.altKey,
+              }),
+            );
           }
         }}
         onInput={(e) => {
@@ -434,7 +484,9 @@ export default function TestPage() {
         onChange={() => {}}
       />
 
-      <div className={`pb-4 transition-all duration-200 ${engine.status === "running" ? "pointer-events-none opacity-50" : "opacity-100"}`}>
+      <div
+        className={`pb-4 transition-all duration-200 ${engine.status === "running" ? "pointer-events-none opacity-50" : "opacity-100"}`}
+      >
         <ConfigBar
           mode={settings.mode}
           duration={settings.duration}
@@ -465,9 +517,13 @@ export default function TestPage() {
             aria-live="polite"
             aria-atomic="true"
           >
-            <div className={`transition-opacity duration-300 ${
-              settings.hideLiveStats && engine.status === "running" ? "pointer-events-none opacity-0" : "opacity-100"
-            }`}>
+            <div
+              className={`transition-opacity duration-300 ${
+                settings.hideLiveStats && engine.status === "running"
+                  ? "pointer-events-none opacity-0"
+                  : "opacity-100"
+              }`}
+            >
               <div className="flex items-baseline gap-3 sm:gap-5">
                 <div>
                   <span className="text-primary text-2xl font-bold tabular-nums sm:text-3xl">
@@ -476,14 +532,20 @@ export default function TestPage() {
                   <span className="text-muted-foreground ml-1 text-xs font-medium">wpm</span>
                 </div>
                 <div>
-                  <span className="text-lg font-semibold tabular-nums sm:text-xl">{engine.liveAcc}%</span>
+                  <span className="text-lg font-semibold tabular-nums sm:text-xl">
+                    {engine.liveAcc}%
+                  </span>
                   <span className="text-muted-foreground ml-1 text-xs font-medium">acc</span>
                 </div>
               </div>
             </div>
-            <div className={`text-right transition-opacity duration-300 ${
-              settings.hideProgress && engine.status === "running" ? "pointer-events-none opacity-0" : "opacity-100"
-            }`}>
+            <div
+              className={`text-right transition-opacity duration-300 ${
+                settings.hideProgress && engine.status === "running"
+                  ? "pointer-events-none opacity-0"
+                  : "opacity-100"
+              }`}
+            >
               {settings.mode === "time" ? (
                 <span className="text-2xl font-bold tabular-nums">
                   {Math.ceil(engine.timeLeft)}
@@ -500,14 +562,26 @@ export default function TestPage() {
           </div>
 
           <div className="mb-3 h-1.5 w-full">
-            <div className={`h-full transition-opacity duration-300 ${
-              settings.hideProgress && engine.status === "running" ? "opacity-0" : "opacity-100"
-            }`}>
-              <Progress value={engine.progress * 100} className="h-full" indicatorClassName="transition-all duration-300 ease-out" aria-label="test progress" />
+            <div
+              className={`h-full transition-opacity duration-300 ${
+                settings.hideProgress && engine.status === "running" ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              <Progress
+                value={engine.progress * 100}
+                className="h-full"
+                indicatorClassName="transition-all duration-300 ease-out"
+                aria-label="test progress"
+              />
             </div>
           </div>
 
-          <div className="relative w-full p-4" onClick={() => { if (isMobile) inputEl.current?.focus(); }}>
+          <div
+            className="relative w-full p-4"
+            onClick={() => {
+              if (isMobile) inputEl.current?.focus();
+            }}
+          >
             {loadingPrompt ? (
               <div className="flex flex-col gap-3 py-2">
                 <Skeleton className="h-7 w-4/5" />
@@ -532,11 +606,13 @@ export default function TestPage() {
 
             {!focused && runningOrIdle && !loadingPrompt && (
               <button
+                type="button"
                 onClick={() => inputEl.current?.focus()}
                 className="absolute inset-0 z-10 flex items-center justify-center rounded-4xl backdrop-blur-[2px]"
               >
                 <span className="bg-card ring-foreground/5 shadow-sm animate-pulse flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs ring-1">
-                  <IconPointer className="text-primary size-3.5" /> click here or press any key to focus
+                  <IconPointer className="text-primary size-3.5" /> click here or press any key to
+                  focus
                 </span>
               </button>
             )}
@@ -548,18 +624,27 @@ export default function TestPage() {
             </div>
           )}
 
-          <div className={`mt-auto flex flex-col items-center gap-1.5 pt-4 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+          <div
+            className={`mt-auto flex flex-col items-center gap-1.5 pt-4 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}
+          >
             <p>press any key to start</p>
             <p className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 px-2 text-center">
-              <span className="inline-flex items-center gap-1.5"><Kbd>tab</Kbd> new test</span>
-              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>esc</Kbd> cancel test</span>
-              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>?</Kbd> keybinds</span>
-              <span className="hidden sm:inline-flex items-center gap-1.5"><Kbd>{isMac ? "cmd" : "ctrl"} k</Kbd> commands</span>
+              <span className="inline-flex items-center gap-1.5">
+                <Kbd>tab</Kbd> new test
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1.5">
+                <Kbd>esc</Kbd> cancel test
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1.5">
+                <Kbd>?</Kbd> keybinds
+              </span>
+              <span className="hidden sm:inline-flex items-center gap-1.5">
+                <Kbd>{isMac ? "cmd" : "ctrl"} k</Kbd> commands
+              </span>
             </p>
           </div>
         </>
       )}
-
     </div>
   );
 }

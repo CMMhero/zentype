@@ -1,18 +1,35 @@
 "use client";
 
-import { Suspense, useEffect, useTransition, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { IconBolt, IconCalendar, IconCalendarMonth, IconTrophy, IconTrophyFilled } from "@tabler/icons-react";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "~/components/ui/select";
-import { LeaderboardRankings, type LeaderboardRankingItem } from "~/components/ui/leaderboard-rankings";
+  IconBolt,
+  IconCalendar,
+  IconCalendarMonth,
+  IconTrophy,
+  IconTrophyFilled,
+} from "@tabler/icons-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState, useTransition } from "react";
 import { LeaderboardSkeleton } from "~/components/leaderboard-skeleton";
-import { getLeaderboard, getLevelLeaderboard, type LevelLeaderboardEntry } from "~/server/leaderboard";
-import { lcGetEntry, lcSet } from "~/lib/client-cache";
+import {
+  type LeaderboardRankingItem,
+  LeaderboardRankings,
+} from "~/components/ui/leaderboard-rankings";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useUser } from "~/components/user-provider";
+import { lcGetEntry, lcSet } from "~/lib/client-cache";
 import type { GameMode, LeaderboardEntry } from "~/lib/types";
+import {
+  getLeaderboard,
+  getLevelLeaderboard,
+  type LevelLeaderboardEntry,
+} from "~/server/leaderboard";
 
 type Period = "all" | "week" | "today";
 type BoardTab = "wpm" | "level";
@@ -47,9 +64,9 @@ function LeaderboardContent() {
   const defaultVariant = mode === "words" ? 25 : 30;
   const validVariants = mode === "time" ? [15, 30, 60, 120] : [10, 25, 50, 100];
   const variant = validVariants.includes(rawVariant) ? rawVariant : defaultVariant;
-  const period = (["all", "week", "today"].includes(searchParams.get("period") ?? "")
-    ? searchParams.get("period")!
-    : "all") as Period;
+  const rawPeriod = searchParams.get("period");
+  const period: Period =
+    rawPeriod === "all" || rawPeriod === "week" || rawPeriod === "today" ? rawPeriod : "all";
 
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [levelEntries, setLevelEntries] = useState<LevelLeaderboardEntry[]>([]);
@@ -71,18 +88,29 @@ function LeaderboardContent() {
       if (cached) {
         startTransition(() => setLevelEntries(cached.data));
         setLoaded(true);
-        if (cached.ageMs < FRESH) return () => { cancelled = true; }; // fresh — skip refetch
+        if (cached.ageMs < FRESH)
+          return () => {
+            cancelled = true;
+          }; // fresh — skip refetch
       } else {
-        startTransition(() => { setLevelEntries([]); });
+        startTransition(() => {
+          setLevelEntries([]);
+        });
       }
-      void getLevelLeaderboard(50).then((data) => {
-        if (!cancelled) {
-          startTransition(() => setLevelEntries(data));
-          if (data.length > 0) lcSet(key, data);
-          setLoaded(true);
-        }
-      }).catch(() => { if (!cancelled) setLoaded(true); });
-      return () => { cancelled = true; };
+      void getLevelLeaderboard(50)
+        .then((data) => {
+          if (!cancelled) {
+            startTransition(() => setLevelEntries(data));
+            if (data.length > 0) lcSet(key, data);
+            setLoaded(true);
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setLoaded(true);
+        });
+      return () => {
+        cancelled = true;
+      };
     }
 
     const key = `lbwpm:${mode}:${variant}:${period}`;
@@ -90,22 +118,31 @@ function LeaderboardContent() {
     if (cached) {
       startTransition(() => setEntries(cached.data));
       setLoaded(true);
-      if (cached.ageMs < FRESH) return () => { cancelled = true; }; // fresh — skip refetch
+      if (cached.ageMs < FRESH)
+        return () => {
+          cancelled = true;
+        }; // fresh — skip refetch
     } else {
-      startTransition(() => { setEntries([]); });
+      startTransition(() => {
+        setEntries([]);
+      });
     }
     const since = periodToDate(period);
-    void getLeaderboard({ mode, variant, limit: 50, since }).then((data) => {
-      if (!cancelled) {
-        startTransition(() => setEntries(data));
-        if (data.length > 0) lcSet(key, data);
-        setLoaded(true);
-      }
-    }).catch((err) => {
-      console.error("[zentype] leaderboard load failed:", err);
-      if (!cancelled) setLoaded(true);
-    });
-    return () => { cancelled = true; };
+    void getLeaderboard({ mode, variant, limit: 50, since })
+      .then((data) => {
+        if (!cancelled) {
+          startTransition(() => setEntries(data));
+          if (data.length > 0) lcSet(key, data);
+          setLoaded(true);
+        }
+      })
+      .catch((err) => {
+        console.error("[zentype] leaderboard load failed:", err);
+        if (!cancelled) setLoaded(true);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [mode, variant, period, boardTab]);
 
   const loading = pending || !loaded;
@@ -150,8 +187,12 @@ function LeaderboardContent() {
         <div className="flex items-center gap-2">
           <Tabs value={boardTab} onValueChange={(v) => setParam("board", v)}>
             <TabsList>
-              <TabsTrigger value="wpm" className="gap-1.5"><IconTrophy className="size-3.5" /> wpm</TabsTrigger>
-              <TabsTrigger value="level" className="gap-1.5"><IconBolt className="size-3.5" /> level</TabsTrigger>
+              <TabsTrigger value="wpm" className="gap-1.5">
+                <IconTrophy className="size-3.5" /> wpm
+              </TabsTrigger>
+              <TabsTrigger value="level" className="gap-1.5">
+                <IconBolt className="size-3.5" /> level
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -174,19 +215,36 @@ function LeaderboardContent() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {(mode === "time" ? ["15", "30", "60", "120"] : ["10", "25", "50", "100"]).map((v) => (
-                  <SelectItem key={v} value={v}>
-                    {v}{mode === "time" ? "s" : "w"}
-                  </SelectItem>
-                ))}
+                {(mode === "time" ? ["15", "30", "60", "120"] : ["10", "25", "50", "100"]).map(
+                  (v) => (
+                    <SelectItem key={v} value={v}>
+                      {v}
+                      {mode === "time" ? "s" : "w"}
+                    </SelectItem>
+                  ),
+                )}
               </SelectContent>
             </Select>
           </div>
-          <Tabs value={period} onValueChange={(v) => setParam("period", v)} className="w-full sm:w-auto">
+          <Tabs
+            value={period}
+            onValueChange={(v) => setParam("period", v)}
+            className="w-full sm:w-auto"
+          >
             <TabsList className="w-full sm:w-auto">
-              <TabsTrigger value="all" className="flex-1 gap-1.5 sm:flex-none"><IconCalendarMonth className="size-3.5" /> <span className="hidden xs:inline">all time</span><span className="xs:hidden">all</span></TabsTrigger>
-              <TabsTrigger value="week" className="flex-1 gap-1.5 sm:flex-none"><IconCalendar className="size-3.5" /> <span className="hidden xs:inline">this week</span><span className="xs:hidden">week</span></TabsTrigger>
-              <TabsTrigger value="today" className="flex-1 gap-1.5 sm:flex-none"><IconCalendar className="size-3.5" /> today</TabsTrigger>
+              <TabsTrigger value="all" className="flex-1 gap-1.5 sm:flex-none">
+                <IconCalendarMonth className="size-3.5" />{" "}
+                <span className="hidden xs:inline">all time</span>
+                <span className="xs:hidden">all</span>
+              </TabsTrigger>
+              <TabsTrigger value="week" className="flex-1 gap-1.5 sm:flex-none">
+                <IconCalendar className="size-3.5" />{" "}
+                <span className="hidden xs:inline">this week</span>
+                <span className="xs:hidden">week</span>
+              </TabsTrigger>
+              <TabsTrigger value="today" className="flex-1 gap-1.5 sm:flex-none">
+                <IconCalendar className="size-3.5" /> today
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -196,10 +254,13 @@ function LeaderboardContent() {
         <div className="flex items-center gap-3 rounded-2xl border-2 border-primary bg-primary/5 px-4 py-3">
           <span className="text-xs font-bold tracking-widest text-primary">your rank</span>
           <span className="ml-2 flex items-center gap-1 text-sm font-bold tabular-nums">
-            #{myRankItem.rank} <span className="text-muted-foreground font-normal">{myRankItem.byline}</span>
+            #{myRankItem.rank}{" "}
+            <span className="text-muted-foreground font-normal">{myRankItem.byline}</span>
           </span>
           <span className="ml-auto text-xs text-muted-foreground">
-            {isLevel ? `${myRankItem.value.toLocaleString()} XP` : `${Math.round(myRankItem.value)} pts`}
+            {isLevel
+              ? `${myRankItem.value.toLocaleString()} XP`
+              : `${Math.round(myRankItem.value)} pts`}
           </span>
         </div>
       )}
@@ -208,7 +269,9 @@ function LeaderboardContent() {
         <LeaderboardSkeleton />
       ) : activeEmpty ? (
         <div className="rounded-2xl border border-dashed border-border/60 p-12 text-center text-sm text-muted-foreground">
-          {isLevel ? "no levels yet. finish a test to earn xp." : "no entries yet. finish a test while signed in to claim rank #1."}
+          {isLevel
+            ? "no levels yet. finish a test to earn xp."
+            : "no entries yet. finish a test while signed in to claim rank #1."}
         </div>
       ) : (
         <LeaderboardRankings
