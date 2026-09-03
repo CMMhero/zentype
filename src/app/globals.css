@@ -284,8 +284,13 @@
   }
   html {
     color-scheme: dark;
-    overflow-x: clip;
+    /* Keep overflow fully visible on the root: body's overflow only propagates
+       to the viewport while html is visible in both axes, and clip on the root
+       is interpreted as hidden on the viewport (blocking page scroll). */
     scrollbar-width: none;
+    /* Root overscroll-behavior applies to the viewport: never let a swipe at
+       the top trigger pull-to-refresh and abort a typing test. */
+    overscroll-behavior-y: none;
     @apply font-sans;
   }
   html[data-appearance="light"] {
@@ -296,13 +301,17 @@
     background: linear-gradient(180deg, color-mix(in srgb, var(--background) 100%, transparent) 0%, color-mix(in srgb, var(--background) 95%, var(--primary) 5%) 50%, color-mix(in srgb, var(--background) 100%, transparent) 100%);
     background-attachment: fixed;
     font-feature-settings: "zero" 1, "ss01" 1;
-    overflow-y: scroll;
-    /* Document owns the scroll; never let a swipe at the top trigger pull-to-refresh */
-    overscroll-behavior-y: none;
+    /* Clip horizontal overflow here (propagates to the viewport as hidden)
+       instead of on html. clip is a non-scrollable value, so body never becomes
+       a scroll container and sticky elements stick to the viewport, while the
+       viewport keeps its auto vertical scroll from the propagated value. */
+    overflow-x: clip;
   }
-  /* Lock body scroll when any dialog / command palette is open */
-  body:has([role="dialog"][data-state="open"]),
-  body:has([role="alertdialog"][data-state="open"]) {
+  /* Lock viewport scroll when any dialog / command palette is open. Targeting
+     the root directly is the unambiguous way to lock the viewport, regardless
+     of overflow propagation quirks. */
+  html:has([role="dialog"][data-state="open"]),
+  html:has([role="alertdialog"][data-state="open"]) {
     overflow: hidden;
   }
   ::selection {
