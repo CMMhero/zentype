@@ -33,7 +33,7 @@ import { FONTS } from "~/lib/fonts";
 import { CARET_STYLES, FONT_SIZES, SOUND_VARIANTS } from "~/lib/settings-options";
 import { useResultsStore } from "~/stores/results-store";
 import { useSettingsStore } from "~/stores/settings-store";
-import { useUser } from "~/components/user-provider";
+import { useAuth, useUser } from "~/components/user-provider";
 import { signOutFn, updateUsername } from "~/server/auth";
 import { deleteMyData, getUserResults } from "~/server/results";
 import { playKeypress, playError } from "~/lib/sound";
@@ -61,7 +61,7 @@ export default function SettingsPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>restore all settings to defaults?</AlertDialogTitle>
               <AlertDialogDescription>
-                Resets your theme, font, sound, and gameplay settings.
+                resets your theme, font, sound, and gameplay settings.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -176,7 +176,6 @@ export default function SettingsPage() {
                   onValueChange={(v) => update({ fontFamily: v as FontFamily })}
                   placeholder="font"
                   searchPlaceholder="search fonts…"
-                  className="h-8 w-full sm:w-56"
                 />
               </SettingRow>
               <SettingRow label="font size">
@@ -216,7 +215,7 @@ export default function SettingsPage() {
             <Card className="w-full py-6">
               <CardContent className="flex flex-col items-center gap-3 px-4 text-center">
                 <IconUser className="text-muted-foreground size-6" />
-                <p className="text-muted-foreground text-sm">you're typing as a guest. results live in this browser only.</p>
+                <p className="text-muted-foreground text-sm">you're typing as a guest.<br/>results live in this browser only.</p>
                 <Button asChild size="sm"><a href="/login">sign in</a></Button>
               </CardContent>
             </Card>
@@ -255,6 +254,7 @@ const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
 
 function AccountCard({ username, email, providers }: { username: string; email: string; providers: AuthProvider[] }) {
   const router = useRouter();
+  const { refresh: refreshUser } = useAuth();
   const [value, setValue] = useState(username);
   const [saving, setSaving] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -281,6 +281,8 @@ async function signOut() {
     setSigningOut(true);
     try {
       await signOutFn();
+      // Drop the client-side user so the UI updates without a reload
+      await refreshUser();
       router.push("/");
     } catch {
       setSigningOut(false);

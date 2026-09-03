@@ -66,10 +66,11 @@ export default function PublicProfileLoading() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {["15s", "30s", "60s", "120s", "10w", "25w", "50w", "100w"].map((label) => (
-              <Card key={label} size="sm" className="items-center bg-muted/20 py-3 text-center">
+              <Card key={label} size="sm" className="items-center rounded-2xl bg-muted/20 py-3 text-center">
                 <CardContent className="flex flex-col items-center gap-1 px-3">
                   <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{label}</span>
                   <Skeleton className="h-8 w-14" />
+                  <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
                 </CardContent>
               </Card>
             ))}
@@ -88,7 +89,7 @@ export default function PublicProfileLoading() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-28 w-full rounded-4xl" />
+              <Skeleton key={i} className="h-28 w-full rounded-2xl" />
             ))}
           </div>
         </CardContent>

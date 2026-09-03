@@ -119,7 +119,11 @@ function InputGroupInput({
     <Input
       data-slot="input-group-control"
       className={cn(
-        "flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent",
+        // min-w-0: inside a combobox popup the raw input's intrinsic default
+        // width (~170px) would otherwise drive the popup's shrink-to-fit width,
+        // making it wider than the longest list item. The input still grows
+        // (flex-1) to fill whatever width the items settle on.
+        "flex-1 min-w-0 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 aria-invalid:ring-0 dark:bg-transparent",
         className
       )}
       {...props}

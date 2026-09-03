@@ -1,14 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { BackToTyping } from "~/components/ui/back-to-typing";
 import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconKeyboardFilled } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { signInWithProvider, type AuthProvider } from "~/server/auth";
+import { useAuthStatus, useUser } from "~/components/user-provider";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState<AuthProvider | null>(null);
+  const user = useUser();
+  const authStatus = useAuthStatus();
+  const router = useRouter();
+
+  // Signed-in users have no business on the login page — bounce them home
+  // once the client-side session has settled, so a logged-in user is never
+  // shown the sign-in form.
+  useEffect(() => {
+    if (authStatus === "ready" && user) {
+      router.replace("/");
+    }
+  }, [user, authStatus, router]);
+
+  // Don't render the form until the session settles — it would flash briefly
+  // for signed-in users before the redirect above fires.
+  if (authStatus === "loading") return null;
 
   async function signIn(provider: AuthProvider) {
     setLoading(provider);

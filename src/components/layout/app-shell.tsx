@@ -39,7 +39,7 @@ import { THEMES, getTheme } from "~/lib/themes";
 import { cn } from "~/lib/utils";
 import { useGlobalHotkeys } from "~/hooks/use-global-hotkeys";
 import { useSettingsSync } from "~/hooks/use-settings-sync";
-import { useUser } from "~/components/user-provider";
+import { useAuth } from "~/components/user-provider";
 import type { FontFamily, SessionUser } from "~/lib/types";
 
 const NAV = [
@@ -54,7 +54,7 @@ export function AppShell({
 }: {
   children: React.ReactNode;
 }) {
-  const user = useUser();
+  const { user, status: authStatus, refresh: refreshUser } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const themeId = useSettingsStore((s) => s.settings.themeId);
@@ -104,6 +104,8 @@ export function AppShell({
 
   async function handleSignOut() {
     await signOutFn();
+    // Drop the client-side user so the header updates without a reload
+    await refreshUser();
     toast.success("signed out");
     router.push("/");
   }
@@ -171,7 +173,9 @@ export function AppShell({
               <IconCommand className="size-4" />
             </Button>
 
-            {user ? (
+            {authStatus === "loading" ? (
+              <Skeleton className="h-8 w-20 rounded-full" />
+            ) : user ? (
               <UserMenu user={user} onSignOut={handleSignOut} userLevel={userLevel} />
             ) : (
               <Button variant="secondary" size="sm" asChild className="text-xs">

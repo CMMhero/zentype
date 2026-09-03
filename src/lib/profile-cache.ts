@@ -5,7 +5,13 @@ import type { TestResult } from "./types";
 /** Cache entries younger than this are considered fresh — skip refetching. */
 export const PROFILE_FRESH_MS = 30_000;
 export const PROFILE_CACHE_TTL = 5 * 60 * 1000;
-export const POINTS_CACHE_TTL = 60 * 1000;
+/**
+ * Points only change when a test is saved, which already invalidates every
+ * profile cache key — so keep points alive as long as the rest of the profile
+ * data. A shorter TTL made the level/XP bar render as a skeleton long after
+ * the rest of the page hydrated from cache.
+ */
+export const POINTS_CACHE_TTL = PROFILE_CACHE_TTL;
 /** Full test details (chars + timeline) are immutable — cache for 12h. */
 export const RESULT_DETAIL_TTL = 12 * 60 * 60 * 1000;
 

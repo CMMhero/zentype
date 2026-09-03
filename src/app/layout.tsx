@@ -5,7 +5,6 @@ import { Toaster } from "~/components/ui/sonner";
 import { DynamicFavicon } from "~/components/ui/dynamic-favicon";
 import { AppShell } from "~/components/layout/app-shell";
 import { UserProvider } from "~/components/user-provider";
-import { getSessionUser } from "~/server/auth";
 import { themeStyleSheet, THEMES, DEFAULT_THEME_ID } from "~/lib/themes";
 
 const appearanceMap: Record<string, string> = Object.fromEntries(
@@ -92,9 +91,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const user = await getSessionUser();
-
+// Deliberately synchronous: the root layout must not await anything (no auth
+// round-trip, no DB calls). Next.js re-executes shared layouts on client-side
+// navigation, so an await here would make every page change wait on the server
+// before even showing the route's loading skeleton. The signed-in user is
+// resolved client-side in <UserProvider> instead.
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -133,7 +135,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="antialiased">
         <TooltipProvider>
           <DynamicFavicon />
-          <UserProvider user={user}>
+          <UserProvider>
             <AppShell>
               {children}
             </AppShell>

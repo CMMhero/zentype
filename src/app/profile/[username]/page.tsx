@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import {
   IconArrowLeft, IconAward, IconClock, IconGauge,
@@ -47,13 +47,17 @@ export default function PublicProfilePage() {
   
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
+  // Tracks the profile currently rendered, so a background refetch can tell
+  // whether the UI would actually change before calling setProfile. Prevents
+  // a cached -> identical refetch from replacing rendered data.
+  const profileRef = useRef<PublicProfile | null>(null);
   const currentUser = useUser();
 
   // Hydrate from localStorage before the first paint, so a refresh renders
   // cached data immediately instead of flashing the skeleton.
   useLayoutEffect(() => {
     const c = readPublicProfileCache(username);
-    if (c.profile) { setProfile(c.profile.data); setLoading(false); }
+    if (c.profile) { profileRef.current = c.profile.data; setProfile(c.profile.data); setLoading(false); }
     if (c.points) setPoints(c.points.data);
     if (c.achievements) setAchievements(c.achievements.data);
     const isOwn = currentUser?.username === username;
@@ -91,7 +95,16 @@ export default function PublicProfilePage() {
       getUserAchievementsByUsername(username),
     ]).then(([p, pt, a]) => {
       if (cancelled) return;
-      if (p) { setProfile(p); setLoading(false); lcSet(pubProfileKey(username), p); }
+      if (p) {
+        // Revalidation that returns identical data must not cause a visible
+        // re-render — keep showing what's already on screen.
+        if (!publicProfileEqual(p, profileRef.current)) {
+          profileRef.current = p;
+          setProfile(p);
+        }
+        setLoading(false);
+        lcSet(pubProfileKey(username), p);
+      }
       if (pt) { setPoints(pt); lcSet(pubPointsKey(username), pt); }
       if (a) { setAchievements(a); lcSet(pubAchKey(username), a); }
       // Mirror into the full-profile cache when this is your own profile
@@ -306,7 +319,7 @@ export default function PublicProfilePage() {
           {achievements === null ? (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="h-28 w-full rounded-4xl" />
+                <Skeleton key={i} className="h-28 w-full rounded-2xl" />
               ))}
             </div>
           ) : unlockedAch.length > 0 ? (
@@ -410,6 +423,31 @@ function formatDuration(seconds: number): string {
   return `${Math.floor(m / 60)}h ${m % 60}m`;
 }
 
+/**
+ * Compare two public profiles for equality, ignoring result order (queries are
+ * ordered by created_at, so ties can come back in any order between calls).
+ * Used to skip state updates when a background refetch returns unchanged data.
+ */
+function publicProfileEqual(a: PublicProfile | null, b: PublicProfile | null): boolean {
+  if (a === b) return true;
+  if (!a || !b) return false;
+  if (
+    a.userId !== b.userId || a.username !== b.username ||
+    a.avatarUrl !== b.avatarUrl || a.joinedAt !== b.joinedAt ||
+    JSON.stringify(a.stats) !== JSON.stringify(b.stats) ||
+    a.results.length !== b.results.length
+  ) return false;
+  const canon = (arr: PublicProfile["results"]) =>
+    [...arr]
+      .sort((x, y) => (x.id < y.id ? -1 : x.id > y.id ? 1 : 0))
+      .map((r) =>
+        JSON.stringify([r.id, r.createdAt, r.mode, r.variant, r.wpm, r.accuracy]),
+      );
+  const ca = canon(a.results);
+  const cb = canon(b.results);
+  return ca.every((s, i) => s === cb[i]);
+}
+
 const ALL_BOARDS = [
   "time:15", "time:30", "time:60", "time:120",
   "words:10", "words:25", "words:50", "words:100",
@@ -472,13 +510,13 @@ function ProfileSkeleton() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {ALL_BOARDS.map((board) => (
-              <div key={board} className="flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-muted/20 p-3 text-center">
-                <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
-                <div className="flex h-8 items-center">
-                  <Skeleton className="h-4 w-12" />
-                </div>
-                <Skeleton className="mt-0.5 h-[18px] w-9 rounded-full" />
-              </div>
+              <Card key={board} size="sm" className="items-center rounded-2xl bg-muted/20 py-3 text-center">
+                <CardContent className="flex flex-col items-center gap-1 px-3">
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                  <Skeleton className="h-8 w-14" />
+                  <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
+                </CardContent>
+              </Card>
             ))}
           </div>
         </CardContent>
@@ -495,7 +533,7 @@ function ProfileSkeleton() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-28 w-full rounded-4xl" />
+              <Skeleton key={i} className="h-28 w-full rounded-2xl" />
             ))}
           </div>
           <Skeleton className="mt-3 h-4 w-32" />
