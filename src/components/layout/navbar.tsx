@@ -60,6 +60,115 @@ function isActive(pathname: string, to: string) {
   return to === "/" ? pathname === "/" : pathname.startsWith(to);
 }
 
+function DesktopNavLink({
+  item,
+  index,
+  active,
+  presses,
+  onRepeatPress,
+}: {
+  item: (typeof NAV)[number];
+  index: number;
+  active: boolean;
+  presses: Record<string, number>;
+  onRepeatPress: (to: string) => void;
+}) {
+  return (
+    <NavigationMenuItem key={item.to}>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <NavigationMenuLink
+              className={cn(
+                "rounded-2xl p-1.5 transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/30",
+                active
+                  ? "text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+              render={
+                <Link
+                  href={item.to}
+                  aria-label={item.label}
+                  onClick={(e) => {
+                    if (active) {
+                      e.preventDefault();
+                      onRepeatPress(item.to);
+                    }
+                  }}
+                />
+              }
+            >
+              <span className="relative flex h-5 w-5 items-center justify-center">
+                <item.icon
+                  key={active ? `pop-${presses[item.to] ?? 0}` : "idle"}
+                  className={cn(
+                    "size-5 text-primary transition-all duration-300 ease-out",
+                    active ? "zt-icon-pop opacity-100" : "absolute opacity-0",
+                  )}
+                />
+                <item.iconOutline
+                  className={cn(
+                    "size-5",
+                    active
+                      ? "absolute opacity-0"
+                      : "transition-all duration-300 ease-out opacity-100",
+                  )}
+                />
+              </span>
+            </NavigationMenuLink>
+          }
+        />
+        <TooltipContent side="bottom" showArrow={false} className="flex items-center gap-1.5">
+          {item.label}
+          <Kbd>alt</Kbd>+<Kbd>{index + 1}</Kbd>
+        </TooltipContent>
+      </Tooltip>
+    </NavigationMenuItem>
+  );
+}
+
+/** Floating pill dock — an icon-rail used as the "wings" around the brand. */
+function DesktopDock({
+  className,
+  items,
+  pathname,
+  presses,
+  onRepeatPress,
+}: {
+  className?: string;
+  items: { item: (typeof NAV)[number]; index: number }[];
+  pathname: string;
+  presses: Record<string, number>;
+  onRepeatPress: (to: string) => void;
+}) {
+  return (
+    <NavigationMenu
+      aria-label="Primary"
+      viewport={false}
+      className={cn(
+        "min-w-0 items-center rounded-full bg-card px-1.5 py-1 shadow-md ring-1 ring-foreground/5",
+        className,
+      )}
+    >
+      <NavigationMenuList className="flex items-center gap-0.5">
+        {items.map(({ item, index }) => {
+          const active = isActive(pathname, item.to);
+          return (
+            <DesktopNavLink
+              key={item.to}
+              item={item}
+              index={index}
+              active={active}
+              presses={presses}
+              onRepeatPress={onRepeatPress}
+            />
+          );
+        })}
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+}
+
 export function Navbar() {
   const { user, status: authStatus, refresh: refreshUser } = useAuth();
   const pathname = usePathname();
@@ -69,6 +178,7 @@ export function Navbar() {
   useEffect(() => {
     setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
   }, []);
+  const [presses, setPresses] = useState<Record<string, number>>({});
   const [userLevel, setUserLevel] = useState<number | null>(null);
   useEffect(() => {
     if (!user) {
@@ -104,18 +214,24 @@ export function Navbar() {
     router.push("/");
   }
 
+  const repeatPress = (to: string) => {
+    setPresses((p) => ({ ...p, [to]: (p[to] ?? 0) + 1 }));
+    window.dispatchEvent(new Event("zt:restart"));
+  };
+
   return (
     <header
       className="bg-background/80 sticky top-0 z-40 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
       role="banner"
     >
       <div
-        className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4"
+        className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4 md:grid md:grid-cols-[1fr_minmax(0,auto)_1fr] md:gap-0 md:px-6"
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
+        {/* Brand — left on mobile, dead-center on desktop */}
         <Link
           href="/"
-          className="group flex shrink-0 items-center gap-2"
+          className="group flex shrink-0 items-center gap-2 md:col-start-2 md:row-start-1 md:justify-self-center"
           aria-label="zentype home"
           onClick={(e) => {
             if (pathname === "/") {
@@ -128,57 +244,25 @@ export function Navbar() {
           <span className="text-sm font-semibold tracking-tight">zentype</span>
         </Link>
 
-        <div className="ml-4 hidden md:block">
-          <NavigationMenu aria-label="Primary">
-            <NavigationMenuList className="gap-2.5">
-              {NAV.map((item, i) => {
-                const active = isActive(pathname, item.to);
-                return (
-                  <NavigationMenuItem key={item.to}>
-                    <Tooltip>
-                      <TooltipTrigger
-                        render={
-                          <NavigationMenuLink
-                            className={cn(
-                              "rounded-3xl p-1.5 transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/30",
-                              active
-                                ? "text-primary"
-                                : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                            )}
-                            render={
-                              <Link
-                                href={item.to}
-                                aria-label={item.label}
-                                onClick={(e) => {
-                                  if (pathname === item.to) {
-                                    e.preventDefault();
-                                    window.dispatchEvent(new Event("zt:restart"));
-                                  }
-                                }}
-                              />
-                            }
-                          >
-                            <item.icon className="size-5" stroke={1} />
-                          </NavigationMenuLink>
-                        }
-                      />
-                      <TooltipContent
-                        side="bottom"
-                        showArrow={false}
-                        className="flex items-center gap-1.5"
-                      >
-                        {item.label}
-                        <Kbd>alt</Kbd>+<Kbd>{i + 1}</Kbd>
-                      </TooltipContent>
-                    </Tooltip>
-                  </NavigationMenuItem>
-                );
-              })}
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
+        {/* Left wing dock — desktop only */}
+        <DesktopDock
+          className="hidden md:flex md:col-start-1 md:row-start-1 md:justify-self-start"
+          items={NAV.map((item, index) => ({ item, index })).slice(0, 2)}
+          pathname={pathname}
+          presses={presses}
+          onRepeatPress={repeatPress}
+        />
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-2 md:col-start-3 md:row-start-1 md:ml-0 md:justify-self-end">
+          {/* Right wing dock — desktop only */}
+          <DesktopDock
+            className="hidden md:flex"
+            items={NAV.map((item, index) => ({ item, index })).slice(2)}
+            pathname={pathname}
+            presses={presses}
+            onRepeatPress={repeatPress}
+          />
+
           <Button
             variant="outline"
             size="sm"
