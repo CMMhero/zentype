@@ -28,9 +28,9 @@ export function LeaderboardSkeleton() {
           <Skeleton className="h-8 w-16 rounded-3xl" />
         </div>
         <div className="flex items-center gap-2">
-          <Skeleton className="h-8 w-8 rounded-2xl" />
+          <Skeleton className="size-9 rounded-2xl" />
           <Skeleton className="h-4 w-20" />
-          <Skeleton className="h-8 w-8 rounded-2xl" />
+          <Skeleton className="size-9 rounded-2xl" />
         </div>
       </div>
     </div>

@@ -27,7 +27,11 @@ import { Badge } from "~/components/ui/badge";
 import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
 import { ComboboxSelect, type ComboboxSelectOption } from "~/components/ui/combobox";
-import { lcGet } from "~/lib/client-cache";
+import { lcGetEntry, lcSet } from "~/lib/client-cache";
+import {
+  ownPointsKey, POINTS_CACHE_TTL, PROFILE_FRESH_MS,
+  type ProfilePoints,
+} from "~/lib/profile-cache";
 import { useSettingsStore } from "~/stores/settings-store";
 import { useUiStore } from "~/stores/ui-store";
 import { signOutFn } from "~/server/auth";
@@ -65,11 +69,21 @@ export function AppShell({
   const [userLevel, setUserLevel] = useState<number | null>(null);
   useEffect(() => {
     if (!user) { setUserLevel(null); return; }
-    const cached = lcGet<{ level: number }>(`${user.id}:profile-points`, 60 * 1000);
-    if (cached && userLevel === null) setUserLevel(cached.level);
+    // Read the shared points cache (the profile page writes it) so the badge
+    // renders instantly and skips the network fetch entirely while it's fresh.
+    const entry = lcGetEntry<ProfilePoints>(ownPointsKey(user.id), POINTS_CACHE_TTL);
+    if (entry) {
+      setUserLevel(entry.data.level);
+      if (entry.ageMs < PROFILE_FRESH_MS) return; // fresh — skip refetch
+    }
     let cancelled = false;
     void import("~/server/gamification").then(({ getUserPoints }) =>
-      getUserPoints().then((p) => { if (!cancelled && p) setUserLevel(p.level); })
+      getUserPoints().then((p) => {
+        if (cancelled || !p) return;
+        setUserLevel(p.level);
+        // Write through to the shared cache so the profile page benefits too
+        lcSet(ownPointsKey(user.id), p);
+      })
     );
     return () => { cancelled = true; };
   }, [user]);

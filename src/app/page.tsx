@@ -31,6 +31,26 @@ import type { AggregatedStats } from "~/server/results";
 /** Detect mobile/touch device for keyboard input routing */
 const isMobile = typeof navigator !== "undefined" && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+/**
+ * Session-scoped in-memory prompt cache. Navigating away and back to the test
+ * page remounts it, so reusing the last generated words for a config renders
+ * immediately instead of flashing the loading skeleton. Entries are dropped
+ * when a test finishes so the next prompt is always fresh.
+ */
+const promptCache = new Map<string, string[]>();
+
+function promptCacheKey(cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">): string {
+  return [cfg.mode, cfg.duration, cfg.wordCount, cfg.source, cfg.punctuation ? "punct" : "plain", cfg.numbers ? "nums" : "no-nums"].join(":");
+}
+
+function rememberPrompt(cfg: Pick<GameSettings, "mode" | "duration" | "wordCount" | "source" | "punctuation" | "numbers">, words: string[]): void {
+  promptCache.set(promptCacheKey(cfg), words);
+  if (promptCache.size > 8) {
+    const oldest = promptCache.keys().next().value;
+    if (oldest) promptCache.delete(oldest);
+  }
+}
+
 /** Check if a result is a personal best by comparing against local results and cached server stats. */
 function isResultPB(result: TestResult, userId: string | null): boolean {
   const board = `${result.mode}:${result.variant}`;
@@ -64,8 +84,14 @@ export default function TestPage() {
   const helpOpen = useUiStore((s) => s.helpOpen);
   const setTestRunning = useUiStore((s) => s.setTestRunning);
 
-  const [words, setWords] = useState<string[]>([]);
-  const [loadingPrompt, setLoadingPrompt] = useState(true);
+  // Warm prompt cache (e.g. returning to the test page mid-session) → render
+  // words on the first commit instead of a skeleton frame while they load.
+  const [initialPrompt] = useState(() => {
+    const cached = promptCache.get(promptCacheKey(settings));
+    return cached && cached.length > 0 ? { key: promptCacheKey(settings), words: cached } : null;
+  });
+  const [words, setWords] = useState<string[]>(() => initialPrompt?.words ?? []);
+  const [loadingPrompt, setLoadingPrompt] = useState(() => !initialPrompt);
   const [result, setResult] = useState<TestResult | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("skipped");
   const [focused, setFocused] = useState(true);
@@ -114,6 +140,7 @@ export default function TestPage() {
       setLoadingPrompt(true);
       if (prefetchedRef.current) {
         setWords(prefetchedRef.current);
+        rememberPrompt(cfg, prefetchedRef.current);
         prefetchedRef.current = null;
         setLoadingPrompt(false);
         void fetchWords(cfg).then((w) => { if (id === loadPromptIdRef.current) prefetchedRef.current = w; });
@@ -122,6 +149,7 @@ export default function TestPage() {
       const w = await fetchWords(cfg);
       if (id !== loadPromptIdRef.current) return; // stale, a newer call superseded us
       setWords(w);
+      rememberPrompt(cfg, w);
       setLoadingPrompt(false);
       void fetchWords(cfg).then((next) => { if (id === loadPromptIdRef.current) prefetchedRef.current = next; });
     },
@@ -163,6 +191,8 @@ export default function TestPage() {
     setResult(full);
     setSaveState("skipped");
     addLocal(full);
+    // Finished prompts shouldn't replay — the next visit fetches a fresh set
+    promptCache.delete(promptCacheKey(settingsRef.current));
 
     // Show immediate XP toast (client-side estimate, no DB wait)
     if (user) {
@@ -230,9 +260,15 @@ export default function TestPage() {
 
   useEffect(() => {
     prefetchedRef.current = null;
-    void loadPrompt(settings);
     engineRef.current.reset();
     setResult(null);
+    // Mounted with words from the session cache for this config? Nothing to
+    // fetch — just warm the next prompt in the background.
+    if (initialPrompt && promptCacheKey(settings) === initialPrompt.key) {
+      void fetchWords(settings).then((next) => { prefetchedRef.current = next; });
+      return;
+    }
+    void loadPrompt(settings);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.source, settings.punctuation, settings.numbers, settings.mode, settings.duration, settings.wordCount]);
 
