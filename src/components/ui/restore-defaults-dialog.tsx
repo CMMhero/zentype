@@ -2,8 +2,13 @@
 
 import { toast } from "sonner";
 import {
-  AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
-  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 import { useSettingsStore } from "~/stores/settings-store";
@@ -34,13 +39,15 @@ export function RestoreDefaultsDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>restore all settings to defaults?</AlertDialogTitle>
           <AlertDialogDescription>
-            resets your theme, font, sound, and gameplay settings back to
-            their defaults. this can&apos;t be undone.
+            resets your theme, font, sound, and gameplay settings back to their defaults. this
+            can&apos;t be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>cancel</AlertDialogCancel>
-          <Button variant="secondary" onClick={handleRestore}>yes, restore</Button>
+          <Button variant="secondary" onClick={handleRestore}>
+            yes, restore
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

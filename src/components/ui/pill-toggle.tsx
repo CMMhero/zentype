@@ -1,4 +1,4 @@
-import * as React from "react";
+import type * as React from "react";
 import { cn } from "~/lib/utils";
 
 function PillGroup({ className, ...props }: React.ComponentProps<"div">) {
@@ -37,4 +37,4 @@ function PillButton({
   );
 }
 
-export { PillGroup, PillButton };
+export { PillButton, PillGroup };

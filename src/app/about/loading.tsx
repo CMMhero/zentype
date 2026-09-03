@@ -1,6 +1,6 @@
-import { Skeleton } from "~/components/ui/skeleton";
-import { Card, CardContent } from "~/components/ui/card";
 import { IconInfoCircleFilled, IconKeyboardFilled } from "@tabler/icons-react";
+import { Card, CardContent } from "~/components/ui/card";
+import { Skeleton } from "~/components/ui/skeleton";
 
 export default function AboutLoading() {
   return (
@@ -13,7 +13,9 @@ export default function AboutLoading() {
 
       <div className="space-y-8">
         <section>
-          <h2 className="text-base font-semibold">what is <IconKeyboardFilled className="text-primary size-4 inline" /> zentype?</h2>
+          <h2 className="text-base font-semibold">
+            what is <IconKeyboardFilled className="text-primary size-4 inline" /> zentype?
+          </h2>
           <div className="mt-2 space-y-2">
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-4/5" />

@@ -21,15 +21,14 @@ function toSessionUser(user: {
     user.email?.split("@")[0] ||
     `user_${user.id.slice(0, 6)}`;
   // Providers this account signed in with (from linked identities)
-  const providers: AuthProvider[] =
-    (user.identities ?? []).map((i) => i["provider"] as string).filter((p): p is AuthProvider =>
-      p === "github" || p === "google" || p === "discord");
+  const providers: AuthProvider[] = (user.identities ?? [])
+    .map((i) => i["provider"] as string)
+    .filter((p): p is AuthProvider => p === "github" || p === "google" || p === "discord");
   return {
     id: user.id,
     email: user.email ?? "",
     username,
-    avatarUrl:
-      (meta["avatar_url"] as string) || (meta["picture"] as string) || null,
+    avatarUrl: (meta["avatar_url"] as string) || (meta["picture"] as string) || null,
     providers,
   };
 }
@@ -95,9 +94,7 @@ export async function signOutFn(): Promise<{ ok: boolean }> {
 
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,24}$/;
 
-export async function updateUsername(
-  username: string,
-): Promise<{ error: string | null }> {
+export async function updateUsername(username: string): Promise<{ error: string | null }> {
   const supabase = await getSupabaseServerClient();
   if (!supabase) return { error: "Auth is not configured." };
   const { data: auth } = await supabase.auth.getUser();

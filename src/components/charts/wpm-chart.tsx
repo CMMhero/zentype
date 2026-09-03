@@ -1,19 +1,12 @@
+import { Area, Bar, CartesianGrid, ComposedChart, XAxis, YAxis } from "recharts";
 import {
-  Area,
-  Bar,
-  CartesianGrid,
-  ComposedChart,
-  XAxis,
-  YAxis,
-} from "recharts";
-import {
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
 } from "~/components/ui/chart";
-import { cn } from "~/lib/utils";
 import type { TimelinePoint } from "~/lib/types";
+import { cn } from "~/lib/utils";
 
 const chartConfig = {
   wpm: { label: "wpm", color: "var(--chart-1)" },
@@ -45,9 +38,7 @@ export function WpmChart({
 
   // Total errors across the test (exclude last point — it's a finish
   // snapshot and may contain cumulative totals in older saved data).
-  const totalErrors = timeline
-    .slice(0, -1)
-    .reduce((sum, p) => sum + (p.errors || 0), 0);
+  const totalErrors = timeline.slice(0, -1).reduce((sum, p) => sum + (p.errors || 0), 0);
 
   const data = timeline.map((p, i) => ({
     t: `${p.t}s`,
@@ -56,12 +47,17 @@ export function WpmChart({
     raw: p.raw,
     // Skip error bar for the last point — it's a finish snapshot and may
     // contain cumulative totals in older saved data.
-    errors: i < timeline.length - 1 ? (p.errors || null) : null,
+    errors: i < timeline.length - 1 ? p.errors || null : null,
   }));
 
   return (
     <div className={cn("w-full", className)}>
-      <ChartContainer config={chartConfig} className={cn(compact ? "h-40 sm:h-56" : "h-56", "w-full")} role="img" aria-label="WPM performance chart">
+      <ChartContainer
+        config={chartConfig}
+        className={cn(compact ? "h-40 sm:h-56" : "h-56", "w-full")}
+        role="img"
+        aria-label="WPM performance chart"
+      >
         <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
           <defs>
             <linearGradient id="fillWpm" x1="0" y1="0" x2="0" y2="1">
@@ -107,7 +103,13 @@ export function WpmChart({
             fill="url(#fillRaw)"
             dot={false}
           />
-          <Bar dataKey="errors" fill="var(--color-errors)" radius={[2, 2, 0, 0]} barSize={4} yAxisId="right" />
+          <Bar
+            dataKey="errors"
+            fill="var(--color-errors)"
+            radius={[2, 2, 0, 0]}
+            barSize={4}
+            yAxisId="right"
+          />
         </ComposedChart>
       </ChartContainer>
     </div>

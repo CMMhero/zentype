@@ -9,8 +9,8 @@ import {
 } from "~/components/ui/dialog";
 import { Kbd } from "~/components/ui/kbd";
 import { Separator } from "~/components/ui/separator";
-import { useUiStore } from "~/stores/ui-store";
 import { KEYBINDS } from "~/lib/keybinds";
+import { useUiStore } from "~/stores/ui-store";
 
 export function HelpDialog() {
   const open = useUiStore((s) => s.helpOpen);
@@ -21,9 +21,7 @@ export function HelpDialog() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>keybinds</DialogTitle>
-          <DialogDescription>
-            navigate and control tests.
-          </DialogDescription>
+          <DialogDescription>navigate and control tests.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-1">
           {KEYBINDS.map((s, i) => (

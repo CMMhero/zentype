@@ -5,10 +5,7 @@ import { cn } from "~/lib/utils";
  * shortcuts). Uses the shadcn inline-code style: monospace on a muted chip.
  * Pass text-sm / text-xs to match the surrounding paragraph size.
  */
-export function InlineCode({
-  className,
-  ...props
-}: React.ComponentProps<"code">) {
+export function InlineCode({ className, ...props }: React.ComponentProps<"code">) {
   return (
     <code
       data-slot="inline-code"

@@ -1,11 +1,7 @@
-import { IconTypography, IconClock, IconHash, IconAt } from "@tabler/icons-react";
+import { IconAt, IconClock, IconHash, IconTypography } from "@tabler/icons-react";
+import { PillButton, PillGroup } from "~/components/ui/pill-toggle";
+import { type GameMode, TIME_OPTIONS, WORD_OPTIONS } from "~/lib/types";
 import { cn } from "~/lib/utils";
-import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
-import {
-  TIME_OPTIONS,
-  WORD_OPTIONS,
-  type GameMode,
-} from "~/lib/types";
 
 interface ConfigBarProps {
   mode: GameMode;
@@ -14,7 +10,13 @@ interface ConfigBarProps {
   locked: boolean;
   punctuation: boolean;
   numbers: boolean;
-  onChange: (patch: { mode?: GameMode; duration?: number; wordCount?: number; punctuation?: boolean; numbers?: boolean }) => void;
+  onChange: (patch: {
+    mode?: GameMode;
+    duration?: number;
+    wordCount?: number;
+    punctuation?: boolean;
+    numbers?: boolean;
+  }) => void;
 }
 
 export function ConfigBar({
@@ -30,7 +32,7 @@ export function ConfigBar({
     <div
       className={cn(
         "mx-auto flex w-fit flex-wrap items-center justify-center gap-2 text-sm transition-all duration-300 sm:gap-3",
-        locked ? "pointer-events-none opacity-40" : "opacity-100"
+        locked ? "pointer-events-none opacity-40" : "opacity-100",
       )}
       role="toolbar"
       aria-label="test configuration"

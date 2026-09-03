@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useUiStore } from "~/stores/ui-store";
+import { useEffect } from "react";
 import { isTypingTarget } from "~/lib/keyboard";
+import { useUiStore } from "~/stores/ui-store";
 
 export function useGlobalHotkeys() {
   const router = useRouter();

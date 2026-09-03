@@ -1,7 +1,19 @@
-import { IconTrophyFilled, IconTrophy, IconBolt, IconCalendar, IconCalendarMonth } from "@tabler/icons-react";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import {
+  IconBolt,
+  IconCalendar,
+  IconCalendarMonth,
+  IconTrophy,
+  IconTrophyFilled,
+} from "@tabler/icons-react";
 import { LeaderboardSkeleton } from "~/components/leaderboard-skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 export default function LeaderboardLoading() {
   return (
@@ -15,8 +27,12 @@ export default function LeaderboardLoading() {
         <div className="flex items-center gap-2">
           <Tabs defaultValue="wpm">
             <TabsList>
-              <TabsTrigger value="wpm" className="gap-1.5"><IconTrophy className="size-3.5" /> wpm</TabsTrigger>
-              <TabsTrigger value="level" className="gap-1.5"><IconBolt className="size-3.5" /> level</TabsTrigger>
+              <TabsTrigger value="wpm" className="gap-1.5">
+                <IconTrophy className="size-3.5" /> wpm
+              </TabsTrigger>
+              <TabsTrigger value="level" className="gap-1.5">
+                <IconBolt className="size-3.5" /> level
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -48,9 +64,19 @@ export default function LeaderboardLoading() {
         </div>
         <Tabs defaultValue="all" className="w-full sm:w-auto">
           <TabsList className="w-full sm:w-auto">
-            <TabsTrigger value="all" className="flex-1 gap-1.5 sm:flex-none"><IconCalendarMonth className="size-3.5" /> <span className="hidden xs:inline">all time</span><span className="xs:hidden">all</span></TabsTrigger>
-            <TabsTrigger value="week" className="flex-1 gap-1.5 sm:flex-none"><IconCalendar className="size-3.5" /> <span className="hidden xs:inline">this week</span><span className="xs:hidden">week</span></TabsTrigger>
-            <TabsTrigger value="today" className="flex-1 gap-1.5 sm:flex-none"><IconCalendar className="size-3.5" /> today</TabsTrigger>
+            <TabsTrigger value="all" className="flex-1 gap-1.5 sm:flex-none">
+              <IconCalendarMonth className="size-3.5" />{" "}
+              <span className="hidden xs:inline">all time</span>
+              <span className="xs:hidden">all</span>
+            </TabsTrigger>
+            <TabsTrigger value="week" className="flex-1 gap-1.5 sm:flex-none">
+              <IconCalendar className="size-3.5" />{" "}
+              <span className="hidden xs:inline">this week</span>
+              <span className="xs:hidden">week</span>
+            </TabsTrigger>
+            <TabsTrigger value="today" className="flex-1 gap-1.5 sm:flex-none">
+              <IconCalendar className="size-3.5" /> today
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

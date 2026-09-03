@@ -1,10 +1,10 @@
 "use server";
 
-import { getSupabaseServerClient, getSupabasePublicClient } from "~/lib/supabase/server";
+import { cacheDel, cacheGet, cacheSet } from "~/lib/cache";
 import { getRedis, lbScore } from "~/lib/redis";
 import { isPlausible } from "~/lib/stats";
-import { boardKey, TIME_OPTIONS, WORD_OPTIONS, type GameMode, type TestResult } from "~/lib/types";
-import { cacheGet, cacheSet, cacheDel } from "~/lib/cache";
+import { getSupabasePublicClient, getSupabaseServerClient } from "~/lib/supabase/server";
+import { boardKey, type GameMode, type TestResult, TIME_OPTIONS, WORD_OPTIONS } from "~/lib/types";
 
 type SaveInput = Omit<TestResult, "id" | "createdAt">;
 
@@ -89,11 +89,11 @@ export async function saveResult(
           .zadd(key, { score, member: ctx.user.id })
           .hset(metaKey, {
             [ctx.user.id]: JSON.stringify({
-              username: (ctx.user.user_metadata?.["user_name"] as string) ||
+              username:
+                (ctx.user.user_metadata?.["user_name"] as string) ||
                 ctx.user.email?.split("@")[0] ||
                 "anon",
-              avatarUrl:
-                (ctx.user.user_metadata?.["avatar_url"] as string) ?? null,
+              avatarUrl: (ctx.user.user_metadata?.["avatar_url"] as string) ?? null,
               wpm: data.wpm,
               accuracy: data.accuracy,
               consistency: data.consistency,
@@ -227,8 +227,7 @@ export async function getUserStats(): Promise<AggregatedStats | null> {
 
   // Select only columns needed for aggregation — omitting timeline (large JSON)
   // and source/punctuation/numbers which aren't used in stats.
-  const STATS_COLUMNS =
-    "id,created_at,mode,variant,wpm,raw_wpm,accuracy,consistency,chars";
+  const STATS_COLUMNS = "id,created_at,mode,variant,wpm,raw_wpm,accuracy,consistency,chars";
   const { data: rows, error } = await ctx.supabase
     .from("test_results")
     .select(STATS_COLUMNS)
@@ -275,9 +274,7 @@ export async function getUserStats(): Promise<AggregatedStats | null> {
   return stats;
 }
 
-export async function mergeLocalResults(
-  results: TestResult[],
-): Promise<{ merged: number }> {
+export async function mergeLocalResults(results: TestResult[]): Promise<{ merged: number }> {
   const ctx = await requireUser();
   if (!ctx || results.length === 0) return { merged: 0 };
   const rows = results
@@ -405,9 +402,7 @@ export async function getMyJoinDate(): Promise<string | null> {
   return joinedAt;
 }
 
-export async function getPublicProfile(
-  identifier: string,
-): Promise<PublicProfile | null> {
+export async function getPublicProfile(identifier: string): Promise<PublicProfile | null> {
   // Cache public profiles briefly (30s) to avoid repeated heavy queries
   const cached = await cacheGet<PublicProfile>(`pub-profile:${identifier.toLowerCase()}`);
   if (cached) return cached;
@@ -451,14 +446,15 @@ export async function getPublicProfile(
   // crashes the entire function when using the anon/public client.
 
   // Try RPC for stats (bypasses RLS)
-  const { data: statsRow, error: statsErr } = await supabase.rpc(
-    "get_public_profile_stats",
-    { p_user_id: userId },
-  );
+  const { data: statsRow, error: statsErr } = await supabase.rpc("get_public_profile_stats", {
+    p_user_id: userId,
+  });
   let stats: AggregatedStats | null = null;
   if (!statsErr && statsRow && statsRow.length > 0) {
     const s = statsRow[0];
-    const bbb = (typeof s.best_by_board === "string" ? JSON.parse(s.best_by_board) : s.best_by_board ?? {}) as Record<string, number>;
+    const bbb = (
+      typeof s.best_by_board === "string" ? JSON.parse(s.best_by_board) : (s.best_by_board ?? {})
+    ) as Record<string, number>;
     stats = {
       testsCompleted: Number(s.tests_completed ?? 0),
       timeTypedSeconds: Number(s.time_typed_seconds ?? 0),
@@ -483,10 +479,10 @@ export async function getPublicProfile(
   });
 
   // Try RPC for results (bypasses RLS)
-  const { data: rpcResults, error: rpcErr } = await supabase.rpc(
-    "get_user_results_public",
-    { p_user_id: userId, p_limit: 365 },
-  );
+  const { data: rpcResults, error: rpcErr } = await supabase.rpc("get_user_results_public", {
+    p_user_id: userId,
+    p_limit: 365,
+  });
   let results: PublicProfileResult[] = [];
   if (!rpcErr && rpcResults && rpcResults.length > 0) {
     results = rpcResults.map(toPublicResult);
@@ -502,7 +498,14 @@ export async function getPublicProfile(
   }
 
   if (results.length === 0 && !stats) {
-    return { userId, username: username ?? "unknown", avatarUrl, joinedAt, stats: null, results: [] };
+    return {
+      userId,
+      username: username ?? "unknown",
+      avatarUrl,
+      joinedAt,
+      stats: null,
+      results: [],
+    };
   }
 
   // Compute stats from full rows if the stats RPC didn't return them
@@ -533,7 +536,14 @@ export async function getPublicProfile(
     };
   }
 
-  const profile: PublicProfile = { userId, username: username ?? "unknown", avatarUrl, joinedAt, stats, results };
+  const profile: PublicProfile = {
+    userId,
+    username: username ?? "unknown",
+    avatarUrl,
+    joinedAt,
+    stats,
+    results,
+  };
   await cacheSet(`pub-profile:${identifier.toLowerCase()}`, profile, 30);
   return profile;
 }
@@ -546,7 +556,8 @@ export async function searchUsers(
   if (!supabase || !query.trim()) return [];
   // Cache 60s — the command palette re-queries on every keystroke
   const cacheKey = `search:${query.trim().toLowerCase()}`;
-  const cached = await cacheGet<Array<{ userId: string; username: string; avatarUrl: string | null }>>(cacheKey);
+  const cached =
+    await cacheGet<Array<{ userId: string; username: string; avatarUrl: string | null }>>(cacheKey);
   if (cached) return cached;
 
   let result: Array<{ userId: string; username: string; avatarUrl: string | null }> = [];
@@ -587,19 +598,25 @@ export async function getPublicStats(): Promise<{
   totalXpEarned: number;
 } | null> {
   // Cache for 5 minutes -- this hits multiple aggregate tables
-  const cached = await cacheGet<{ totalUsers: number; totalTests: number; totalSeconds: number; totalXpEarned: number }>("public-stats");
+  const cached = await cacheGet<{
+    totalUsers: number;
+    totalTests: number;
+    totalSeconds: number;
+    totalXpEarned: number;
+  }>("public-stats");
   if (cached) return cached;
 
   const supabase = await getSupabasePublicClient();
   if (!supabase) return null;
 
   try {
-    const [{ count: totalUsers }, { count: totalTests }, { data: xpData }, { data: tests }] = await Promise.all([
-      supabase.from("profiles").select("id", { count: "exact", head: true }),
-      supabase.from("test_results").select("id", { count: "exact", head: true }),
-      supabase.from("user_points").select("total_xp"),
-      supabase.from("test_results").select("variant,mode,wpm"),
-    ]);
+    const [{ count: totalUsers }, { count: totalTests }, { data: xpData }, { data: tests }] =
+      await Promise.all([
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("test_results").select("id", { count: "exact", head: true }),
+        supabase.from("user_points").select("total_xp"),
+        supabase.from("test_results").select("variant,mode,wpm"),
+      ]);
 
     const totalXpEarned = xpData?.reduce((sum, r) => sum + (r.total_xp ?? 0), 0) ?? 0;
 

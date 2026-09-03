@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPublicStats } from "~/server/results";
-import { lcGetEntry, lcSet } from "~/lib/client-cache";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
+import { lcGetEntry, lcSet } from "~/lib/client-cache";
+import { getPublicStats } from "~/server/results";
 
 type PublicStats = NonNullable<Awaited<ReturnType<typeof getPublicStats>>>;
 

@@ -1,32 +1,23 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import {
-  IconCheck,
-  IconChevronDown,
-  IconFlame,
-  IconRefresh,
-} from "@tabler/icons-react"
-
-import { cn } from "~/lib/utils"
-import { Button } from "~/components/ui/button"
-import {
-  StreakCalendar,
-  type StreakPeriod,
-} from "~/components/ui/streak-calendar"
+import { IconCheck, IconChevronDown, IconFlame, IconRefresh } from "@tabler/icons-react";
+import * as React from "react";
+import { Button } from "~/components/ui/button";
+import { StreakCalendar, type StreakPeriod } from "~/components/ui/streak-calendar";
+import { cn } from "~/lib/utils";
 
 interface StreakCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  streak: StreakPeriod[]
-  currentStreak: number
-  longestStreak: number
-  total: number
-  title?: string
-  actionLabel?: string
-  onActionClick?: () => void
-  showHowItWorks?: boolean
-  howItWorksTitle?: string
-  howItWorksItems?: string[]
-  defaultHowItWorksOpen?: boolean
+  streak: StreakPeriod[];
+  currentStreak: number;
+  longestStreak: number;
+  total: number;
+  title?: string;
+  actionLabel?: string;
+  onActionClick?: () => void;
+  showHowItWorks?: boolean;
+  howItWorksTitle?: string;
+  howItWorksItems?: string[];
+  defaultHowItWorksOpen?: boolean;
 }
 
 const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
@@ -50,12 +41,10 @@ const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
       defaultHowItWorksOpen = false,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const [isHowItWorksOpen, setIsHowItWorksOpen] = React.useState(
-      defaultHowItWorksOpen
-    )
-    const howItWorksContentId = React.useId()
+    const [isHowItWorksOpen, setIsHowItWorksOpen] = React.useState(defaultHowItWorksOpen);
+    const howItWorksContentId = React.useId();
 
     return (
       <section
@@ -82,17 +71,10 @@ const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
 
         <p className="mb-4 text-5xl font-semibold leading-none tracking-tight">
           {currentStreak}
-          <span className="ml-2 text-2xl font-medium text-muted-foreground">
-            days
-          </span>
+          <span className="ml-2 text-2xl font-medium text-muted-foreground">days</span>
         </p>
 
-        <StreakCalendar
-          streak={streak}
-          view="week"
-          startOfWeek={1}
-          className="max-w-none"
-        />
+        <StreakCalendar streak={streak} view="week" startOfWeek={1} className="max-w-none" />
 
         <div
           className="mt-4 grid grid-cols-2 gap-4 border-t border-dashed pt-4"
@@ -125,7 +107,7 @@ const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
               <IconChevronDown
                 className={cn(
                   "size-5 text-muted-foreground transition-transform",
-                  isHowItWorksOpen && "rotate-180"
+                  isHowItWorksOpen && "rotate-180",
                 )}
                 aria-hidden="true"
               />
@@ -134,36 +116,23 @@ const StreakCard = React.forwardRef<HTMLDivElement, StreakCardProps>(
             {isHowItWorksOpen && (
               <div id={howItWorksContentId} className="space-y-4 px-2 pt-4">
                 {howItWorksItems.map((item, index) => {
-                  const Icon =
-                    index === 0
-                      ? IconCheck
-                      : index === 1
-                        ? IconFlame
-                        : IconRefresh
+                  const Icon = index === 0 ? IconCheck : index === 1 ? IconFlame : IconRefresh;
                   return (
-                    <div
-                      key={`${item}-${index}`}
-                      className="flex items-start gap-3"
-                    >
-                      <Icon
-                        className="mt-0.5 size-5 shrink-0 text-primary"
-                        aria-hidden="true"
-                      />
-                      <p className="text-lg leading-snug text-muted-foreground">
-                        {item}
-                      </p>
+                    <div key={`${item}-${index}`} className="flex items-start gap-3">
+                      <Icon className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
+                      <p className="text-lg leading-snug text-muted-foreground">{item}</p>
                     </div>
-                  )
+                  );
                 })}
               </div>
             )}
           </div>
         )}
       </section>
-    )
-  }
-)
-StreakCard.displayName = "StreakCard"
+    );
+  },
+);
+StreakCard.displayName = "StreakCard";
 
-export { StreakCard }
-export type { StreakCardProps }
+export type { StreakCardProps };
+export { StreakCard };

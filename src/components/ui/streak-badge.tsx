@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { IconFlame } from "@tabler/icons-react"
+import { IconFlame } from "@tabler/icons-react";
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
 
 // Types (inlined - only fields used by this component)
 interface StreakResponse {
-  length: number
-  frequency: "daily" | "weekly" | "monthly"
+  length: number;
+  frequency: "daily" | "weekly" | "monthly";
 }
 
 // Variants
@@ -26,63 +26,58 @@ const streakBadgeVariants = cva(
     defaultVariants: {
       size: "default",
     },
-  }
-)
+  },
+);
 
 // Props
 interface StreakBadgeProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof streakBadgeVariants> {
   /** Streak length value */
-  length?: number
+  length?: number;
   /** Streak frequency used for label rendering */
-  frequency?: StreakResponse["frequency"]
+  frequency?: StreakResponse["frequency"];
   /** Optional subtitle shown below streak length */
-  subtitle?: string
+  subtitle?: string;
   /** Custom icon to replace flame */
-  icon?: React.ReactNode
+  icon?: React.ReactNode;
 }
 
 const StreakBadge = React.forwardRef<HTMLDivElement, StreakBadgeProps>(
-  (
-    { className, size, length, frequency = "daily", subtitle, icon, ...props },
-    ref
-  ) => {
-    const streakLength = length ?? 0
+  ({ className, size, length, frequency = "daily", subtitle, icon, ...props }, ref) => {
+    const streakLength = length ?? 0;
 
     const frequencyLabel = {
       daily: "day",
       weekly: "week",
       monthly: "month",
-    }[frequency]
+    }[frequency];
 
-    const pluralLabel =
-      streakLength === 1 ? frequencyLabel : `${frequencyLabel}s`
+    const pluralLabel = streakLength === 1 ? frequencyLabel : `${frequencyLabel}s`;
 
     const iconSize = {
       sm: "h-10 w-10",
       default: "h-16 w-16",
       lg: "h-20 w-20",
-    }[size ?? "default"]
+    }[size ?? "default"];
 
     const valueSize = {
       sm: "text-2xl",
       default: "text-5xl",
       lg: "text-6xl",
-    }[size ?? "default"]
+    }[size ?? "default"];
 
     const subtitleSize = {
       sm: "text-xs",
       default: "text-sm",
       lg: "text-base",
-    }[size ?? "default"]
+    }[size ?? "default"];
 
-    const subtitleText = subtitle ?? "streak"
-    const valueUnit = pluralLabel
+    const subtitleText = subtitle ?? "streak";
+    const valueUnit = pluralLabel;
 
     // Build accessible label
-    const ariaLabel = `${streakLength} ${pluralLabel} streak`
+    const ariaLabel = `${streakLength} ${pluralLabel} streak`;
 
     return (
       <div
@@ -92,32 +87,19 @@ const StreakBadge = React.forwardRef<HTMLDivElement, StreakBadgeProps>(
         className={cn(streakBadgeVariants({ size }), className)}
         {...props}
       >
-        {icon ?? (
-          <IconFlame
-            className={cn(iconSize, "text-primary shrink-0")}
-            aria-hidden="true"
-          />
-        )}
-        <span
-          className={cn("font-semibold tracking-tight", valueSize)}
-          aria-hidden="true"
-        >
+        {icon ?? <IconFlame className={cn(iconSize, "text-primary shrink-0")} aria-hidden="true" />}
+        <span className={cn("font-semibold tracking-tight", valueSize)} aria-hidden="true">
           {streakLength}
-          <span className="text-muted-foreground ml-2 font-medium">
-            {valueUnit}
-          </span>
+          <span className="text-muted-foreground ml-2 font-medium">{valueUnit}</span>
         </span>
-        <span
-          className={cn("text-muted-foreground font-normal", subtitleSize)}
-          aria-hidden="true"
-        >
+        <span className={cn("text-muted-foreground font-normal", subtitleSize)} aria-hidden="true">
           {subtitleText}
         </span>
       </div>
-    )
-  }
-)
-StreakBadge.displayName = "StreakBadge"
+    );
+  },
+);
+StreakBadge.displayName = "StreakBadge";
 
-export { StreakBadge, streakBadgeVariants }
-export type { StreakBadgeProps, StreakResponse }
+export type { StreakBadgeProps, StreakResponse };
+export { StreakBadge, streakBadgeVariants };

@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { IconArrowLeft } from "@tabler/icons-react";
-
-import { cn } from "~/lib/utils"
-import { Button } from "~/components/ui/button"
+import Link from "next/link";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 
 /**
  * Standardized "back to typing" link used across secondary pages.
@@ -14,7 +13,7 @@ function BackToTyping({ className }: { className?: string }) {
         <IconArrowLeft className="size-3" /> back to typing
       </Link>
     </Button>
-  )
+  );
 }
 
-export { BackToTyping }
+export { BackToTyping };

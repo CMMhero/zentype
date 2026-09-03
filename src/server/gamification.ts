@@ -1,13 +1,10 @@
 "use server";
 
-import { getSupabaseServerClient, getSupabasePublicClient } from "~/lib/supabase/server";
-import {
-  ACHIEVEMENTS,
-  type AchievementCheckInput,
-} from "~/lib/achievements";
-import { calculateTestXP, levelFromXP, xpProgress } from "~/lib/xp";
+import { ACHIEVEMENTS, type AchievementCheckInput } from "~/lib/achievements";
+import { cacheDel, cacheGet, cacheSet } from "~/lib/cache";
+import { getSupabasePublicClient, getSupabaseServerClient } from "~/lib/supabase/server";
 import type { TestResult } from "~/lib/types";
-import { cacheGet, cacheSet, cacheDel } from "~/lib/cache";
+import { calculateTestXP, levelFromXP, xpProgress } from "~/lib/xp";
 
 async function requireUser() {
   const supabase = await getSupabaseServerClient();
@@ -44,9 +41,7 @@ export async function getUserPoints(): Promise<{
 }
 
 /** Get user's points by username (for public profiles) */
-export async function getUserPointsByUsername(
-  username: string,
-): Promise<{
+export async function getUserPointsByUsername(username: string): Promise<{
   totalXP: number;
   level: number;
   progress: number;
@@ -72,7 +67,11 @@ export async function getUserPointsByUsername(
   if (!rpcErr && rpcData) {
     result =
       rpcData.length > 0
-        ? { totalXP: rpcData[0].total_xp, level: rpcData[0].level, progress: xpProgress(rpcData[0].total_xp) }
+        ? {
+            totalXP: rpcData[0].total_xp,
+            level: rpcData[0].level,
+            progress: xpProgress(rpcData[0].total_xp),
+          }
         : { totalXP: 0, level: 1, progress: 0 }; // RPC succeeded but no points row yet
   } else {
     console.error(
@@ -123,9 +122,7 @@ export async function getUserAchievements(): Promise<
     .select("achievement_id,unlocked_at,progress")
     .eq("user_id", ctx.user.id);
 
-  const unlockedMap = new Map(
-    (unlocked ?? []).map((r) => [r.achievement_id, r])
-  );
+  const unlockedMap = new Map((unlocked ?? []).map((r) => [r.achievement_id, r]));
 
   // Fetch stats for progress calculation
   const stats = await buildAchievementStats(ctx.user.id, ctx.supabase);
@@ -144,7 +141,8 @@ export async function getUserAchievements(): Promise<
       };
     }
     const raw = a.check(stats);
-    const progress = typeof raw === "number" ? Math.min(100, Math.max(0, Math.round(raw))) : raw ? 100 : 0;
+    const progress =
+      typeof raw === "number" ? Math.min(100, Math.max(0, Math.round(raw))) : raw ? 100 : 0;
     return {
       id: a.id,
       name: a.name,
@@ -158,9 +156,7 @@ export async function getUserAchievements(): Promise<
 }
 
 /** Get achievements for a user by username (public — no auth required) */
-export async function getUserAchievementsByUsername(
-  username: string,
-): Promise<
+export async function getUserAchievementsByUsername(username: string): Promise<
   Array<{
     id: string;
     name: string;
@@ -174,8 +170,13 @@ export async function getUserAchievementsByUsername(
   const supabase = getSupabasePublicClient();
   if (!supabase) {
     return ACHIEVEMENTS.map((a) => ({
-      id: a.id, name: a.name, description: a.description,
-      trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
+      id: a.id,
+      name: a.name,
+      description: a.description,
+      trigger: a.trigger,
+      achievedAt: null,
+      progress: 0,
+      xp: a.xp,
     }));
   }
   // Look up user_id from username
@@ -186,25 +187,39 @@ export async function getUserAchievementsByUsername(
     .maybeSingle();
   if (!profile) {
     return ACHIEVEMENTS.map((a) => ({
-      id: a.id, name: a.name, description: a.description,
-      trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
+      id: a.id,
+      name: a.name,
+      description: a.description,
+      trigger: a.trigger,
+      achievedAt: null,
+      progress: 0,
+      xp: a.xp,
     }));
   }
   // Cache 30s — public profile views hit this on every visit
   const cacheKey = `pub-ach:${username.toLowerCase()}`;
-  const cached = await cacheGet<
-    Array<{
-      id: string; name: string; description: string; trigger: "metric" | "streak" | "api";
-      achievedAt: string | null; progress: number; xp: number;
-    }>
-  >(cacheKey);
+  const cached =
+    await cacheGet<
+      Array<{
+        id: string;
+        name: string;
+        description: string;
+        trigger: "metric" | "streak" | "api";
+        achievedAt: string | null;
+        progress: number;
+        xp: number;
+      }>
+    >(cacheKey);
   if (cached) return cached;
   // Try RPC first (bypasses RLS)
-  const { data: rpcData, error: rpcErr } = await supabase.rpc(
-    "get_user_achievements_by_id",
-    { p_user_id: profile.id },
-  );
-  let unlockedRows: Array<{ achievement_id: string; unlocked_at: string | null; progress: number }> = [];
+  const { data: rpcData, error: rpcErr } = await supabase.rpc("get_user_achievements_by_id", {
+    p_user_id: profile.id,
+  });
+  let unlockedRows: Array<{
+    achievement_id: string;
+    unlocked_at: string | null;
+    progress: number;
+  }> = [];
   if (!rpcErr && rpcData) {
     unlockedRows = rpcData;
   } else {
@@ -224,13 +239,23 @@ export async function getUserAchievementsByUsername(
     const u = unlockedMap.get(a.id);
     if (u) {
       return {
-        id: a.id, name: a.name, description: a.description,
-        trigger: a.trigger, achievedAt: u.unlocked_at, progress: 100, xp: a.xp,
+        id: a.id,
+        name: a.name,
+        description: a.description,
+        trigger: a.trigger,
+        achievedAt: u.unlocked_at,
+        progress: 100,
+        xp: a.xp,
       };
     }
     return {
-      id: a.id, name: a.name, description: a.description,
-      trigger: a.trigger, achievedAt: null, progress: 0, xp: a.xp,
+      id: a.id,
+      name: a.name,
+      description: a.description,
+      trigger: a.trigger,
+      achievedAt: null,
+      progress: 0,
+      xp: a.xp,
     };
   });
   await cacheSet(cacheKey, result, 30);
@@ -244,7 +269,13 @@ export async function getPointEvents(limit = 50): Promise<
     awarded: number;
     total: number;
     date: string;
-    trigger: { id: string; type: string; points: number; achievementName?: string | null; metricName?: string | null };
+    trigger: {
+      id: string;
+      type: string;
+      points: number;
+      achievementName?: string | null;
+      metricName?: string | null;
+    };
   }>
 > {
   const ctx = await requireUser();
@@ -265,16 +296,14 @@ export async function getPointEvents(limit = 50): Promise<
       id: e.id,
       type: e.event_type,
       points: e.awarded,
-      achievementName: e.event_data?.["achievement_id"] as string | null ?? null,
-      metricName: e.event_data?.["metric_name"] as string | null ?? null,
+      achievementName: (e.event_data?.["achievement_id"] as string | null) ?? null,
+      metricName: (e.event_data?.["metric_name"] as string | null) ?? null,
     },
   }));
 }
 
 /** After a test is saved, check achievements and award XP. Returns newly unlocked achievements. */
-export async function processTestResult(
-  result: TestResult,
-): Promise<{
+export async function processTestResult(result: TestResult): Promise<{
   xpEarned: number;
   newAchievements: Array<{ id: string; name: string; description: string; xp: number }>;
 }> {
@@ -294,19 +323,21 @@ export async function processTestResult(
     .maybeSingle();
   const currentXP = existing?.total_xp ?? 0;
 
-  await ctx.supabase.rpc("record_point_event", {
-    p_user_id: ctx.user.id,
-    p_awarded: xpEarned,
-    p_total: currentXP + xpEarned,
-    p_event_type: "test",
-    p_event_data: JSON.stringify({
-      metric_name: "test completed",
-      wpm: result.wpm,
-      accuracy: result.accuracy,
-    }),
-  }).then(({ error }) => {
-    if (error) console.error("[zentype] record_point_event failed:", error.message);
-  });
+  await ctx.supabase
+    .rpc("record_point_event", {
+      p_user_id: ctx.user.id,
+      p_awarded: xpEarned,
+      p_total: currentXP + xpEarned,
+      p_event_type: "test",
+      p_event_data: JSON.stringify({
+        metric_name: "test completed",
+        wpm: result.wpm,
+        accuracy: result.accuracy,
+      }),
+    })
+    .then(({ error }) => {
+      if (error) console.error("[zentype] record_point_event failed:", error.message);
+    });
 
   // Check achievements -- batch-fetch already-unlocked in one query
   const { data: existingRows } = await ctx.supabase
@@ -324,13 +355,15 @@ export async function processTestResult(
     if (!unlocked) continue;
 
     // Unlock achievement
-    await ctx.supabase.rpc("unlock_achievement", {
-      p_user_id: ctx.user.id,
-      p_achievement_id: a.id,
-      p_xp: a.xp,
-    }).then(({ error }) => {
-      if (error) console.error("[zentype] unlock_achievement failed:", error.message);
-    });
+    await ctx.supabase
+      .rpc("unlock_achievement", {
+        p_user_id: ctx.user.id,
+        p_achievement_id: a.id,
+        p_xp: a.xp,
+      })
+      .then(({ error }) => {
+        if (error) console.error("[zentype] unlock_achievement failed:", error.message);
+      });
 
     newAchievements.push({ id: a.id, name: a.name, description: a.description, xp: a.xp });
   }
@@ -360,8 +393,7 @@ async function buildAchievementStats(
 
   // Select only columns needed for achievement checks — omitting timeline
   // (large JSON) and source which aren't used in progress calculations.
-  const ACH_STATS_COLUMNS =
-    "id,created_at,mode,variant,wpm,raw_wpm,accuracy,consistency,chars";
+  const ACH_STATS_COLUMNS = "id,created_at,mode,variant,wpm,raw_wpm,accuracy,consistency,chars";
 
   const { data: rows } = await supabase
     .from("test_results")
@@ -377,13 +409,22 @@ async function buildAchievementStats(
   ]);
   const level = pointsRow?.total_xp != null ? levelFromXP(pointsRow.total_xp as number) : 1;
   const accountAgeDays = profileRow?.created_at
-    ? Math.max(0, Math.floor((Date.now() - new Date(profileRow.created_at as string).getTime()) / 86400000))
+    ? Math.max(
+        0,
+        Math.floor((Date.now() - new Date(profileRow.created_at as string).getTime()) / 86400000),
+      )
     : 0;
 
-  const results = (rows as Array<{
-    created_at: string; mode: string; variant: number; wpm: number;
-    accuracy: number; consistency: number; chars?: { correct?: number; incorrect?: number; extra?: number };
-  }> | null) ?? [];
+  const results =
+    (rows as Array<{
+      created_at: string;
+      mode: string;
+      variant: number;
+      wpm: number;
+      accuracy: number;
+      consistency: number;
+      chars?: { correct?: number; incorrect?: number; extra?: number };
+    }> | null) ?? [];
   if (results.length === 0) {
     return {
       testsCompleted: 0,
@@ -472,17 +513,27 @@ async function buildAchievementStats(
   const d = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   while (true) {
     const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-    if (daySet.has(key)) { currentStreak++; d.setDate(d.getDate() - 1); } else break;
+    if (daySet.has(key)) {
+      currentStreak++;
+      d.setDate(d.getDate() - 1);
+    } else break;
   }
   let longestStreak = currentStreak;
   let run = 0;
   const sortedDays = Array.from(daySet).sort();
   for (let i = 0; i < sortedDays.length; i++) {
-    if (i === 0) { run = 1; continue; }
+    if (i === 0) {
+      run = 1;
+      continue;
+    }
     const prev = new Date(sortedDays[i - 1]);
     const cur = new Date(sortedDays[i]);
     const diff = (cur.getTime() - prev.getTime()) / 86400000;
-    if (Math.abs(diff - 1) < 0.5) { run++; } else { run = 1; }
+    if (Math.abs(diff - 1) < 0.5) {
+      run++;
+    } else {
+      run = 1;
+    }
     if (run > longestStreak) longestStreak = run;
   }
 

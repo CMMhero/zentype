@@ -18,9 +18,7 @@ export default function NotFound() {
 
         {/* Text content */}
         <div className="flex flex-col items-center gap-2">
-          <h1 className="text-xl font-semibold tracking-tight">
-            page not found
-          </h1>
+          <h1 className="text-xl font-semibold tracking-tight">page not found</h1>
           <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
             looks like this page doesn&apos;t exist. maybe it moved, or maybe it was never here.
           </p>

@@ -1,5 +1,5 @@
-import { lcGetEntry, lcSet, lcDel, lcDelPrefix } from "./client-cache";
 import type { AggregatedStats, PublicProfile } from "~/server/results";
+import { lcDel, lcDelPrefix, lcGetEntry, lcSet } from "./client-cache";
 import type { TestResult } from "./types";
 
 /** Cache entries younger than this are considered fresh — skip refetching. */

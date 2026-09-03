@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { IconDevices, IconMoon, IconSearch, IconSun } from "@tabler/icons-react";
 import Fuse from "fuse.js";
-import { Input } from "~/components/ui/input";
+import { useMemo, useState } from "react";
 import { Button } from "~/components/ui/button";
-import { PillGroup, PillButton } from "~/components/ui/pill-toggle";
-import { IconSearch, IconSun, IconMoon, IconDevices } from "@tabler/icons-react";
+import { Input } from "~/components/ui/input";
+import { PillButton, PillGroup } from "~/components/ui/pill-toggle";
 import type { ThemePalette } from "~/lib/themes";
 import { cn } from "~/lib/utils";
 
@@ -21,13 +21,20 @@ export function ThemePicker({ themes, selectedId, onSelect }: ThemePickerProps) 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
 
-  const sorted = useMemo(() => [...themes].sort((a, b) => a.label.localeCompare(b.label)), [themes]);
+  const sorted = useMemo(
+    () => [...themes].sort((a, b) => a.label.localeCompare(b.label)),
+    [themes],
+  );
 
-  const fuse = useMemo(() => new Fuse(sorted, {
-    keys: ["label"],
-    threshold: 0.4,
-    ignoreLocation: true,
-  }), [sorted]);
+  const fuse = useMemo(
+    () =>
+      new Fuse(sorted, {
+        keys: ["label"],
+        threshold: 0.4,
+        ignoreLocation: true,
+      }),
+    [sorted],
+  );
 
   const filtered = useMemo(() => {
     let list = sorted;
@@ -74,7 +81,7 @@ export function ThemePicker({ themes, selectedId, onSelect }: ThemePickerProps) 
             onClick={() => onSelect(t.id)}
             className={cn(
               "h-auto w-full min-w-0 justify-start gap-2 rounded-2xl bg-transparent p-2 text-left font-medium shadow-none hover:bg-transparent",
-              selectedId === t.id ? "border-primary ring-ring/40 ring-1" : "hover:border-primary"
+              selectedId === t.id ? "border-primary ring-ring/40 ring-1" : "hover:border-primary",
             )}
           >
             <span className="flex shrink-0 overflow-hidden rounded-sm border border-black/20">

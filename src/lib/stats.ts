@@ -50,8 +50,10 @@ export function charBreakdown(
   const target = words[history.length] ?? "";
   const n = Math.min(current.length, target.length);
   for (let c = 0; c < n; c++) {
-    if (current[c] === target[c]) { correct++; correctInCurrentWord++; }
-    else incorrect++;
+    if (current[c] === target[c]) {
+      correct++;
+      correctInCurrentWord++;
+    } else incorrect++;
   }
   if (current.length > target.length) extra += current.length - target.length;
 
@@ -76,11 +78,9 @@ export function consistency(samples: readonly number[]): number {
   if (samples.length < 2) return 100;
   const mean = samples.reduce((a, b) => a + b, 0) / samples.length;
   if (mean <= 0) return 100;
-  const variance =
-    samples.reduce((a, b) => a + (b - mean) ** 2, 0) / samples.length;
+  const variance = samples.reduce((a, b) => a + (b - mean) ** 2, 0) / samples.length;
   const cv = Math.sqrt(variance) / mean;
-  const kogasa =
-    100 * (1 - Math.tanh(cv + cv ** 3 / 3 + cv ** 5 / 5));
+  const kogasa = 100 * (1 - Math.tanh(cv + cv ** 3 / 3 + cv ** 5 / 5));
   return clampRound(kogasa);
 }
 
@@ -118,10 +118,8 @@ export function isPlausible(result: {
   timeline: TimelinePoint[];
   chars?: { correct: number; incorrect: number; extra: number; missed: number };
 }): boolean {
-  if (!Number.isFinite(result.wpm) || result.wpm < 0 || result.wpm > 400)
-    return false;
-  if (!Number.isFinite(result.rawWpm) || result.rawWpm < 0 || result.rawWpm > 450)
-    return false;
+  if (!Number.isFinite(result.wpm) || result.wpm < 0 || result.wpm > 400) return false;
+  if (!Number.isFinite(result.rawWpm) || result.rawWpm < 0 || result.rawWpm > 450) return false;
   if (!Number.isFinite(result.accuracy) || result.accuracy < 0 || result.accuracy > 100)
     return false;
   const minSeconds = result.mode === "time" ? Math.min(result.variant, 10) : 3;

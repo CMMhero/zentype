@@ -6,10 +6,7 @@ const ROWS = [
   ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"],
 ];
 
-const ALL_KEYS = new Set([
-  ...ROWS.flat(),
-  " ",
-]);
+const ALL_KEYS = new Set([...ROWS.flat(), " "]);
 
 const ACTIVE_CLASSES = ["bg-primary", "text-primary-foreground", "ring-primary"];
 const INACTIVE_CLASSES = ["bg-card", "text-muted-foreground", "ring-foreground/5"];
@@ -32,7 +29,7 @@ function deactivateEl(el: HTMLElement | null) {
 function clearAllKeys(container: HTMLDivElement | null, active: Set<string>) {
   if (!container || active.size === 0) return;
   for (const key of active) {
-    const sel = key === " " ? "[data-key=\"space\"]" : `[data-key="${key}"]`;
+    const sel = key === " " ? '[data-key="space"]' : `[data-key="${key}"]`;
     deactivateEl(container.querySelector<HTMLElement>(sel));
   }
   active.clear();
@@ -51,7 +48,7 @@ export function VirtualKeyboard() {
       if (!ALL_KEYS.has(key)) return;
       if (active.has(key)) return;
       active.add(key);
-      const sel = key === " " ? "[data-key=\"space\"]" : `[data-key="${key}"]`;
+      const sel = key === " " ? '[data-key="space"]' : `[data-key="${key}"]`;
       activateEl(container?.querySelector<HTMLElement>(sel) ?? null);
     };
 
@@ -59,7 +56,7 @@ export function VirtualKeyboard() {
       const key = e.key === " " ? " " : e.key.toLowerCase();
       if (!active.has(key)) return;
       active.delete(key);
-      const sel = key === " " ? "[data-key=\"space\"]" : `[data-key="${key}"]`;
+      const sel = key === " " ? '[data-key="space"]' : `[data-key="${key}"]`;
       deactivateEl(container?.querySelector<HTMLElement>(sel) ?? null);
     };
 

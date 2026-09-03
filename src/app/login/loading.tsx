@@ -1,5 +1,10 @@
+import {
+  IconBrandDiscordFilled,
+  IconBrandGithubFilled,
+  IconBrandGoogleFilled,
+  IconKeyboardFilled,
+} from "@tabler/icons-react";
 import { BackToTyping } from "~/components/ui/back-to-typing";
-import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconKeyboardFilled } from "@tabler/icons-react";
 import { Button } from "~/components/ui/button";
 
 const providers = [
@@ -28,7 +33,8 @@ export default function LoginLoading() {
               </h1>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              keep your stats across devices.<br />
+              keep your stats across devices.
+              <br />
               sign in to sync, or keep playing as a guest.
             </p>
           </div>

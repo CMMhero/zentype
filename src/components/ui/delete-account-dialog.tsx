@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import {
-  AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
-  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { deleteAccount } from "~/server/results";
 import { useAuth } from "~/components/user-provider";
+import { deleteAccount } from "~/server/results";
 import { useResultsStore } from "~/stores/results-store";
 
 const CONFIRM_PHRASE = "yes, delete my account";
@@ -55,14 +60,18 @@ export function DeleteAccountDialog({
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={(v) => { if (!deleting) onOpenChange(v); }}>
+    <AlertDialog
+      open={open}
+      onOpenChange={(v) => {
+        if (!deleting) onOpenChange(v);
+      }}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>delete my account?</AlertDialogTitle>
           <AlertDialogDescription>
-            this permanently deletes your profile, all test results, xp,
-            achievements, and settings. this cannot be undone. if you want to
-            keep your data, export json first.
+            this permanently deletes your profile, all test results, xp, achievements, and settings.
+            this cannot be undone. if you want to keep your data, export json first.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="space-y-2">
@@ -81,11 +90,7 @@ export function DeleteAccountDialog({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={deleting}>cancel</AlertDialogCancel>
-          <Button
-            variant="destructive"
-            disabled={!confirmed || deleting}
-            onClick={handleDelete}
-          >
+          <Button variant="destructive" disabled={!confirmed || deleting} onClick={handleDelete}>
             {deleting ? "deleting…" : "delete my account"}
           </Button>
         </AlertDialogFooter>
