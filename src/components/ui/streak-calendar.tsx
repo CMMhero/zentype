@@ -201,7 +201,9 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
     const gitColumnCount = Math.ceil(gitCells.length / 7)
     const cellSize = compact ? "0.75rem" : "0.75rem"
     const gitGridTemplateColumns = `repeat(${gitColumnCount}, ${cellSize})`
-    const cellClass = compact ? "h-[0.75rem] w-[0.75rem] rounded-[0.2rem] border-[0.5px]" : "h-3 w-3 rounded-[0.3rem] border"
+    // Contribution cells are styled like the theme swatch chips (footer theme
+    // selector): size-3 tiles with a hairline border and subtle rounding.
+    const cellClass = "size-3 rounded-sm border"
     const gitMonthLabels: Array<{ column: number; label: string }> = []
     const seenGitMonths = new Set<string>()
 
@@ -462,10 +464,10 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                       })
                       const intensityClass =
                         usedFreeze ? "border-[var(--freeze-color)] bg-[var(--freeze-color)]"
-                        : count >= 4 ? "bg-primary border-primary"
-                        : count >= 2 ? "bg-primary/70 border-primary/70"
-                        : count === 1 ? "bg-primary/40 border-primary/40"
-                        : isActive ? "bg-primary/30 border-primary/30"
+                        : count >= 4 ? "bg-primary"
+                        : count >= 2 ? "bg-primary/70"
+                        : count === 1 ? "bg-primary/40"
+                        : isActive ? "bg-primary/30"
                         : "bg-muted/40"
                       const tooltipText =
                         count === 0 ? `No tests on ${dateLabel}`
@@ -481,7 +483,7 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
                               aria-label={`${tooltipText}, ${usedFreeze ? "freeze used" : isActive ? "streak active" : "no activity"}`}
                               onClick={() => onDayClick?.(date, isActive)}
                               className={cn(
-                                "border-border/40 transition-colors",
+                                "border-border/50 transition-colors",
                                 cellClass,
                                 "hover:ring-ring hover:ring-1",
                                 isToday && "!bg-primary-foreground !text-primary border-primary",
@@ -508,10 +510,10 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
               aria-hidden
             >
               <span className="mr-1">less</span>
-              <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-muted/40")} />
-              <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary/40 border-primary/40")} />
-              <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary/70 border-primary/70")} />
-              <span className={cn("border-border/40 rounded-[2px] border", compact ? "size-[0.55rem]" : "size-3", "bg-primary border-primary")} />
+              <span className="size-3 rounded-sm border border-border/50 bg-muted/40" />
+              <span className="size-3 rounded-sm border border-border/50 bg-primary/40" />
+              <span className="size-3 rounded-sm border border-border/50 bg-primary/70" />
+              <span className="size-3 rounded-sm border border-border/50 bg-primary" />
               <span className="ml-1">more</span>
             </div>
           </>
@@ -582,7 +584,7 @@ function StreakCalendarSkeleton() {
             ) : (
               <Skeleton
                 key={i}
-                className="size-3 rounded-[0.2rem] border-[0.5px] border-border/40"
+                className="size-3 rounded-sm border border-border/50"
               />
             )
           )}
@@ -590,10 +592,10 @@ function StreakCalendarSkeleton() {
         {/* Legend is static chrome — render it as-is (same markup as the real view) */}
         <div className="text-muted-foreground mt-2 flex items-center justify-start gap-1.5 text-[9px]">
           <span className="mr-1">less</span>
-          <span className="border-border/40 size-[0.55rem] rounded-[2px] border bg-muted/40" />
-          <span className="border-border/40 size-[0.55rem] rounded-[2px] border bg-primary/40" />
-          <span className="border-border/40 size-[0.55rem] rounded-[2px] border bg-primary/70" />
-          <span className="border-border/40 size-[0.55rem] rounded-[2px] border bg-primary" />
+          <span className="size-3 rounded-sm border border-border/50 bg-muted/40" />
+          <span className="size-3 rounded-sm border border-border/50 bg-primary/40" />
+          <span className="size-3 rounded-sm border border-border/50 bg-primary/70" />
+          <span className="size-3 rounded-sm border border-border/50 bg-primary" />
           <span className="ml-1">more</span>
         </div>
       </div>
