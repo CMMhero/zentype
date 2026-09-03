@@ -660,6 +660,7 @@ export function CommandPalette() {
               value="actions sign out log out logout"
               keywords={["actions", "sign", "out", "logout"]}
               onSelect={handleSignOut}
+              className="text-destructive focus:text-destructive"
             >
               <IconLogout /> sign out<CommandDesc>log out of your account</CommandDesc>
             </CommandItem>
