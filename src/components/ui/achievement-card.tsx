@@ -1,32 +1,31 @@
-"use client"
+"use client";
 
-import * as React from "react"
-
-import { cn } from "~/lib/utils"
-import { AchievementBadge } from "~/components/ui/achievement-badge"
-import { AchievementList } from "~/components/ui/achievement-list"
-import { Button } from "~/components/ui/button"
+import * as React from "react";
+import { AchievementBadge } from "~/components/ui/achievement-badge";
+import { AchievementList } from "~/components/ui/achievement-list";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 
 interface Achievement {
-  id: string
-  name: string
-  description?: string | null
-  trigger: "metric" | "api" | "streak"
-  badgeUrl?: string | null
-  progress?: number
-  rarity?: number
+  id: string;
+  name: string;
+  description?: string | null;
+  trigger: "metric" | "api" | "streak";
+  badgeUrl?: string | null;
+  progress?: number;
+  rarity?: number;
 }
 
 interface UserAchievement extends Achievement {
-  achievedAt: string | null
+  achievedAt: string | null;
 }
 
 interface AchievementCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  achievements: UserAchievement[]
-  highlightedAchievements: UserAchievement[]
-  badgeSize?: "sm" | "default" | "lg"
-  lockedStyle?: "grayscale" | "silhouette" | "hidden"
-  onAchievementClick?: (achievement: UserAchievement) => void
+  achievements: UserAchievement[];
+  highlightedAchievements: UserAchievement[];
+  badgeSize?: "sm" | "default" | "lg";
+  lockedStyle?: "grayscale" | "silhouette" | "hidden";
+  onAchievementClick?: (achievement: UserAchievement) => void;
 }
 
 const AchievementCard = React.forwardRef<HTMLDivElement, AchievementCardProps>(
@@ -40,25 +39,22 @@ const AchievementCard = React.forwardRef<HTMLDivElement, AchievementCardProps>(
       onAchievementClick,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const unlockedCount = achievements.filter(
-      (a) => a.achievedAt !== null
-    ).length
+    const unlockedCount = achievements.filter((a) => a.achievedAt !== null).length;
 
     return (
       <div
         ref={ref}
-        className={cn("rounded-4xl bg-card p-6 shadow-sm ring-1 ring-foreground/5 dark:ring-foreground/10", className)}
+        className={cn(
+          "rounded-4xl bg-card p-6 shadow-sm ring-1 ring-foreground/5 dark:ring-foreground/10",
+          className,
+        )}
         {...props}
       >
         <div className="text-center">
-          <p className="text-7xl font-bold tracking-tight sm:text-8xl">
-            {unlockedCount}
-          </p>
-          <p className="mt-1 text-sm font-medium text-muted-foreground">
-            Badges Unlocked
-          </p>
+          <p className="text-7xl font-bold tracking-tight sm:text-8xl">{unlockedCount}</p>
+          <p className="mt-1 text-sm font-medium text-muted-foreground">Badges Unlocked</p>
         </div>
 
         <div className="mt-10 flex items-end justify-center gap-4">
@@ -70,7 +66,7 @@ const AchievementCard = React.forwardRef<HTMLDivElement, AchievementCardProps>(
               onAchievementClick={onAchievementClick}
               className={cn(
                 "w-28 border-0 bg-transparent p-0 shadow-none hover:shadow-none",
-                index === 1 ? "-translate-y-2" : "translate-y-1"
+                index === 1 ? "-translate-y-2" : "translate-y-1",
               )}
             />
           ))}
@@ -78,9 +74,7 @@ const AchievementCard = React.forwardRef<HTMLDivElement, AchievementCardProps>(
 
         <div className="mt-10">
           <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-sm font-medium text-primary">
-              All Achievements
-            </h3>
+            <h3 className="text-sm font-medium text-primary">All Achievements</h3>
             <Button variant="link" size="sm" onClick={() => {}}>
               See all
             </Button>
@@ -93,10 +87,10 @@ const AchievementCard = React.forwardRef<HTMLDivElement, AchievementCardProps>(
           />
         </div>
       </div>
-    )
-  }
-)
-AchievementCard.displayName = "AchievementCard"
+    );
+  },
+);
+AchievementCard.displayName = "AchievementCard";
 
-export { AchievementCard }
-export type { AchievementCardProps, Achievement, UserAchievement }
+export type { Achievement, AchievementCardProps, UserAchievement };
+export { AchievementCard };

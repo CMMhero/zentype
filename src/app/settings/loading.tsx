@@ -1,11 +1,17 @@
-import { Button } from "~/components/ui/button";
-import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import {
-  IconDeviceGamepad2, IconKeyboard, IconPlayerPlay, IconRefresh,
-  IconPalette, IconSettingsFilled, IconUser, IconVolume,
+  IconDeviceGamepad2,
+  IconKeyboard,
+  IconPalette,
+  IconPlayerPlay,
+  IconRefresh,
+  IconSettingsFilled,
+  IconUser,
+  IconVolume,
 } from "@tabler/icons-react";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { SelectSkeleton, Skeleton } from "~/components/ui/skeleton";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 /**
  * Loading placeholders for settings controls. Buttons carry only static
@@ -59,7 +65,15 @@ function ControlSkeleton({ kind }: { kind: ControlKind }) {
   }
 }
 
-function SettingRowSkeleton({ label, hint, control }: { label: string; hint?: string; control: ControlKind }) {
+function SettingRowSkeleton({
+  label,
+  hint,
+  control,
+}: {
+  label: string;
+  hint?: string;
+  control: ControlKind;
+}) {
   return (
     <div className="flex items-center justify-between gap-4 py-0.5">
       <div className="min-w-0">
@@ -75,17 +89,33 @@ const SOUND_ROWS: Array<{ label: string; hint?: string; control: ControlKind }> 
   { label: "enabled", hint: "play sounds when you type", control: "switch" },
   { label: "volume", control: "slider" },
   { label: "variant", control: "select-play" },
-  { label: "error sound", hint: "play a sound when you type an incorrect character", control: "switch" },
+  {
+    label: "error sound",
+    hint: "play a sound when you type an incorrect character",
+    control: "switch",
+  },
   { label: "error sound preview", control: "button" },
 ];
 
 const RULES_ROWS: Array<{ label: string; hint?: string; control: ControlKind }> = [
   { label: "stop on error", hint: "pause until you fix the wrong letter", control: "switch" },
   { label: "strict space", hint: "wrong words can't be skipped with space", control: "switch" },
-  { label: "free backspace", hint: "backspace at a word start restores the previous word", control: "switch" },
-  { label: "blind mode", hint: "don't show which letters are wrong while typing", control: "switch" },
+  {
+    label: "free backspace",
+    hint: "backspace at a word start restores the previous word",
+    control: "switch",
+  },
+  {
+    label: "blind mode",
+    hint: "don't show which letters are wrong while typing",
+    control: "switch",
+  },
   { label: "hide live stats", hint: "don't show wpm/accuracy during the test", control: "switch" },
-  { label: "hide progress", hint: "don't show time/word count and progress bar", control: "switch" },
+  {
+    label: "hide progress",
+    hint: "don't show time/word count and progress bar",
+    control: "switch",
+  },
 ];
 
 export default function SettingsLoading() {
@@ -110,10 +140,22 @@ export default function SettingsLoading() {
       {/* Tabs — exact same structure as real settings page */}
       <Tabs defaultValue="gameplay" className="w-full min-w-0 gap-4" aria-label="Settings tabs">
         <TabsList className="w-full sm:w-fit sm:flex-none">
-          <TabsTrigger value="gameplay" className="flex-1 gap-1.5 sm:flex-none"><IconDeviceGamepad2 className="size-4" /> <span className="hidden min-[480px]:inline">gameplay</span></TabsTrigger>
-          <TabsTrigger value="appearance" className="flex-1 gap-1.5 sm:flex-none"><IconPalette className="size-4" /> <span className="hidden min-[480px]:inline">appearance</span></TabsTrigger>
-          <TabsTrigger value="account" className="flex-1 gap-1.5 sm:flex-none"><IconUser className="size-4" /> <span className="hidden min-[480px]:inline">account</span></TabsTrigger>
-          <TabsTrigger value="keybinds" className="flex-1 gap-1.5 sm:flex-none"><IconKeyboard className="size-4" /> <span className="hidden min-[480px]:inline">keybinds</span></TabsTrigger>
+          <TabsTrigger value="gameplay" className="flex-1 gap-1.5 sm:flex-none">
+            <IconDeviceGamepad2 className="size-4" />{" "}
+            <span className="hidden min-[480px]:inline">gameplay</span>
+          </TabsTrigger>
+          <TabsTrigger value="appearance" className="flex-1 gap-1.5 sm:flex-none">
+            <IconPalette className="size-4" />{" "}
+            <span className="hidden min-[480px]:inline">appearance</span>
+          </TabsTrigger>
+          <TabsTrigger value="account" className="flex-1 gap-1.5 sm:flex-none">
+            <IconUser className="size-4" />{" "}
+            <span className="hidden min-[480px]:inline">account</span>
+          </TabsTrigger>
+          <TabsTrigger value="keybinds" className="flex-1 gap-1.5 sm:flex-none">
+            <IconKeyboard className="size-4" />{" "}
+            <span className="hidden min-[480px]:inline">keybinds</span>
+          </TabsTrigger>
         </TabsList>
 
         {/* Gameplay tab content — all text and icons rendered, only controls skeleton */}
@@ -125,7 +167,9 @@ export default function SettingsLoading() {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 px-4">
-              {SOUND_ROWS.map((row) => <SettingRowSkeleton key={row.label} {...row} />)}
+              {SOUND_ROWS.map((row) => (
+                <SettingRowSkeleton key={row.label} {...row} />
+              ))}
             </CardContent>
           </Card>
 
@@ -136,11 +180,13 @@ export default function SettingsLoading() {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-3 px-4">
-              {RULES_ROWS.map((row) => <SettingRowSkeleton key={row.label} {...row} />)}
+              {RULES_ROWS.map((row) => (
+                <SettingRowSkeleton key={row.label} {...row} />
+              ))}
             </CardContent>
           </Card>
         </div>
       </Tabs>
     </div>
   );
-}
+}

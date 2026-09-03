@@ -1,7 +1,7 @@
 "use server";
 
-import type { PromptSource } from "~/lib/types";
 import { randomWords, type WordOptions } from "~/lib/prompt-utils";
+import type { PromptSource } from "~/lib/types";
 
 const MAX_WORDS = 220;
 

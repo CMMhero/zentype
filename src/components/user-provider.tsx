@@ -46,11 +46,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     void refresh();
   }, [refresh]);
 
-  return (
-    <AuthContext.Provider value={{ user, status, refresh }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, status, refresh }}>{children}</AuthContext.Provider>;
 }
 
 /** Full auth state: user, whether the initial fetch settled, and refresh. */

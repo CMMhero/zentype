@@ -1,87 +1,64 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { IconSparkles } from "@tabler/icons-react"
+import { IconSparkles } from "@tabler/icons-react";
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
 
-const pointsBadgeVariants = cva(
-  "flex items-center gap-3 rounded-lg transition-colors",
-  {
-    variants: {
-      size: {
-        sm: "text-sm gap-2",
-        default: "",
-        lg: "text-lg gap-4",
-      },
+const pointsBadgeVariants = cva("flex items-center gap-3 rounded-lg transition-colors", {
+  variants: {
+    size: {
+      sm: "text-sm gap-2",
+      default: "",
+      lg: "text-lg gap-4",
     },
-    defaultVariants: {
-      size: "default",
-    },
-  }
-)
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
 
 interface PointsBadgeProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof pointsBadgeVariants> {
-  name: string
-  total: number
+  name: string;
+  total: number;
   /** When omitted or `null`, the default icon is shown instead of an image. */
-  badgeUrl?: string | null
-  icon?: React.ComponentType<{ className?: string }>
-  formatValue?: (value: number) => string
+  badgeUrl?: string | null;
+  icon?: React.ComponentType<{ className?: string }>;
+  formatValue?: (value: number) => string;
 }
 
 const PointsBadge = React.forwardRef<HTMLDivElement, PointsBadgeProps>(
-  (
-    {
-      className,
-      size,
-      name,
-      badgeUrl,
-      total,
-      icon: CustomIcon,
-      formatValue,
-      ...props
-    },
-    ref
-  ) => {
-    const Icon = CustomIcon ?? IconSparkles
-    const displayValue = formatValue
-      ? formatValue(total)
-      : total.toLocaleString()
+  ({ className, size, name, badgeUrl, total, icon: CustomIcon, formatValue, ...props }, ref) => {
+    const Icon = CustomIcon ?? IconSparkles;
+    const displayValue = formatValue ? formatValue(total) : total.toLocaleString();
 
     const iconSize = {
       sm: "h-4 w-4",
       default: "h-5 w-5",
       lg: "h-6 w-6",
-    }[size ?? "default"]
+    }[size ?? "default"];
 
     const badgeSize = {
       sm: "h-6 w-6",
       default: "h-8 w-8",
       lg: "h-10 w-10",
-    }[size ?? "default"]
-    const statusLabel = `${displayValue} ${name}`
+    }[size ?? "default"];
+    const statusLabel = `${displayValue} ${name}`;
 
     return (
       <div
         ref={ref}
         role="status"
         aria-label={statusLabel}
-        className={cn(
-          pointsBadgeVariants({ size }),
-          "bg-card border p-4",
-          className
-        )}
+        className={cn(pointsBadgeVariants({ size }), "bg-card border p-4", className)}
         {...props}
       >
         <div className="flex items-center gap-2">
           {badgeUrl ? (
             <div>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={badgeUrl}
                 alt=""
@@ -94,7 +71,7 @@ const PointsBadge = React.forwardRef<HTMLDivElement, PointsBadgeProps>(
               aria-hidden="true"
               className={cn(
                 "bg-primary/10 flex shrink-0 items-center justify-center rounded-full",
-                badgeSize
+                badgeSize,
               )}
             >
               <Icon className={cn(iconSize, "text-primary")} />
@@ -107,7 +84,7 @@ const PointsBadge = React.forwardRef<HTMLDivElement, PointsBadgeProps>(
                 "font-bold tabular-nums",
                 size === "lg" && "text-2xl",
                 size === "sm" && "text-base",
-                size === "default" && "text-xl"
+                size === "default" && "text-xl",
               )}
             >
               {displayValue}
@@ -119,10 +96,10 @@ const PointsBadge = React.forwardRef<HTMLDivElement, PointsBadgeProps>(
           <span className="text-muted-foreground truncate">{name}</span>
         </div>
       </div>
-    )
-  }
-)
-PointsBadge.displayName = "PointsBadge"
+    );
+  },
+);
+PointsBadge.displayName = "PointsBadge";
 
-export { PointsBadge, pointsBadgeVariants }
-export type { PointsBadgeProps }
+export type { PointsBadgeProps };
+export { PointsBadge, pointsBadgeVariants };

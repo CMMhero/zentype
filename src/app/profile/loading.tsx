@@ -1,11 +1,21 @@
-import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
-import { Button } from "~/components/ui/button";
-import { StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
-  IconAward, IconChartBar, IconClock, IconEye, IconHistory, IconLink, IconTrophy, IconUserFilled,
-  IconGauge, IconTarget, IconStopwatch, IconTrendingUp,
+  IconAward,
+  IconChartBar,
+  IconClock,
+  IconEye,
+  IconGauge,
+  IconHistory,
+  IconLink,
+  IconStopwatch,
+  IconTarget,
+  IconTrendingUp,
+  IconTrophy,
+  IconUserFilled,
 } from "@tabler/icons-react";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { SelectSkeleton, Skeleton } from "~/components/ui/skeleton";
+import { StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
 
 export default function ProfileLoading() {
   return (
@@ -17,11 +27,26 @@ export default function ProfileLoading() {
         </h1>
         {/* Header actions — static buttons, rendered as the real controls */}
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="pointer-events-none text-muted-foreground gap-2 text-xs" aria-hidden tabIndex={-1}>
-            <IconEye className="size-3.5" /> <span className="hidden sm:inline">view public profile</span><span className="sm:hidden">public</span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="pointer-events-none text-muted-foreground gap-2 text-xs"
+            aria-hidden
+            tabIndex={-1}
+          >
+            <IconEye className="size-3.5" />{" "}
+            <span className="hidden sm:inline">view public profile</span>
+            <span className="sm:hidden">public</span>
           </Button>
-          <Button variant="outline" size="sm" className="pointer-events-none text-muted-foreground gap-2 text-xs" aria-hidden tabIndex={-1}>
-            <IconLink className="size-3.5" /> <span className="hidden sm:inline">copy link</span><span className="sm:hidden">copy</span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="pointer-events-none text-muted-foreground gap-2 text-xs"
+            aria-hidden
+            tabIndex={-1}
+          >
+            <IconLink className="size-3.5" /> <span className="hidden sm:inline">copy link</span>
+            <span className="sm:hidden">copy</span>
           </Button>
         </div>
       </header>
@@ -76,9 +101,15 @@ export default function ProfileLoading() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {["15s", "30s", "60s", "120s", "10w", "25w", "50w", "100w"].map((label) => (
-              <Card key={label} size="sm" className="items-center rounded-2xl bg-muted/20 py-3 text-center">
+              <Card
+                key={label}
+                size="sm"
+                className="items-center rounded-2xl bg-muted/20 py-3 text-center"
+              >
                 <CardContent className="flex flex-col items-center gap-1 px-3">
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{label}</span>
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
+                    {label}
+                  </span>
                   <Skeleton className="h-8 w-14" />
                   <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
                 </CardContent>

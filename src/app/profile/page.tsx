@@ -1,58 +1,123 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  IconArrowRight,
+  IconAt,
+  IconAward,
+  IconChartBar,
+  IconClock,
+  IconCrown,
+  IconEye,
+  IconGauge,
+  IconHash,
+  IconHistory,
+  IconLink,
+  IconStopwatch,
+  IconTarget,
+  IconTrendingUp,
+  IconTrophy,
+  IconUserFilled,
+} from "@tabler/icons-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  IconArrowRight, IconAward, IconAt, IconChartBar, IconClock, IconCrown, IconEye, IconGauge, IconHash, IconHistory,
-  IconLink, IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
-} from "@tabler/icons-react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis } from "recharts";
 import { toast } from "sonner";
-import {
-  Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis,
-} from "recharts";
-import {
-  ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
-} from "~/components/ui/chart";
+import { AchievementGrid } from "~/components/ui/achievement-grid";
+import { AchievementList } from "~/components/ui/achievement-list";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Progress } from "~/components/ui/progress";
-import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "~/components/ui/table";
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "~/components/ui/chart";
 import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from "~/components/ui/dialog";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "~/components/ui/empty";
+import { Progress } from "~/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { SelectSkeleton, Skeleton } from "~/components/ui/skeleton";
+import { StreakCalendar, StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { StreakCalendar, StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
-import { AchievementGrid } from "~/components/ui/achievement-grid";
-import { AchievementList } from "~/components/ui/achievement-list";
-import dynamic from "next/dynamic";
-const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-40 sm:h-56 w-full" /> });
-import { getMyJoinDate, getResultById, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
-import { getUserPoints, getUserAchievements } from "~/server/gamification";
-import { getBoardRanks } from "~/server/leaderboard";
-import { lcGet, lcSet, lcDel, lcGetEntry } from "~/lib/client-cache";
-import {
-  PROFILE_CACHE_TTL, PROFILE_FRESH_MS, RESULT_DETAIL_TTL,
-  isFresh, ownStatsKey, ownResultsKey, ownPointsKey, ownAchKey, ownJoinKey, ownRanksKey,
-  readOwnProfileCache, toPublicProfile, writePublicProfileCache,
-} from "~/lib/profile-cache";
+
+const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), {
+  ssr: false,
+  loading: () => <Skeleton className="h-40 sm:h-56 w-full" />,
+});
+
 import { useAuthStatus, useUser } from "~/components/user-provider";
-import { modeLabel, type TestResult } from "~/lib/types";
-import { formatDateTime, cn } from "~/lib/utils";
 import { ACHIEVEMENTS } from "~/lib/achievements";
+import { lcDel, lcGet, lcGetEntry, lcSet } from "~/lib/client-cache";
+import {
+  isFresh,
+  ownAchKey,
+  ownJoinKey,
+  ownPointsKey,
+  ownRanksKey,
+  ownResultsKey,
+  ownStatsKey,
+  PROFILE_CACHE_TTL,
+  PROFILE_FRESH_MS,
+  RESULT_DETAIL_TTL,
+  readOwnProfileCache,
+  toPublicProfile,
+  writePublicProfileCache,
+} from "~/lib/profile-cache";
+import { modeLabel, type TestResult } from "~/lib/types";
+import { cn, formatDateTime } from "~/lib/utils";
+import { getUserAchievements, getUserPoints } from "~/server/gamification";
+import { getBoardRanks } from "~/server/leaderboard";
+import {
+  type AggregatedStats,
+  getMyJoinDate,
+  getResultById,
+  getUserResults,
+  getUserStats,
+} from "~/server/results";
 import ProfileLoading from "./loading";
 
 /** All board keys in display order */
 const ALL_BOARDS = [
-  "time:15", "time:30", "time:60", "time:120",
-  "words:10", "words:25", "words:50", "words:100",
+  "time:15",
+  "time:30",
+  "time:60",
+  "time:120",
+  "words:10",
+  "words:25",
+  "words:50",
+  "words:100",
 ] as const;
 
 const wpmConfig = {
@@ -74,10 +139,17 @@ export default function ProfilePage() {
   const router = useRouter();
   const [stats, setStats] = useState<AggregatedStats | null>(null);
   const [results, setResults] = useState<TestResult[] | null>(null);
-  const [points, setPoints] = useState<{ totalXP: number; level: number; progress: number } | null>(null);
+  const [points, setPoints] = useState<{ totalXP: number; level: number; progress: number } | null>(
+    null,
+  );
   const [achievements, setAchievements] = useState<Array<{
-    id: string; name: string; description: string; trigger: "metric" | "streak" | "api";
-    achievedAt: string | null; progress: number; xp: number;
+    id: string;
+    name: string;
+    description: string;
+    trigger: "metric" | "streak" | "api";
+    achievedAt: string | null;
+    progress: number;
+    xp: number;
   }> | null>(null);
   const [selected, setSelected] = useState<TestResult | null>(null);
   const [achOpen, setAchOpen] = useState(false);
@@ -121,7 +193,15 @@ export default function ProfilePage() {
     const uid = user?.id ?? "anon";
     const username = user?.username ?? null;
     // Clean up old non-namespaced keys from before this fix
-    ["profile-stats", "profile-results", "profile-points", "profile-achievements", "profile-join-date"].forEach((k) => lcDel(k));
+    [
+      "profile-stats",
+      "profile-results",
+      "profile-points",
+      "profile-achievements",
+      "profile-join-date",
+    ].forEach((k) => {
+      lcDel(k);
+    });
 
     const c = readOwnProfileCache(uid);
 
@@ -129,17 +209,30 @@ export default function ProfilePage() {
     if (username && c.stats && c.results && c.joinDate) {
       writePublicProfileCache(username, {
         profile: toPublicProfile({
-          userId: uid, username, avatarUrl: user?.avatarUrl ?? null,
-          joinedAt: c.joinDate.data, stats: c.stats.data, results: c.results.data,
+          userId: uid,
+          username,
+          avatarUrl: user?.avatarUrl ?? null,
+          joinedAt: c.joinDate.data,
+          stats: c.stats.data,
+          results: c.results.data,
         }),
       });
     }
     if (username && c.points) writePublicProfileCache(username, { points: c.points.data });
-    if (username && c.achievements) writePublicProfileCache(username, { achievements: c.achievements.data });
+    if (username && c.achievements)
+      writePublicProfileCache(username, { achievements: c.achievements.data });
 
     // Everything is fresh — skip the refetch entirely (fast profile ↔ public toggle)
-    if (isFresh(c.stats) && isFresh(c.results) && isFresh(c.points) && isFresh(c.achievements) && isFresh(c.joinDate)) {
-      return () => { cancelled = true; };
+    if (
+      isFresh(c.stats) &&
+      isFresh(c.results) &&
+      isFresh(c.points) &&
+      isFresh(c.achievements) &&
+      isFresh(c.joinDate)
+    ) {
+      return () => {
+        cancelled = true;
+      };
     }
 
     // Fast fetch: stats + 10 results for quick initial render
@@ -151,7 +244,10 @@ export default function ProfilePage() {
       user ? getMyJoinDate() : Promise.resolve(null),
     ]).then(([s, r, p, a, j]) => {
       if (cancelled) return;
-      if (s) { setStats(s); lcSet(ownStatsKey(uid), s); }
+      if (s) {
+        setStats(s);
+        lcSet(ownStatsKey(uid), s);
+      }
       if (r) {
         // Results already rendered from cache? Don't swap in the partial
         // 10-result batch — that would flash the UI. The full batch below is
@@ -161,9 +257,18 @@ export default function ProfilePage() {
           setResults(r);
         }
       }
-      if (p) { setPoints(p); lcSet(ownPointsKey(uid), p); }
-      if (a) { setAchievements(a); lcSet(ownAchKey(uid), a); }
-      if (j) { setJoinedAt(j); lcSet(ownJoinKey(uid), j); }
+      if (p) {
+        setPoints(p);
+        lcSet(ownPointsKey(uid), p);
+      }
+      if (a) {
+        setAchievements(a);
+        lcSet(ownAchKey(uid), a);
+      }
+      if (j) {
+        setJoinedAt(j);
+        lcSet(ownJoinKey(uid), j);
+      }
       // Warm the public cache with fresh data too. The public profile object
       // is only written by the full batch below — writing the partial
       // 10-result profile here could downgrade a cached full profile and
@@ -185,15 +290,21 @@ export default function ProfilePage() {
         if (username && s && j) {
           writePublicProfileCache(username, {
             profile: toPublicProfile({
-              userId: uid, username, avatarUrl: user?.avatarUrl ?? null,
-              joinedAt: j, stats: s, results: full,
+              userId: uid,
+              username,
+              avatarUrl: user?.avatarUrl ?? null,
+              joinedAt: j,
+              stats: s,
+              results: full,
             }),
           });
         }
       });
     });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user, authStatus]);
 
   // Board ranks depend on stats (use latest from state, whether cached or fresh)
@@ -238,7 +349,7 @@ export default function ProfilePage() {
 
   // Streak data
   const dayMap = new Map<string, number>();
-  for (const r of (results ?? [])) {
+  for (const r of results ?? []) {
     const d = new Date(r.createdAt);
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     dayMap.set(key, (dayMap.get(key) ?? 0) + 1);
@@ -249,21 +360,31 @@ export default function ProfilePage() {
   const checkDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   while (true) {
     const key = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, "0")}-${String(checkDate.getDate()).padStart(2, "0")}`;
-    if (dayMap.has(key)) { currentStreak++; checkDate.setDate(checkDate.getDate() - 1); } else break;
+    if (dayMap.has(key)) {
+      currentStreak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else break;
   }
   let longestStreak = currentStreak;
   let run = 0;
   for (let i = 0; i < sortedDays.length; i++) {
-    if (i === 0) { run = 1; continue; }
+    if (i === 0) {
+      run = 1;
+      continue;
+    }
     const prev = new Date(sortedDays[i - 1]);
     const cur = new Date(sortedDays[i]);
-    if (Math.abs((cur.getTime() - prev.getTime()) / 86400000 - 1) < 0.5) { run++; } else { run = 1; }
+    if (Math.abs((cur.getTime() - prev.getTime()) / 86400000 - 1) < 0.5) {
+      run++;
+    } else {
+      run = 1;
+    }
     if (run > longestStreak) longestStreak = run;
   }
   const streakPeriods = sortedDays.map((d) => ({ periodStart: d, periodEnd: d }));
   const countsRecord = Object.fromEntries(dayMap.entries()) as Record<string, number>;
   const availableYears = Array.from(
-    new Set([...sortedDays.map((d) => Number(d.slice(0, 4))), new Date().getFullYear()])
+    new Set([...sortedDays.map((d) => Number(d.slice(0, 4))), new Date().getFullYear()]),
   ).sort((a, b) => b - a);
   const totalTestsInStreakPeriod =
     streakYear === "last12"
@@ -281,11 +402,23 @@ export default function ProfilePage() {
           .reduce((a, [, v]) => a + v, 0);
 
   const unlockedAch = (achievements ?? []).filter((a) => a.achievedAt !== null);
-  const allAch = (achievements ?? ACHIEVEMENTS.map((a) => ({
-    id: a.id, name: a.name, description: a.description, trigger: a.trigger,
-    achievedAt: null as string | null, progress: 0, xp: a.xp,
-  })));
-  const filteredAch = achTab === "unlocked" ? allAch.filter((a) => a.achievedAt !== null) : achTab === "locked" ? allAch.filter((a) => a.achievedAt === null) : allAch;
+  const allAch =
+    achievements ??
+    ACHIEVEMENTS.map((a) => ({
+      id: a.id,
+      name: a.name,
+      description: a.description,
+      trigger: a.trigger,
+      achievedAt: null as string | null,
+      progress: 0,
+      xp: a.xp,
+    }));
+  const filteredAch =
+    achTab === "unlocked"
+      ? allAch.filter((a) => a.achievedAt !== null)
+      : achTab === "locked"
+        ? allAch.filter((a) => a.achievedAt === null)
+        : allAch;
 
   const pbIds = (() => {
     const best = new Map<string, { id: string; wpm: number; acc: number }>();
@@ -329,7 +462,11 @@ export default function ProfilePage() {
   })();
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8" role="main" aria-label="User profile">
+    <div
+      className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8"
+      role="main"
+      aria-label="User profile"
+    >
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconUserFilled className="text-primary size-5" /> profile
@@ -340,11 +477,11 @@ export default function ProfilePage() {
               variant="outline"
               size="sm"
               className="text-muted-foreground gap-2 text-xs"
-              asChild
+              render={<Link href={`/profile/${user.username}`} />}
             >
-              <Link href={`/profile/${user.username}`}>
-                <IconEye className="size-3.5" /> <span className="hidden sm:inline">view public profile</span><span className="sm:hidden">public</span>
-              </Link>
+              <IconEye className="size-3.5" />{" "}
+              <span className="hidden sm:inline">view public profile</span>
+              <span className="sm:hidden">public</span>
             </Button>
             <Button
               variant="outline"
@@ -360,7 +497,8 @@ export default function ProfilePage() {
                 }
               }}
             >
-              <IconLink className="size-3.5" /> <span className="hidden sm:inline">copy link</span><span className="sm:hidden">copy</span>
+              <IconLink className="size-3.5" /> <span className="hidden sm:inline">copy link</span>
+              <span className="sm:hidden">copy</span>
             </Button>
           </div>
         )}
@@ -374,14 +512,20 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4">
               <Avatar className="size-16 shrink-0 border-2 border-primary/30">
                 {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
-                <AvatarFallback className="rounded-full text-xl font-bold uppercase">{user.username.slice(0, 2)}</AvatarFallback>
+                <AvatarFallback className="rounded-full text-xl font-bold uppercase">
+                  {user.username.slice(0, 2)}
+                </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <h1 className="text-lg font-bold truncate">{user.username}</h1>
                 <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                 {joinedAt && (
                   <p className="text-[10px] text-muted-foreground/70">
-                    joined {new Date(joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    joined{" "}
+                    {new Date(joinedAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 )}
               </div>
@@ -395,9 +539,17 @@ export default function ProfilePage() {
               </div>
             ) : points && points.totalXP > 0 ? (
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
-                <Progress value={points.progress} className="h-1.5 flex-1 bg-muted/80" indicatorClassName="bg-gradient-to-r from-primary/80 to-primary shadow-sm shadow-primary/30 transition-all" />
-                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
+                <span className="text-lg font-bold tabular-nums text-primary">
+                  Lv. {points.level}
+                </span>
+                <Progress
+                  value={points.progress}
+                  className="h-1.5 flex-1 bg-muted/80"
+                  indicatorClassName="bg-gradient-to-r from-primary/80 to-primary shadow-sm shadow-primary/30 transition-all"
+                />
+                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">
+                  {points.totalXP.toLocaleString()} XP
+                </span>
               </div>
             ) : (
               <p className="mt-4 text-[10px] text-muted-foreground">finish tests to earn xp</p>
@@ -407,10 +559,26 @@ export default function ProfilePage() {
 
         {/* 2x2 stat grid — same height as profile card */}
         <div className="grid grid-cols-2 gap-3 row-span-2">
-          <StatCard icon={<IconTrendingUp className="size-4" />} label="avg wpm (last 10)" value={loading ? null : String(stats!.avgWpm10)} />
-          <StatCard icon={<IconGauge className="size-4" />} label="avg wpm (all)" value={loading ? null : String(stats!.avgWpmAll)} />
-          <StatCard icon={<IconTarget className="size-4" />} label="avg accuracy" value={loading ? null : `${stats!.avgAccuracy}%`} />
-          <StatCard icon={<IconStopwatch className="size-4" />} label="time typed" value={loading ? null : formatDuration(stats!.timeTypedSeconds)} />
+          <StatCard
+            icon={<IconTrendingUp className="size-4" />}
+            label="avg wpm (last 10)"
+            value={loading ? null : String(stats?.avgWpm10 ?? 0)}
+          />
+          <StatCard
+            icon={<IconGauge className="size-4" />}
+            label="avg wpm (all)"
+            value={loading ? null : String(stats?.avgWpmAll ?? 0)}
+          />
+          <StatCard
+            icon={<IconTarget className="size-4" />}
+            label="avg accuracy"
+            value={loading ? null : `${stats?.avgAccuracy ?? 0}%`}
+          />
+          <StatCard
+            icon={<IconStopwatch className="size-4" />}
+            label="time typed"
+            value={loading ? null : formatDuration(stats?.timeTypedSeconds ?? 0)}
+          />
         </div>
       </div>
 
@@ -422,31 +590,47 @@ export default function ProfilePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
-              {ALL_BOARDS.map((board) => {
-                const wpm = stats?.bestByBoard?.[board];
-                const rank = boardRanks?.[board];
-                return (
-                  <Card key={board} size="sm" className={cn("items-center rounded-2xl py-3 text-center transition-all", wpm ? "ring-primary/20 hover:ring-primary/40" : "bg-muted/20")}>
-                    <CardContent className="flex flex-col items-center gap-1 px-3">
-                      <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
-                      {loading ? (
-                        <Skeleton className="h-8 w-14" />
-                      ) : (
-                        <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
-                      )}
-                      {rank ? (
-                        <Badge variant="secondary" className="mt-0.5 min-w-9 text-[9px] font-bold tracking-widest">
-                          #{rank}
-                        </Badge>
-                      ) : boardRanks === null ? (
-                        <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
-                      ) : null}
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+            {ALL_BOARDS.map((board) => {
+              const wpm = stats?.bestByBoard?.[board];
+              const rank = boardRanks?.[board];
+              return (
+                <Card
+                  key={board}
+                  size="sm"
+                  className={cn(
+                    "items-center rounded-2xl py-3 text-center transition-all",
+                    wpm ? "ring-primary/20 hover:ring-primary/40" : "bg-muted/20",
+                  )}
+                >
+                  <CardContent className="flex flex-col items-center gap-1 px-3">
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
+                      {prettyBoard(board)}
+                    </span>
+                    {loading ? (
+                      <Skeleton className="h-8 w-14" />
+                    ) : (
+                      <span
+                        className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}
+                      >
+                        {wpm ?? "-"}
+                      </span>
+                    )}
+                    {rank ? (
+                      <Badge
+                        variant="secondary"
+                        className="mt-0.5 min-w-9 text-[9px] font-bold tracking-widest"
+                      >
+                        #{rank}
+                      </Badge>
+                    ) : boardRanks === null ? (
+                      <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
+                    ) : null}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </CardContent>
       </Card>
 
@@ -474,14 +658,33 @@ export default function ProfilePage() {
                   <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis tickLine={false} axisLine={false} width={36} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area dataKey="wpm" type="monotone" stroke="var(--color-wpm)" fill="url(#fillWpm)" strokeWidth={2} dot={false} />
-                  <Line dataKey="avg" type="monotone" stroke="var(--color-avg)" strokeWidth={1.5} dot={false} strokeDasharray="4 4" />
+                  <Area
+                    dataKey="wpm"
+                    type="monotone"
+                    stroke="var(--color-wpm)"
+                    fill="url(#fillWpm)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Line
+                    dataKey="avg"
+                    type="monotone"
+                    stroke="var(--color-avg)"
+                    strokeWidth={1.5}
+                    dot={false}
+                    strokeDasharray="4 4"
+                  />
                 </ComposedChart>
               </ChartContainer>
             ) : (
-              <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-border/60 text-xs text-muted-foreground">
-                <IconTrendingUp className="mr-2 size-4" /> finish more tests
-              </div>
+              <Empty className="h-40 gap-1 rounded-2xl border border-dashed border-border/60 p-0">
+                <EmptyHeader className="gap-1.5">
+                  <EmptyMedia variant="icon" className="size-8">
+                    <IconTrendingUp className="size-4" />
+                  </EmptyMedia>
+                  <EmptyTitle className="text-xs font-medium">finish more tests</EmptyTitle>
+                </EmptyHeader>
+              </Empty>
             )}
           </CardContent>
         </Card>
@@ -508,14 +711,33 @@ export default function ProfilePage() {
                   <XAxis dataKey="n" tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis tickLine={false} axisLine={false} width={36} domain={[70, 100]} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Area dataKey="accuracy" type="monotone" stroke="var(--color-accuracy)" fill="url(#fillAccuracy)" strokeWidth={2} dot={false} />
-                  <Line dataKey="avgAcc" type="monotone" stroke="var(--color-avgAcc)" strokeWidth={1.5} dot={false} strokeDasharray="4 4" />
+                  <Area
+                    dataKey="accuracy"
+                    type="monotone"
+                    stroke="var(--color-accuracy)"
+                    fill="url(#fillAccuracy)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Line
+                    dataKey="avgAcc"
+                    type="monotone"
+                    stroke="var(--color-avgAcc)"
+                    strokeWidth={1.5}
+                    dot={false}
+                    strokeDasharray="4 4"
+                  />
                 </ComposedChart>
               </ChartContainer>
             ) : (
-              <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-border/60 text-xs text-muted-foreground">
-                <IconTarget className="mr-2 size-4" /> finish more tests
-              </div>
+              <Empty className="h-40 gap-1 rounded-2xl border border-dashed border-border/60 p-0">
+                <EmptyHeader className="gap-1.5">
+                  <EmptyMedia variant="icon" className="size-8">
+                    <IconTarget className="size-4" />
+                  </EmptyMedia>
+                  <EmptyTitle className="text-xs font-medium">finish more tests</EmptyTitle>
+                </EmptyHeader>
+              </Empty>
             )}
           </CardContent>
         </Card>
@@ -548,9 +770,14 @@ export default function ProfilePage() {
               </BarChart>
             </ChartContainer>
           ) : (
-            <div className="flex h-40 items-center justify-center rounded-2xl border border-dashed border-border/60 text-xs text-muted-foreground">
-              <IconTrophy className="mr-2 size-4" /> no tests yet
-            </div>
+            <Empty className="h-40 gap-1 rounded-2xl border border-dashed border-border/60 p-0">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon" className="size-8">
+                  <IconChartBar className="size-4" />
+                </EmptyMedia>
+                <EmptyTitle className="text-xs font-medium">no tests yet</EmptyTitle>
+              </EmptyHeader>
+            </Empty>
           )}
         </CardContent>
       </Card>
@@ -563,7 +790,9 @@ export default function ProfilePage() {
             {achievements === null ? (
               <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
             ) : (
-              <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+              <Badge variant="secondary" className="ml-auto text-[10px]">
+                {unlockedAch.length}/{allAch.length}
+              </Badge>
             )}
           </CardTitle>
         </CardHeader>
@@ -593,12 +822,27 @@ export default function ProfilePage() {
               badgeSize="sm"
             />
           ) : (
-            <p className="text-xs text-muted-foreground">no achievements yet. finish tests to earn badges.</p>
+            <Empty className="gap-1.5 rounded-2xl py-6">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon" className="size-8">
+                  <IconAward className="size-4" />
+                </EmptyMedia>
+                <EmptyTitle className="text-sm font-semibold">no achievements yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  finish tests to earn badges.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           )}
           {achievements === null ? (
             <Skeleton className="mt-3 h-4 w-32" />
           ) : (
-            <Button variant="link" size="sm" className="mt-3 h-auto gap-1 p-0 text-xs" onClick={() => setAchOpen(true)}>
+            <Button
+              variant="link"
+              size="sm"
+              className="mt-3 h-auto gap-1 p-0 text-xs"
+              onClick={() => setAchOpen(true)}
+            >
               view all achievements <IconArrowRight className="size-3" />
             </Button>
           )}
@@ -611,7 +855,9 @@ export default function ProfilePage() {
           <DialogHeader className="pr-8">
             <DialogTitle className="flex items-center gap-2">
               <IconAward className="size-4" /> achievements
-              <Badge variant="secondary" className="text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+              <Badge variant="secondary" className="text-[10px]">
+                {unlockedAch.length}/{allAch.length}
+              </Badge>
             </DialogTitle>
           </DialogHeader>
           <Tabs value={achTab} onValueChange={(v) => setAchTab(v as "all" | "unlocked" | "locked")}>
@@ -622,17 +868,39 @@ export default function ProfilePage() {
             </TabsList>
           </Tabs>
           <div className="flex-1 overflow-y-auto pr-1">
-            <AchievementList
-              achievements={filteredAch.map((a) => ({
-                id: a.id,
-                name: a.name,
-                description: a.description,
-                trigger: a.trigger,
-                achievedAt: a.achievedAt,
-                progress: a.progress,
-              }))}
-              badgeSize="sm"
-            />
+            {filteredAch.length === 0 ? (
+              <Empty className="gap-1.5 rounded-2xl py-10">
+                <EmptyHeader className="gap-1.5">
+                  <EmptyMedia variant="icon" className="size-8">
+                    {achTab === "unlocked" ? (
+                      <IconAward className="size-4" />
+                    ) : (
+                      <IconTrophy className="size-4" />
+                    )}
+                  </EmptyMedia>
+                  <EmptyTitle className="text-sm font-semibold">
+                    {achTab === "unlocked" ? "nothing unlocked yet" : "all achievements unlocked"}
+                  </EmptyTitle>
+                  {achTab === "unlocked" && (
+                    <EmptyDescription className="text-xs">
+                      finish tests to earn badges.
+                    </EmptyDescription>
+                  )}
+                </EmptyHeader>
+              </Empty>
+            ) : (
+              <AchievementList
+                achievements={filteredAch.map((a) => ({
+                  id: a.id,
+                  name: a.name,
+                  description: a.description,
+                  trigger: a.trigger,
+                  achievedAt: a.achievedAt,
+                  progress: a.progress,
+                }))}
+                badgeSize="sm"
+              />
+            )}
           </div>
         </DialogContent>
       </Dialog>
@@ -644,33 +912,60 @@ export default function ProfilePage() {
             <IconClock className="size-4" /> activity
             {loading || resultsLoading ? (
               <Skeleton className="ml-2 h-3 w-28" />
-            ) : (
+            ) : (results ?? []).length > 0 ? (
               <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
-                {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
+                {totalTestsInStreakPeriod} tests{" "}
+                {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
               </span>
-            )}
-            <div className="ml-auto">
-              {loading || resultsLoading ? (
-                <SelectSkeleton className="w-36" />
-              ) : (
-                <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
-                  <SelectTrigger size="sm" className="h-7 w-36 text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="last12">last 12 months</SelectItem>
-                    {availableYears.map((y) => (
-                      <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
+            ) : null}
+            {loading || resultsLoading || (results ?? []).length > 0 ? (
+              <div className="ml-auto">
+                {loading || resultsLoading ? (
+                  <SelectSkeleton className="w-36" />
+                ) : (
+                  <Select
+                    value={String(streakYear)}
+                    onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}
+                  >
+                    <SelectTrigger size="sm" className="h-7 w-36 text-xs">
+                      <SelectValue>
+                        {(val) => (val === "last12" ? "last 12 months" : (val ?? ""))}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="last12">last 12 months</SelectItem>
+                      {availableYears.map((y) => (
+                        <SelectItem key={y} value={String(y)}>
+                          {y}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            ) : null}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
           {loading || resultsLoading ? (
             <StreakCalendarSkeleton />
+          ) : (results ?? []).length === 0 ? (
+            <Empty className="gap-1.5 rounded-2xl py-10">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon">
+                  <IconClock className="size-5" />
+                </EmptyMedia>
+                <EmptyTitle className="text-sm font-semibold">no activity yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  finish a typing test to start tracking your streak.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent className="gap-2">
+                <Button size="sm" className="gap-2" render={<Link href="/" />}>
+                  start typing <IconArrowRight className="size-4" />
+                </Button>
+              </EmptyContent>
+            </Empty>
           ) : (
             <StreakCalendar
               streak={streakPeriods}
@@ -692,21 +987,36 @@ export default function ProfilePage() {
             {resultsLoading ? (
               <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
             ) : (
-              <Badge variant="secondary" className="ml-auto text-[10px]">{results?.length ?? 0} tests</Badge>
+              <Badge variant="secondary" className="ml-auto text-[10px]">
+                {results?.length ?? 0} tests
+              </Badge>
             )}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
           {loading || resultsLoading ? (
             <div className="flex flex-col gap-2">
-              {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-11 rounded-2xl" />)}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="h-11 rounded-2xl" />
+              ))}
             </div>
           ) : (results ?? []).length === 0 ? (
-            <div className="flex flex-col items-center gap-3 py-12 text-center">
-              <IconHistory className="size-8 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">no tests recorded yet</p>
-              <Link href="/" className="text-sm text-primary hover:underline">start typing →</Link>
-            </div>
+            <Empty className="gap-3 rounded-2xl py-14">
+              <EmptyHeader className="gap-2">
+                <EmptyMedia variant="icon">
+                  <IconHistory className="size-5" />
+                </EmptyMedia>
+                <EmptyTitle className="text-base">no tests recorded yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  your completed typing tests will show up here.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent className="gap-2">
+                <Button size="sm" className="gap-2" render={<Link href="/" />}>
+                  start typing <IconArrowRight className="size-4" />
+                </Button>
+              </EmptyContent>
+            </Empty>
           ) : (
             <div className="overflow-x-auto">
               <Table>
@@ -722,27 +1032,36 @@ export default function ProfilePage() {
                 </TableHeader>
                 <TableBody>
                   {visibleHistory.map((r) => (
-                    <TableRow key={r.id} onClick={() => {
-                      // Full details are immutable — reuse them if already fetched
-                      const cached = lcGet<TestResult>(`result:${r.id}`, RESULT_DETAIL_TTL);
-                      if (cached) {
-                        setSelected(cached);
-                        return;
-                      }
-                      // Open immediately with lite data, fetch full in background
-                      setSelected(r);
-                      getResultById(r.id).then((full) => {
-                        if (full) {
-                          setSelected(full);
-                          lcSet(`result:${r.id}`, full);
+                    <TableRow
+                      key={r.id}
+                      onClick={() => {
+                        // Full details are immutable — reuse them if already fetched
+                        const cached = lcGet<TestResult>(`result:${r.id}`, RESULT_DETAIL_TTL);
+                        if (cached) {
+                          setSelected(cached);
+                          return;
                         }
-                      });
-                    }} className="cursor-pointer">
-                      <TableCell className="text-xs text-muted-foreground">{formatDateTime(r.createdAt)}</TableCell>
+                        // Open immediately with lite data, fetch full in background
+                        setSelected(r);
+                        getResultById(r.id).then((full) => {
+                          if (full) {
+                            setSelected(full);
+                            lcSet(`result:${r.id}`, full);
+                          }
+                        });
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <TableCell className="text-xs text-muted-foreground">
+                        {formatDateTime(r.createdAt)}
+                      </TableCell>
                       <TableCell className="text-right">
                         <span className="inline-flex items-center justify-end gap-1.5">
                           {pbIds.has(r.id) ? (
-                            <Badge variant="secondary" className="w-9 shrink-0 justify-center gap-0.5 px-0 text-[9px] font-bold tracking-widest">
+                            <Badge
+                              variant="secondary"
+                              className="w-9 shrink-0 justify-center gap-0.5 px-0 text-[9px] font-bold tracking-widest"
+                            >
                               <IconCrown className="size-3" /> PB
                             </Badge>
                           ) : (
@@ -753,25 +1072,29 @@ export default function ProfilePage() {
                           <span className="font-bold tabular-nums text-primary">{r.wpm}</span>
                         </span>
                       </TableCell>
-                      <TableCell className="text-right tabular-nums text-muted-foreground">{r.rawWpm}</TableCell>
+                      <TableCell className="text-right tabular-nums text-muted-foreground">
+                        {r.rawWpm}
+                      </TableCell>
                       <AccCell value={r.accuracy} />
-                      <TableCell className="hidden text-right tabular-nums sm:table-cell">{r.consistency}%</TableCell>
+                      <TableCell className="hidden text-right tabular-nums sm:table-cell">
+                        {r.consistency}%
+                      </TableCell>
                       <TableCell className="hidden text-right text-xs text-muted-foreground md:table-cell">
                         <span className="inline-flex items-center gap-1">
                           {modeLabel(r)}
                           {r.punctuation && (
                             <Tooltip>
-                              <TooltipTrigger asChild>
-                                <IconAt className="size-3 text-muted-foreground/70" />
-                              </TooltipTrigger>
+                              <TooltipTrigger
+                                render={<IconAt className="size-3 text-muted-foreground/70" />}
+                              />
                               <TooltipContent>punctuation</TooltipContent>
                             </Tooltip>
                           )}
                           {r.numbers && (
                             <Tooltip>
-                              <TooltipTrigger asChild>
-                                <IconHash className="size-3 text-muted-foreground/70" />
-                              </TooltipTrigger>
+                              <TooltipTrigger
+                                render={<IconHash className="size-3 text-muted-foreground/70" />}
+                              />
                               <TooltipContent>numbers</TooltipContent>
                             </Tooltip>
                           )}
@@ -783,20 +1106,28 @@ export default function ProfilePage() {
               </Table>
               {(results?.length ?? 0) > historyCount && (
                 <div className="mt-3 flex justify-center">
-                  <Button variant="outline" size="sm" onClick={async () => {
-                    const nextCount = historyCount + 10;
-                    if ((results?.length ?? 0) >= nextCount) {
-                      // Data already loaded, just reveal more
-                      setHistoryCount(nextCount);
-                    } else {
-                      // Fetch next batch from server
-                      const more = await getUserResults({ limit: 10, offset: results?.length ?? 0, lite: true });
-                      if (more && more.length > 0) {
-                        setResults((prev) => [...(prev ?? []), ...more]);
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={async () => {
+                      const nextCount = historyCount + 10;
+                      if ((results?.length ?? 0) >= nextCount) {
+                        // Data already loaded, just reveal more
+                        setHistoryCount(nextCount);
+                      } else {
+                        // Fetch next batch from server
+                        const more = await getUserResults({
+                          limit: 10,
+                          offset: results?.length ?? 0,
+                          lite: true,
+                        });
+                        if (more && more.length > 0) {
+                          setResults((prev) => [...(prev ?? []), ...more]);
+                        }
+                        setHistoryCount(nextCount);
                       }
-                      setHistoryCount(nextCount);
-                    }
-                  }}>
+                    }}
+                  >
                     load more
                   </Button>
                 </div>
@@ -815,9 +1146,14 @@ export default function ProfilePage() {
                 <DialogTitle className="flex items-end gap-4 sm:gap-8">
                   <span className="flex flex-col">
                     <span className="flex items-center gap-2">
-                      <span className="text-3xl font-bold tabular-nums text-primary sm:text-5xl">{selected.wpm}</span>
+                      <span className="text-3xl font-bold tabular-nums text-primary sm:text-5xl">
+                        {selected.wpm}
+                      </span>
                       {pbIds.has(selected.id) && (
-                        <Badge variant="secondary" className="gap-0.5 text-[9px] font-bold tracking-widest">
+                        <Badge
+                          variant="secondary"
+                          className="gap-0.5 text-[9px] font-bold tracking-widest"
+                        >
                           <IconCrown className="size-3" /> PB
                         </Badge>
                       )}
@@ -825,38 +1161,55 @@ export default function ProfilePage() {
                     <span className="text-muted-foreground mt-1 text-xs tracking-wider">wpm</span>
                   </span>
                   <span className="flex flex-col">
-                    <span className="text-3xl font-bold tabular-nums sm:text-5xl">{selected.accuracy}%</span>
+                    <span className="text-3xl font-bold tabular-nums sm:text-5xl">
+                      {selected.accuracy}%
+                    </span>
                     <span className="text-muted-foreground mt-1 text-xs tracking-wider">acc</span>
                   </span>
                 </DialogTitle>
                 <DialogDescription>
                   <span className="flex items-center justify-between gap-2">
                     <span className="inline-flex items-center gap-1.5">
-                      <Badge variant="outline" className="border-secondary bg-secondary text-secondary-foreground h-5 text-[10px] font-medium normal-case">
+                      <Badge
+                        variant="outline"
+                        className="border-secondary bg-secondary text-secondary-foreground h-5 text-[10px] font-medium normal-case"
+                      >
                         {modeLabel(selected)}
                       </Badge>
                       {selected.punctuation && (
                         <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge variant="outline" className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case">
-                              <IconAt className="size-3" />
-                            </Badge>
-                          </TooltipTrigger>
+                          <TooltipTrigger
+                            render={
+                              <Badge
+                                variant="outline"
+                                className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
+                              >
+                                <IconAt className="size-3" />
+                              </Badge>
+                            }
+                          />
                           <TooltipContent>punctuation</TooltipContent>
                         </Tooltip>
                       )}
                       {selected.numbers && (
                         <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Badge variant="outline" className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case">
-                              <IconHash className="size-3" />
-                            </Badge>
-                          </TooltipTrigger>
+                          <TooltipTrigger
+                            render={
+                              <Badge
+                                variant="outline"
+                                className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
+                              >
+                                <IconHash className="size-3" />
+                              </Badge>
+                            }
+                          />
                           <TooltipContent>numbers</TooltipContent>
                         </Tooltip>
                       )}
                     </span>
-                    <span className="shrink-0 text-xs text-muted-foreground">{new Date(selected.createdAt).toLocaleString()}</span>
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {new Date(selected.createdAt).toLocaleString()}
+                    </span>
                   </span>
                 </DialogDescription>
               </DialogHeader>
@@ -894,7 +1247,15 @@ export default function ProfilePage() {
 
 /* ── sub-components ── */
 
-function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
+function StatCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | null;
+}) {
   return (
     <Card className="gap-1 py-3">
       <CardContent className="flex flex-col gap-1 px-3">
@@ -964,8 +1325,17 @@ function resultsEqual(a: TestResult[] | null, b: TestResult[] | null): boolean {
       .sort((x, y) => (x.id < y.id ? -1 : x.id > y.id ? 1 : 0))
       .map((r) =>
         JSON.stringify([
-          r.id, r.createdAt, r.mode, r.variant, r.source,
-          r.punctuation, r.numbers, r.wpm, r.rawWpm, r.accuracy, r.consistency,
+          r.id,
+          r.createdAt,
+          r.mode,
+          r.variant,
+          r.source,
+          r.punctuation,
+          r.numbers,
+          r.wpm,
+          r.rawWpm,
+          r.accuracy,
+          r.consistency,
         ]),
       );
   const ca = canon(a);

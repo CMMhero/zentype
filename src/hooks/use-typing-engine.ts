@@ -77,10 +77,7 @@ export function useTypingEngine({
 
   /* ---------- live aggregates (pure derivations) ---------- */
 
-  const counts = useMemo(
-    () => charBreakdown(words, history, current),
-    [words, history, current],
-  );
+  const counts = useMemo(() => charBreakdown(words, history, current), [words, history, current]);
 
   const secondsElapsed =
     status === "finished" && finalSeconds !== null
@@ -89,18 +86,11 @@ export function useTypingEngine({
         ? Math.max(elapsedMs / 1000, 0.001)
         : 0;
 
-  const liveWpm =
-    secondsElapsed > 1 ? Math.round(counts.correct / 5 / (secondsElapsed / 60)) : 0;
-  const liveRaw =
-    secondsElapsed > 1
-      ? Math.round(keysView.total / 5 / (secondsElapsed / 60))
-      : 0;
+  const liveWpm = secondsElapsed > 1 ? Math.round(counts.correct / 5 / (secondsElapsed / 60)) : 0;
+  const liveRaw = secondsElapsed > 1 ? Math.round(keysView.total / 5 / (secondsElapsed / 60)) : 0;
   const liveAcc =
     keysView.total > 0
-      ? Math.max(
-          0,
-          Math.round(((keysView.total - keysView.errors) / keysView.total) * 100),
-        )
+      ? Math.max(0, Math.round(((keysView.total - keysView.errors) / keysView.total) * 100))
       : 100;
 
   const progress =
@@ -111,9 +101,10 @@ export function useTypingEngine({
           const wordBaseline = Math.min(1, history.length / settings.wordCount);
           // Character-based smoothness within the current word
           const targetWord = words[history.length] ?? "";
-          const charInWord = targetWord.length > 0
-            ? Math.min(1, counts.correctInCurrentWord / targetWord.length)
-            : 0;
+          const charInWord =
+            targetWord.length > 0
+              ? Math.min(1, counts.correctInCurrentWord / targetWord.length)
+              : 0;
           // Each word contributes 1/wordCount; current word fills its slot smoothly
           const charProgress = (history.length + charInWord) / settings.wordCount;
           // Clamp to word baseline so it can't jump ahead
@@ -128,8 +119,7 @@ export function useTypingEngine({
     keys.current.total++;
     if (wrong) keys.current.errors++;
     setKeysView({ ...keys.current });
-    const passed =
-      startRef.current > 0 ? (Date.now() - startRef.current) / 1000 : 0;
+    const passed = startRef.current > 0 ? (Date.now() - startRef.current) / 1000 : 0;
     const si = Math.floor(passed);
     if (wrong) errorsPerSecondRef.current[si] = (errorsPerSecondRef.current[si] ?? 0) + 1;
   }, []);
@@ -155,10 +145,7 @@ export function useTypingEngine({
       samples: samplesRef.current,
     });
 
-    const totalErrors = Object.values(errorsPerSecondRef.current).reduce(
-      (a, b) => a + b,
-      0,
-    );
+    const totalErrors = Object.values(errorsPerSecondRef.current).reduce((a, b) => a + b, 0);
     const tl: TimelinePoint[] = [
       ...timelineRef.current,
       {
@@ -185,7 +172,15 @@ export function useTypingEngine({
       chars: stats.chars,
       timeline: tl,
     });
-  }, [onFinish, settings.mode, settings.duration, settings.wordCount, settings.source, settings.punctuation, settings.numbers]);
+  }, [
+    onFinish,
+    settings.mode,
+    settings.duration,
+    settings.wordCount,
+    settings.source,
+    settings.punctuation,
+    settings.numbers,
+  ]);
 
   const finishRef = useRef(finish);
   useEffect(() => {
@@ -274,11 +269,7 @@ export function useTypingEngine({
           // Delete back to the last space or beginning of current word
           const lastSpace = current.lastIndexOf(" ");
           setCurrent(lastSpace >= 0 ? current.slice(0, lastSpace + 1) : "");
-        } else if (
-          settings.freeBackspace &&
-          history.length > 0 &&
-          status === "running"
-        ) {
+        } else if (settings.freeBackspace && history.length > 0 && status === "running") {
           // restore the last word
           const prev = history[history.length - 1];
           setHistory(history.slice(0, -1));
@@ -291,11 +282,7 @@ export function useTypingEngine({
         e.preventDefault();
         if (current.length > 0) {
           setCurrent(current.slice(0, -1));
-        } else if (
-          settings.freeBackspace &&
-          history.length > 0 &&
-          status === "running"
-        ) {
+        } else if (settings.freeBackspace && history.length > 0 && status === "running") {
           // restore the last word so user can backspace through it char-by-char
           const prev = history[history.length - 1];
           setHistory(history.slice(0, -1));

@@ -14,10 +14,8 @@ export const useResultsStore = create<ResultsState>()(
   persist(
     (set) => ({
       local: [],
-      addLocal: (r) =>
-        set((s) => ({ local: [r, ...s.local].slice(0, 200) })),
-      removeLocal: (id) =>
-        set((s) => ({ local: s.local.filter((x) => x.id !== id) })),
+      addLocal: (r) => set((s) => ({ local: [r, ...s.local].slice(0, 200) })),
+      removeLocal: (id) => set((s) => ({ local: s.local.filter((x) => x.id !== id) })),
       clearLocal: () => set({ local: [] }),
     }),
     { name: "zentype-local-results", version: 1 },

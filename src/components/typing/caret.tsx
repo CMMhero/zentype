@@ -1,5 +1,5 @@
-import { cn } from "~/lib/utils";
 import type { CaretStyle } from "~/lib/types";
+import { cn } from "~/lib/utils";
 
 interface CaretProps {
   style: CaretStyle;
@@ -13,9 +13,7 @@ interface CaretProps {
 export function Caret({ style, x, y, height, width, smooth }: CaretProps) {
   if (style === "off") return null;
 
-  const transition = smooth
-    ? "transition-[left,top] duration-75 ease-out"
-    : "";
+  const transition = smooth ? "transition-[left,top] duration-75 ease-out" : "";
 
   const base: React.CSSProperties = { left: x, top: y };
 
@@ -35,20 +33,22 @@ export function Caret({ style, x, y, height, width, smooth }: CaretProps) {
       return (
         <div
           aria-hidden
-          className={cn("zt-caret-blink bg-primary pointer-events-none absolute rounded-full", transition)}
-          style={{ ...base, top: y + height - 2, height: 2, width }}
+          className={cn(
+            "zt-caret-blink bg-primary pointer-events-none absolute rounded-full",
+            transition,
+          )}
+          style={{ ...base, top: y + height - 3, height: 3, width }}
         />
       );
-    case "line":
     default:
       return (
         <div
           aria-hidden
           className={cn(
-            "zt-caret-blink bg-primary pointer-events-none absolute w-[2px] rounded-full",
+            "zt-caret-blink bg-primary pointer-events-none absolute w-[3px] rounded-full",
             transition,
           )}
-          style={{ ...base, left: x - 1, height }}
+          style={{ ...base, left: x - 1.5, height }}
         />
       );
   }

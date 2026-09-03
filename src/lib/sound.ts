@@ -6,8 +6,7 @@ function audioCtx(): AudioContext | null {
     if (!ctx) {
       const AC =
         window.AudioContext ??
-        (window as unknown as { webkitAudioContext?: typeof AudioContext })
-          .webkitAudioContext;
+        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!AC) return null;
       ctx = new AC();
     }
@@ -42,10 +41,7 @@ function blip(
   osc.stop(t + durationMs / 1000);
 }
 
-export function playKeypress(
-  variant: "click" | "thock" | "beep",
-  volume: number,
-) {
+export function playKeypress(variant: "click" | "thock" | "beep", volume: number) {
   switch (variant) {
     case "thock":
       blip(150 + Math.random() * 40, 45, volume * 0.5, "triangle");

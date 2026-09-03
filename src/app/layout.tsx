@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { TooltipProvider } from "~/components/ui/tooltip";
-import { Toaster } from "~/components/ui/sonner";
-import { DynamicFavicon } from "~/components/ui/dynamic-favicon";
+import { Geist } from "next/font/google";
 import { AppShell } from "~/components/layout/app-shell";
+import { DynamicFavicon } from "~/components/ui/dynamic-favicon";
+import { Toaster } from "~/components/ui/sonner";
+import { TooltipProvider } from "~/components/ui/tooltip";
 import { UserProvider } from "~/components/user-provider";
-import { themeStyleSheet, THEMES, DEFAULT_THEME_ID } from "~/lib/themes";
+import { DEFAULT_THEME_ID, THEMES, themeStyleSheet } from "~/lib/themes";
+import { cn } from "~/lib/utils";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const appearanceMap: Record<string, string> = Object.fromEntries(
   THEMES.map((t) => [t.id, t.appearance]),
@@ -34,10 +38,22 @@ export const metadata: Metadata = {
   description:
     "A customizable, clean typing test. Track your WPM, accuracy, and consistency. Compete on global leaderboards, earn XP, and unlock achievements. Inspired by monkeytype, built with Next.js, Supabase, and Tailwind CSS.",
   keywords: [
-    "typing test", "typing speed", "wpm", "words per minute", "typing practice",
-    "keyboard test", "leaderboard", "typing game", "speed test", "accuracy test",
-    "monkeytype alternative", "typing test online free", "typing test with leaderboard",
-    "typing practice app", "wpm test", "typing speed test online",
+    "typing test",
+    "typing speed",
+    "wpm",
+    "words per minute",
+    "typing practice",
+    "keyboard test",
+    "leaderboard",
+    "typing game",
+    "speed test",
+    "accuracy test",
+    "monkeytype alternative",
+    "typing test online free",
+    "typing test with leaderboard",
+    "typing practice app",
+    "wpm test",
+    "typing speed test online",
   ],
   authors: [{ name: "CMMhero", url: "https://cmmhero.top" }],
   creator: "CMMhero",
@@ -63,8 +79,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "zentype - a customizable, clean typing test",
-    description:
-      "A customizable, clean typing test. Track your WPM, accuracy, and consistency.",
+    description: "A customizable, clean typing test. Track your WPM, accuracy, and consistency.",
     images: ["/og.png"],
   },
   robots: {
@@ -118,7 +133,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content="#282828" />
@@ -128,17 +143,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD structured data
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static bootstrap script to avoid FOUC */}
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static theme CSS variables */}
         <style dangerouslySetInnerHTML={{ __html: themeStyleSheet() }} id="zt-theme-vars" />
       </head>
       <body className="antialiased">
         <TooltipProvider>
           <DynamicFavicon />
           <UserProvider>
-            <AppShell>
-              {children}
-            </AppShell>
+            <AppShell>{children}</AppShell>
           </UserProvider>
           <Toaster position="bottom-right" />
         </TooltipProvider>

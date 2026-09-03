@@ -62,13 +62,13 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 
 | layer | tech |
 |---|---|
-| framework | [Next.js](https://nextjs.org/) App Router + Server Actions, React 19 |
+| framework | [Next.js](https://nextjs.org/) 16 App Router + Server Actions, React 19 + React Compiler |
 | UI | shadcn/ui, Tailwind CSS v4, Recharts, Tabler icons |
 | auth + db | Supabase (OAuth, Postgres, RLS) |
 | cache | Upstash Redis (REST), client-side localStorage |
 | state | Zustand (settings, guest results, UI) |
 | package manager | bun, Node 22+ |
-| types/lint | TypeScript 5.9, ESLint 9 |
+| types/lint | TypeScript 5.9, Biome (lint + format) |
 
 ## Getting started
 

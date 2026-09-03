@@ -1,8 +1,13 @@
 "use client";
 
 import {
-  AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
-  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 
@@ -26,13 +31,14 @@ export function DiscardLocalResultsDialog({
             discard {count} local result{count === 1 ? "" : "s"}?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            permanently deletes your local guest results. this can&apos;t be
-            recovered.
+            permanently deletes your local guest results. this can&apos;t be recovered.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>cancel</AlertDialogCancel>
-          <Button variant="destructive" onClick={onConfirm}>yes, discard</Button>
+          <Button variant="destructive" onClick={onConfirm}>
+            yes, discard
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

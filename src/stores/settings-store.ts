@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { GameSettings } from "~/lib/types";
 import { DEFAULT_THEME_ID } from "~/lib/themes";
+import type { GameSettings } from "~/lib/types";
 
 const DEFAULT_SETTINGS: GameSettings = {
   mode: "time",
@@ -41,8 +41,7 @@ export const useSettingsStore = create<SettingsState>()(
     (set) => ({
       settings: DEFAULT_SETTINGS,
       hasHydrated: false,
-      update: (patch) =>
-        set((s) => ({ settings: { ...s.settings, ...patch } })),
+      update: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
       reset: () => set({ settings: DEFAULT_SETTINGS }),
       setHasHydrated: (v) => set({ hasHydrated: v }),
     }),
@@ -55,12 +54,15 @@ export const useSettingsStore = create<SettingsState>()(
       migrate: (persistedState) => {
         // persistedState may be { settings: {...} } or legacy flat shape
         const raw = (persistedState ?? {}) as Record<string, unknown>;
-        const p = (raw.settings as Partial<GameSettings> | undefined) ?? (raw as Partial<GameSettings>);
+        const p =
+          (raw.settings as Partial<GameSettings> | undefined) ?? (raw as Partial<GameSettings>);
         const legacy = p as Partial<GameSettings> & { soundVolume?: number; settings?: unknown };
         // unwrap nested settings if previous buggy migration stored { settings: { settings: {...} } }
-        const actual = (legacy.settings && typeof legacy.settings === "object" && !Array.isArray(legacy.settings)
-          ? (legacy.settings as Partial<GameSettings>)
-          : p) as Partial<GameSettings> & { soundVolume?: number };
+        const actual = (
+          legacy.settings && typeof legacy.settings === "object" && !Array.isArray(legacy.settings)
+            ? (legacy.settings as Partial<GameSettings>)
+            : p
+        ) as Partial<GameSettings> & { soundVolume?: number };
         return {
           settings: {
             ...DEFAULT_SETTINGS,

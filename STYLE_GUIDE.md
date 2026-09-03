@@ -156,7 +156,7 @@ Small nested stat tiles override the radius down:
 - Destructive: `variant="destructive"` (tinted red fill, use for delete/reset actions)
 - Text link: `variant="link"` (primary underline on hover, e.g. "back to typing")
 
-For link-style labels ("back to typing", "sign in"): `variant="link" size="sm" asChild className="h-auto gap-1 p-0 text-xs"` wrapping a `Link`.
+For link-style labels ("back to typing", "sign in"): pass the anchor via the `render` prop — `variant="link" size="sm" render={<Link href="/" />} className="h-auto gap-1 p-0 text-xs"` with the label as the button's children. (Primitives are Base UI: trigger/link composition uses `render={<Element />}`, never the Radix-era `asChild`.)
 
 ### Tabs and Pills (segmented controls)
 
@@ -223,7 +223,7 @@ Settings tabs and the config bar both use pill rails. `TabsList` is `rounded-ful
 ### Header (all breakpoints)
 
 - Sticky top: `bg-background/80 backdrop-blur-xl`, `h-12`, max-width `max-w-5xl` inner row, `shadow-sm`
-- Nav (desktop): icon-only pill links `rounded-3xl p-1.5`, tooltips; active `text-primary`, inactive `text-muted-foreground hover:text-foreground hover:bg-muted`; `alt+1..4` shortcuts
+- Nav (desktop): shadcn `NavigationMenu` (`src/components/ui/navigation-menu.tsx`, Base UI) with icon-only pill `NavigationMenuLink`s `rounded-3xl p-1.5`, wrapped in `Tooltip`s; active `text-primary`, inactive `text-muted-foreground hover:text-foreground hover:bg-muted`; `alt+1..4` shortcuts. Hidden below `md` (mobile uses the bottom nav)
 - Right cluster: "commands" (`ctrl/cmd+k`) button and the user menu avatar/dropdown (or "sign in")
 
 ### Mobile Bottom Nav

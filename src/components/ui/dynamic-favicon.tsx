@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSettingsStore } from "~/stores/settings-store";
 import { getTheme } from "~/lib/themes";
+import { useSettingsStore } from "~/stores/settings-store";
 
 // Original colors in public/logo.svg that we swap per theme
 const ORIGINAL_BG = "rgb(28,30,38)";
@@ -52,9 +52,7 @@ export function DynamicFavicon() {
       const fg = hexToRgb(theme.vars["--primary"]);
       const bg = hexToRgb(theme.vars["--background"]);
 
-      const svg = svgText
-        .replaceAll(ORIGINAL_BG, bg)
-        .replaceAll(ORIGINAL_FG, fg);
+      const svg = svgText.replaceAll(ORIGINAL_BG, bg).replaceAll(ORIGINAL_FG, fg);
 
       const blob = new Blob([svg], { type: "image/svg+xml" });
       const url = URL.createObjectURL(blob);
@@ -64,8 +62,12 @@ export function DynamicFavicon() {
 
       // Remove every existing favicon link
       document
-        .querySelectorAll("link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']")
-        .forEach((el) => el.remove());
+        .querySelectorAll(
+          "link[rel='icon'], link[rel='shortcut icon'], link[rel='apple-touch-icon']",
+        )
+        .forEach((el) => {
+          el.remove();
+        });
 
       const link = document.createElement("link");
       link.rel = "icon";
@@ -76,7 +78,9 @@ export function DynamicFavicon() {
 
     run();
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [themeId]);
 
   return null;

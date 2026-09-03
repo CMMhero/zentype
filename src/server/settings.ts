@@ -24,9 +24,7 @@ export async function loadUserSettings(): Promise<SettingsPatch | null> {
   return data.settings as SettingsPatch;
 }
 
-export async function saveUserSettings(
-  patch: SettingsPatch,
-): Promise<{ ok: boolean }> {
+export async function saveUserSettings(patch: SettingsPatch): Promise<{ ok: boolean }> {
   const ctx = await requireUser();
   if (!ctx) return { ok: false };
   const { error } = await ctx.supabase

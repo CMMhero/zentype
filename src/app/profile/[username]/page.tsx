@@ -1,50 +1,82 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useParams } from "next/navigation";
 import {
-  IconArrowLeft, IconAward, IconClock, IconGauge,
-  IconTarget, IconStopwatch, IconTrendingUp, IconTrophy, IconUserFilled,
+  IconArrowLeft,
+  IconAward,
+  IconClock,
+  IconGauge,
+  IconStopwatch,
+  IconTarget,
+  IconTrendingUp,
+  IconTrophy,
+  IconUserFilled,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { BackToTyping } from "~/components/ui/back-to-typing";
-import { Button } from "~/components/ui/button";
+import { useParams } from "next/navigation";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { BackToTyping } from "~/components/ui/back-to-typing";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "~/components/ui/empty";
 import { Progress } from "~/components/ui/progress";
-import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
 
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { cn } from "~/lib/utils";
-import { getPublicProfile, type PublicProfile } from "~/server/results";
-import { getUserAchievementsByUsername, getUserPointsByUsername } from "~/server/gamification";
-import { getBoardRanks } from "~/server/leaderboard";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { SelectSkeleton, Skeleton } from "~/components/ui/skeleton";
+import { StreakCalendar, StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
+import { useUser } from "~/components/user-provider";
+import { ACHIEVEMENTS } from "~/lib/achievements";
 import { lcGetEntry, lcSet } from "~/lib/client-cache";
 import {
-  PROFILE_CACHE_TTL, PROFILE_FRESH_MS,
-  isFresh, ownRanksKey,
-  pubProfileKey, pubPointsKey, pubAchKey, pubRanksKey,
-  readPublicProfileCache, writeOwnProfileCache, writePublicProfileCache,
+  isFresh,
+  ownRanksKey,
+  PROFILE_CACHE_TTL,
+  PROFILE_FRESH_MS,
+  pubAchKey,
+  pubPointsKey,
+  pubProfileKey,
+  pubRanksKey,
+  readPublicProfileCache,
+  writeOwnProfileCache,
+  writePublicProfileCache,
 } from "~/lib/profile-cache";
-import { StreakCalendar, StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
-import { AchievementGrid } from "~/components/ui/achievement-grid";
-import { useUser } from "~/components/user-provider";
-
-import { ACHIEVEMENTS } from "~/lib/achievements";
+import { cn } from "~/lib/utils";
+import { getUserAchievementsByUsername, getUserPointsByUsername } from "~/server/gamification";
+import { getBoardRanks } from "~/server/leaderboard";
+import { getPublicProfile, type PublicProfile } from "~/server/results";
 
 export default function PublicProfilePage() {
   const params = useParams();
   const username = params.username as string;
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [points, setPoints] = useState<{ totalXP: number; level: number; progress: number } | null>(null);
+  const [points, setPoints] = useState<{ totalXP: number; level: number; progress: number } | null>(
+    null,
+  );
   const [achievements, setAchievements] = useState<Array<{
-    id: string; name: string; description: string; trigger: "metric" | "streak" | "api";
-    achievedAt: string | null; progress: number; xp: number;
+    id: string;
+    name: string;
+    description: string;
+    trigger: "metric" | "streak" | "api";
+    achievedAt: string | null;
+    progress: number;
+    xp: number;
   }> | null>(null);
-  
+
   const [streakYear, setStreakYear] = useState<number | "last12">("last12");
   const [boardRanks, setBoardRanks] = useState<Record<string, number> | null>(null);
   // Tracks the profile currently rendered, so a background refetch can tell
@@ -57,13 +89,27 @@ export default function PublicProfilePage() {
   // cached data immediately instead of flashing the skeleton.
   useLayoutEffect(() => {
     const c = readPublicProfileCache(username);
-    if (c.profile) { profileRef.current = c.profile.data; setProfile(c.profile.data); setLoading(false); }
+    if (c.profile) {
+      profileRef.current = c.profile.data;
+      setProfile(c.profile.data);
+      setLoading(false);
+    } else {
+      // Navigating between usernames reuses this component instance, so drop
+      // any previously rendered profile (e.g. from the last username) and
+      // fall back to the skeleton until the fetch resolves.
+      profileRef.current = null;
+      setProfile(null);
+      setLoading(true);
+    }
     if (c.points) setPoints(c.points.data);
+    else setPoints(null);
     if (c.achievements) setAchievements(c.achievements.data);
+    else setAchievements(null);
     const isOwn = currentUser?.username === username;
     const ranksKey = isOwn && currentUser ? ownRanksKey(currentUser.id) : pubRanksKey(username);
     const ranks = lcGetEntry<Record<string, number>>(ranksKey, PROFILE_CACHE_TTL);
     if (ranks) setBoardRanks(ranks.data);
+    else setBoardRanks(null);
   }, [username, currentUser]);
 
   // Stale-while-revalidate: show cached data instantly, fetch fresh in background.
@@ -78,14 +124,21 @@ export default function PublicProfilePage() {
     // Viewing your own public profile? Keep the full-profile cache warm so
     // "my profile" renders instantly when you head back.
     if (isOwn && currentUser) {
-      if (c.profile) writeOwnProfileCache(currentUser.id, { stats: c.profile.data.stats, joinDate: c.profile.data.joinedAt });
+      if (c.profile)
+        writeOwnProfileCache(currentUser.id, {
+          stats: c.profile.data.stats,
+          joinDate: c.profile.data.joinedAt,
+        });
       if (c.points) writeOwnProfileCache(currentUser.id, { points: c.points.data });
-      if (c.achievements) writeOwnProfileCache(currentUser.id, { achievements: c.achievements.data });
+      if (c.achievements)
+        writeOwnProfileCache(currentUser.id, { achievements: c.achievements.data });
     }
 
     // Everything is fresh — skip the refetch entirely (fast profile ↔ public toggle)
     if (isFresh(c.profile) && isFresh(c.points) && isFresh(c.achievements)) {
-      return () => { cancelled = true; };
+      return () => {
+        cancelled = true;
+      };
     }
 
     // Fetch all data in parallel
@@ -93,31 +146,45 @@ export default function PublicProfilePage() {
       getPublicProfile(username),
       getUserPointsByUsername(username),
       getUserAchievementsByUsername(username),
-    ]).then(([p, pt, a]) => {
-      if (cancelled) return;
-      if (p) {
-        // Revalidation that returns identical data must not cause a visible
-        // re-render — keep showing what's already on screen.
-        if (!publicProfileEqual(p, profileRef.current)) {
-          profileRef.current = p;
-          setProfile(p);
+    ])
+      .then(([p, pt, a]) => {
+        if (cancelled) return;
+        if (p) {
+          // Revalidation that returns identical data must not cause a visible
+          // re-render — keep showing what's already on screen.
+          if (!publicProfileEqual(p, profileRef.current)) {
+            profileRef.current = p;
+            setProfile(p);
+          }
+          setLoading(false);
+          lcSet(pubProfileKey(username), p);
+        } else {
+          // Server reported no account for this username — stop loading so
+          // the "user not found" state renders instead of a permanent skeleton.
+          setLoading(false);
         }
-        setLoading(false);
-        lcSet(pubProfileKey(username), p);
-      }
-      if (pt) { setPoints(pt); lcSet(pubPointsKey(username), pt); }
-      if (a) { setAchievements(a); lcSet(pubAchKey(username), a); }
-      // Mirror into the full-profile cache when this is your own profile
-      if (isOwn && currentUser) {
-        if (p) writeOwnProfileCache(currentUser.id, { stats: p.stats, joinDate: p.joinedAt });
-        if (pt) writeOwnProfileCache(currentUser.id, { points: pt });
-        if (a) writeOwnProfileCache(currentUser.id, { achievements: a });
-      }
-    }).catch(() => {
-      if (!cancelled) setLoading(false);
-    });
+        if (pt) {
+          setPoints(pt);
+          lcSet(pubPointsKey(username), pt);
+        }
+        if (a) {
+          setAchievements(a);
+          lcSet(pubAchKey(username), a);
+        }
+        // Mirror into the full-profile cache when this is your own profile
+        if (isOwn && currentUser) {
+          if (p) writeOwnProfileCache(currentUser.id, { stats: p.stats, joinDate: p.joinedAt });
+          if (pt) writeOwnProfileCache(currentUser.id, { points: pt });
+          if (a) writeOwnProfileCache(currentUser.id, { achievements: a });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [username, currentUser]);
 
   // Board ranks depend on profile stats (cached; fresh skips the refetch)
@@ -154,14 +221,13 @@ export default function PublicProfilePage() {
           <div className="flex flex-col items-center gap-2">
             <h1 className="text-xl font-semibold tracking-tight">user not found</h1>
             <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
-              there&apos;s no account with that username. double-check the spelling or try searching for them in the command bar.
+              there&apos;s no account with that username. double-check the spelling or try searching
+              for them in the command bar.
             </p>
           </div>
           <div className="flex flex-col items-center gap-4">
-            <Button asChild size="sm" className="gap-2">
-              <Link href="/leaderboard">
-                <IconTrophy className="size-4" /> view leaderboard
-              </Link>
+            <Button size="sm" className="gap-2" render={<Link href="/leaderboard" />}>
+              <IconTrophy className="size-4" /> view leaderboard
             </Button>
             <BackToTyping />
           </div>
@@ -170,7 +236,7 @@ export default function PublicProfilePage() {
     );
   }
 
-  const { username: name, avatarUrl, stats, results } = profile;
+  const { username: name, avatarUrl, joinedAt, stats, results } = profile;
   const safeResults = results ?? [];
 
   const dayMap = new Map<string, number>();
@@ -179,10 +245,15 @@ export default function PublicProfilePage() {
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     dayMap.set(key, (dayMap.get(key) ?? 0) + 1);
   }
-  const streakPeriods = Array.from(dayMap.keys()).sort().map((d) => ({ periodStart: d, periodEnd: d }));
+  const streakPeriods = Array.from(dayMap.keys())
+    .sort()
+    .map((d) => ({ periodStart: d, periodEnd: d }));
   const countsRecord = Object.fromEntries(dayMap.entries()) as Record<string, number>;
   const availableYears = Array.from(
-    new Set([...Array.from(dayMap.keys()).map((d) => Number(d.slice(0, 4))), new Date().getFullYear()])
+    new Set([
+      ...Array.from(dayMap.keys()).map((d) => Number(d.slice(0, 4))),
+      new Date().getFullYear(),
+    ]),
   ).sort((a, b) => b - a);
   const totalTestsInStreakPeriod =
     streakYear === "last12"
@@ -199,10 +270,17 @@ export default function PublicProfilePage() {
           .filter(([k]) => k.startsWith(String(streakYear)))
           .reduce((a, [, v]) => a + v, 0);
 
-  const allAch = achievements ?? ACHIEVEMENTS.map((a) => ({
-    id: a.id, name: a.name, description: a.description, trigger: a.trigger,
-    achievedAt: null as string | null, progress: 0, xp: a.xp,
-  }));
+  const allAch =
+    achievements ??
+    ACHIEVEMENTS.map((a) => ({
+      id: a.id,
+      name: a.name,
+      description: a.description,
+      trigger: a.trigger,
+      achievedAt: null as string | null,
+      progress: 0,
+      xp: a.xp,
+    }));
   const unlockedAch = allAch.filter((a) => a.achievedAt !== null);
   const isOwnProfile = currentUser?.username === username;
 
@@ -213,10 +291,15 @@ export default function PublicProfilePage() {
           <IconUserFilled className="text-primary size-5" /> profile
         </h1>
         {isOwnProfile && currentUser && (
-          <Button variant="outline" size="sm" className="text-muted-foreground gap-2 text-xs" asChild>
-            <Link href="/profile">
-              <IconArrowLeft className="size-3.5" /> <span className="hidden sm:inline">my profile</span><span className="sm:hidden">me</span>
-            </Link>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-muted-foreground gap-2 text-xs"
+            render={<Link href="/profile" />}
+          >
+            <IconArrowLeft className="size-3.5" />{" "}
+            <span className="hidden sm:inline">my profile</span>
+            <span className="sm:hidden">me</span>
           </Button>
         )}
       </header>
@@ -228,14 +311,22 @@ export default function PublicProfilePage() {
             <div className="flex items-center gap-4">
               <Avatar className="size-16 shrink-0 border-2 border-primary/30">
                 {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}
-                <AvatarFallback className="rounded-full text-xl font-bold uppercase">{name.slice(0, 2)}</AvatarFallback>
+                <AvatarFallback className="rounded-full text-xl font-bold uppercase">
+                  {name.slice(0, 2)}
+                </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <h1 className="text-lg font-bold truncate">{name}</h1>
-                <Badge variant="outline" className="text-[10px]">public profile</Badge>
-                {profile!.joinedAt && (
+                <Badge variant="outline" className="text-[10px]">
+                  public profile
+                </Badge>
+                {joinedAt && (
                   <p className="mt-1 text-[10px] text-muted-foreground/70">
-                    joined {new Date(profile!.joinedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    joined{" "}
+                    {new Date(joinedAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 )}
               </div>
@@ -249,9 +340,17 @@ export default function PublicProfilePage() {
               </div>
             ) : points && points.totalXP > 0 ? (
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-lg font-bold tabular-nums text-primary">Lv. {points.level}</span>
-                <Progress value={points.progress} className="h-1.5 flex-1 bg-muted/80" indicatorClassName="bg-gradient-to-r from-primary/80 to-primary shadow-sm shadow-primary/30 transition-all" />
-                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">{points.totalXP.toLocaleString()} XP</span>
+                <span className="text-lg font-bold tabular-nums text-primary">
+                  Lv. {points.level}
+                </span>
+                <Progress
+                  value={points.progress}
+                  className="h-1.5 flex-1 bg-muted/80"
+                  indicatorClassName="bg-gradient-to-r from-primary/80 to-primary shadow-sm shadow-primary/30 transition-all"
+                />
+                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">
+                  {points.totalXP.toLocaleString()} XP
+                </span>
               </div>
             ) : (
               <p className="mt-4 text-[10px] text-muted-foreground">no xp yet</p>
@@ -260,10 +359,26 @@ export default function PublicProfilePage() {
         </Card>
 
         <div className="grid grid-cols-2 gap-3 row-span-2">
-          <StatCard icon={<IconTrendingUp className="size-4" />} label="avg wpm (last 10)" value={loading ? null : String(stats?.avgWpm10 ?? 0)} />
-          <StatCard icon={<IconGauge className="size-4" />} label="avg wpm (all)" value={loading ? null : String(stats?.avgWpmAll ?? 0)} />
-          <StatCard icon={<IconTarget className="size-4" />} label="avg accuracy" value={loading ? null : `${stats?.avgAccuracy ?? 0}%`} />
-          <StatCard icon={<IconStopwatch className="size-4" />} label="time typed" value={loading ? null : formatDuration(stats?.timeTypedSeconds ?? 0)} />
+          <StatCard
+            icon={<IconTrendingUp className="size-4" />}
+            label="avg wpm (last 10)"
+            value={loading ? null : String(stats?.avgWpm10 ?? 0)}
+          />
+          <StatCard
+            icon={<IconGauge className="size-4" />}
+            label="avg wpm (all)"
+            value={loading ? null : String(stats?.avgWpmAll ?? 0)}
+          />
+          <StatCard
+            icon={<IconTarget className="size-4" />}
+            label="avg accuracy"
+            value={loading ? null : `${stats?.avgAccuracy ?? 0}%`}
+          />
+          <StatCard
+            icon={<IconStopwatch className="size-4" />}
+            label="time typed"
+            value={loading ? null : formatDuration(stats?.timeTypedSeconds ?? 0)}
+          />
         </div>
       </div>
 
@@ -280,16 +395,32 @@ export default function PublicProfilePage() {
               const wpm = loading ? null : stats?.bestByBoard?.[board];
               const rank = boardRanks?.[board];
               return (
-                <Card key={board} size="sm" className={cn("items-center rounded-2xl py-3 text-center transition-all", wpm ? "ring-primary/20 hover:ring-primary/40" : "bg-muted/20")}>
+                <Card
+                  key={board}
+                  size="sm"
+                  className={cn(
+                    "items-center rounded-2xl py-3 text-center transition-all",
+                    wpm ? "ring-primary/20 hover:ring-primary/40" : "bg-muted/20",
+                  )}
+                >
                   <CardContent className="flex flex-col items-center gap-1 px-3">
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
+                      {prettyBoard(board)}
+                    </span>
                     {loading ? (
                       <Skeleton className="h-8 w-14" />
                     ) : (
-                      <span className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}>{wpm ?? "-"}</span>
+                      <span
+                        className={`text-2xl font-bold tabular-nums ${wpm ? "text-primary" : "text-muted-foreground/50"}`}
+                      >
+                        {wpm ?? "-"}
+                      </span>
                     )}
                     {rank ? (
-                      <Badge variant="secondary" className="mt-0.5 min-w-9 text-[9px] font-bold tracking-widest">
+                      <Badge
+                        variant="secondary"
+                        className="mt-0.5 min-w-9 text-[9px] font-bold tracking-widest"
+                      >
                         #{rank}
                       </Badge>
                     ) : boardRanks === null ? (
@@ -311,7 +442,9 @@ export default function PublicProfilePage() {
             {achievements === null ? (
               <Skeleton className="ml-auto h-[18px] w-12 rounded-full" />
             ) : (
-              <Badge variant="secondary" className="ml-auto text-[10px]">{unlockedAch.length}/{allAch.length}</Badge>
+              <Badge variant="secondary" className="ml-auto text-[10px]">
+                {unlockedAch.length}/{allAch.length}
+              </Badge>
             )}
           </CardTitle>
         </CardHeader>
@@ -341,13 +474,20 @@ export default function PublicProfilePage() {
               badgeSize="sm"
             />
           ) : (
-            <p className="text-xs text-muted-foreground">no achievements yet</p>
+            <Empty className="gap-1.5 rounded-2xl py-6">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon" className="size-8">
+                  <IconAward className="size-4" />
+                </EmptyMedia>
+                <EmptyTitle className="text-sm font-semibold">no achievements yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  finish tests to earn badges.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           )}
-          
         </CardContent>
       </Card>
-
-      
 
       <Card className="gap-3 py-4">
         <CardHeader className="px-4">
@@ -355,33 +495,55 @@ export default function PublicProfilePage() {
             <IconClock className="size-4" /> activity
             {loading ? (
               <Skeleton className="ml-2 h-3 w-28" />
-            ) : (
+            ) : safeResults.length > 0 ? (
               <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-muted-foreground">
-                {totalTestsInStreakPeriod} tests {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
+                {totalTestsInStreakPeriod} tests{" "}
+                {streakYear === "last12" ? "in last 12 months" : `in ${streakYear}`}
               </span>
-            )}
-            <div className="ml-auto">
-              {loading ? (
-                <SelectSkeleton className="w-36" />
-              ) : (
-                <Select value={String(streakYear)} onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}>
-                  <SelectTrigger size="sm" className="h-7 w-36 text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="last12">last 12 months</SelectItem>
-                    {availableYears.map((y) => (
-                      <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
+            ) : null}
+            {loading || safeResults.length > 0 ? (
+              <div className="ml-auto">
+                {loading ? (
+                  <SelectSkeleton className="w-36" />
+                ) : (
+                  <Select
+                    value={String(streakYear)}
+                    onValueChange={(v) => setStreakYear(v === "last12" ? "last12" : Number(v))}
+                  >
+                    <SelectTrigger size="sm" className="h-7 w-36 text-xs">
+                      <SelectValue>
+                        {(val) => (val === "last12" ? "last 12 months" : (val ?? ""))}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="last12">last 12 months</SelectItem>
+                      {availableYears.map((y) => (
+                        <SelectItem key={y} value={String(y)}>
+                          {y}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            ) : null}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4">
           {loading ? (
             <StreakCalendarSkeleton />
+          ) : safeResults.length === 0 ? (
+            <Empty className="gap-1.5 rounded-2xl py-10">
+              <EmptyHeader className="gap-1.5">
+                <EmptyMedia variant="icon">
+                  <IconClock className="size-5" />
+                </EmptyMedia>
+                <EmptyTitle className="text-sm font-semibold">no activity yet</EmptyTitle>
+                <EmptyDescription className="text-xs">
+                  no typing tests recorded yet.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           ) : (
             <StreakCalendar
               streak={streakPeriods}
@@ -398,14 +560,26 @@ export default function PublicProfilePage() {
   );
 }
 
-function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | null }) {
+function StatCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | null;
+}) {
   return (
     <Card className="gap-1 py-3">
       <CardContent className="flex flex-col gap-1 px-3">
         <span className="flex items-center gap-1.5 text-sm font-semibold tracking-wider">
           {icon} {label}
         </span>
-        {value === null ? <Skeleton className="mt-1 h-7 w-16" /> : <span className="text-xl font-bold tabular-nums text-primary">{value}</span>}
+        {value === null ? (
+          <Skeleton className="mt-1 h-7 w-16" />
+        ) : (
+          <span className="text-xl font-bold tabular-nums text-primary">{value}</span>
+        )}
       </CardContent>
     </Card>
   );
@@ -432,25 +606,32 @@ function publicProfileEqual(a: PublicProfile | null, b: PublicProfile | null): b
   if (a === b) return true;
   if (!a || !b) return false;
   if (
-    a.userId !== b.userId || a.username !== b.username ||
-    a.avatarUrl !== b.avatarUrl || a.joinedAt !== b.joinedAt ||
+    a.userId !== b.userId ||
+    a.username !== b.username ||
+    a.avatarUrl !== b.avatarUrl ||
+    a.joinedAt !== b.joinedAt ||
     JSON.stringify(a.stats) !== JSON.stringify(b.stats) ||
     a.results.length !== b.results.length
-  ) return false;
+  )
+    return false;
   const canon = (arr: PublicProfile["results"]) =>
     [...arr]
       .sort((x, y) => (x.id < y.id ? -1 : x.id > y.id ? 1 : 0))
-      .map((r) =>
-        JSON.stringify([r.id, r.createdAt, r.mode, r.variant, r.wpm, r.accuracy]),
-      );
+      .map((r) => JSON.stringify([r.id, r.createdAt, r.mode, r.variant, r.wpm, r.accuracy]));
   const ca = canon(a.results);
   const cb = canon(b.results);
   return ca.every((s, i) => s === cb[i]);
 }
 
 const ALL_BOARDS = [
-  "time:15", "time:30", "time:60", "time:120",
-  "words:10", "words:25", "words:50", "words:100",
+  "time:15",
+  "time:30",
+  "time:60",
+  "time:120",
+  "words:10",
+  "words:25",
+  "words:50",
+  "words:100",
 ] as const;
 
 function ProfileSkeleton() {
@@ -510,9 +691,15 @@ function ProfileSkeleton() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {ALL_BOARDS.map((board) => (
-              <Card key={board} size="sm" className="items-center rounded-2xl bg-muted/20 py-3 text-center">
+              <Card
+                key={board}
+                size="sm"
+                className="items-center rounded-2xl bg-muted/20 py-3 text-center"
+              >
                 <CardContent className="flex flex-col items-center gap-1 px-3">
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{prettyBoard(board)}</span>
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
+                    {prettyBoard(board)}
+                  </span>
                   <Skeleton className="h-8 w-14" />
                   <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
                 </CardContent>
@@ -551,7 +738,9 @@ function ProfileSkeleton() {
             </div>
           </CardTitle>
         </CardHeader>
-        <CardContent className="px-4"><Skeleton className="h-24 w-full" /></CardContent>
+        <CardContent className="px-4">
+          <Skeleton className="h-24 w-full" />
+        </CardContent>
       </Card>
     </div>
   );

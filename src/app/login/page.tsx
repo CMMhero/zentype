@@ -1,13 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  IconBrandDiscordFilled,
+  IconBrandGithubFilled,
+  IconBrandGoogleFilled,
+  IconKeyboardFilled,
+} from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { BackToTyping } from "~/components/ui/back-to-typing";
-import { IconBrandDiscordFilled, IconBrandGithubFilled, IconBrandGoogleFilled, IconKeyboardFilled } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { BackToTyping } from "~/components/ui/back-to-typing";
 import { Button } from "~/components/ui/button";
-import { signInWithProvider, type AuthProvider } from "~/server/auth";
 import { useAuthStatus, useUser } from "~/components/user-provider";
+import { type AuthProvider, signInWithProvider } from "~/server/auth";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState<AuthProvider | null>(null);
@@ -69,7 +74,8 @@ export default function LoginPage() {
               </h1>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              keep your stats across devices.<br />
+              keep your stats across devices.
+              <br />
               sign in to sync, or keep playing as a guest.
             </p>
           </div>

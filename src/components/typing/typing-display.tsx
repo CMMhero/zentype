@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Caret } from "~/components/typing/caret";
-import { cn } from "~/lib/utils";
 import type { CaretStyle, FontSizeKey, GameMode } from "~/lib/types";
+import { cn } from "~/lib/utils";
 
 const FONT_SIZES: Record<FontSizeKey, string> = {
   xs: "text-xl md:text-2xl",
@@ -45,7 +45,8 @@ export function TypingDisplay({
   const wordRefs = useRef<Map<number, HTMLSpanElement>>(new Map());
   const [caret, setCaret] = useState({ x: 0, y: 0, h: 24, w: 10 });
   const [scrollY, setScrollY] = useState(0);
-  const [containerHeight, setContainerHeight] = useState("6em");  const measure = useCallback(() => {
+  const [containerHeight, setContainerHeight] = useState("6em");
+  const measure = useCallback(() => {
     const content = contentRef.current;
     const activeEl = wordRefs.current.get(activeIndex);
     if (!content || !activeEl) return;
@@ -55,14 +56,12 @@ export function TypingDisplay({
     let x = activeEl.offsetLeft;
     let y = activeEl.offsetTop;
     let h = activeEl.offsetHeight;
-    let w =
-      activeEl.offsetWidth / Math.max(activeEl.textContent?.length ?? 1, 1);
+    let w = activeEl.offsetWidth / Math.max(activeEl.textContent?.length ?? 1, 1);
 
     if (chars.length > 0) {
       const idx = Math.min(current.length, chars.length - 1);
       const r = chars[idx].getBoundingClientRect();
-      x =
-        (current.length >= chars.length ? r.right : r.left) - contentRect.left;
+      x = (current.length >= chars.length ? r.right : r.left) - contentRect.left;
       y = r.top - contentRect.top;
       h = r.height;
       w = r.width;
@@ -85,7 +84,9 @@ export function TypingDisplay({
     const actualLineHeight = computedLineHeight || fontSize * 1.75;
     // Add margin-bottom from word elements for accurate line spacing
     const wordEl = content.querySelector(".mr-\\[1ch\\]") as HTMLElement | null;
-    const marginBottom = wordEl ? parseFloat(window.getComputedStyle(wordEl).marginBottom) : fontSize * 0.35;
+    const marginBottom = wordEl
+      ? parseFloat(window.getComputedStyle(wordEl).marginBottom)
+      : fontSize * 0.35;
     const totalLineHeight = actualLineHeight + marginBottom;
 
     // Container height = visible lines * total line height + small buffer for anti-aliasing
@@ -99,6 +100,7 @@ export function TypingDisplay({
     });
   }, [activeIndex, current, visibleLines]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-measure when rendered content or font size changes even though `measure` reads layout from the DOM rather than closing over these props
   useLayoutEffect(() => {
     measure();
   }, [measure, words, history, fontSize]);

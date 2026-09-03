@@ -17,10 +17,7 @@ export function lcGet<T>(key: string, ttlMs: number): T | null {
  * Like lcGet, but also returns the entry's age so callers can decide whether
  * the cached value is fresh enough to skip a network refetch entirely.
  */
-export function lcGetEntry<T>(
-  key: string,
-  ttlMs: number,
-): { data: T; ageMs: number } | null {
+export function lcGetEntry<T>(key: string, ttlMs: number): { data: T; ageMs: number } | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(`${PREFIX}${key}`);
@@ -68,7 +65,8 @@ export function lcDelPrefix(prefix: string): void {
     const toRemove: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
-      if (k && k.startsWith(full)) toRemove.push(k);
+      if (k === null) continue;
+      if (k.startsWith(full)) toRemove.push(k);
     }
     for (const k of toRemove) localStorage.removeItem(k);
   } catch {

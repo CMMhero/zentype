@@ -1,10 +1,16 @@
-import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
-import { StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
-  IconAward, IconClock, IconGauge, IconTarget, IconStopwatch, IconTrendingUp,
-  IconTrophy, IconUserFilled,
+  IconAward,
+  IconClock,
+  IconGauge,
+  IconStopwatch,
+  IconTarget,
+  IconTrendingUp,
+  IconTrophy,
+  IconUserFilled,
 } from "@tabler/icons-react";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { SelectSkeleton, Skeleton } from "~/components/ui/skeleton";
+import { StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
 
 export default function PublicProfileLoading() {
   return (
@@ -66,9 +72,15 @@ export default function PublicProfileLoading() {
         <CardContent className="px-4">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {["15s", "30s", "60s", "120s", "10w", "25w", "50w", "100w"].map((label) => (
-              <Card key={label} size="sm" className="items-center rounded-2xl bg-muted/20 py-3 text-center">
+              <Card
+                key={label}
+                size="sm"
+                className="items-center rounded-2xl bg-muted/20 py-3 text-center"
+              >
                 <CardContent className="flex flex-col items-center gap-1 px-3">
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{label}</span>
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">
+                    {label}
+                  </span>
                   <Skeleton className="h-8 w-14" />
                   <Skeleton className="mt-0.5 h-5 w-9 rounded-full" />
                 </CardContent>

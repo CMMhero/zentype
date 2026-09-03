@@ -1,24 +1,23 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-
-import { cn } from "~/lib/utils"
-import { AchievementBadge } from "~/components/ui/achievement-badge"
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip"
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
+import { AchievementBadge } from "~/components/ui/achievement-badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
+import { cn } from "~/lib/utils";
 
 interface Achievement {
-  id: string
-  name: string
-  description?: string | null
-  trigger: "metric" | "api" | "streak"
-  badgeUrl?: string | null
-  progress?: number
-  rarity?: number
+  id: string;
+  name: string;
+  description?: string | null;
+  trigger: "metric" | "api" | "streak";
+  badgeUrl?: string | null;
+  progress?: number;
+  rarity?: number;
 }
 
 interface UserAchievement extends Achievement {
-  achievedAt: string | null
+  achievedAt: string | null;
 }
 
 const achievementGridVariants = cva("grid", {
@@ -39,29 +38,20 @@ const achievementGridVariants = cva("grid", {
     columns: "auto",
     gap: "default",
   },
-})
+});
 
 interface AchievementGridProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof achievementGridVariants> {
-  achievements: UserAchievement[]
-  badgeSize?: "sm" | "default" | "lg"
-  onAchievementClick?: (achievement: UserAchievement) => void
+  achievements: UserAchievement[];
+  badgeSize?: "sm" | "default" | "lg";
+  onAchievementClick?: (achievement: UserAchievement) => void;
 }
 
 const AchievementGrid = React.forwardRef<HTMLDivElement, AchievementGridProps>(
   (
-    {
-      className,
-      columns,
-      gap,
-      achievements,
-      badgeSize = "default",
-      onAchievementClick,
-      ...props
-    },
-    ref
+    { className, columns, gap, achievements, badgeSize = "default", onAchievementClick, ...props },
+    ref,
   ) => {
     return (
       <div
@@ -72,19 +62,25 @@ const AchievementGrid = React.forwardRef<HTMLDivElement, AchievementGridProps>(
         {...props}
       >
         {achievements.map((achievement) => {
-          const tooltipContent = achievement.description || (achievement.achievedAt ? "Earned" : "Locked")
+          const tooltipContent =
+            achievement.description || (achievement.achievedAt ? "Earned" : "Locked");
           return (
             <Tooltip key={achievement.id}>
-              <TooltipTrigger asChild>
-                <div>
-                  <AchievementBadge
-                    achievement={achievement}
-                    badgeSize={badgeSize}
-                    onAchievementClick={onAchievementClick}
-                  />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="flex max-w-[220px] flex-col gap-0.5 text-center">
+              <TooltipTrigger
+                render={
+                  <div>
+                    <AchievementBadge
+                      achievement={achievement}
+                      badgeSize={badgeSize}
+                      onAchievementClick={onAchievementClick}
+                    />
+                  </div>
+                }
+              />
+              <TooltipContent
+                side="top"
+                className="flex max-w-[220px] flex-col gap-0.5 text-center"
+              >
                 <p className="font-medium">{achievement.name}</p>
                 <p className="text-background/70">{tooltipContent}</p>
                 {achievement.rarity != null && (
@@ -92,13 +88,13 @@ const AchievementGrid = React.forwardRef<HTMLDivElement, AchievementGridProps>(
                 )}
               </TooltipContent>
             </Tooltip>
-          )
+          );
         })}
       </div>
-    )
-  }
-)
-AchievementGrid.displayName = "AchievementGrid"
+    );
+  },
+);
+AchievementGrid.displayName = "AchievementGrid";
 
-export { AchievementGrid, achievementGridVariants }
-export type { AchievementGridProps, Achievement, UserAchievement }
+export type { Achievement, AchievementGridProps, UserAchievement };
+export { AchievementGrid, achievementGridVariants };

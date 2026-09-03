@@ -1,7 +1,7 @@
 "use server";
 
-import { getRedis, lbDecode } from "~/lib/redis";
 import { cacheGet, cacheSet } from "~/lib/cache";
+import { getRedis, lbDecode } from "~/lib/redis";
 import { getSupabasePublicClient } from "~/lib/supabase/server";
 import { boardKey, type GameMode, type LeaderboardEntry } from "~/lib/types";
 
@@ -26,10 +26,9 @@ export async function getLevelLeaderboard(limit = 50): Promise<LevelLeaderboardE
 
   let entries: LevelLeaderboardEntry[] = [];
   // Try RPC first (bypasses RLS via SECURITY DEFINER)
-  const { data: rpcData, error: rpcError } = await supabase.rpc(
-    "get_level_leaderboard",
-    { p_limit: limit },
-  );
+  const { data: rpcData, error: rpcError } = await supabase.rpc("get_level_leaderboard", {
+    p_limit: limit,
+  });
   if (!rpcError && rpcData && rpcData.length > 0) {
     entries = rpcData.map((r: Record<string, unknown>, i: number) => ({
       rank: i + 1,
@@ -114,10 +113,11 @@ export async function getBoardRanks(
       const variant = Number(variantStr);
       if (!mode || !variant) return [board, undefined] as const;
       // Try RPC first
-      const { data: rpcRows, error: rpcErr } = await supabase.rpc(
-        "get_wpm_leaderboard",
-        { p_mode: mode, p_variant: variant, p_limit: 500 },
-      );
+      const { data: rpcRows, error: rpcErr } = await supabase.rpc("get_wpm_leaderboard", {
+        p_mode: mode,
+        p_variant: variant,
+        p_limit: 500,
+      });
       if (!rpcErr && rpcRows && rpcRows.length > 0) {
         const idx = rpcRows.findIndex((r: Record<string, unknown>) => r.user_id === userId);
         return [board, idx !== -1 ? idx + 1 : undefined] as const;
@@ -134,7 +134,11 @@ export async function getBoardRanks(
       const best = new Map<string, { wpm: number; acc: number }>();
       for (const r of rows) {
         const cur = best.get(r.user_id as string);
-        if (!cur || (r.wpm as number) > cur.wpm || ((r.wpm as number) === cur.wpm && (r.accuracy as number) > cur.acc)) {
+        if (
+          !cur ||
+          (r.wpm as number) > cur.wpm ||
+          ((r.wpm as number) === cur.wpm && (r.accuracy as number) > cur.acc)
+        ) {
           best.set(r.user_id as string, { wpm: r.wpm as number, acc: r.accuracy as number });
         }
       }
@@ -200,7 +204,9 @@ export async function getLeaderboard(data: {
             let meta: Partial<MetaValue> = {};
             try {
               meta = metaJson ? JSON.parse(metaJson) : {};
-            } catch { /* ignore */ }
+            } catch {
+              /* ignore */
+            }
             if (!meta.username) continue;
             const score = scoreMap.get(userId) ?? 0;
             const decoded = lbDecode(score);
@@ -240,15 +246,12 @@ export async function getLeaderboard(data: {
   const supabase = getSupabasePublicClient();
   if (!supabase) return [];
   // Try RPC first (bypasses RLS via SECURITY DEFINER)
-  const { data: rpcRows, error: rpcError } = await supabase.rpc(
-    "get_wpm_leaderboard",
-    {
-      p_mode: data.mode,
-      p_variant: data.variant,
-      p_limit: limit,
-      p_since: data.since ?? null,
-    },
-  );
+  const { data: rpcRows, error: rpcError } = await supabase.rpc("get_wpm_leaderboard", {
+    p_mode: data.mode,
+    p_variant: data.variant,
+    p_limit: limit,
+    p_since: data.since ?? null,
+  });
   if (!rpcError && rpcRows && rpcRows.length > 0) {
     return rpcRows.map((r: Record<string, unknown>, i: number) => ({
       rank: i + 1,

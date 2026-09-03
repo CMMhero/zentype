@@ -20,9 +20,10 @@ export function calculateTestXP(result: TestResult, currentStreak: number): numb
   xp = Math.round(xp * accMultiplier);
 
   // mode bonus: longer tests earn more
-  const modeBonus = result.mode === "time"
-    ? 1 + Math.min(0.5, result.variant / 240) // up to +50% for 120s
-    : 1 + Math.min(0.3, result.variant / 300); // up to +30% for 100w
+  const modeBonus =
+    result.mode === "time"
+      ? 1 + Math.min(0.5, result.variant / 240) // up to +50% for 120s
+      : 1 + Math.min(0.3, result.variant / 300); // up to +30% for 100w
   xp = Math.round(xp * modeBonus);
 
   // streak bonus: +5% per day, capped at +50%

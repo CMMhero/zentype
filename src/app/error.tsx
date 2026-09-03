@@ -1,10 +1,10 @@
 "use client";
 
 import { IconRefresh } from "@tabler/icons-react";
-import { Button } from "~/components/ui/button";
 import { BackToTyping } from "~/components/ui/back-to-typing";
+import { Button } from "~/components/ui/button";
 
-export default function Error({
+export default function ErrorPage({
   error,
   reset,
 }: {
@@ -26,16 +26,12 @@ export default function Error({
 
         {/* Text content */}
         <div className="flex flex-col items-center gap-2">
-          <h1 className="text-xl font-semibold tracking-tight">
-            something broke
-          </h1>
+          <h1 className="text-xl font-semibold tracking-tight">something broke</h1>
           <p className="text-muted-foreground max-w-sm text-sm leading-relaxed">
             {error.message || "an unexpected error occurred. try refreshing or heading back."}
           </p>
           {error.digest && (
-            <p className="text-muted-foreground/50 font-mono text-xs">
-              {error.digest}
-            </p>
+            <p className="text-muted-foreground/50 font-mono text-xs">{error.digest}</p>
           )}
         </div>
 

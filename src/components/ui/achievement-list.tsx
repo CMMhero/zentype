@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { IconTrophy } from "@tabler/icons-react"
+import { IconTrophy } from "@tabler/icons-react";
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
 
 interface Achievement {
-  id: string
-  name: string
-  description?: string | null
-  trigger: "metric" | "api" | "streak"
-  badgeUrl?: string | null
-  progress?: number
-  rarity?: number
+  id: string;
+  name: string;
+  description?: string | null;
+  trigger: "metric" | "api" | "streak";
+  badgeUrl?: string | null;
+  progress?: number;
+  rarity?: number;
 }
 
 interface UserAchievement extends Achievement {
-  achievedAt: string | null
+  achievedAt: string | null;
 }
 
 const achievementListVariants = cva("flex flex-col", {
@@ -38,35 +38,34 @@ const achievementListVariants = cva("flex flex-col", {
     columns: "auto",
     gap: "default",
   },
-})
+});
 
 interface AchievementListProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof achievementListVariants> {
-  achievements: UserAchievement[]
-  badgeSize?: "sm" | "default" | "lg"
-  lockedStyle?: "grayscale" | "silhouette" | "hidden"
-  onAchievementClick?: (achievement: UserAchievement) => void
+  achievements: UserAchievement[];
+  badgeSize?: "sm" | "default" | "lg";
+  lockedStyle?: "grayscale" | "silhouette" | "hidden";
+  onAchievementClick?: (achievement: UserAchievement) => void;
 }
 
 const badgeSizeMap = {
   sm: "h-10 w-10",
   default: "h-12 w-12",
   lg: "h-14 w-14",
-} as const
+} as const;
 
 const iconSizeMap = {
   sm: "h-5 w-5",
   default: "h-6 w-6",
   lg: "h-7 w-7",
-} as const
+} as const;
 
 const progressSizeMap = {
   sm: 42,
   default: 48,
   lg: 56,
-} as const
+} as const;
 
 const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
   (
@@ -80,7 +79,7 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
       onAchievementClick,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <div ref={ref} className={cn(className)} {...props}>
@@ -90,24 +89,24 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
           className={achievementListVariants({ columns, gap })}
         >
           {achievements.map((achievement) => {
-            const isUnlocked = achievement.achievedAt !== null
+            const isUnlocked = achievement.achievedAt !== null;
             const hasProgress =
               typeof achievement.progress === "number" &&
               (achievement.progress ?? 0) > 0 &&
-              (achievement.progress ?? 0) < 100
+              (achievement.progress ?? 0) < 100;
 
             if (!isUnlocked && lockedStyle === "hidden") {
-              return null
+              return null;
             }
 
             const progress = hasProgress
               ? Math.min(100, Math.max(0, achievement.progress ?? 0))
-              : 0
-            const progressSize = progressSizeMap[badgeSize]
-            const progressStroke = 3
-            const progressRadius = (progressSize - progressStroke) / 2
-            const circumference = 2 * Math.PI * progressRadius
-            const dashOffset = circumference - (progress / 100) * circumference
+              : 0;
+            const progressSize = progressSizeMap[badgeSize];
+            const progressStroke = 3;
+            const progressRadius = (progressSize - progressStroke) / 2;
+            const circumference = 2 * Math.PI * progressRadius;
+            const dashOffset = circumference - (progress / 100) * circumference;
 
             return (
               <div
@@ -119,8 +118,8 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                   onAchievementClick
                     ? (e) => {
                         if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault()
-                          onAchievementClick(achievement)
+                          e.preventDefault();
+                          onAchievementClick(achievement);
                         }
                       }
                     : undefined
@@ -130,11 +129,10 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                   onAchievementClick && "cursor-pointer",
                   isUnlocked
                     ? "bg-card border-primary/20 shadow-sm"
-                    : "bg-muted/20 border-border/40 opacity-70"
+                    : "bg-muted/20 border-border/40 opacity-70",
                 )}
               >
                 {achievement.badgeUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={achievement.badgeUrl}
                     alt={achievement.name}
@@ -142,9 +140,7 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                       badgeSizeMap[badgeSize],
                       "shrink-0 rounded-full object-cover",
                       !isUnlocked && lockedStyle === "grayscale" && "grayscale",
-                      !isUnlocked &&
-                        lockedStyle === "silhouette" &&
-                        "opacity-30 brightness-0"
+                      !isUnlocked && lockedStyle === "silhouette" && "opacity-30 brightness-0",
                     )}
                   />
                 ) : (
@@ -155,7 +151,7 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                       "flex shrink-0 items-center justify-center rounded-full shadow-sm",
                       isUnlocked
                         ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground grayscale"
+                        : "bg-muted text-muted-foreground grayscale",
                     )}
                   >
                     <IconTrophy className={iconSizeMap[badgeSize]} />
@@ -166,7 +162,7 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                   <p
                     className={cn(
                       "truncate text-base font-semibold",
-                      !isUnlocked && "text-muted-foreground"
+                      !isUnlocked && "text-muted-foreground",
                     )}
                   >
                     {achievement.name}
@@ -213,14 +209,14 @@ const AchievementList = React.forwardRef<HTMLDivElement, AchievementListProps>(
                   </div>
                 ) : null}
               </div>
-            )
+            );
           })}
         </div>
       </div>
-    )
-  }
-)
-AchievementList.displayName = "AchievementList"
+    );
+  },
+);
+AchievementList.displayName = "AchievementList";
 
-export { AchievementList, achievementListVariants }
-export type { AchievementListProps, Achievement, UserAchievement }
+export type { Achievement, AchievementListProps, UserAchievement };
+export { AchievementList, achievementListVariants };

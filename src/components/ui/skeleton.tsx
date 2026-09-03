@@ -1,13 +1,13 @@
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
 
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="skeleton"
-      className={cn("animate-pulse rounded-3xl bg-muted", className)}
+      className={cn("animate-pulse rounded-2xl bg-muted", className)}
       {...props}
     />
-  )
+  );
 }
 
 /**
@@ -23,7 +23,7 @@ function ButtonSkeleton({ className, ...props }: React.ComponentProps<"div">) {
       <span className="size-3.5 shrink-0 rounded bg-muted-foreground/15" />
       <span className="h-2 min-w-8 flex-1 rounded bg-muted-foreground/15" />
     </Skeleton>
-  )
+  );
 }
 
 /**
@@ -33,13 +33,16 @@ function ButtonSkeleton({ className, ...props }: React.ComponentProps<"div">) {
 function SelectSkeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <Skeleton
-      className={cn("flex h-7 shrink-0 items-center justify-between gap-1.5 rounded-3xl px-3", className)}
+      className={cn(
+        "flex h-7 shrink-0 items-center justify-between gap-1.5 rounded-3xl px-3",
+        className,
+      )}
       {...props}
     >
       <span className="h-2 w-14 rounded bg-muted-foreground/15" />
       <span className="size-4 shrink-0 rounded bg-muted-foreground/15" />
     </Skeleton>
-  )
+  );
 }
 
-export { Skeleton, ButtonSkeleton, SelectSkeleton }
+export { ButtonSkeleton, SelectSkeleton, Skeleton };

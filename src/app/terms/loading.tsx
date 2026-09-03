@@ -1,5 +1,5 @@
-import { Skeleton } from "~/components/ui/skeleton";
 import { IconFileTextFilled } from "@tabler/icons-react";
+import { Skeleton } from "~/components/ui/skeleton";
 
 export default function TermsLoading() {
   return (
