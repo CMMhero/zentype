@@ -840,7 +840,7 @@ export default function ProfilePage() {
             <Button
               variant="link"
               size="sm"
-              className="mt-3 h-auto gap-1 p-0 text-xs"
+              className="mt-3 h-auto gap-1 p-0"
               onClick={() => setAchOpen(true)}
             >
               view all achievements <IconArrowRight className="size-3" />
