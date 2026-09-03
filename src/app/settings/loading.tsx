@@ -1,12 +1,18 @@
-import { Skeleton } from "~/components/ui/skeleton";
+import { Button } from "~/components/ui/button";
+import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import {
-  IconDeviceGamepad2, IconKeyboard, IconRefresh,
+  IconDeviceGamepad2, IconKeyboard, IconPlayerPlay, IconRefresh,
   IconPalette, IconSettingsFilled, IconUser, IconVolume,
 } from "@tabler/icons-react";
 
-/** Placeholders sized to mirror the real settings controls (Switch, Slider, Select + Button). */
+/**
+ * Loading placeholders for settings controls. Buttons carry only static
+ * content, so they're rendered as real controls; only elements whose shown
+ * value depends on settings data (Switch state, Slider value, Select value)
+ * get a skeleton, shaped to match the real control.
+ */
 type ControlKind = "switch" | "slider" | "select-play" | "button";
 
 function ControlSkeleton({ kind }: { kind: ControlKind }) {
@@ -22,16 +28,34 @@ function ControlSkeleton({ kind }: { kind: ControlKind }) {
         </div>
       );
     case "select-play":
-      // Variant row: Select trigger + icon-only preview button
+      // Variant row: Select trigger (its value is data) + icon-only preview Button (static)
       return (
         <div className="flex shrink-0 items-center gap-2">
-          <Skeleton className="h-8 w-20 rounded-md" />
-          <Skeleton className="size-8 rounded-md" />
+          <SelectSkeleton className="h-8 w-20" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="pointer-events-none size-8 shrink-0 p-0"
+            aria-hidden
+            tabIndex={-1}
+          >
+            <IconPlayerPlay className="size-3" />
+          </Button>
         </div>
       );
     case "button":
-      // "play error" outline button
-      return <Skeleton className="h-8 w-24 shrink-0 rounded-md" />;
+      // "play error" outline button — static label, render the real control
+      return (
+        <Button
+          variant="outline"
+          size="sm"
+          className="pointer-events-none shrink-0 gap-1.5"
+          aria-hidden
+          tabIndex={-1}
+        >
+          <IconPlayerPlay className="size-3" /> play error
+        </Button>
+      );
   }
 }
 
@@ -67,14 +91,20 @@ const RULES_ROWS: Array<{ label: string; hint?: string; control: ControlKind }> 
 export default function SettingsLoading() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      {/* Header — fully rendered, matches real Button sizing */}
+      {/* Header — static chrome, rendered as the real button */}
       <header className="flex items-center justify-between">
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconSettingsFilled className="text-primary size-5" /> settings
         </h1>
-        <span className="text-muted-foreground inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="pointer-events-none text-muted-foreground gap-2 text-xs"
+          aria-hidden
+          tabIndex={-1}
+        >
           <IconRefresh className="size-3.5" /> restore defaults
-        </span>
+        </Button>
       </header>
 
       {/* Tabs — exact same structure as real settings page */}

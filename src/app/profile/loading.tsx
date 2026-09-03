@@ -1,8 +1,9 @@
-import { Skeleton, ButtonSkeleton, SelectSkeleton } from "~/components/ui/skeleton";
+import { Skeleton, SelectSkeleton } from "~/components/ui/skeleton";
+import { Button } from "~/components/ui/button";
 import { StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
-  IconAward, IconChartBar, IconClock, IconHistory, IconTrophy, IconUserFilled,
+  IconAward, IconChartBar, IconClock, IconEye, IconHistory, IconLink, IconTrophy, IconUserFilled,
   IconGauge, IconTarget, IconStopwatch, IconTrendingUp,
 } from "@tabler/icons-react";
 
@@ -14,9 +15,14 @@ export default function ProfileLoading() {
         <h1 className="flex items-center gap-2 text-lg font-semibold">
           <IconUserFilled className="text-primary size-5" /> profile
         </h1>
+        {/* Header actions — static buttons, rendered as the real controls */}
         <div className="flex items-center gap-2">
-          <ButtonSkeleton className="w-32" />
-          <ButtonSkeleton className="w-20" />
+          <Button variant="outline" size="sm" className="pointer-events-none text-muted-foreground gap-2 text-xs" aria-hidden tabIndex={-1}>
+            <IconEye className="size-3.5" /> <span className="hidden sm:inline">view public profile</span><span className="sm:hidden">public</span>
+          </Button>
+          <Button variant="outline" size="sm" className="pointer-events-none text-muted-foreground gap-2 text-xs" aria-hidden tabIndex={-1}>
+            <IconLink className="size-3.5" /> <span className="hidden sm:inline">copy link</span><span className="sm:hidden">copy</span>
+          </Button>
         </div>
       </header>
 
