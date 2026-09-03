@@ -33,7 +33,7 @@ import { StreakCalendar } from "~/components/ui/streak-calendar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { AchievementList } from "~/components/ui/achievement-list";
 import dynamic from "next/dynamic";
-const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-56 w-full" /> });
+const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), { ssr: false, loading: () => <Skeleton className="h-40 sm:h-56 w-full" /> });
 import { getMyJoinDate, getResultById, getUserResults, getUserStats, type AggregatedStats } from "~/server/results";
 import { getUserPoints, getUserAchievements } from "~/server/gamification";
 import { getBoardRanks } from "~/server/leaderboard";
@@ -763,7 +763,7 @@ export default function ProfilePage() {
               {selected.timeline ? (
                 <WpmChart timeline={selected.timeline} compact />
               ) : (
-                <Skeleton className="h-56 w-full rounded-2xl" />
+                <Skeleton className="h-40 sm:h-56 w-full rounded-2xl" />
               )}
               <div className="grid grid-cols-3 gap-2 text-center sm:grid-cols-6 sm:gap-3">
                 <Mini label="raw" value={String(selected.rawWpm)} />

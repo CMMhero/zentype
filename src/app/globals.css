@@ -284,7 +284,7 @@
   html {
     color-scheme: dark;
     overflow-x: clip;
-    scrollbar-gutter: stable;
+    scrollbar-width: none;
     @apply font-sans;
   }
   html[data-appearance="light"] {
@@ -307,18 +307,7 @@
     color: var(--foreground);
   }
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--background);
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--muted);
-    border-radius: 0;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--muted-foreground);
+    display: none;
   }
   button:not(:disabled), [role="button"]:not(:disabled) {
     cursor: pointer;
