@@ -60,6 +60,112 @@ function isActive(pathname: string, to: string) {
   return to === "/" ? pathname === "/" : pathname.startsWith(to);
 }
 
+function DesktopNavLink({
+  item,
+  index,
+  active,
+  presses,
+  onRepeatPress,
+}: {
+  item: (typeof NAV)[number];
+  index: number;
+  active: boolean;
+  presses: Record<string, number>;
+  onRepeatPress: (to: string) => void;
+}) {
+  return (
+    <NavigationMenuItem key={item.to}>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <NavigationMenuLink
+              className={cn(
+                "rounded-2xl p-1.5 transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/30",
+                active
+                  ? "text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+              render={
+                <Link
+                  href={item.to}
+                  aria-label={item.label}
+                  onClick={(e) => {
+                    if (active) {
+                      e.preventDefault();
+                      onRepeatPress(item.to);
+                    }
+                  }}
+                />
+              }
+            >
+              <span className="relative flex h-5 w-5 items-center justify-center">
+                <item.icon
+                  key={active ? `pop-${presses[item.to] ?? 0}` : "idle"}
+                  className={cn(
+                    "size-5 text-primary transition-all duration-300 ease-out",
+                    active ? "zt-icon-pop opacity-100" : "absolute opacity-0",
+                  )}
+                />
+                <item.iconOutline
+                  className={cn(
+                    "size-5",
+                    active
+                      ? "absolute opacity-0"
+                      : "transition-all duration-300 ease-out opacity-100",
+                  )}
+                />
+              </span>
+            </NavigationMenuLink>
+          }
+        />
+        <TooltipContent side="bottom" showArrow={false} className="flex items-center gap-1.5">
+          {item.label}
+          <Kbd>alt</Kbd>+<Kbd>{index + 1}</Kbd>
+        </TooltipContent>
+      </Tooltip>
+    </NavigationMenuItem>
+  );
+}
+
+/** Floating pill dock — an icon-rail used as the "wings" around the brand. */
+function DesktopDock({
+  className,
+  items,
+  pathname,
+  presses,
+  onRepeatPress,
+}: {
+  className?: string;
+  items: { item: (typeof NAV)[number]; index: number }[];
+  pathname: string;
+  presses: Record<string, number>;
+  onRepeatPress: (to: string) => void;
+}) {
+  return (
+    <NavigationMenu
+      aria-label="Primary"
+      viewport={false}
+      className={cn("min-w-0 items-center", className)}
+    >
+      <NavigationMenuList className="flex items-center gap-0.5">
+        {items.map(({ item, index }) => {
+          const active = isActive(pathname, item.to);
+          return (
+            <DesktopNavLink
+              key={item.to}
+              item={item}
+              index={index}
+              active={active}
+              presses={presses}
+              onRepeatPress={onRepeatPress}
+            />
+          );
+        })}
+      </NavigationMenuList>
+    </NavigationMenu>
+  );
+}
+
 export function Navbar() {
   const { user, status: authStatus, refresh: refreshUser } = useAuth();
   const pathname = usePathname();
@@ -69,6 +175,7 @@ export function Navbar() {
   useEffect(() => {
     setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
   }, []);
+  const [presses, setPresses] = useState<Record<string, number>>({});
   const [userLevel, setUserLevel] = useState<number | null>(null);
   useEffect(() => {
     if (!user) {
@@ -104,18 +211,44 @@ export function Navbar() {
     router.push("/");
   }
 
+  const repeatPress = (to: string) => {
+    setPresses((p) => ({ ...p, [to]: (p[to] ?? 0) + 1 }));
+    window.dispatchEvent(new Event("zt:restart"));
+  };
+
   return (
     <header
       className="bg-background/80 sticky top-0 z-40 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
       role="banner"
     >
       <div
-        className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4"
+        className="mx-auto grid h-12 w-full max-w-5xl grid-cols-[1fr_minmax(0,auto)_1fr] items-center gap-x-4 px-4"
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
+        {/* Left column — command button on mobile, nav dock on desktop */}
+        <div className="col-start-1 flex items-center gap-2 justify-self-start">
+          <Button
+            variant="default"
+            size="sm"
+            className="sm:hidden"
+            onClick={() => setPaletteOpen(true)}
+            aria-label="Open command palette"
+          >
+            <IconCommand className="size-4" />
+          </Button>
+          <DesktopDock
+            className="hidden md:flex"
+            items={NAV.map((item, index) => ({ item, index }))}
+            pathname={pathname}
+            presses={presses}
+            onRepeatPress={repeatPress}
+          />
+        </div>
+
+        {/* Brand — centered on both mobile and desktop */}
         <Link
           href="/"
-          className="group flex shrink-0 items-center gap-2"
+          className="group col-start-2 flex shrink-0 items-center gap-2 justify-self-center"
           aria-label="zentype home"
           onClick={(e) => {
             if (pathname === "/") {
@@ -128,57 +261,8 @@ export function Navbar() {
           <span className="text-sm font-semibold tracking-tight">zentype</span>
         </Link>
 
-        <div className="ml-4 hidden md:block">
-          <NavigationMenu aria-label="Primary">
-            <NavigationMenuList className="gap-2.5">
-              {NAV.map((item, i) => {
-                const active = isActive(pathname, item.to);
-                return (
-                  <NavigationMenuItem key={item.to}>
-                    <Tooltip>
-                      <TooltipTrigger
-                        render={
-                          <NavigationMenuLink
-                            className={cn(
-                              "rounded-3xl p-1.5 transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/30",
-                              active
-                                ? "text-primary"
-                                : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                            )}
-                            render={
-                              <Link
-                                href={item.to}
-                                aria-label={item.label}
-                                onClick={(e) => {
-                                  if (pathname === item.to) {
-                                    e.preventDefault();
-                                    window.dispatchEvent(new Event("zt:restart"));
-                                  }
-                                }}
-                              />
-                            }
-                          >
-                            <item.icon className="size-5" stroke={1} />
-                          </NavigationMenuLink>
-                        }
-                      />
-                      <TooltipContent
-                        side="bottom"
-                        showArrow={false}
-                        className="flex items-center gap-1.5"
-                      >
-                        {item.label}
-                        <Kbd>alt</Kbd>+<Kbd>{i + 1}</Kbd>
-                      </TooltipContent>
-                    </Tooltip>
-                  </NavigationMenuItem>
-                );
-              })}
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-
-        <div className="ml-auto flex items-center gap-2">
+        {/* Right column — command button on desktop, user menu / sign in */}
+        <div className="col-start-3 flex items-center justify-end gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -188,15 +272,6 @@ export function Navbar() {
           >
             <span className="text-muted-foreground">commands</span>
             <Kbd>{isMac ? "cmd" : "ctrl"} k</Kbd>
-          </Button>
-          <Button
-            variant="default"
-            size="sm"
-            className="sm:hidden"
-            onClick={() => setPaletteOpen(true)}
-            aria-label="Open command palette"
-          >
-            <IconCommand className="size-4" />
           </Button>
 
           {authStatus === "loading" ? (
