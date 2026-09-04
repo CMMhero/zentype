@@ -145,10 +145,7 @@ function DesktopDock({
     <NavigationMenu
       aria-label="Primary"
       viewport={false}
-      className={cn(
-        "min-w-0 items-center rounded-full bg-card px-1.5 py-1 shadow-md ring-1 ring-foreground/5",
-        className,
-      )}
+      className={cn("min-w-0 items-center", className)}
     >
       <NavigationMenuList className="flex items-center gap-0.5">
         {items.map(({ item, index }) => {
@@ -225,13 +222,33 @@ export function Navbar() {
       role="banner"
     >
       <div
-        className="mx-auto flex h-12 w-full max-w-5xl items-center gap-3 px-4 md:grid md:grid-cols-[1fr_minmax(0,auto)_1fr] md:gap-0 md:px-6"
+        className="mx-auto grid h-12 w-full max-w-5xl grid-cols-[1fr_minmax(0,auto)_1fr] items-center gap-x-4 px-4"
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
-        {/* Brand — left on mobile, dead-center on desktop */}
+        {/* Left column — command button on mobile, nav dock on desktop */}
+        <div className="col-start-1 flex items-center gap-2 justify-self-start">
+          <Button
+            variant="default"
+            size="sm"
+            className="sm:hidden"
+            onClick={() => setPaletteOpen(true)}
+            aria-label="Open command palette"
+          >
+            <IconCommand className="size-4" />
+          </Button>
+          <DesktopDock
+            className="hidden md:flex"
+            items={NAV.map((item, index) => ({ item, index }))}
+            pathname={pathname}
+            presses={presses}
+            onRepeatPress={repeatPress}
+          />
+        </div>
+
+        {/* Brand — centered on both mobile and desktop */}
         <Link
           href="/"
-          className="group flex shrink-0 items-center gap-2 md:col-start-2 md:row-start-1 md:justify-self-center"
+          className="group col-start-2 flex shrink-0 items-center gap-2 justify-self-center"
           aria-label="zentype home"
           onClick={(e) => {
             if (pathname === "/") {
@@ -244,25 +261,8 @@ export function Navbar() {
           <span className="text-sm font-semibold tracking-tight">zentype</span>
         </Link>
 
-        {/* Left wing dock — desktop only */}
-        <DesktopDock
-          className="hidden md:flex md:col-start-1 md:row-start-1 md:justify-self-start"
-          items={NAV.map((item, index) => ({ item, index })).slice(0, 2)}
-          pathname={pathname}
-          presses={presses}
-          onRepeatPress={repeatPress}
-        />
-
-        <div className="ml-auto flex items-center gap-2 md:col-start-3 md:row-start-1 md:ml-0 md:justify-self-end">
-          {/* Right wing dock — desktop only */}
-          <DesktopDock
-            className="hidden md:flex"
-            items={NAV.map((item, index) => ({ item, index })).slice(2)}
-            pathname={pathname}
-            presses={presses}
-            onRepeatPress={repeatPress}
-          />
-
+        {/* Right column — command button on desktop, user menu / sign in */}
+        <div className="col-start-3 flex items-center justify-end gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -272,15 +272,6 @@ export function Navbar() {
           >
             <span className="text-muted-foreground">commands</span>
             <Kbd>{isMac ? "cmd" : "ctrl"} k</Kbd>
-          </Button>
-          <Button
-            variant="default"
-            size="sm"
-            className="sm:hidden"
-            onClick={() => setPaletteOpen(true)}
-            aria-label="Open command palette"
-          >
-            <IconCommand className="size-4" />
           </Button>
 
           {authStatus === "loading" ? (
