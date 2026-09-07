@@ -2,6 +2,7 @@
 
 import {
   IconCommand,
+  IconEye,
   IconKeyboard,
   IconKeyboardFilled,
   IconLogout,
@@ -98,22 +99,33 @@ function DesktopNavLink({
                 />
               }
             >
-              <span className="relative flex h-5 w-5 items-center justify-center">
-                <item.icon
-                  key={active ? `pop-${presses[item.to] ?? 0}` : "idle"}
+              <span className="flex items-center">
+                <span className="relative flex h-5 w-5 items-center justify-center">
+                  <item.icon
+                    key={active ? `pop-${presses[item.to] ?? 0}` : "idle"}
+                    className={cn(
+                      "size-5 text-primary transition-all duration-300 ease-out",
+                      active ? "zt-icon-pop opacity-100" : "absolute opacity-0",
+                    )}
+                  />
+                  <item.iconOutline
+                    className={cn(
+                      "size-5",
+                      active
+                        ? "absolute opacity-0"
+                        : "transition-all duration-300 ease-out opacity-100",
+                    )}
+                  />
+                </span>
+                <span
+                  aria-hidden
                   className={cn(
-                    "size-5 text-primary transition-all duration-300 ease-out",
-                    active ? "zt-icon-pop opacity-100" : "absolute opacity-0",
+                    "max-w-0 overflow-hidden text-xs font-bold text-foreground whitespace-nowrap opacity-0 transition-[max-width,opacity,margin-left] duration-300 ease-out",
+                    active && "ml-1.5 max-w-32 opacity-100",
                   )}
-                />
-                <item.iconOutline
-                  className={cn(
-                    "size-5",
-                    active
-                      ? "absolute opacity-0"
-                      : "transition-all duration-300 ease-out opacity-100",
-                  )}
-                />
+                >
+                  {item.label}
+                </span>
               </span>
             </NavigationMenuLink>
           }
@@ -171,6 +183,7 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const setPaletteOpen = useUiStore((s) => s.setPaletteOpen);
+  const isTestRunning = useUiStore((s) => s.isTestRunning);
   const [isMac, setIsMac] = useState(false);
   useEffect(() => {
     setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform));
@@ -225,8 +238,16 @@ export function Navbar() {
         className="mx-auto grid h-12 w-full max-w-5xl grid-cols-[1fr_minmax(0,auto)_1fr] items-center gap-x-4 px-4"
         style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
-        {/* Left column — command button on mobile, nav dock on desktop */}
-        <div className="col-start-1 flex items-center gap-2 justify-self-start">
+        {/* Left column — command button on mobile, nav dock on desktop.
+            Fades out (kept in the grid) while a test runs so the centered
+            brand never shifts. */}
+        <div
+          className={cn(
+            "col-start-1 flex items-center gap-2 justify-self-start transition-opacity duration-300 ease-out",
+            isTestRunning && "pointer-events-none opacity-0",
+          )}
+          inert={isTestRunning || undefined}
+        >
           <Button
             variant="default"
             size="sm"
@@ -261,8 +282,15 @@ export function Navbar() {
           <span className="text-sm font-semibold tracking-tight">zentype</span>
         </Link>
 
-        {/* Right column — command button on desktop, user menu / sign in */}
-        <div className="col-start-3 flex items-center justify-end gap-2">
+        {/* Right column — command button on desktop, user menu / sign in.
+            Fades out during a test alongside the left nav dock. */}
+        <div
+          className={cn(
+            "col-start-3 flex items-center justify-end gap-2 transition-opacity duration-300 ease-out",
+            isTestRunning && "pointer-events-none opacity-0",
+          )}
+          inert={isTestRunning || undefined}
+        >
           <Button
             variant="outline"
             size="sm"
@@ -297,7 +325,10 @@ export function Navbar() {
 /** Mobile bottom navigation - normal flow, not fixed. */
 export function MobileNav() {
   const pathname = usePathname();
+  const isTestRunning = useUiStore((s) => s.isTestRunning);
   const [presses, setPresses] = useState<Record<string, number>>({});
+  // Hide the bottom nav while a test runs — typing screen stays distraction-free.
+  if (isTestRunning) return null;
   return (
     <NavigationMenu
       aria-label="Mobile navigation"
@@ -397,30 +428,42 @@ function UserMenu({
             {user.username.slice(0, 2)}
           </AvatarFallback>
         </Avatar>
-        <span className="hidden max-w-24 truncate text-xs sm:inline">{user.username}</span>
-        {userLevel === null ? (
-          <Skeleton className="hidden h-[18px] min-w-[28px] rounded-full sm:block" />
-        ) : (
-          <Badge
-            variant="secondary"
-            className="hidden sm:inline-flex text-[9px] font-bold tracking-widest"
-          >
-            {userLevel}
-          </Badge>
-        )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel className="text-xs">
-          <div className="flex items-center gap-2">
-            <span className="truncate">{user.email}</span>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>
+          <div className="flex items-center gap-2.5">
+            <Avatar className="size-8 shrink-0">
+              {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt="" />}
+              <AvatarFallback className="rounded-full text-xs font-bold uppercase">
+                {user.username.slice(0, 2)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex min-w-0 flex-col gap-1">
+              <div className="flex items-center gap-1.5">
+                <span className="truncate text-sm font-semibold text-foreground">
+                  {user.username}
+                </span>
+                {userLevel === null ? (
+                  <Skeleton className="h-[18px] min-w-[28px] rounded-full" />
+                ) : (
+                  <Badge variant="secondary" className="text-[9px] font-bold tracking-widest">
+                    {userLevel}
+                  </Badge>
+                )}
+              </div>
+              <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+            </div>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/profile")}>
-          <IconUserFilled className="size-4" /> profile
+          <IconUser className="size-4" /> profile
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push(`/profile/${user.username}`)}>
+          <IconEye className="size-4" /> public profile
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/settings")}>
-          <IconSettingsFilled className="size-4" /> settings
+          <IconSettings className="size-4" /> settings
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={onSignOut}>

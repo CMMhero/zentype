@@ -103,6 +103,29 @@ function computeResultPB(result: TestResult, userId: string | null): boolean | n
   return null;
 }
 
+/**
+ * Keybind hints shown below the prompt (idle) and on the results screen.
+ * Hidden while a test runs — the footer/config bar fade out for focus.
+ */
+function ShortcutHints({ mac, showStartHint }: { mac: boolean; showStartHint: boolean }) {
+  return (
+    <div className="flex flex-col items-center gap-1.5 text-center text-xs text-muted-foreground">
+      {showStartHint && <p>press any key to start</p>}
+      <p className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 px-2 text-center">
+        <span className="inline-flex items-center gap-1.5">
+          <Kbd>tab</Kbd> new test
+        </span>
+        <span className="hidden sm:inline-flex items-center gap-1.5">
+          <Kbd>?</Kbd> keybinds
+        </span>
+        <span className="hidden sm:inline-flex items-center gap-1.5">
+          <Kbd>{mac ? "cmd" : "ctrl"} k</Kbd> commands
+        </span>
+      </p>
+    </div>
+  );
+}
+
 export default function TestPage() {
   const user = useUser();
   const settings = useSettingsStore((s) => s.settings);
@@ -370,12 +393,6 @@ export default function TestPage() {
       if (paletteOpen || helpOpen || isDialogOpen()) return;
       if (isTypingTarget(e.target)) return;
 
-      if (engine.status === "finished" && e.key === "Enter") {
-        e.preventDefault();
-        restartRef.current();
-        return;
-      }
-
       engine.handleKeyDown(e as unknown as Parameters<typeof engine.handleKeyDown>[0]);
       inputEl.current?.focus({ preventScroll: true });
     };
@@ -502,8 +519,13 @@ export default function TestPage() {
         onChange={() => {}}
       />
 
+      {/* Config bar is only visible before a test starts; it fades out while
+          typing and on the results screen (space is kept to avoid jumps). */}
       <div
-        className={`pb-4 transition-all duration-200 ${engine.status === "running" ? "pointer-events-none opacity-50" : "opacity-100"}`}
+        className={`pb-4 transition-opacity duration-300 ${
+          engine.status === "idle" ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        inert={engine.status !== "idle"}
       >
         <ConfigBar
           mode={settings.mode}
@@ -518,14 +540,22 @@ export default function TestPage() {
 
       {!runningOrIdle ? (
         result ? (
-          <div className="zt-fade-in flex w-full max-w-4xl flex-1 flex-col items-center justify-center">
-            <ResultView
-              result={result}
-              saveState={saveState}
-              isPB={isPB}
-              user={user}
-              onNext={() => restartRef.current()}
-            />
+          // Results take the typing area's place; the keybind hints stay in
+          // their own bottom-anchored row (same spot as the idle test page) so
+          // the two states feel seamless — and outside the captured result card.
+          <div className="zt-fade-in flex w-full max-w-4xl flex-1 flex-col items-center">
+            <div className="flex w-full flex-1 items-center justify-center">
+              <ResultView
+                result={result}
+                saveState={saveState}
+                isPB={isPB}
+                user={user}
+                onNext={() => restartRef.current()}
+              />
+            </div>
+            <div className="flex flex-col items-center pt-4 text-center">
+              <ShortcutHints mac={isMac} showStartHint={false} />
+            </div>
           </div>
         ) : null
       ) : (
@@ -643,23 +673,9 @@ export default function TestPage() {
           )}
 
           <div
-            className={`mt-auto flex flex-col items-center gap-1.5 pt-4 text-center text-xs text-muted-foreground transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}
+            className={`mt-auto flex flex-col items-center pt-4 text-center transition-opacity duration-200 ${engine.status === "idle" && !loadingPrompt ? "opacity-100" : "pointer-events-none opacity-0"}`}
           >
-            <p>press any key to start</p>
-            <p className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5 px-2 text-center">
-              <span className="inline-flex items-center gap-1.5">
-                <Kbd>tab</Kbd> new test
-              </span>
-              <span className="hidden sm:inline-flex items-center gap-1.5">
-                <Kbd>esc</Kbd> cancel test
-              </span>
-              <span className="hidden sm:inline-flex items-center gap-1.5">
-                <Kbd>?</Kbd> keybinds
-              </span>
-              <span className="hidden sm:inline-flex items-center gap-1.5">
-                <Kbd>{isMac ? "cmd" : "ctrl"} k</Kbd> commands
-              </span>
-            </p>
+            <ShortcutHints mac={isMac} showStartHint />
           </div>
         </>
       )}

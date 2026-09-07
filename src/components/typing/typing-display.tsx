@@ -45,7 +45,12 @@ export function TypingDisplay({
   const wordRefs = useRef<Map<number, HTMLSpanElement>>(new Map());
   const [caret, setCaret] = useState({ x: 0, y: 0, h: 24, w: 10 });
   const [scrollY, setScrollY] = useState(0);
+  const [snapScroll, setSnapScroll] = useState(false);
   const [containerHeight, setContainerHeight] = useState("6em");
+  // Tracks the applied scroll so we can tell a one-line glide (animate) from a
+  // large jump — e.g. a fresh prompt starting far above the previous test's
+  // scroll position (snap, so the first lines don't drift into view).
+  const lastScrollRef = useRef(0);
   const measure = useCallback(() => {
     const content = contentRef.current;
     const activeEl = wordRefs.current.get(activeIndex);
@@ -93,11 +98,17 @@ export function TypingDisplay({
     const containerH = visibleLines * totalLineHeight + 2; // 2px buffer for sub-pixel rendering
     setContainerHeight(`${containerH}px`);
 
-    setScrollY((prevScroll) => {
-      // Keep the active line at the top so the user always sees upcoming lines
-      const target = Math.max(0, y);
-      return Math.abs(prevScroll - target) < 0.5 ? prevScroll : target;
-    });
+    // Keep the typed-on line near the middle of the view when there are lines
+    // above it (3-line view → second row), so the previous line stays visible;
+    // the first line pins to the top since nothing scrolls above it.
+    const rowsAbove = Math.floor((visibleLines - 1) / 2);
+    const target = Math.max(0, y - rowsAbove * totalLineHeight);
+    if (Math.abs(target - lastScrollRef.current) > totalLineHeight * 1.6) {
+      setSnapScroll(true);
+      requestAnimationFrame(() => setSnapScroll(false));
+    }
+    lastScrollRef.current = target;
+    setScrollY((prevScroll) => (Math.abs(prevScroll - target) < 0.5 ? prevScroll : target));
   }, [activeIndex, current, visibleLines]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: re-measure when rendered content or font size changes even though `measure` reads layout from the DOM rather than closing over these props
@@ -127,7 +138,8 @@ export function TypingDisplay({
       <div
         ref={contentRef}
         className={cn(
-          "relative leading-[1.75] tracking-wide transition-transform duration-150 ease-out will-change-transform",
+          "relative leading-[1.75] tracking-wide transition-transform ease-out will-change-transform",
+          snapScroll ? "duration-0" : "duration-150",
           FONT_SIZES[fontSize],
         )}
         style={{ transform: `translateY(-${scrollY}px)` }}
