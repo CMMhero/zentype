@@ -70,9 +70,9 @@ export function DeleteAccountDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>delete my account?</AlertDialogTitle>
           <AlertDialogDescription>
-            permanently removes your account, username, and everything on it — test results, xp,
-            achievements, and settings. unlike a reset, you won't be able to sign in again. this
-            cannot be undone — export json first if you might need your data.
+            removes your account, username, and all your data, including test results, xp,
+            achievements, and settings. after this you can't sign in again. export json first if you
+            might want a copy of your data.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="space-y-2">
