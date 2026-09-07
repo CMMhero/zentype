@@ -8,6 +8,7 @@ import {
   IconTrophy,
   IconUserFilled,
 } from "@tabler/icons-react";
+import { StickyPageBar } from "~/components/layout/sticky-page-bar";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { SelectSkeleton, Skeleton } from "~/components/ui/skeleton";
 import { StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
@@ -15,12 +16,14 @@ import { StreakCalendarSkeleton } from "~/components/ui/streak-calendar";
 export default function PublicProfileLoading() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      {/* Header — static */}
-      <header className="flex items-center justify-between">
-        <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconUserFilled className="text-primary size-5" /> profile
-        </h1>
-      </header>
+      {/* Header — static, same sticky bar as the real page */}
+      <StickyPageBar>
+        <header className="flex items-center justify-between">
+          <h1 className="flex items-center gap-2 text-lg font-semibold">
+            <IconUserFilled className="text-primary size-5" /> profile
+          </h1>
+        </header>
+      </StickyPageBar>
 
       {/* Level card + stat grid */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
