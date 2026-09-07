@@ -52,6 +52,7 @@ import {
 import { DeleteAccountDialog } from "~/components/ui/delete-account-dialog";
 import { DiscardLocalResultsDialog } from "~/components/ui/discard-local-results-dialog";
 import { Kbd } from "~/components/ui/kbd";
+import { ResetAccountDialog } from "~/components/ui/reset-account-dialog";
 import { RestoreDefaultsDialog } from "~/components/ui/restore-defaults-dialog";
 import { useAuth, useUser } from "~/components/user-provider";
 import { FONTS } from "~/lib/fonts";
@@ -253,6 +254,13 @@ const STATIC_ITEMS = (() => {
       label: "export json",
     },
     {
+      id: "act-reset-account",
+      group: "actions",
+      value: "actions reset account clear data results xp",
+      keywords: "actions reset account clear data results xp",
+      label: "reset account",
+    },
+    {
       id: "act-delete-account",
       group: "actions",
       value: "actions delete account permanently remove profile data",
@@ -329,6 +337,7 @@ export function CommandPalette() {
   const [userResults, setUserResults] = useState<UserResult[]>([]);
   const [userLoading, setUserLoading] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [resetAccountOpen, setResetAccountOpen] = useState(false);
   const [restoreOpen, setRestoreOpen] = useState(false);
   const [discardOpen, setDiscardOpen] = useState(false);
   const [contentReady, setContentReady] = useState(false);
@@ -530,6 +539,9 @@ export function CommandPalette() {
   const openDeleteAccount = useCallback(() => {
     setDeleteOpen(true);
   }, []);
+  const openResetAccount = useCallback(() => {
+    setResetAccountOpen(true);
+  }, []);
   const { refresh: refreshUser } = useAuth();
   const handleSignOut = useCallback(() => {
     close();
@@ -552,6 +564,7 @@ export function CommandPalette() {
       matchCacheRef.current.clear();
       setUserQuery("");
       setDeleteOpen(false);
+      setResetAccountOpen(false);
       setRestoreOpen(false);
       setDiscardOpen(false);
     }
@@ -644,6 +657,17 @@ export function CommandPalette() {
           >
             <IconDownload /> export json<CommandDesc>download all your data as a file</CommandDesc>
           </CommandItem>
+          {user && (
+            <CommandItem
+              value="actions reset account clear data results xp achievements settings"
+              keywords={["actions", "reset", "account", "clear", "data"]}
+              onSelect={openResetAccount}
+              className="text-destructive focus:text-destructive"
+            >
+              <IconAlertTriangle /> reset account
+              <CommandDesc>clear results, xp, and settings, keep the account</CommandDesc>
+            </CommandItem>
+          )}
           {user && (
             <CommandItem
               value="actions delete account permanently remove profile data"
@@ -1022,6 +1046,7 @@ export function CommandPalette() {
         onConfirm={confirmDiscardLocal}
       />
       {user && <DeleteAccountDialog open={deleteOpen} onOpenChange={setDeleteOpen} />}
+      {user && <ResetAccountDialog open={resetAccountOpen} onOpenChange={setResetAccountOpen} />}
     </CommandDialog>
   );
 }
