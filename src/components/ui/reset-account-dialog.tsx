@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -15,47 +14,53 @@ import {
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useAuth } from "~/components/user-provider";
-import { deleteAccount } from "~/server/results";
+import { invalidateProfileCaches } from "~/lib/profile-cache";
+import { resetAccount } from "~/server/results";
 import { useResultsStore } from "~/stores/results-store";
+import { useSettingsStore } from "~/stores/settings-store";
 
-const CONFIRM_PHRASE = "yes, delete my account";
+const CONFIRM_PHRASE = "yes, reset my account";
 
-/** Type-confirm account deletion. Deletes the account, then returns home. */
-export function DeleteAccountDialog({
+/**
+ * Type-confirm account data reset. Deletes every stored record (results, xp,
+ * achievements, settings) but keeps the account, then restores local defaults
+ * so the user is signed in with a brand-new account state.
+ */
+export function ResetAccountDialog({
   open,
   onOpenChange,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const router = useRouter();
-  const { refresh: refreshUser } = useAuth();
+  const { user } = useAuth();
+  const resetSettings = useSettingsStore((s) => s.reset);
   const clearLocal = useResultsStore((s) => s.clearLocal);
   const [value, setValue] = useState("");
-  const [deleting, setDeleting] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const confirmed = value.trim().toLowerCase() === CONFIRM_PHRASE;
 
-  async function handleDelete() {
-    if (!confirmed || deleting) return;
-    setDeleting(true);
+  async function handleReset() {
+    if (!confirmed || resetting || !user) return;
+    setResetting(true);
     try {
-      const res = await deleteAccount();
+      const res = await resetAccount();
       if (!res.ok) {
-        toast.error(res.error ?? "account deletion failed");
+        toast.error(res.error ?? "account reset failed");
         return;
       }
-      // Sign-out already happened server-side; drop the client-side user so
-      // the header switches back to the signed-out state without a reload.
-      await refreshUser();
+      // Drop cached stats/ranks and restore local defaults so the account
+      // behaves like a brand-new one without a reload.
+      invalidateProfileCaches(user.id, user.username);
+      resetSettings();
       clearLocal();
       onOpenChange(false);
-      toast.success("account deleted");
-      router.push("/");
+      toast.success("account reset");
     } catch {
-      toast.error("account deletion failed");
+      toast.error("account reset failed");
     } finally {
-      setDeleting(false);
+      setResetting(false);
     }
   }
 
@@ -63,16 +68,15 @@ export function DeleteAccountDialog({
     <AlertDialog
       open={open}
       onOpenChange={(v) => {
-        if (!deleting) onOpenChange(v);
+        if (!resetting) onOpenChange(v);
       }}
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>delete my account?</AlertDialogTitle>
+          <AlertDialogTitle>reset account?</AlertDialogTitle>
           <AlertDialogDescription>
-            permanently removes your account, username, and everything on it — test results, xp,
-            achievements, and settings. unlike a reset, you won't be able to sign in again. this
-            cannot be undone — export json first if you might need your data.
+            keeps your account, but permanently clears your test results, xp, achievements, and
+            settings. your profile will look brand new — this cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="space-y-2">
@@ -86,13 +90,13 @@ export function DeleteAccountDialog({
             autoFocus
             className="text-center"
             aria-label={`type ${CONFIRM_PHRASE} to confirm`}
-            disabled={deleting}
+            disabled={resetting}
           />
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleting}>cancel</AlertDialogCancel>
-          <Button variant="destructive" disabled={!confirmed || deleting} onClick={handleDelete}>
-            {deleting ? "deleting…" : "delete my account"}
+          <AlertDialogCancel disabled={resetting}>cancel</AlertDialogCancel>
+          <Button variant="destructive" disabled={!confirmed || resetting} onClick={handleReset}>
+            {resetting ? "resetting…" : "reset account"}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

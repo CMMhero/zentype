@@ -8,6 +8,7 @@ import {
   IconUser,
   IconVolume,
 } from "@tabler/icons-react";
+import { StickyPageBar } from "~/components/layout/sticky-page-bar";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { SelectSkeleton, Skeleton } from "~/components/ui/skeleton";
@@ -121,42 +122,43 @@ const RULES_ROWS: Array<{ label: string; hint?: string; control: ControlKind }> 
 export default function SettingsLoading() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      {/* Header — static chrome, rendered as the real button */}
-      <header className="flex items-center justify-between">
-        <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconSettingsFilled className="text-primary size-5" /> settings
-        </h1>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="pointer-events-none text-muted-foreground gap-2 text-xs"
-          aria-hidden
-          tabIndex={-1}
-        >
-          <IconRefresh className="size-3.5" /> restore defaults
-        </Button>
-      </header>
-
-      {/* Tabs — exact same structure as real settings page */}
+      {/* Tabs — exact same structure as real settings page, including the
+          sticky bar holding the title row + tabs */}
       <Tabs defaultValue="gameplay" className="w-full min-w-0 gap-4" aria-label="Settings tabs">
-        <TabsList className="w-full sm:w-fit sm:flex-none">
-          <TabsTrigger value="gameplay" className="flex-1 gap-1.5 sm:flex-none">
-            <IconDeviceGamepad2 className="size-4" />{" "}
-            <span className="hidden min-[480px]:inline">gameplay</span>
-          </TabsTrigger>
-          <TabsTrigger value="appearance" className="flex-1 gap-1.5 sm:flex-none">
-            <IconPalette className="size-4" />{" "}
-            <span className="hidden min-[480px]:inline">appearance</span>
-          </TabsTrigger>
-          <TabsTrigger value="account" className="flex-1 gap-1.5 sm:flex-none">
-            <IconUser className="size-4" />{" "}
-            <span className="hidden min-[480px]:inline">account</span>
-          </TabsTrigger>
-          <TabsTrigger value="keybinds" className="flex-1 gap-1.5 sm:flex-none">
-            <IconKeyboard className="size-4" />{" "}
-            <span className="hidden min-[480px]:inline">keybinds</span>
-          </TabsTrigger>
-        </TabsList>
+        <StickyPageBar className="flex flex-col gap-3">
+          <header className="flex items-center justify-between">
+            <h1 className="flex items-center gap-2 text-lg font-semibold">
+              <IconSettingsFilled className="text-primary size-5" /> settings
+            </h1>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="pointer-events-none text-muted-foreground gap-2 text-xs"
+              aria-hidden
+              tabIndex={-1}
+            >
+              <IconRefresh className="size-3.5" /> restore defaults
+            </Button>
+          </header>
+          <TabsList className="w-full sm:w-fit sm:flex-none">
+            <TabsTrigger value="gameplay" className="flex-1 gap-1.5 sm:flex-none">
+              <IconDeviceGamepad2 className="size-4" />{" "}
+              <span className="hidden min-[480px]:inline">gameplay</span>
+            </TabsTrigger>
+            <TabsTrigger value="appearance" className="flex-1 gap-1.5 sm:flex-none">
+              <IconPalette className="size-4" />{" "}
+              <span className="hidden min-[480px]:inline">appearance</span>
+            </TabsTrigger>
+            <TabsTrigger value="account" className="flex-1 gap-1.5 sm:flex-none">
+              <IconUser className="size-4" />{" "}
+              <span className="hidden min-[480px]:inline">account</span>
+            </TabsTrigger>
+            <TabsTrigger value="keybinds" className="flex-1 gap-1.5 sm:flex-none">
+              <IconKeyboard className="size-4" />{" "}
+              <span className="hidden min-[480px]:inline">keybinds</span>
+            </TabsTrigger>
+          </TabsList>
+        </StickyPageBar>
 
         {/* Gameplay tab content — all text and icons rendered, only controls skeleton */}
         <div className="flex w-full flex-col gap-4">

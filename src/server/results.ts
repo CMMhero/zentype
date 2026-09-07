@@ -312,43 +312,56 @@ export async function mergeLocalResults(results: TestResult[]): Promise<{ merged
  * leaderboards, invalidates their caches, and deletes the auth user so every
  * related row (profiles, test_results, user_settings, gamification) cascades.
  */
-export async function deleteAccount(): Promise<{ ok: boolean; error?: string }> {
-  const ctx = await requireUser();
-  if (!ctx) return { ok: false, error: "not signed in" };
-  const { supabase, user } = ctx;
-  const username = (
+/** Username fallbacks shared by the destructive account actions. */
+function accountUsername(user: {
+  user_metadata?: Record<string, unknown>;
+  email?: string;
+}): string {
+  return (
     (user.user_metadata?.["user_name"] as string) ||
     user.email?.split("@")[0] ||
     ""
   ).toLowerCase();
+}
 
-  // Best-effort: drop this user from every Redis leaderboard + metadata hash
+/** Best-effort: drop a user from every Redis leaderboard + metadata hash. */
+async function purgeLeaderboards(userId: string): Promise<void> {
   try {
     const redis = getRedis();
-    if (redis) {
-      const boards: string[] = [
-        ...TIME_OPTIONS.map((v) => boardKey("time", v)),
-        ...WORD_OPTIONS.map((v) => boardKey("words", v)),
-      ];
-      const keys = boards.map((b) => `lb:${b}`);
-      // zrem accepts [key, member] tuples
-      await Promise.all(keys.map((k) => redis.zrem(k, user.id)));
-      await Promise.all(keys.map((k) => redis.hdel(`${k}:meta`, user.id)));
-    }
+    if (!redis) return;
+    const boards: string[] = [
+      ...TIME_OPTIONS.map((v) => boardKey("time", v)),
+      ...WORD_OPTIONS.map((v) => boardKey("words", v)),
+    ];
+    const keys = boards.map((b) => `lb:${b}`);
+    // zrem accepts [key, member] tuples
+    await Promise.all(keys.map((k) => redis.zrem(k, userId)));
+    await Promise.all(keys.map((k) => redis.hdel(`${k}:meta`, userId)));
   } catch (e) {
-    console.warn("[zentype] redis cleanup on account delete skipped:", e);
+    console.warn("[zentype] redis leaderboard cleanup skipped:", e);
   }
+}
 
-  // Best-effort: drop server-side caches keyed to this user
-  await cacheDel(`stats:${user.id}`);
-  await cacheDel(`ach-stats:${user.id}`);
-  await cacheDel(`points:${user.id}`);
-  await cacheDel(`joindate:${user.id}`);
+/** Best-effort: drop server-side caches keyed to this user. */
+async function purgeUserCaches(userId: string, username: string): Promise<void> {
+  await cacheDel(`stats:${userId}`);
+  await cacheDel(`ach-stats:${userId}`);
+  await cacheDel(`points:${userId}`);
+  await cacheDel(`joindate:${userId}`);
   if (username) {
-    await cacheDel(`pub-profile:${user.id}`);
+    await cacheDel(`pub-profile:${userId}`);
     await cacheDel(`pub-profile:${username}`);
     await cacheDel(`pub-ach:${username}`);
   }
+}
+
+export async function deleteAccount(): Promise<{ ok: boolean; error?: string }> {
+  const ctx = await requireUser();
+  if (!ctx) return { ok: false, error: "not signed in" };
+  const { supabase, user } = ctx;
+
+  await purgeLeaderboards(user.id);
+  await purgeUserCaches(user.id, accountUsername(user));
 
   // Delete the auth user — RLS/cascades remove every owned row. The RPC is
   // security definer and only deletes auth.uid(), so it can't touch others.
@@ -358,6 +371,27 @@ export async function deleteAccount(): Promise<{ ok: boolean; error?: string }> 
     return { ok: false, error: error.message };
   }
   await supabase.auth.signOut();
+  return { ok: true };
+}
+
+/**
+ * Wipe everything stored under the account (results, settings, xp/points,
+ * achievements) but keep the auth user + profile, so it's like a new account.
+ * The reset_account RPC is security definer and only touches auth.uid() rows.
+ */
+export async function resetAccount(): Promise<{ ok: boolean; error?: string }> {
+  const ctx = await requireUser();
+  if (!ctx) return { ok: false, error: "not signed in" };
+  const { supabase, user } = ctx;
+
+  await purgeLeaderboards(user.id);
+  await purgeUserCaches(user.id, accountUsername(user));
+
+  const { error } = await supabase.rpc("reset_account");
+  if (error) {
+    console.error("[zentype] reset_account RPC failed:", error.message);
+    return { ok: false, error: error.message };
+  }
   return { ok: true };
 }
 
