@@ -70,7 +70,7 @@ export function DeleteAccountDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>delete my account?</AlertDialogTitle>
           <AlertDialogDescription>
-            removes your account, username, and all your data, including test results, xp,
+            deletes your account, username, and all your data, including test results, xp,
             achievements, and settings. after this you can't sign in again. export json first if you
             might want a copy of your data.
           </AlertDialogDescription>

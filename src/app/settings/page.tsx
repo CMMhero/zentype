@@ -632,7 +632,7 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
       <CardContent className="flex flex-col gap-4 px-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-muted-foreground max-w-sm text-sm">
-            clears your results, xp, achievements, and settings. your account stays.
+            wipes your test results, xp, achievements, and settings. the account itself stays.
           </p>
           <Button variant="destructive" size="sm" onClick={() => setResetOpen(true)}>
             reset account
@@ -640,7 +640,7 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-muted-foreground max-w-sm text-sm">
-            removes your account and everything on it. you won't be able to sign in again.
+            deletes your account and everything on it. this is final.
           </p>
           <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)}>
             delete account
