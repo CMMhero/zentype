@@ -7,6 +7,14 @@ const CAPTURE_SCALE = 2;
 const CARD_PADDING = 32;
 /** Corner radius, matching the app's `rounded-4xl` cards (CSS px at 1x). */
 const CARD_RADIUS = 32;
+/**
+ * How much the captured card is inset from its own clip bounds while snapping.
+ * `html-to-image` clips the export to the node's box, so the first/last mini
+ * stat cards (`shadow-md ring-1`) would have their left/right border + shadow
+ * cut off. Padding the node inward lets them render inside the clip, then gets
+ * removed so the live layout never changes.
+ */
+const CAPTURE_INSET = 12;
 
 /**
  * Create the shareable result-card PNG, 1:1 with what the user sees: the live
@@ -28,11 +36,29 @@ export async function createResultImage(node: HTMLElement): Promise<Blob> {
   const background =
     getComputedStyle(document.documentElement).getPropertyValue("--background").trim() || "#282828";
 
-  const source = await toCanvas(node, {
-    pixelRatio: CAPTURE_SCALE,
-    backgroundColor: background,
-    cacheBust: true,
-  });
+  // html-to-image clips the export to the node's box, so flush edge cards (the
+  // first "raw" and last "missed" mini stats) would lose their border+shadow.
+  // Inset the node horizontally for the snap, then restore it right away so
+  // the live layout never shifts.
+  const style = node.style;
+  const prevLeft = style.paddingLeft;
+  const prevRight = style.paddingRight;
+  style.paddingLeft = `${CAPTURE_INSET}px`;
+  style.paddingRight = `${CAPTURE_INSET}px`;
+
+  let source: HTMLCanvasElement;
+  try {
+    // Let the browser lay out with the inset before cloning nodes.
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    source = await toCanvas(node, {
+      pixelRatio: CAPTURE_SCALE,
+      backgroundColor: background,
+      cacheBust: true,
+    });
+  } finally {
+    style.paddingLeft = prevLeft;
+    style.paddingRight = prevRight;
+  }
 
   const pad = CARD_PADDING * CAPTURE_SCALE;
   const radius = CARD_RADIUS * CAPTURE_SCALE;
