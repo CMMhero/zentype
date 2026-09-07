@@ -75,8 +75,8 @@ export function ResetAccountDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>reset account?</AlertDialogTitle>
           <AlertDialogDescription>
-            keeps your account, but permanently clears your test results, xp, achievements, and
-            settings. your profile will look brand new — this cannot be undone.
+            wipes your test results, xp, achievements, and settings. the account stays, so you can
+            keep typing. there is no undo.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="space-y-2">
