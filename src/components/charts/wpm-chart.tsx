@@ -72,6 +72,10 @@ export function WpmChart({
           <CartesianGrid vertical={false} strokeDasharray="3 3" />
           <XAxis
             dataKey="Second"
+            type="number"
+            // Pin the plot to the actual data span — a category axis insets the
+            // first/last point by half a band, leaving empty strips at both ends.
+            domain={["dataMin", "dataMax"]}
             tickLine={false}
             axisLine={false}
             tickMargin={6}
