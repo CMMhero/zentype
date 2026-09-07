@@ -1,5 +1,6 @@
 import { IconArrowRight, IconKeyboardFilled, IconLockFilled } from "@tabler/icons-react";
 import type { Metadata } from "next";
+import { StickyPageBar } from "~/components/layout/sticky-page-bar";
 import { BackToTyping } from "~/components/ui/back-to-typing";
 import { InlineCode } from "~/components/ui/inline-code";
 import { TextLink } from "~/components/ui/text-link";
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      <header className="flex items-center justify-between">
-        <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconLockFilled className="text-primary size-5" /> privacy policy
-        </h1>
-      </header>
+      <StickyPageBar>
+        <header className="flex items-center justify-between">
+          <h1 className="flex items-center gap-2 text-lg font-semibold">
+            <IconLockFilled className="text-primary size-5" /> privacy policy
+          </h1>
+        </header>
+      </StickyPageBar>
 
       <div className="space-y-8">
         <section>

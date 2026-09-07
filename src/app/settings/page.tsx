@@ -25,6 +25,7 @@ import Fuse from "fuse.js";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { StickyPageBar } from "~/components/layout/sticky-page-bar";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,6 +46,7 @@ import { Input } from "~/components/ui/input";
 import { Kbd } from "~/components/ui/kbd";
 import { Label } from "~/components/ui/label";
 import { PillButton, PillGroup } from "~/components/ui/pill-toggle";
+import { ResetAccountDialog } from "~/components/ui/reset-account-dialog";
 import {
   Select,
   SelectContent,
@@ -77,60 +79,67 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      <header className="flex items-center justify-between">
-        <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconSettingsFilled className="text-primary size-5" /> settings
-        </h1>
-        <AlertDialog>
-          <AlertDialogTrigger
-            render={
-              <Button variant="ghost" size="sm" className="text-muted-foreground gap-2 text-xs" />
-            }
-          >
-            <IconRefresh className="size-3.5" /> restore defaults
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>restore all settings to defaults?</AlertDialogTitle>
-              <AlertDialogDescription>
-                resets your theme, font, sound, and gameplay settings.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>cancel</AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                onClick={() => {
-                  reset();
-                  toast.info("settings restored to defaults");
-                }}
-              >
-                yes, restore
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </header>
-
       <Tabs defaultValue="gameplay" className="w-full min-w-0 gap-4" aria-label="Settings tabs">
-        <TabsList className="w-full sm:w-fit sm:flex-none">
-          <TabsTrigger value="gameplay" className="flex-1 gap-1.5 sm:flex-none">
-            <IconDeviceGamepad2 className="size-4" />{" "}
-            <span className="hidden min-[480px]:inline">gameplay</span>
-          </TabsTrigger>
-          <TabsTrigger value="appearance" className="flex-1 gap-1.5 sm:flex-none">
-            <IconPalette className="size-4" />{" "}
-            <span className="hidden min-[480px]:inline">appearance</span>
-          </TabsTrigger>
-          <TabsTrigger value="account" className="flex-1 gap-1.5 sm:flex-none">
-            <IconUser className="size-4" />{" "}
-            <span className="hidden min-[480px]:inline">account</span>
-          </TabsTrigger>
-          <TabsTrigger value="keybinds" className="flex-1 gap-1.5 sm:flex-none">
-            <IconKeyboard className="size-4" />{" "}
-            <span className="hidden min-[480px]:inline">keybinds</span>
-          </TabsTrigger>
-        </TabsList>
+        {/* Sticky bar: the title row + restore defaults + the section tabs
+            stay reachable while scrolling long settings lists. */}
+        <StickyPageBar className="flex flex-col gap-3">
+          <header className="flex items-center justify-between">
+            <h1 className="flex items-center gap-2 text-lg font-semibold">
+              <IconSettingsFilled className="text-primary size-5" /> settings
+            </h1>
+            <AlertDialog>
+              <AlertDialogTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground gap-2 text-xs"
+                  />
+                }
+              >
+                <IconRefresh className="size-3.5" /> restore defaults
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>restore all settings to defaults?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    resets your theme, font, sound, and gameplay settings.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    onClick={() => {
+                      reset();
+                      toast.info("settings restored to defaults");
+                    }}
+                  >
+                    yes, restore
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </header>
+          <TabsList className="w-full sm:w-fit sm:flex-none">
+            <TabsTrigger value="gameplay" className="flex-1 gap-1.5 sm:flex-none">
+              <IconDeviceGamepad2 className="size-4" />{" "}
+              <span className="hidden min-[480px]:inline">gameplay</span>
+            </TabsTrigger>
+            <TabsTrigger value="appearance" className="flex-1 gap-1.5 sm:flex-none">
+              <IconPalette className="size-4" />{" "}
+              <span className="hidden min-[480px]:inline">appearance</span>
+            </TabsTrigger>
+            <TabsTrigger value="account" className="flex-1 gap-1.5 sm:flex-none">
+              <IconUser className="size-4" />{" "}
+              <span className="hidden min-[480px]:inline">account</span>
+            </TabsTrigger>
+            <TabsTrigger value="keybinds" className="flex-1 gap-1.5 sm:flex-none">
+              <IconKeyboard className="size-4" />{" "}
+              <span className="hidden min-[480px]:inline">keybinds</span>
+            </TabsTrigger>
+          </TabsList>
+        </StickyPageBar>
 
         <TabsContent value="gameplay" className="flex w-full flex-col gap-4 outline-none">
           <Card className="w-full gap-3 py-4">
@@ -611,6 +620,7 @@ function GuestDataCard() {
 }
 
 function DataCard({ signedIn }: { signedIn: boolean }) {
+  const [resetOpen, setResetOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   if (!signedIn) return null;
   return (
@@ -619,13 +629,26 @@ function DataCard({ signedIn }: { signedIn: boolean }) {
         icon={<IconAlertTriangle className="size-4 text-destructive" />}
         title="danger zone"
       />
-      <CardContent className="px-4">
-        <p className="text-muted-foreground mb-3 text-sm">
-          permanently deletes your account and all associated data.
-        </p>
-        <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)}>
-          delete my account
-        </Button>
+      <CardContent className="flex flex-col gap-4 px-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-muted-foreground max-w-sm text-sm">
+            keeps your account, clears your results, xp, achievements, and settings so it looks
+            brand new.
+          </p>
+          <Button variant="destructive" size="sm" onClick={() => setResetOpen(true)}>
+            reset account
+          </Button>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-muted-foreground max-w-sm text-sm">
+            permanently removes your account and everything on it — you won't be able to sign in
+            again.
+          </p>
+          <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)}>
+            delete account
+          </Button>
+        </div>
+        <ResetAccountDialog open={resetOpen} onOpenChange={setResetOpen} />
         <DeleteAccountDialog open={deleteOpen} onOpenChange={setDeleteOpen} />
       </CardContent>
     </Card>

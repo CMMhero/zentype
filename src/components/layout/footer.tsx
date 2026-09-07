@@ -8,7 +8,9 @@ import { TextLink } from "~/components/ui/text-link";
 import { FONTS } from "~/lib/fonts";
 import { THEMES } from "~/lib/themes";
 import type { FontFamily } from "~/lib/types";
+import { cn } from "~/lib/utils";
 import { useSettingsStore } from "~/stores/settings-store";
+import { useUiStore } from "~/stores/ui-store";
 
 const THEME_FOOTER_ITEMS: ComboboxSelectOption[] = [...THEMES]
   .sort((a, b) => a.label.localeCompare(b.label))
@@ -38,9 +40,18 @@ export function Footer() {
   const fontFamily = useSettingsStore((s) => s.settings.fontFamily);
   const settingsHydrated = useSettingsStore((s) => s.hasHydrated);
   const updateSettings = useSettingsStore((s) => s.update);
+  // Fade out while a typing test runs so nothing competes with the prompt.
+  const isTestRunning = useUiStore((s) => s.isTestRunning);
 
   return (
-    <footer className="text-muted-foreground mt-auto shrink-0" role="contentinfo">
+    <footer
+      className={cn(
+        "text-muted-foreground mt-auto shrink-0 transition-opacity duration-300",
+        isTestRunning ? "pointer-events-none opacity-0" : "opacity-100",
+      )}
+      inert={isTestRunning}
+      role="contentinfo"
+    >
       <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 px-4 py-3 sm:justify-start">
         <span className="flex items-center gap-2 text-xs">
           <Link

@@ -293,10 +293,16 @@
   html[data-appearance="light"] {
     color-scheme: light;
   }
-  body {
-    @apply antialiased bg-background text-foreground;
+  /* Shared page background — a subtle vertical gradient, fixed to the viewport.
+     Sticky bars reuse it (via .zt-page-bg) so their background continues the
+     page gradient instead of standing out as a solid block. */
+  body,
+  .zt-page-bg {
     background: linear-gradient(180deg, color-mix(in srgb, var(--background) 100%, transparent) 0%, color-mix(in srgb, var(--background) 95%, var(--primary) 5%) 50%, color-mix(in srgb, var(--background) 100%, transparent) 100%);
     background-attachment: fixed;
+  }
+  body {
+    @apply antialiased bg-background text-foreground;
     font-feature-settings: "zero" 1, "ss01" 1;
     /* Clip horizontal overflow here (propagates to the viewport as hidden)
        instead of on html. clip is a non-scrollable value, so body never becomes

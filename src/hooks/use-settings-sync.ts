@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useUser } from "~/components/user-provider";
+import type { GameSettings } from "~/lib/types";
 import { loadUserSettings, saveUserSettings } from "~/server/settings";
 import { useSettingsStore } from "~/stores/settings-store";
 
@@ -24,11 +25,24 @@ export function useSettingsSync() {
     if (loadedUserIdRef.current === user.id) return;
     if (loadingRef.current) return;
     loadingRef.current = true;
+    // Snapshot the local settings when the load starts. The DB round-trip can
+    // take a while (session + settings + profile fetch), so settings the user
+    // changes in the meantime must win over the stale DB values — otherwise a
+    // slow load clobbers their config and restarts an in-progress test.
+    const snapshot = useSettingsStore.getState().settings;
     void loadUserSettings()
       .then((db) => {
         if (db) {
-          // merge DB settings on top of defaults/local to ensure all keys present
-          update(db);
+          // Only apply DB values for keys the user hasn't touched since the
+          // load began; keep their in-flight edits on top.
+          const current = useSettingsStore.getState().settings;
+          const patch: Partial<GameSettings> = {};
+          for (const key of Object.keys(db) as (keyof GameSettings)[]) {
+            if (snapshot[key] === current[key]) {
+              (patch as Record<string, unknown>)[key] = db[key];
+            }
+          }
+          update(patch);
         }
         loadedUserIdRef.current = user.id;
       })

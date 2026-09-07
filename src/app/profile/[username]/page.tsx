@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { StickyPageBar } from "~/components/layout/sticky-page-bar";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { BackToTyping } from "~/components/ui/back-to-typing";
@@ -28,7 +29,6 @@ import {
   EmptyTitle,
 } from "~/components/ui/empty";
 import { Progress } from "~/components/ui/progress";
-
 import {
   Select,
   SelectContent,
@@ -286,23 +286,25 @@ export default function PublicProfilePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconUserFilled className="text-primary size-5" /> profile
-        </h1>
-        {isOwnProfile && currentUser && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-muted-foreground gap-2 text-xs"
-            render={<Link href="/profile" />}
-          >
-            <IconArrowLeft className="size-3.5" />{" "}
-            <span className="hidden sm:inline">my profile</span>
-            <span className="sm:hidden">me</span>
-          </Button>
-        )}
-      </header>
+      <StickyPageBar>
+        <header className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="flex items-center gap-2 text-lg font-semibold">
+            <IconUserFilled className="text-primary size-5" /> profile
+          </h1>
+          {isOwnProfile && currentUser && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-muted-foreground gap-2 text-xs"
+              render={<Link href="/profile" />}
+            >
+              <IconArrowLeft className="size-3.5" />{" "}
+              <span className="hidden sm:inline">my profile</span>
+              <span className="sm:hidden">me</span>
+            </Button>
+          )}
+        </header>
+      </StickyPageBar>
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
         <Card className="row-span-2 gap-3 py-3">
@@ -637,11 +639,14 @@ const ALL_BOARDS = [
 function ProfileSkeleton() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      <header className="flex items-center justify-between">
-        <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconUserFilled className="text-primary size-5" /> profile
-        </h1>
-      </header>
+      {/* Same sticky bar as the real page */}
+      <StickyPageBar>
+        <header className="flex items-center justify-between">
+          <h1 className="flex items-center gap-2 text-lg font-semibold">
+            <IconUserFilled className="text-primary size-5" /> profile
+          </h1>
+        </header>
+      </StickyPageBar>
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
         <Card className="row-span-2 gap-3 py-3">

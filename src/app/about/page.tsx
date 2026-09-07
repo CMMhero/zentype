@@ -10,6 +10,7 @@ import {
 } from "@tabler/icons-react";
 import type { Metadata } from "next";
 import { CommunityStats } from "~/components/community-stats";
+import { StickyPageBar } from "~/components/layout/sticky-page-bar";
 import { BackToTyping } from "~/components/ui/back-to-typing";
 import { Card, CardContent } from "~/components/ui/card";
 import { InlineCode } from "~/components/ui/inline-code";
@@ -32,11 +33,13 @@ export default function AboutPage() {
       role="main"
       aria-label="About zentype"
     >
-      <header className="flex items-center justify-between">
-        <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconInfoCircleFilled className="text-primary size-5" /> about zentype
-        </h1>
-      </header>
+      <StickyPageBar>
+        <header className="flex items-center justify-between">
+          <h1 className="flex items-center gap-2 text-lg font-semibold">
+            <IconInfoCircleFilled className="text-primary size-5" /> about zentype
+          </h1>
+        </header>
+      </StickyPageBar>
 
       <div className="space-y-8">
         <section>

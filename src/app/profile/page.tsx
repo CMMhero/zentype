@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, XAxis, YAxis } from "recharts";
 import { toast } from "sonner";
+import { ResultDetails } from "~/components/typing/result-details";
 import { AchievementGrid } from "~/components/ui/achievement-grid";
 import { AchievementList } from "~/components/ui/achievement-list";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -36,13 +37,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "~/components/ui/chart";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 import {
   Empty,
   EmptyContent,
@@ -77,6 +72,7 @@ const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) 
   loading: () => <Skeleton className="h-40 sm:h-56 w-full" />,
 });
 
+import { StickyPageBar } from "~/components/layout/sticky-page-bar";
 import { useAuthStatus, useUser } from "~/components/user-provider";
 import { ACHIEVEMENTS } from "~/lib/achievements";
 import { lcDel, lcGet, lcGetEntry, lcSet } from "~/lib/client-cache";
@@ -467,42 +463,45 @@ export default function ProfilePage() {
       role="main"
       aria-label="User profile"
     >
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconUserFilled className="text-primary size-5" /> profile
-        </h1>
-        {user && (
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-muted-foreground gap-2 text-xs"
-              render={<Link href={`/profile/${user.username}`} />}
-            >
-              <IconEye className="size-3.5" />{" "}
-              <span className="hidden sm:inline">view public profile</span>
-              <span className="sm:hidden">public</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-muted-foreground gap-2 text-xs"
-              onClick={async () => {
-                const url = `${window.location.origin}/profile/${user.username}`;
-                try {
-                  await navigator.clipboard.writeText(url);
-                  toast.success("public profile link copied");
-                } catch {
-                  toast.error("Failed to copy link");
-                }
-              }}
-            >
-              <IconLink className="size-3.5" /> <span className="hidden sm:inline">copy link</span>
-              <span className="sm:hidden">copy</span>
-            </Button>
-          </div>
-        )}
-      </header>
+      <StickyPageBar>
+        <header className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="flex items-center gap-2 text-lg font-semibold">
+            <IconUserFilled className="text-primary size-5" /> profile
+          </h1>
+          {user && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-muted-foreground gap-2 text-xs"
+                render={<Link href={`/profile/${user.username}`} />}
+              >
+                <IconEye className="size-3.5" />{" "}
+                <span className="hidden sm:inline">view public profile</span>
+                <span className="sm:hidden">public</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-muted-foreground gap-2 text-xs"
+                onClick={async () => {
+                  const url = `${window.location.origin}/profile/${user.username}`;
+                  try {
+                    await navigator.clipboard.writeText(url);
+                    toast.success("public profile link copied");
+                  } catch {
+                    toast.error("Failed to copy link");
+                  }
+                }}
+              >
+                <IconLink className="size-3.5" />{" "}
+                <span className="hidden sm:inline">copy link</span>
+                <span className="sm:hidden">copy</span>
+              </Button>
+            </div>
+          )}
+        </header>
+      </StickyPageBar>
       {/* Level card + stat cards */}
       <div className="grid gap-4 md:grid-cols-[1fr_auto]">
         {/* Level card — 2-row layout: avatar+username, then level/XP */}
@@ -1142,101 +1141,22 @@ export default function ProfilePage() {
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           {selected && (
             <>
-              <DialogHeader>
-                <DialogTitle className="flex items-end gap-4 sm:gap-8">
-                  <span className="flex flex-col">
-                    <span className="flex items-center gap-2">
-                      <span className="text-3xl font-bold tabular-nums text-primary sm:text-5xl">
-                        {selected.wpm}
-                      </span>
-                      {pbIds.has(selected.id) && (
-                        <Badge
-                          variant="secondary"
-                          className="gap-0.5 text-[9px] font-bold tracking-widest"
-                        >
-                          <IconCrown className="size-3" /> PB
-                        </Badge>
-                      )}
-                    </span>
-                    <span className="text-muted-foreground mt-1 text-xs tracking-wider">wpm</span>
-                  </span>
-                  <span className="flex flex-col">
-                    <span className="text-3xl font-bold tabular-nums sm:text-5xl">
-                      {selected.accuracy}%
-                    </span>
-                    <span className="text-muted-foreground mt-1 text-xs tracking-wider">acc</span>
-                  </span>
-                </DialogTitle>
-                <DialogDescription>
-                  <span className="flex items-center justify-between gap-2">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Badge
-                        variant="outline"
-                        className="border-secondary bg-secondary text-secondary-foreground h-5 text-[10px] font-medium normal-case"
-                      >
-                        {modeLabel(selected)}
-                      </Badge>
-                      {selected.punctuation && (
-                        <Tooltip>
-                          <TooltipTrigger
-                            render={
-                              <Badge
-                                variant="outline"
-                                className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
-                              >
-                                <IconAt className="size-3" />
-                              </Badge>
-                            }
-                          />
-                          <TooltipContent>punctuation</TooltipContent>
-                        </Tooltip>
-                      )}
-                      {selected.numbers && (
-                        <Tooltip>
-                          <TooltipTrigger
-                            render={
-                              <Badge
-                                variant="outline"
-                                className="border-secondary bg-secondary text-secondary-foreground size-5 p-0 text-[10px] font-medium normal-case"
-                              >
-                                <IconHash className="size-3" />
-                              </Badge>
-                            }
-                          />
-                          <TooltipContent>numbers</TooltipContent>
-                        </Tooltip>
-                      )}
-                    </span>
-                    <span className="shrink-0 text-xs text-muted-foreground">
-                      {new Date(selected.createdAt).toLocaleString()}
-                    </span>
-                  </span>
-                </DialogDescription>
-              </DialogHeader>
-              {selected.timeline ? (
-                <WpmChart timeline={selected.timeline} compact />
-              ) : (
-                <Skeleton className="h-40 sm:h-56 w-full rounded-2xl" />
-              )}
-              <div className="grid grid-cols-3 gap-2 text-center sm:grid-cols-6 sm:gap-3">
-                <Mini label="raw" value={String(selected.rawWpm)} />
-                <Mini label="cons" value={`${selected.consistency}%`} />
-                {selected.chars ? (
-                  <>
-                    <Mini label="correct" value={String(selected.chars.correct)} />
-                    <Mini label="errors" value={String(selected.chars.incorrect)} />
-                    <Mini label="extra" value={String(selected.chars.extra)} />
-                    <Mini label="missed" value={String(selected.chars.missed)} />
-                  </>
-                ) : (
-                  <>
-                    <MiniSkeleton label="correct" />
-                    <MiniSkeleton label="errors" />
-                    <MiniSkeleton label="extra" />
-                    <MiniSkeleton label="missed" />
-                  </>
-                )}
-              </div>
+              {/* Accessible heading — the shared body below carries the visuals */}
+              <DialogTitle className="sr-only">
+                test result — {selected.wpm} wpm, {selected.accuracy}% accuracy
+              </DialogTitle>
+              <ResultDetails
+                result={selected}
+                isPB={pbIds.has(selected.id)}
+                compact
+                chart={
+                  selected.timeline ? (
+                    <WpmChart timeline={selected.timeline} compact />
+                  ) : (
+                    <Skeleton className="h-40 sm:h-56 w-full rounded-2xl" />
+                  )
+                }
+              />
             </>
           )}
         </DialogContent>
@@ -1276,28 +1196,6 @@ function StatCard({
 
 function AccCell({ value }: { value: number }) {
   return <TableCell className="text-right tabular-nums text-foreground">{value}%</TableCell>;
-}
-
-function Mini({ label, value }: { label: string; value: string }) {
-  return (
-    <Card size="sm" className="items-center rounded-2xl py-2 text-center">
-      <CardContent className="flex flex-col gap-0.5 px-2">
-        <div className="font-semibold tabular-nums">{value}</div>
-        <div className="text-[10px] tracking-wider text-muted-foreground">{label}</div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function MiniSkeleton({ label }: { label: string }) {
-  return (
-    <Card size="sm" className="items-center rounded-2xl py-2 text-center">
-      <CardContent className="flex flex-col gap-0.5 px-2">
-        <Skeleton className="mx-auto h-4 w-8 mb-1" />
-        <div className="text-[10px] tracking-wider text-muted-foreground">{label}</div>
-      </CardContent>
-    </Card>
-  );
 }
 
 function prettyBoard(board: string): string {

@@ -1,14 +1,17 @@
 import { IconLockFilled } from "@tabler/icons-react";
+import { StickyPageBar } from "~/components/layout/sticky-page-bar";
 import { Skeleton } from "~/components/ui/skeleton";
 
 export default function PrivacyLoading() {
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-8">
-      <header className="flex items-center justify-between">
-        <h1 className="flex items-center gap-2 text-lg font-semibold">
-          <IconLockFilled className="text-primary size-5" /> privacy policy
-        </h1>
-      </header>
+      <StickyPageBar>
+        <header className="flex items-center justify-between">
+          <h1 className="flex items-center gap-2 text-lg font-semibold">
+            <IconLockFilled className="text-primary size-5" /> privacy policy
+          </h1>
+        </header>
+      </StickyPageBar>
 
       <div className="space-y-8">
         <section>
