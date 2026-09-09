@@ -8,11 +8,14 @@ const CARD_PADDING = 32;
 /** Corner radius, matching the app's `rounded-4xl` cards (CSS px at 1x). */
 const CARD_RADIUS = 32;
 /**
- * How much the captured card is inset from its own clip bounds while snapping.
+ * How much breathing room the capture gets inside its own clip bounds.
  * `html-to-image` clips the export to the node's box, so the first/last mini
  * stat cards (`shadow-md ring-1`) would have their left/right border + shadow
- * cut off. The inset is passed as a clone-only `style` override to `toCanvas`,
- * so the live layout never shifts.
+ * cut off. The inset is passed as a clone-only `style` override to `toCanvas`
+ * (the live node is untouched, so the layout never shifts) together with a
+ * wider `width`: cloned children carry frozen computed pixel widths from the
+ * unpadded live layout, so padding alone would squeeze them into overflow and
+ * clip the very edges it was meant to protect.
  */
 const CAPTURE_INSET = 12;
 
@@ -38,12 +41,13 @@ export async function createResultImage(node: HTMLElement): Promise<Blob> {
 
   // html-to-image clips the export to the node's box, so flush edge cards (the
   // first "raw" and last "missed" mini stats) would lose their border+shadow.
-  // `style` applies to the off-screen clone only — the live node is untouched,
-  // so there's no layout shift while capturing.
+  // `style` + `width` apply to the off-screen clone only — the live node is
+  // untouched, so there's no layout shift while capturing.
   const source = await toCanvas(node, {
     pixelRatio: CAPTURE_SCALE,
     backgroundColor: background,
     cacheBust: true,
+    width: node.offsetWidth + CAPTURE_INSET * 2,
     style: {
       paddingLeft: `${CAPTURE_INSET}px`,
       paddingRight: `${CAPTURE_INSET}px`,
