@@ -74,8 +74,8 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 | auth + db       | Supabase (OAuth, Postgres, RLS)                                                          |
 | cache           | Upstash Redis (REST), client-side localStorage                                           |
 | state           | Zustand (settings, guest results, UI)                                                    |
-| package manager | bun, Node 22+                                                                            |
-| types/lint      | TypeScript 5.9, Biome (lint + format)                                                    |
+| package manager | pnpm via vite+ (`vp`), Node 22.18+                                                       |
+| types/lint      | TypeScript 5.9, Biome (lint + format), oxlint + oxfmt via vite+                          |
 
 ## Getting started
 

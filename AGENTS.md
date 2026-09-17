@@ -22,28 +22,30 @@ A clean, customizable typing test with cloud stats (Supabase), Redis-backed lead
 
 - Next.js 16 App Router (Turbopack builds) + Server Actions, React 19 with the React Compiler enabled
 - shadcn/ui primitives on the Base UI umbrella (`@base-ui/react`), Tailwind CSS v4
-- TypeScript 5.9, Biome for lint + format (config: `biome.json`)
+- TypeScript 5.9, Biome for lint + format (config: `biome.json`), vite+ (`oxlint` + `oxfmt`) for the pre-commit hook
 - Supabase (auth + Postgres), Upstash Redis (REST), Zustand, Recharts, Tabler icons
-- package manager: **bun** — Node 22+
+- package manager: **pnpm** via vite+ (`vp`) — Node 22.18+
 
 ## commands
 
 ```bash
-bun install          # install deps
-bun run dev          # dev server on http://localhost:3123
-bun run typecheck    # tsc --noEmit
-bun run lint         # biome check . (lint + format + imports)
-bun run format       # biome format --write .
-bun run build        # production build (Turbopack)
+vp install           # install deps (pnpm)
+vp run dev           # dev server on http://localhost:3123
+vp run typecheck     # tsc --noEmit
+vp run lint          # biome check . (lint + format + imports)
+vp run format        # biome format --write .
+vp check             # oxfmt + oxlint + typecheck (same checks the hook runs)
+vp run build         # production build (Turbopack)
 ```
 
 ## workflow preferences
 
-- Run `bun run typecheck` and `bun run lint` after edits and keep both green before committing; run `bun run build` for anything larger than a one-liner.
+- Run `vp run typecheck` and `vp run lint` after edits and keep both green before committing; run `vp run build` for anything larger than a one-liner.
 - Commit directly on `dev` with semantic Conventional Commits (`feat(scope):`, `fix(scope):`, `style:`, `refactor:`, `perf:`, `docs:`, `chore:`) — lowercase, imperative subject, body when context helps. Group unrelated changes into separate commits; do not touch `main`.
-- Biome formatting and import sorting are enforced — write code close to biome style or run `bun run format` on touched files.
+- `.vite-hooks/pre-commit` runs `vp staged` (`vp check --fix`) on every commit, so it formats and lint-fixes staged files and re-stages them.
+- Biome formatting and import sorting are enforced — write code close to biome style or run `vp run format` on touched files.
 - ESLint is gone. If you see stale `eslint-disable` comments, remove or convert them to `biome-ignore` comments.
-- `bun.lock` is intentionally gitignored along with `package-lock.json` — treat package-lock.json as stale and do not edit it.
+- Lockfiles are gitignored (`pnpm-lock.yaml`, `bun.lock`, `package-lock.json`) — treat them as generated and do not edit them by hand.
 - .env values are never committed; the app runs in guest-only mode when SUPABASE/UPSTASH keys are absent — that is expected behavior, not an error.
 - Only emit plain commit messages and summaries — no AI-generated trailers or co-author footers.
 
