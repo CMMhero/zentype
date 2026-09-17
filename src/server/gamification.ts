@@ -13,6 +13,17 @@ async function requireUser() {
   return data.user ? { supabase, user: data.user } : null;
 }
 
+/** A single achievement with the viewing user's unlock state attached. */
+type AchievementWithProgress = {
+  id: string;
+  name: string;
+  description: string;
+  trigger: "metric" | "streak" | "api";
+  achievedAt: string | null;
+  progress: number;
+  xp: number;
+};
+
 /** Get user's total XP and level (Redis-cached 30s; invalidated on XP award) */
 export async function getUserPoints(): Promise<{
   totalXP: number;
@@ -93,17 +104,7 @@ export async function getUserPointsByUsername(username: string): Promise<{
 }
 
 /** Get user's unlocked achievements */
-export async function getUserAchievements(): Promise<
-  Array<{
-    id: string;
-    name: string;
-    description: string;
-    trigger: "metric" | "streak" | "api";
-    achievedAt: string | null;
-    progress: number;
-    xp: number;
-  }>
-> {
+export async function getUserAchievements(): Promise<AchievementWithProgress[]> {
   const ctx = await requireUser();
   if (!ctx) {
     return ACHIEVEMENTS.map((a) => ({
@@ -156,17 +157,9 @@ export async function getUserAchievements(): Promise<
 }
 
 /** Get achievements for a user by username (public — no auth required) */
-export async function getUserAchievementsByUsername(username: string): Promise<
-  Array<{
-    id: string;
-    name: string;
-    description: string;
-    trigger: "metric" | "streak" | "api";
-    achievedAt: string | null;
-    progress: number;
-    xp: number;
-  }>
-> {
+export async function getUserAchievementsByUsername(
+  username: string,
+): Promise<AchievementWithProgress[]> {
   const supabase = getSupabasePublicClient();
   if (!supabase) {
     return ACHIEVEMENTS.map((a) => ({
@@ -198,18 +191,7 @@ export async function getUserAchievementsByUsername(username: string): Promise<
   }
   // Cache 30s — public profile views hit this on every visit
   const cacheKey = `pub-ach:${username.toLowerCase()}`;
-  const cached =
-    await cacheGet<
-      Array<{
-        id: string;
-        name: string;
-        description: string;
-        trigger: "metric" | "streak" | "api";
-        achievedAt: string | null;
-        progress: number;
-        xp: number;
-      }>
-    >(cacheKey);
+  const cached = await cacheGet<AchievementWithProgress[]>(cacheKey);
   if (cached) return cached;
   // Try RPC first (bypasses RLS)
   const { data: rpcData, error: rpcErr } = await supabase.rpc("get_user_achievements_by_id", {
@@ -296,8 +278,8 @@ export async function getPointEvents(limit = 50): Promise<
       id: e.id,
       type: e.event_type,
       points: e.awarded,
-      achievementName: (e.event_data?.["achievement_id"] as string | null) ?? null,
-      metricName: (e.event_data?.["metric_name"] as string | null) ?? null,
+      achievementName: (e.event_data?.achievement_id as string | null) ?? null,
+      metricName: (e.event_data?.metric_name as string | null) ?? null,
     },
   }));
 }
@@ -373,7 +355,7 @@ export async function processTestResult(result: TestResult): Promise<{
   // XP/achievements changed — drop the cached points + public achievements
   await cacheDel(`points:${ctx.user.id}`);
   const uname = (
-    (ctx.user.user_metadata?.["user_name"] as string) ||
+    (ctx.user.user_metadata?.user_name as string) ||
     ctx.user.email?.split("@")[0] ||
     ""
   ).toLowerCase();
