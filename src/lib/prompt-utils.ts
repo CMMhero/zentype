@@ -199,19 +199,19 @@ function applyPunctuation(words: string[]): string[] {
     if (Math.random() < 0.25) {
       const roll = Math.random();
       if (roll < 0.35) {
-        word = word + ",";
+        word = `${word},`;
       } else if (roll < 0.55) {
-        word = word + ".";
+        word = `${word}.`;
         capitalizeNext = true; // next word gets capitalized
       } else if (roll < 0.7) {
-        word = word + ";";
+        word = `${word};`;
       } else if (roll < 0.8) {
-        word = word + ":";
+        word = `${word}:`;
       } else if (roll < 0.88) {
-        word = word + "!";
+        word = `${word}!`;
         capitalizeNext = true;
       } else {
-        word = word + "?";
+        word = `${word}?`;
         capitalizeNext = true;
       }
     }
