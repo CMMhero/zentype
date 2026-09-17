@@ -7,6 +7,7 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 ## Features
 
 **Typing test**
+
 - Time (15/30/60/120s) and words (10/25/50/100) modes with punctuation and numbers options
 - Monkeytype-accurate stats: net/raw WPM, keystroke accuracy, speed consistency, per-second timeline
 - Gameplay options: stop on error, strict space, free backspace, blind mode, hide live stats
@@ -14,12 +15,14 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 - Virtual keyboard, 4 caret styles, smooth caret, 1-3 visible lines
 
 **Gamification**
+
 - XP and levels with streak bonuses and perfect-test bonus
 - 110+ achievements across tiers: tests, WPM, accuracy, consistency, streak, time, chars, level, account age
 - Real-time progress tracking on every achievement
 - Silent XP/achievement processing -- no popups interrupting chained tests
 
 **Profile**
+
 - Dashboard with avatar, level/XP bar, avg WPM, accuracy, time typed
 - Personal bests per mode:variant with leaderboard rank badges
 - WPM and accuracy trend charts, WPM distribution histogram
@@ -27,20 +30,24 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 - Full test history with per-test detail dialog and timeline chart
 
 **Leaderboards**
+
 - Global rankings by WPM (all-time, this week, today) and level/XP
 - All-time boards live in Redis sorted sets and only accept results at 80%+ accuracy; this-week and today boards read Postgres directly
 - Your rank highlight, pagination, mode/variant/period filters
 
 **Command palette**
+
 - Fuzzy search across navigation, actions, themes (200+), fonts (90+), settings
 - User search for visiting public profiles
 
 **Appearance**
+
 - 200+ themes via CSS custom properties (gruvbox, nord, dracula, catppuccin, tokyo night, and more)
 - 90+ fonts via fontsource (geist-mono, inter, jetbrains-mono, work-sans, sora, and more)
 - Dynamic favicon that adapts to the active theme
 
 **Account**
+
 - GitHub, Google, and Discord OAuth via Supabase (PKCE, httpOnly cookies)
 - Guest mode with local results that sync on first login
 - Settings sync across devices via Supabase
@@ -48,27 +55,27 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 
 **Keybinds**
 
-| keys | action |
-|---|---|
-| `tab` | new test |
-| `esc` | cancel test (no results saved) |
-| `backspace` | fix current word |
-| `ctrl+backspace` | delete whole word |
-| `ctrl/cmd + k` | command palette |
-| `?` | open keybinds |
-| `alt + 1..4` | test / leaderboard / profile / settings |
+| keys             | action                                  |
+| ---------------- | --------------------------------------- |
+| `tab`            | new test                                |
+| `esc`            | cancel test (no results saved)          |
+| `backspace`      | fix current word                        |
+| `ctrl+backspace` | delete whole word                       |
+| `ctrl/cmd + k`   | command palette                         |
+| `?`              | open keybinds                           |
+| `alt + 1..4`     | test / leaderboard / profile / settings |
 
 ## Stack
 
-| layer | tech |
-|---|---|
-| framework | [Next.js](https://nextjs.org/) 16 App Router + Server Actions, React 19 + React Compiler |
-| UI | shadcn/ui, Tailwind CSS v4, Recharts, Tabler icons |
-| auth + db | Supabase (OAuth, Postgres, RLS) |
-| cache | Upstash Redis (REST), client-side localStorage |
-| state | Zustand (settings, guest results, UI) |
-| package manager | bun, Node 22+ |
-| types/lint | TypeScript 5.9, Biome (lint + format) |
+| layer           | tech                                                                                     |
+| --------------- | ---------------------------------------------------------------------------------------- |
+| framework       | [Next.js](https://nextjs.org/) 16 App Router + Server Actions, React 19 + React Compiler |
+| UI              | shadcn/ui, Tailwind CSS v4, Recharts, Tabler icons                                       |
+| auth + db       | Supabase (OAuth, Postgres, RLS)                                                          |
+| cache           | Upstash Redis (REST), client-side localStorage                                           |
+| state           | Zustand (settings, guest results, UI)                                                    |
+| package manager | bun, Node 22+                                                                            |
+| types/lint      | TypeScript 5.9, Biome (lint + format)                                                    |
 
 ## Getting started
 
@@ -82,10 +89,10 @@ Runs fully without backend keys. Guest mode, local results, English prompts, and
 
 ### Supabase setup (one-time)
 
-1. Create a project at [supabase.com](https://supabase.com). Copy the URL and anon key from *Project Settings > API* into `.env`.
+1. Create a project at [supabase.com](https://supabase.com). Copy the URL and anon key from _Project Settings > API_ into `.env`.
 2. **SQL Editor** -- run the migrations in `supabase/migrations/` in order (or `supabase link && supabase db push`).
-3. *Auth > Providers* -- enable **GitHub**, **Google**, and **Discord**.
-4. *Auth > URL Configuration* -- add `http://localhost:3123/auth/callback` (and your production URL).
+3. _Auth > Providers_ -- enable **GitHub**, **Google**, and **Discord**.
+4. _Auth > URL Configuration_ -- add `http://localhost:3123/auth/callback` (and your production URL).
 
 ### Upstash setup (optional)
 
@@ -147,4 +154,3 @@ supabase/migrations/            # database schema and RPC functions
 ## Credits
 
 Built by [CMMhero](https://github.com/CMMhero). Trophy UI components by [trophyso/ui](https://ui.trophy.so).
-
