@@ -15,20 +15,20 @@ function toSessionUser(user: {
 }): SessionUser {
   const meta = user.user_metadata ?? {};
   const username =
-    (meta["user_name"] as string) ||
-    (meta["preferred_username"] as string) ||
-    (meta["name"] as string)?.replace(/\s+/g, "_").toLowerCase() ||
+    (meta.user_name as string) ||
+    (meta.preferred_username as string) ||
+    (meta.name as string)?.replace(/\s+/g, "_").toLowerCase() ||
     user.email?.split("@")[0] ||
     `user_${user.id.slice(0, 6)}`;
   // Providers this account signed in with (from linked identities)
   const providers: AuthProvider[] = (user.identities ?? [])
-    .map((i) => i["provider"] as string)
+    .map((i) => i.provider as string)
     .filter((p): p is AuthProvider => p === "github" || p === "google" || p === "discord");
   return {
     id: user.id,
     email: user.email ?? "",
     username,
-    avatarUrl: (meta["avatar_url"] as string) || (meta["picture"] as string) || null,
+    avatarUrl: (meta.avatar_url as string) || (meta.picture as string) || null,
     providers,
   };
 }
