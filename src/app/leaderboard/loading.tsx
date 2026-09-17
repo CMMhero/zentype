@@ -69,13 +69,13 @@ export default function LeaderboardLoading() {
             <TabsList className="w-full sm:w-auto">
               <TabsTrigger value="all" className="flex-1 gap-1.5 sm:flex-none">
                 <IconCalendarMonth className="size-3.5" />{" "}
-                <span className="hidden xs:inline">all time</span>
-                <span className="xs:hidden">all</span>
+                <span className="hidden min-[480px]:inline">all time</span>
+                <span className="min-[480px]:hidden">all</span>
               </TabsTrigger>
               <TabsTrigger value="week" className="flex-1 gap-1.5 sm:flex-none">
                 <IconCalendar className="size-3.5" />{" "}
-                <span className="hidden xs:inline">this week</span>
-                <span className="xs:hidden">week</span>
+                <span className="hidden min-[480px]:inline">this week</span>
+                <span className="min-[480px]:hidden">week</span>
               </TabsTrigger>
               <TabsTrigger value="today" className="flex-1 gap-1.5 sm:flex-none">
                 <IconCalendar className="size-3.5" /> today

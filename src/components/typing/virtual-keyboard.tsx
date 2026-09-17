@@ -83,7 +83,10 @@ export function VirtualKeyboard() {
   return (
     <div
       ref={containerRef}
-      className="mx-auto -mt-1 flex w-fit select-none flex-col items-center gap-1 scale-75 sm:scale-100 origin-top"
+      // The unscaled row is ~448px wide, so on phones narrower than ~390px
+      // even scale-75 overflows the layout box and adds a page-level
+      // horizontal scroll. Shrink further on very small screens.
+      className="mx-auto -mt-1 flex w-fit origin-top scale-[0.62] select-none flex-col items-center gap-1 min-[380px]:scale-75 sm:scale-100"
       aria-hidden
     >
       {ROWS.map((row, i) => (

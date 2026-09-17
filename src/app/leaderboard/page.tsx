@@ -259,13 +259,13 @@ function LeaderboardContent() {
               <TabsList className="w-full sm:w-auto">
                 <TabsTrigger value="all" className="flex-1 gap-1.5 sm:flex-none">
                   <IconCalendarMonth className="size-3.5" />{" "}
-                  <span className="hidden xs:inline">all time</span>
-                  <span className="xs:hidden">all</span>
+                  <span className="hidden min-[480px]:inline">all time</span>
+                  <span className="min-[480px]:hidden">all</span>
                 </TabsTrigger>
                 <TabsTrigger value="week" className="flex-1 gap-1.5 sm:flex-none">
                   <IconCalendar className="size-3.5" />{" "}
-                  <span className="hidden xs:inline">this week</span>
-                  <span className="xs:hidden">week</span>
+                  <span className="hidden min-[480px]:inline">this week</span>
+                  <span className="min-[480px]:hidden">week</span>
                 </TabsTrigger>
                 <TabsTrigger value="today" className="flex-1 gap-1.5 sm:flex-none">
                   <IconCalendar className="size-3.5" /> today
@@ -278,12 +278,12 @@ function LeaderboardContent() {
 
       {myRankItem && (
         <div className="flex items-center gap-3 rounded-2xl border-2 border-primary bg-primary/5 px-4 py-3">
-          <span className="text-xs font-bold tracking-widest text-primary">your rank</span>
-          <span className="ml-2 flex items-center gap-1 text-sm font-bold tabular-nums">
-            #{myRankItem.rank}{" "}
-            <span className="text-muted-foreground font-normal">{myRankItem.byline}</span>
+          <span className="shrink-0 text-xs font-bold tracking-widest text-primary">your rank</span>
+          <span className="flex min-w-0 flex-1 items-center gap-1 text-sm font-bold tabular-nums">
+            <span className="shrink-0">#{myRankItem.rank}</span>{" "}
+            <span className="truncate font-normal text-muted-foreground">{myRankItem.byline}</span>
           </span>
-          <span className="ml-auto text-xs text-muted-foreground">
+          <span className="ml-auto shrink-0 text-xs text-muted-foreground">
             {isLevel
               ? `${myRankItem.value.toLocaleString()} XP`
               : `${Math.round(myRankItem.value)} pts`}

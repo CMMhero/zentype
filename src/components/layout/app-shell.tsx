@@ -40,7 +40,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [fontFamily]);
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    // overflow-x-clip: belt-and-braces guard so an absolutely-positioned
+    // decorative layer can never add a page-level horizontal scroll on mobile.
+    // clip (unlike hidden) creates no scroll container, so sticky navs keep
+    // sticking to the viewport.
+    <div className="flex min-h-dvh flex-col overflow-x-clip">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"

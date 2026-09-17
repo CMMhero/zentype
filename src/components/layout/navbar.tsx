@@ -334,7 +334,11 @@ export function MobileNav() {
       aria-label="Mobile navigation"
       viewport={false}
       className="bg-background/95 sticky bottom-0 z-40 flex-none border-t border-border/40 backdrop-blur-xl max-w-full md:hidden w-full"
-      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
+      // Safe-area must be padding (inside the bar's own background), not
+      // margin: a bottom margin is scrollable space outside the bar, so the
+      // page can be scrolled past the nav leaving a gap below it — and a
+      // stuck sticky bar floats margin-height above the viewport bottom.
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <NavigationMenuList className="flex h-16 w-full items-center justify-between">
         {NAV.map((item) => {
