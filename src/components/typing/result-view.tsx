@@ -83,7 +83,7 @@ export function ResultView({ result, saveState, isPB, user, onNext }: ResultView
       <ResultDetails result={result} isPB={isPB} chart={<WpmChart timeline={result.timeline} />} />
 
       {/* Next test */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {showLoginHint && !capturing ? (
           <p className="text-muted-foreground flex items-center gap-1 text-xs">
             <Button
@@ -98,7 +98,7 @@ export function ResultView({ result, saveState, isPB, user, onNext }: ResultView
           </p>
         ) : (
           // Reserve the space so the action row stays right-aligned either way
-          <span aria-hidden="true" />
+          <span aria-hidden="true" className="hidden sm:block" />
         )}
         {capturing ? (
           // Share branding — takes the buttons' spot while the image is taken
@@ -117,14 +117,17 @@ export function ResultView({ result, saveState, isPB, user, onNext }: ResultView
             )}
           </div>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-end sm:self-auto">
             <Button
               variant="secondary"
               onClick={() => void exportImage("copy")}
               disabled={busy !== null}
               aria-label="copy the result image to the clipboard"
             >
-              <IconCopy /> {busy === "copy" ? "copying…" : "copy image"}
+              <IconCopy />{" "}
+              <span className="hidden sm:inline">
+                {busy === "copy" ? "copying…" : "copy image"}
+              </span>
             </Button>
             <Button
               variant="secondary"
@@ -132,11 +135,15 @@ export function ResultView({ result, saveState, isPB, user, onNext }: ResultView
               disabled={busy !== null}
               aria-label="download the result image"
             >
-              <IconDownload /> {busy === "download" ? "downloading…" : "download image"}
+              <IconDownload />{" "}
+              <span className="hidden sm:inline">
+                {busy === "download" ? "downloading…" : "download image"}
+              </span>
             </Button>
-            <Button size="default" onClick={onNext} className="gap-2">
-              <IconPlayerSkipForward /> next test{" "}
-              <Kbd className="ml-1 border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground">
+            <Button size="default" onClick={onNext}>
+              <IconPlayerSkipForward />
+              <span className="hidden sm:inline">next test</span>
+              <Kbd className="ml-1 hidden border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground sm:inline-flex">
                 tab
               </Kbd>
             </Button>

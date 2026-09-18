@@ -8,11 +8,14 @@ const CARD_PADDING = 32;
 /** Corner radius, matching the app's `rounded-4xl` cards (CSS px at 1x). */
 const CARD_RADIUS = 32;
 /**
- * How much the captured card is inset from its own clip bounds while snapping.
+ * How much breathing room the capture gets inside its own clip bounds.
  * `html-to-image` clips the export to the node's box, so the first/last mini
  * stat cards (`shadow-md ring-1`) would have their left/right border + shadow
- * cut off. Padding the node inward lets them render inside the clip, then gets
- * removed so the live layout never changes.
+ * cut off. The inset is passed as a clone-only `style` override to `toCanvas`
+ * (the live node is untouched, so the layout never shifts) together with a
+ * wider `width`: cloned children carry frozen computed pixel widths from the
+ * unpadded live layout, so padding alone would squeeze them into overflow and
+ * clip the very edges it was meant to protect.
  */
 const CAPTURE_INSET = 12;
 
@@ -38,27 +41,18 @@ export async function createResultImage(node: HTMLElement): Promise<Blob> {
 
   // html-to-image clips the export to the node's box, so flush edge cards (the
   // first "raw" and last "missed" mini stats) would lose their border+shadow.
-  // Inset the node horizontally for the snap, then restore it right away so
-  // the live layout never shifts.
-  const style = node.style;
-  const prevLeft = style.paddingLeft;
-  const prevRight = style.paddingRight;
-  style.paddingLeft = `${CAPTURE_INSET}px`;
-  style.paddingRight = `${CAPTURE_INSET}px`;
-
-  let source: HTMLCanvasElement;
-  try {
-    // Let the browser lay out with the inset before cloning nodes.
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-    source = await toCanvas(node, {
-      pixelRatio: CAPTURE_SCALE,
-      backgroundColor: background,
-      cacheBust: true,
-    });
-  } finally {
-    style.paddingLeft = prevLeft;
-    style.paddingRight = prevRight;
-  }
+  // `style` + `width` apply to the off-screen clone only — the live node is
+  // untouched, so there's no layout shift while capturing.
+  const source = await toCanvas(node, {
+    pixelRatio: CAPTURE_SCALE,
+    backgroundColor: background,
+    cacheBust: true,
+    width: node.offsetWidth + CAPTURE_INSET * 2,
+    style: {
+      paddingLeft: `${CAPTURE_INSET}px`,
+      paddingRight: `${CAPTURE_INSET}px`,
+    },
+  });
 
   const pad = CARD_PADDING * CAPTURE_SCALE;
   const radius = CARD_RADIUS * CAPTURE_SCALE;
