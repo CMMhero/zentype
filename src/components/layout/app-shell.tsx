@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { Footer } from "~/components/layout/footer";
 import { MobileNav, Navbar } from "~/components/layout/navbar";
@@ -8,6 +9,7 @@ import { useGlobalHotkeys } from "~/hooks/use-global-hotkeys";
 import { useSettingsSync } from "~/hooks/use-settings-sync";
 import { getTheme } from "~/lib/themes";
 import { useSettingsStore } from "~/stores/settings-store";
+import { useUiStore } from "~/stores/ui-store";
 
 const CommandPalette = dynamic(
   () => import("~/components/layout/command-palette").then((m) => m.CommandPalette),
@@ -24,9 +26,18 @@ const HelpDialog = dynamic(
 export function AppShell({ children }: { children: React.ReactNode }) {
   const themeId = useSettingsStore((s) => s.settings.themeId);
   const fontFamily = useSettingsStore((s) => s.settings.fontFamily);
+  const pathname = usePathname();
+  const setTestRunning = useUiStore((s) => s.setTestRunning);
 
   useGlobalHotkeys();
   useSettingsSync();
+
+  // Leaving the test page ends any in-progress run: the shell owns the
+  // focus-mode flag (footer/nav fade), so clear it on navigation even if the
+  // test page unmounted before its status effect could reset it.
+  useEffect(() => {
+    setTestRunning(false);
+  }, [pathname, setTestRunning]);
 
   useEffect(() => {
     const root = document.documentElement;
