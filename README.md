@@ -9,7 +9,7 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 **Typing test**
 
 - Time (15/30/60/120s) and words (10/25/50/100) modes with punctuation and numbers options
-- Monkeytype-accurate stats: net/raw WPM, keystroke accuracy, speed consistency, per-second timeline
+- Monkeytype-accurate stats: net/raw WPM, keystroke accuracy, speed consistency, per-second timeline with wpm burst and error bars
 - Gameplay options: stop on error, strict space, free backspace, blind mode, hide live stats
 - WebAudio sounds (click/thock/beep) with volume control -- no audio assets
 - Virtual keyboard, 4 caret styles, smooth caret, 1-3 visible lines
@@ -144,11 +144,11 @@ supabase/migrations/            # database schema and RPC functions
 - **raw WPM** = all typed chars (including incorrect + extra) / 5 / minutes -- backspaces never count
 - **accuracy** = correct keystrokes / total non-backspace keystrokes
 - **consistency** = how steady your speed was, from per-second raw WPM samples: `100 * (1 - tanh(cv + cv^3/3 + cv^5/5))` where `cv = stddev / mean` (monkeytype's formula)
+- **burst** = instantaneous net WPM for each per-second bucket (correct chars typed that second / 5 / minutes), drawn as a dashed line next to the cumulative wpm/raw curves; error bars are per-second errors
 - **time typed**: time mode = variant seconds; words mode = `round(variant * 60 / wpm)` capped 5-600s
 
 ## Development & Contributing
 
-- **[Git Workflow Guide](GIT_WORKFLOW.md)**: Branching strategy, semantic commits, PR lifecycle, and worktree usage.
 - **[UI Style Guide](STYLE_GUIDE.md)**: Design principles, typography, icons, color tokens, and component patterns.
 
 ## Credits
