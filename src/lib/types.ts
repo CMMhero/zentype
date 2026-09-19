@@ -135,7 +135,13 @@ export interface TimelinePoint {
   t: number;
   wpm: number;
   raw: number;
+  /** per-second error count — graph-only series (stat tiles use chars.incorrect) */
   errors: number;
+  /**
+   * instantaneous net wpm for that second bucket (delta correct chars).
+   * optional so older saved timelines still parse — chart renders null gaps.
+   */
+  burst?: number;
 }
 
 /** A finished test, identical shape locally and in Postgres. */

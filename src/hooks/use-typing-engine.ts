@@ -64,7 +64,7 @@ export function useTypingEngine({
   const keys = useRef<KeystrokeState>({ total: 0, errors: 0 });
   const startRef = useRef(0);
   const endRef = useRef(0);
-  const secondMarkRef = useRef({ index: 0, total: 0 });
+  const secondMarkRef = useRef({ index: 0, total: 0, correct: 0 });
   const samplesRef = useRef<number[]>([]);
   const errorsPerSecondRef = useRef<Record<number, number>>({});
   const timelineRef = useRef<TimelinePoint[]>([]);
@@ -146,12 +146,23 @@ export function useTypingEngine({
     });
 
     const totalErrors = Object.values(errorsPerSecondRef.current).reduce((a, b) => a + b, 0);
+    // Instantaneous burst for the trailing partial bucket (finish rarely lands
+    // exactly on a second boundary). Falls back to the overall wpm when the
+    // remainder is too short for a stable rate.
+    const mark = secondMarkRef.current;
+    const remainder = seconds - mark.index;
+    const dCorrect = c.correct - mark.correct;
+    const finalBurst =
+      remainder >= 0.25
+        ? Math.max(0, Math.round(dCorrect / 5 / (Math.min(remainder, 3) / 60)))
+        : stats.wpm;
     const tl: TimelinePoint[] = [
       ...timelineRef.current,
       {
         t: Math.round(seconds),
         wpm: stats.wpm,
         raw: stats.rawWpm,
+        burst: finalBurst,
         errors: totalErrors,
       },
     ];
@@ -213,17 +224,21 @@ export function useTypingEngine({
 
         const snap = liveRef.current;
         const c = charBreakdown(snap.words, snap.history, snap.current);
+        const dCorrect = c.correct - prev.correct;
         timelineRef.current.push({
           t: nextIndex,
           wpm: wpmOf(c.correct, nextIndex),
           raw: wpmOf(keys.current.total, nextIndex),
+          burst: Math.max(0, Math.round(dCorrect / 5 / (bucketSeconds / 60))),
           errors: errorsPerSecondRef.current[prev.index] ?? 0,
         });
-        secondMarkRef.current = { index: nextIndex, total: keys.current.total };
+        secondMarkRef.current = { index: nextIndex, total: keys.current.total, correct: c.correct };
       }
       // if we somehow fell far behind (backgrounded tab), snap forward
       if (secondMarkRef.current.index < secIdx) {
-        secondMarkRef.current = { index: secIdx, total: keys.current.total };
+        const snap = liveRef.current;
+        const c = charBreakdown(snap.words, snap.history, snap.current);
+        secondMarkRef.current = { index: secIdx, total: keys.current.total, correct: c.correct };
       }
 
       if (settings.mode === "time" && passed >= settings.duration) {
@@ -237,7 +252,7 @@ export function useTypingEngine({
 
   const start = useCallback(() => {
     startRef.current = Date.now();
-    secondMarkRef.current = { index: 0, total: 0 };
+    secondMarkRef.current = { index: 0, total: 0, correct: 0 };
     setStatus("running");
   }, []);
 
@@ -380,7 +395,7 @@ export function useTypingEngine({
     keys.current = { total: 0, errors: 0 };
     startRef.current = 0;
     endRef.current = 0;
-    secondMarkRef.current = { index: 0, total: 0 };
+    secondMarkRef.current = { index: 0, total: 0, correct: 0 };
     samplesRef.current = [];
     errorsPerSecondRef.current = {};
     timelineRef.current = [];
