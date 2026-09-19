@@ -14,7 +14,6 @@ A clean, customizable typing test with cloud stats (Supabase), Redis-backed lead
 
 ## read these before changing code
 
-- `GIT_WORKFLOW.md` — branch strategy (`dev` → `main`), Conventional Commit format, and the AI agent rules (auto-commit, semantic commits, verify safety).
 - `STYLE_GUIDE.md` — the design system: color tokens, radius/typography tiers, component patterns, lowercase UI copy, themed-token-only rule.
 - `README.md` — feature overview, Supabase/Upstash setup, stats methodology.
 
