@@ -83,10 +83,12 @@ export function VirtualKeyboard() {
   return (
     <div
       ref={containerRef}
-      // The unscaled row is ~448px wide, so on phones narrower than ~390px
-      // even scale-75 overflows the layout box and adds a page-level
-      // horizontal scroll. Shrink further on very small screens.
-      className="mx-auto -mt-1 flex w-fit origin-top scale-[0.62] select-none flex-col items-center gap-1 min-[380px]:scale-75 sm:scale-100"
+      // Shrink the board on small screens with `zoom` (not `scale-`): a CSS
+      // transform leaves the unscaled layout box behind, so the flex parent
+      // centers a phantom ~448px box and the visible keys render off-center
+      // with stray space below them. `zoom` shrinks layout and paint
+      // together, so the keyboard stays centered wherever it sits.
+      className="mx-auto -mt-1 flex w-fit max-w-full origin-top select-none flex-col items-center gap-1 [zoom:0.62] min-[380px]:[zoom:0.75] sm:[zoom:1]"
       aria-hidden
     >
       {ROWS.map((row, i) => (
