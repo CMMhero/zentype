@@ -166,16 +166,19 @@
   --font-fira-sans: "Fira Sans", ui-sans-serif, system-ui, sans-serif;
   --font-fredoka: "Fredoka Variable", ui-sans-serif, system-ui, sans-serif;
   --font-geist: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-geist-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-geist-mono:
+    "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-gelasio: "Gelasio Variable", Georgia, "Times New Roman", serif;
   --font-google-sans: "Google Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-ibm-plex-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-ibm-plex-sans: "IBM Plex Sans Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-inconsolata: "Inconsolata Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-inconsolata:
+    "Inconsolata Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-inter: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-itim: "Itim", ui-sans-serif, system-ui, sans-serif;
   --font-iosevka: "Iosevka", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-jetbrains-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-jetbrains-mono:
+    "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-josefin-sans: "Josefin Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-karla: "Karla Variable", ui-sans-serif, system-ui, sans-serif;
   --font-lato: "Lato", ui-sans-serif, system-ui, sans-serif;
@@ -205,23 +208,27 @@
   --font-quicksand: "Quicksand Variable", ui-sans-serif, system-ui, sans-serif;
   --font-raleway: "Raleway Variable", ui-sans-serif, system-ui, sans-serif;
   --font-red-hat-display: "Red Hat Display Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-red-hat-mono: "Red Hat Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-red-hat-mono:
+    "Red Hat Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-roboto: "Roboto Variable", ui-sans-serif, system-ui, sans-serif;
   --font-roboto-flex: "Roboto Flex Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-roboto-mono: "Roboto Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-roboto-mono:
+    "Roboto Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-roboto-slab: "Roboto Slab Variable", Georgia, "Times New Roman", serif;
   --font-rubik: "Rubik Variable", ui-sans-serif, system-ui, sans-serif;
   --font-sarabun: "Sarabun", ui-sans-serif, system-ui, sans-serif;
   --font-shantell-sans: "Shantell Sans Variable", cursive, ui-sans-serif, system-ui, sans-serif;
   --font-sora: "Sora Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-source-code-pro: "Source Code Pro Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-source-code-pro:
+    "Source Code Pro Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-space-grotesk: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
   --font-space-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-titillium-web: "Titillium Web", ui-sans-serif, system-ui, sans-serif;
   --font-ubuntu: "Ubuntu", ui-sans-serif, system-ui, sans-serif;
   --font-ubuntu-mono: "Ubuntu Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-urbanist: "Urbanist Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-victor-mono: "Victor Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-victor-mono:
+    "Victor Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --font-work-sans: "Work Sans Variable", ui-sans-serif, system-ui, sans-serif;
   --font-stack-sans-text: "Stack Sans Text Variable", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -298,16 +305,25 @@
      page gradient instead of standing out as a solid block. */
   body,
   .zt-page-bg {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--background) 100%, transparent) 0%, color-mix(in srgb, var(--background) 95%, var(--primary) 5%) 50%, color-mix(in srgb, var(--background) 100%, transparent) 100%);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--background) 100%, transparent) 0%,
+      color-mix(in srgb, var(--background) 95%, var(--primary) 5%) 50%,
+      color-mix(in srgb, var(--background) 100%, transparent) 100%
+    );
     background-attachment: fixed;
   }
   body {
     @apply antialiased bg-background text-foreground;
-    font-feature-settings: "zero" 1, "ss01" 1;
+    font-feature-settings:
+      "zero" 1,
+      "ss01" 1;
     /* Clip horizontal overflow here (propagates to the viewport as hidden)
        instead of on html. clip is a non-scrollable value, so body never becomes
        a scroll container and sticky elements stick to the viewport, while the
-       viewport keeps its auto vertical scroll from the propagated value. */
+       viewport keeps its auto vertical scroll from the propagated value.
+       hidden first as a fallback for browsers without `clip` support. */
+    overflow-x: hidden;
     overflow-x: clip;
   }
   /* Lock viewport scroll when any dialog / command palette is open. Targeting
@@ -324,100 +340,277 @@
   ::-webkit-scrollbar {
     display: none;
   }
-  button:not(:disabled), [role="button"]:not(:disabled) {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
     cursor: pointer;
   }
 }
 
 /* Font family — outside @layer base so Tailwind utilities don't override */
-html[data-font="advent-pro"] { font-family: var(--font-advent-pro); }
-html[data-font="alfa-slab-one"] { font-family: var(--font-alfa-slab-one); }
-html[data-font="anonymous-pro"] { font-family: var(--font-anonymous-pro); }
-html[data-font="archivo"] { font-family: var(--font-archivo); }
-html[data-font="asap"] { font-family: var(--font-asap); }
-html[data-font="atkinson-hyperlegible"] { font-family: var(--font-atkinson-hyperlegible); }
-html[data-font="baloo-2"] { font-family: var(--font-baloo-2); }
-html[data-font="barlow"] { font-family: var(--font-barlow); }
-html[data-font="bitter"] { font-family: var(--font-bitter); }
-html[data-font="bricolage-grotesque"] { font-family: var(--font-bricolage-grotesque); }
-html[data-font="cabin"] { font-family: var(--font-cabin); }
-html[data-font="cal-sans"] { font-family: var(--font-cal-sans); }
-html[data-font="cascadia-code"] { font-family: var(--font-cascadia-code); }
-html[data-font="caveat"] { font-family: var(--font-caveat); }
-html[data-font="chivo"] { font-family: var(--font-chivo); }
-html[data-font="comic-neue"] { font-family: var(--font-comic-neue); }
-html[data-font="commit-mono"] { font-family: var(--font-commit-mono); }
-html[data-font="comfortaa"] { font-family: var(--font-comfortaa); }
-html[data-font="coming-soon"] { font-family: var(--font-coming-soon); }
-html[data-font="courier-prime"] { font-family: var(--font-courier-prime); }
-html[data-font="crimson-pro"] { font-family: var(--font-crimson-pro); }
-html[data-font="dancing-script"] { font-family: var(--font-dancing-script); }
-html[data-font="dm-sans"] { font-family: var(--font-dm-sans); }
-html[data-font="domine"] { font-family: var(--font-domine); }
-html[data-font="exo-2"] { font-family: var(--font-exo-2); }
-html[data-font="figtree"] { font-family: var(--font-figtree); }
-html[data-font="fira-code"] { font-family: var(--font-fira-code); }
-html[data-font="fira-sans"] { font-family: var(--font-fira-sans); }
-html[data-font="fredoka"] { font-family: var(--font-fredoka); }
-html[data-font="geist"] { font-family: var(--font-geist); }
-html[data-font="geist-mono"] { font-family: var(--font-geist-mono); }
-html[data-font="gelasio"] { font-family: var(--font-gelasio); }
-html[data-font="google-sans"] { font-family: var(--font-google-sans); }
-html[data-font="ibm-plex-mono"] { font-family: var(--font-ibm-plex-mono); }
-html[data-font="ibm-plex-sans"] { font-family: var(--font-ibm-plex-sans); }
-html[data-font="inconsolata"] { font-family: var(--font-inconsolata); }
-html[data-font="inter"] { font-family: var(--font-inter); }
-html[data-font="itim"] { font-family: var(--font-itim); }
-html[data-font="iosevka"] { font-family: var(--font-iosevka); }
-html[data-font="jetbrains-mono"] { font-family: var(--font-jetbrains-mono); }
-html[data-font="josefin-sans"] { font-family: var(--font-josefin-sans); }
-html[data-font="karla"] { font-family: var(--font-karla); }
-html[data-font="lato"] { font-family: var(--font-lato); }
-html[data-font="lexend"] { font-family: var(--font-lexend); }
-html[data-font="lobster"] { font-family: var(--font-lobster); }
-html[data-font="lora"] { font-family: var(--font-lora); }
-html[data-font="manrope"] { font-family: var(--font-manrope); }
-html[data-font="merriweather"] { font-family: var(--font-merriweather); }
-html[data-font="mona-sans"] { font-family: var(--font-mona-sans); }
-html[data-font="montserrat"] { font-family: var(--font-montserrat); }
-html[data-font="noto-sans"] { font-family: var(--font-noto-sans); }
-html[data-font="noto-serif"] { font-family: var(--font-noto-serif); }
-html[data-font="nunito"] { font-family: var(--font-nunito); }
-html[data-font="nunito-sans"] { font-family: var(--font-nunito-sans); }
-html[data-font="opendyslexic"] { font-family: var(--font-opendyslexic); }
-html[data-font="open-sans"] { font-family: var(--font-open-sans); }
-html[data-font="oswald"] { font-family: var(--font-oswald); }
-html[data-font="outfit"] { font-family: var(--font-outfit); }
-html[data-font="oxygen"] { font-family: var(--font-oxygen); }
-html[data-font="pacifico"] { font-family: var(--font-pacifico); }
-html[data-font="petrona"] { font-family: var(--font-petrona); }
-html[data-font="playfair-display"] { font-family: var(--font-playfair-display); }
-html[data-font="plus-jakarta-sans"] { font-family: var(--font-plus-jakarta-sans); }
-html[data-font="poppins"] { font-family: var(--font-poppins); }
-html[data-font="pt-sans"] { font-family: var(--font-pt-sans); }
-html[data-font="pt-serif"] { font-family: var(--font-pt-serif); }
-html[data-font="quicksand"] { font-family: var(--font-quicksand); }
-html[data-font="raleway"] { font-family: var(--font-raleway); }
-html[data-font="red-hat-display"] { font-family: var(--font-red-hat-display); }
-html[data-font="red-hat-mono"] { font-family: var(--font-red-hat-mono); }
-html[data-font="roboto"] { font-family: var(--font-roboto); }
-html[data-font="roboto-flex"] { font-family: var(--font-roboto-flex); }
-html[data-font="roboto-mono"] { font-family: var(--font-roboto-mono); }
-html[data-font="roboto-slab"] { font-family: var(--font-roboto-slab); }
-html[data-font="rubik"] { font-family: var(--font-rubik); }
-html[data-font="sarabun"] { font-family: var(--font-sarabun); }
-html[data-font="shantell-sans"] { font-family: var(--font-shantell-sans); }
-html[data-font="sora"] { font-family: var(--font-sora); }
-html[data-font="source-code-pro"] { font-family: var(--font-source-code-pro); }
-html[data-font="space-grotesk"] { font-family: var(--font-space-grotesk); }
-html[data-font="space-mono"] { font-family: var(--font-space-mono); }
-html[data-font="titillium-web"] { font-family: var(--font-titillium-web); }
-html[data-font="ubuntu"] { font-family: var(--font-ubuntu); }
-html[data-font="ubuntu-mono"] { font-family: var(--font-ubuntu-mono); }
-html[data-font="urbanist"] { font-family: var(--font-urbanist); }
-html[data-font="victor-mono"] { font-family: var(--font-victor-mono); }
-html[data-font="work-sans"] { font-family: var(--font-work-sans); }
-html[data-font="stack-sans-text"] { font-family: var(--font-stack-sans-text); }
+html[data-font="advent-pro"] {
+  font-family: var(--font-advent-pro);
+}
+html[data-font="alfa-slab-one"] {
+  font-family: var(--font-alfa-slab-one);
+}
+html[data-font="anonymous-pro"] {
+  font-family: var(--font-anonymous-pro);
+}
+html[data-font="archivo"] {
+  font-family: var(--font-archivo);
+}
+html[data-font="asap"] {
+  font-family: var(--font-asap);
+}
+html[data-font="atkinson-hyperlegible"] {
+  font-family: var(--font-atkinson-hyperlegible);
+}
+html[data-font="baloo-2"] {
+  font-family: var(--font-baloo-2);
+}
+html[data-font="barlow"] {
+  font-family: var(--font-barlow);
+}
+html[data-font="bitter"] {
+  font-family: var(--font-bitter);
+}
+html[data-font="bricolage-grotesque"] {
+  font-family: var(--font-bricolage-grotesque);
+}
+html[data-font="cabin"] {
+  font-family: var(--font-cabin);
+}
+html[data-font="cal-sans"] {
+  font-family: var(--font-cal-sans);
+}
+html[data-font="cascadia-code"] {
+  font-family: var(--font-cascadia-code);
+}
+html[data-font="caveat"] {
+  font-family: var(--font-caveat);
+}
+html[data-font="chivo"] {
+  font-family: var(--font-chivo);
+}
+html[data-font="comic-neue"] {
+  font-family: var(--font-comic-neue);
+}
+html[data-font="commit-mono"] {
+  font-family: var(--font-commit-mono);
+}
+html[data-font="comfortaa"] {
+  font-family: var(--font-comfortaa);
+}
+html[data-font="coming-soon"] {
+  font-family: var(--font-coming-soon);
+}
+html[data-font="courier-prime"] {
+  font-family: var(--font-courier-prime);
+}
+html[data-font="crimson-pro"] {
+  font-family: var(--font-crimson-pro);
+}
+html[data-font="dancing-script"] {
+  font-family: var(--font-dancing-script);
+}
+html[data-font="dm-sans"] {
+  font-family: var(--font-dm-sans);
+}
+html[data-font="domine"] {
+  font-family: var(--font-domine);
+}
+html[data-font="exo-2"] {
+  font-family: var(--font-exo-2);
+}
+html[data-font="figtree"] {
+  font-family: var(--font-figtree);
+}
+html[data-font="fira-code"] {
+  font-family: var(--font-fira-code);
+}
+html[data-font="fira-sans"] {
+  font-family: var(--font-fira-sans);
+}
+html[data-font="fredoka"] {
+  font-family: var(--font-fredoka);
+}
+html[data-font="geist"] {
+  font-family: var(--font-geist);
+}
+html[data-font="geist-mono"] {
+  font-family: var(--font-geist-mono);
+}
+html[data-font="gelasio"] {
+  font-family: var(--font-gelasio);
+}
+html[data-font="google-sans"] {
+  font-family: var(--font-google-sans);
+}
+html[data-font="ibm-plex-mono"] {
+  font-family: var(--font-ibm-plex-mono);
+}
+html[data-font="ibm-plex-sans"] {
+  font-family: var(--font-ibm-plex-sans);
+}
+html[data-font="inconsolata"] {
+  font-family: var(--font-inconsolata);
+}
+html[data-font="inter"] {
+  font-family: var(--font-inter);
+}
+html[data-font="itim"] {
+  font-family: var(--font-itim);
+}
+html[data-font="iosevka"] {
+  font-family: var(--font-iosevka);
+}
+html[data-font="jetbrains-mono"] {
+  font-family: var(--font-jetbrains-mono);
+}
+html[data-font="josefin-sans"] {
+  font-family: var(--font-josefin-sans);
+}
+html[data-font="karla"] {
+  font-family: var(--font-karla);
+}
+html[data-font="lato"] {
+  font-family: var(--font-lato);
+}
+html[data-font="lexend"] {
+  font-family: var(--font-lexend);
+}
+html[data-font="lobster"] {
+  font-family: var(--font-lobster);
+}
+html[data-font="lora"] {
+  font-family: var(--font-lora);
+}
+html[data-font="manrope"] {
+  font-family: var(--font-manrope);
+}
+html[data-font="merriweather"] {
+  font-family: var(--font-merriweather);
+}
+html[data-font="mona-sans"] {
+  font-family: var(--font-mona-sans);
+}
+html[data-font="montserrat"] {
+  font-family: var(--font-montserrat);
+}
+html[data-font="noto-sans"] {
+  font-family: var(--font-noto-sans);
+}
+html[data-font="noto-serif"] {
+  font-family: var(--font-noto-serif);
+}
+html[data-font="nunito"] {
+  font-family: var(--font-nunito);
+}
+html[data-font="nunito-sans"] {
+  font-family: var(--font-nunito-sans);
+}
+html[data-font="opendyslexic"] {
+  font-family: var(--font-opendyslexic);
+}
+html[data-font="open-sans"] {
+  font-family: var(--font-open-sans);
+}
+html[data-font="oswald"] {
+  font-family: var(--font-oswald);
+}
+html[data-font="outfit"] {
+  font-family: var(--font-outfit);
+}
+html[data-font="oxygen"] {
+  font-family: var(--font-oxygen);
+}
+html[data-font="pacifico"] {
+  font-family: var(--font-pacifico);
+}
+html[data-font="petrona"] {
+  font-family: var(--font-petrona);
+}
+html[data-font="playfair-display"] {
+  font-family: var(--font-playfair-display);
+}
+html[data-font="plus-jakarta-sans"] {
+  font-family: var(--font-plus-jakarta-sans);
+}
+html[data-font="poppins"] {
+  font-family: var(--font-poppins);
+}
+html[data-font="pt-sans"] {
+  font-family: var(--font-pt-sans);
+}
+html[data-font="pt-serif"] {
+  font-family: var(--font-pt-serif);
+}
+html[data-font="quicksand"] {
+  font-family: var(--font-quicksand);
+}
+html[data-font="raleway"] {
+  font-family: var(--font-raleway);
+}
+html[data-font="red-hat-display"] {
+  font-family: var(--font-red-hat-display);
+}
+html[data-font="red-hat-mono"] {
+  font-family: var(--font-red-hat-mono);
+}
+html[data-font="roboto"] {
+  font-family: var(--font-roboto);
+}
+html[data-font="roboto-flex"] {
+  font-family: var(--font-roboto-flex);
+}
+html[data-font="roboto-mono"] {
+  font-family: var(--font-roboto-mono);
+}
+html[data-font="roboto-slab"] {
+  font-family: var(--font-roboto-slab);
+}
+html[data-font="rubik"] {
+  font-family: var(--font-rubik);
+}
+html[data-font="sarabun"] {
+  font-family: var(--font-sarabun);
+}
+html[data-font="shantell-sans"] {
+  font-family: var(--font-shantell-sans);
+}
+html[data-font="sora"] {
+  font-family: var(--font-sora);
+}
+html[data-font="source-code-pro"] {
+  font-family: var(--font-source-code-pro);
+}
+html[data-font="space-grotesk"] {
+  font-family: var(--font-space-grotesk);
+}
+html[data-font="space-mono"] {
+  font-family: var(--font-space-mono);
+}
+html[data-font="titillium-web"] {
+  font-family: var(--font-titillium-web);
+}
+html[data-font="ubuntu"] {
+  font-family: var(--font-ubuntu);
+}
+html[data-font="ubuntu-mono"] {
+  font-family: var(--font-ubuntu-mono);
+}
+html[data-font="urbanist"] {
+  font-family: var(--font-urbanist);
+}
+html[data-font="victor-mono"] {
+  font-family: var(--font-victor-mono);
+}
+html[data-font="work-sans"] {
+  font-family: var(--font-work-sans);
+}
+html[data-font="stack-sans-text"] {
+  font-family: var(--font-stack-sans-text);
+}
 
 .zt-caret-blink {
   animation: zt-blink 1s ease-in-out infinite;
@@ -504,7 +697,9 @@ html[data-font="stack-sans-text"] { font-family: var(--font-stack-sans-text); }
 
 /* Smooth transitions for theme changes */
 html {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Force Sonner toasts to inherit the theme font and match theme rounding */

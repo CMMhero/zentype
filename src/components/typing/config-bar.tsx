@@ -37,9 +37,10 @@ export function ConfigBar({
       role="toolbar"
       aria-label="test configuration"
     >
-      <div className="grid w-full grid-cols-[3fr_7fr] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
+      <div className="grid w-full min-w-0 grid-cols-[minmax(0,3fr)_minmax(0,7fr)] gap-2 sm:w-fit sm:grid-cols-none sm:flex sm:gap-2">
         {/* Mode selector */}
         <PillGroup
+          className="min-w-0"
           value={[mode]}
           onValueChange={(v) => {
             const next = v[0];
