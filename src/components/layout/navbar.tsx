@@ -322,22 +322,30 @@ export function Navbar() {
   );
 }
 
-/** Mobile bottom navigation - normal flow, not fixed. */
+/** Mobile bottom navigation - fixed to the viewport bottom. */
 export function MobileNav() {
   const pathname = usePathname();
   const isTestRunning = useUiStore((s) => s.isTestRunning);
   const [presses, setPresses] = useState<Record<string, number>>({});
+  // Fixed to the viewport bottom. During a run the whole bar unmounts —
+  // compensate the matching main padding too so short pages don't keep an
+  // empty 4rem slot where the nav was.
+  useEffect(() => {
+    const main = document.getElementById("main-content");
+    if (!main) return;
+    main.classList.toggle("pb-16", !isTestRunning);
+    return () => main.classList.remove("pb-16");
+  }, [isTestRunning]);
   // Hide the bottom nav while a test runs — typing screen stays distraction-free.
   if (isTestRunning) return null;
   return (
     <NavigationMenu
       aria-label="Mobile navigation"
       viewport={false}
-      className="bg-background/95 sticky bottom-0 z-40 flex-none border-t border-border/40 backdrop-blur-xl max-w-full md:hidden w-full"
+      className="bg-background/95 fixed inset-x-0 bottom-0 z-40 w-full border-t border-border/40 backdrop-blur-xl md:hidden"
       // Safe-area must be padding (inside the bar's own background), not
       // margin: a bottom margin is scrollable space outside the bar, so the
-      // page can be scrolled past the nav leaving a gap below it — and a
-      // stuck sticky bar floats margin-height above the viewport bottom.
+      // page can be scrolled past the nav leaving a gap below it.
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <NavigationMenuList className="flex h-16 w-full items-center justify-between">

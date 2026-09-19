@@ -52,7 +52,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
       <Navbar />
-      <main id="main-content" className="flex flex-1 flex-col">
+      <main id="main-content" className="flex flex-1 flex-col pb-16 md:pb-0">
         {children}
         <Footer />
         <CommandPalette />
