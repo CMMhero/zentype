@@ -667,7 +667,7 @@ export default function TestPage() {
           </div>
 
           {settings.showKeyboard && (
-            <div className="flex flex-1 items-center justify-center py-2">
+            <div className="flex w-full min-w-0 max-w-full flex-1 items-center justify-center overflow-x-clip py-2 [overflow:clip]">
               <VirtualKeyboard />
             </div>
           )}

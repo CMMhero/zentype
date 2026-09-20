@@ -119,7 +119,7 @@ export function ResultDetails({
         {result.chars ? (
           <>
             <Mini label="correct" value={String(result.chars.correct)} />
-            <Mini label="errors" value={String(result.chars.incorrect)} />
+            <Mini label="incorrect" value={String(result.chars.incorrect)} />
             <Mini label="extra" value={String(result.chars.extra)} />
             <Mini label="missed" value={String(result.chars.missed)} />
           </>
@@ -127,7 +127,7 @@ export function ResultDetails({
           <>
             {/* Lite history rows lack the char breakdown until details load */}
             <MiniSkeleton label="correct" />
-            <MiniSkeleton label="errors" />
+            <MiniSkeleton label="incorrect" />
             <MiniSkeleton label="extra" />
             <MiniSkeleton label="missed" />
           </>

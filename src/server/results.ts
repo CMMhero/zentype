@@ -90,10 +90,10 @@ export async function saveResult(
           .hset(metaKey, {
             [ctx.user.id]: JSON.stringify({
               username:
-                (ctx.user.user_metadata?.["user_name"] as string) ||
+                (ctx.user.user_metadata?.user_name as string) ||
                 ctx.user.email?.split("@")[0] ||
                 "anon",
-              avatarUrl: (ctx.user.user_metadata?.["avatar_url"] as string) ?? null,
+              avatarUrl: (ctx.user.user_metadata?.avatar_url as string) ?? null,
               wpm: data.wpm,
               accuracy: data.accuracy,
               consistency: data.consistency,
@@ -115,7 +115,7 @@ export async function saveResult(
   await cacheDel(`ach-stats:${ctx.user.id}`);
   await cacheDel(`pub-profile:${ctx.user.id}`);
   const uname = (
-    (ctx.user.user_metadata?.["user_name"] as string) ||
+    (ctx.user.user_metadata?.user_name as string) ||
     ctx.user.email?.split("@")[0] ||
     ""
   ).toLowerCase();
@@ -318,7 +318,7 @@ function accountUsername(user: {
   email?: string;
 }): string {
   return (
-    (user.user_metadata?.["user_name"] as string) ||
+    (user.user_metadata?.user_name as string) ||
     user.email?.split("@")[0] ||
     ""
   ).toLowerCase();

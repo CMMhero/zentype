@@ -322,28 +322,38 @@ export function Navbar() {
   );
 }
 
-/** Mobile bottom navigation - normal flow, not fixed. */
+/** Mobile bottom navigation - fixed to the viewport bottom. */
 export function MobileNav() {
   const pathname = usePathname();
   const isTestRunning = useUiStore((s) => s.isTestRunning);
   const [presses, setPresses] = useState<Record<string, number>>({});
-  // Hide the bottom nav while a test runs — typing screen stays distraction-free.
-  if (isTestRunning) return null;
+  // Fixed to the viewport bottom, so hiding it never moves page content —
+  // but the matching `pb-16` slot on <main> must stay put too. Fade the bar
+  // in place (like the navbar docks and footer) instead of unmounting it, so
+  // entering focus mode doesn't shift the virtual keyboard or footer.
+  // `main` keeps its `pb-16` from the app shell at all times.
   return (
     <NavigationMenu
       aria-label="Mobile navigation"
       viewport={false}
-      className="bg-background/95 sticky bottom-0 z-40 flex-none border-t border-border/40 backdrop-blur-xl max-w-full md:hidden w-full"
-      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
+      inert={isTestRunning || undefined}
+      className={cn(
+        "bg-background/95 fixed inset-x-0 bottom-0 z-40 w-full max-w-none border-t border-border/40 backdrop-blur-xl transition-opacity duration-300 md:hidden",
+        isTestRunning && "pointer-events-none opacity-0",
+      )}
+      // Safe-area must be padding (inside the bar's own background), not
+      // margin: a bottom margin is scrollable space outside the bar, so the
+      // page can be scrolled past the nav leaving a gap below it.
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <NavigationMenuList className="flex h-16 w-full items-center justify-between">
+      <NavigationMenuList className="flex h-16 w-full max-w-full min-w-0 flex-1 items-center justify-between px-1">
         {NAV.map((item) => {
           const active = isActive(pathname, item.to);
           return (
-            <NavigationMenuItem key={item.to}>
+            <NavigationMenuItem key={item.to} className="min-w-0 flex-1">
               <NavigationMenuLink
                 className={cn(
-                  "flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 transition-colors",
+                  "flex w-full min-w-0 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 transition-colors",
                   !active && "hover:bg-muted",
                 )}
                 render={

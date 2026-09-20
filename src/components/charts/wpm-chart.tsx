@@ -1,4 +1,4 @@
-import { Area, Bar, CartesianGrid, ComposedChart, XAxis, YAxis } from "recharts";
+import { Area, Bar, CartesianGrid, ComposedChart, Line, XAxis, YAxis } from "recharts";
 import {
   type ChartConfig,
   ChartContainer,
@@ -11,6 +11,7 @@ import { cn } from "~/lib/utils";
 const chartConfig = {
   wpm: { label: "wpm", color: "var(--chart-1)" },
   raw: { label: "raw", color: "var(--muted-foreground)" },
+  burst: { label: "burst", color: "var(--chart-2)" },
   errors: { label: "errors", color: "var(--chart-5)" },
 } satisfies ChartConfig;
 
@@ -45,10 +46,13 @@ export function WpmChart({
     Second: p.t,
     wpm: p.wpm,
     raw: p.raw,
+    // Older saved timelines predate burst — leave those points empty.
+    burst: p.burst ?? null,
     // Skip error bar for the last point — it's a finish snapshot and may
     // contain cumulative totals in older saved data.
     errors: i < timeline.length - 1 ? p.errors || null : null,
   }));
+  const hasBurst = data.some((d) => d.burst != null);
 
   return (
     <div className={cn("w-full", className)}>
@@ -97,7 +101,7 @@ export function WpmChart({
               />
             }
           />
-          {/* Children order drives tooltip order: wpm, raw, errors */}
+          {/* Children order drives tooltip order: wpm, raw, burst, errors */}
           <Area
             dataKey="wpm"
             type="monotone"
@@ -115,6 +119,17 @@ export function WpmChart({
             fill="url(#fillRaw)"
             dot={false}
           />
+          {hasBurst && (
+            <Line
+              dataKey="burst"
+              type="monotone"
+              stroke="var(--color-burst)"
+              strokeWidth={1.5}
+              strokeDasharray="5 4"
+              dot={false}
+              connectNulls
+            />
+          )}
           <Bar
             dataKey="errors"
             fill="var(--color-errors)"
@@ -124,6 +139,25 @@ export function WpmChart({
           />
         </ComposedChart>
       </ChartContainer>
+      {/* Legend for the overlay series — burst is a dashed line, errors are bars */}
+      {hasBurst && (
+        <div className="text-muted-foreground mt-1 flex items-center gap-4 px-1 text-[10px] tracking-wider">
+          <span className="flex items-center gap-1.5">
+            <span
+              className="inline-block h-[2px] w-4 rounded-full"
+              style={{ backgroundColor: "var(--chart-2)" }}
+            />
+            burst
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span
+              className="inline-block h-2.5 w-1.5 rounded-[2px]"
+              style={{ backgroundColor: "var(--chart-5)" }}
+            />
+            errors
+          </span>
+        </div>
+      )}
     </div>
   );
 }

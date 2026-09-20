@@ -102,8 +102,11 @@ export function ResultView({ result, saveState, isPB, user, onNext }: ResultView
         )}
         {capturing ? (
           // Share branding — takes the buttons' spot while the image is taken
-          <div className="flex h-9 items-center gap-2 whitespace-nowrap" aria-hidden="true">
-            <span className="flex items-center gap-1.5">
+          <div
+            className="flex h-9 max-w-full items-center gap-2 overflow-hidden whitespace-nowrap"
+            aria-hidden="true"
+          >
+            <span className="flex shrink-0 items-center gap-1.5">
               <IconKeyboardFilled className="text-primary size-4" />
               <span className="text-sm font-semibold tracking-tight">zentype</span>
             </span>
@@ -112,7 +115,7 @@ export function ResultView({ result, saveState, isPB, user, onNext }: ResultView
                 <span className="text-muted-foreground" aria-hidden="true">
                   ·
                 </span>
-                <span className="text-sm font-semibold">{user.username}</span>
+                <span className="truncate text-sm font-semibold">{user.username}</span>
               </>
             )}
           </div>
