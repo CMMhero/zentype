@@ -13,9 +13,12 @@ node_modules
 out
 dist
 *.local
+
+# Lockfiles: pnpm-lock.yaml is tracked on purpose. Vercel infers the package
+# manager from the lockfile, so an ignored one makes deploys run `npm install`,
+# which then aborts on the devEngines.packageManager pin in package.json.
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
 bun.lock
 bun.lockb
 

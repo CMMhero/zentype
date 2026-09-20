@@ -80,9 +80,9 @@ A clean, customizable typing test with cloud stats, gamification, and global lea
 ## Getting started
 
 ```bash
-bun install
+vp install                  # or: pnpm install
 cp .env.example .env        # fill in keys
-bun run dev                 # http://localhost:3123
+vp run dev                  # http://localhost:3123
 ```
 
 Runs fully without backend keys. Guest mode, local results, English prompts, and Postgres-fallback leaderboards work out of the box. Add keys to unlock cloud sync, OAuth, and Redis leaderboards.
@@ -107,6 +107,17 @@ SUPABASE_ANON_KEY=
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
 ```
+
+### Vercel deploy
+
+`pnpm-lock.yaml` is committed on purpose: Vercel infers the package manager from the lockfile, and a repo without one falls back to `npm install`, which aborts with `EBADDEVENGINES` because `package.json` pins `devEngines.packageManager` to pnpm. That pin is pnpm 12.4.1 and Vercel's build images only ship older pnpm builds, so enable Corepack for the project:
+
+1. _Project Settings > Environment Variables_ -- add `ENABLE_EXPERIMENTAL_COREPACK` set to `1` for every environment.
+2. Add the `.env` keys you want in production. Without them the deploy still builds and runs guest-only.
+3. Leave the install command override empty -- an override such as `pnpm install` makes Vercel use the oldest pnpm in the build image instead of the pinned one.
+4. _Project Settings > General_ -- pick a Node.js version (22.x or 24.x); `engines.node` only sets a floor.
+
+Redeploy after saving. The build log should show `pnpm install` on pnpm 12.4.1, and `next.config.ts` already drops the standalone output when `VERCEL` is set.
 
 ## Project structure
 

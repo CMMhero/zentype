@@ -44,7 +44,7 @@ vp run build         # production build (Turbopack)
 - `.vite-hooks/pre-commit` runs `vp staged` (`vp check --fix`) on every commit, so it formats and lint-fixes staged files and re-stages them.
 - Biome formatting and import sorting are enforced — write code close to biome style or run `vp run format` on touched files.
 - ESLint is gone. If you see stale `eslint-disable` comments, remove or convert them to `biome-ignore` comments.
-- Lockfiles are gitignored (`pnpm-lock.yaml`, `bun.lock`, `package-lock.json`) — treat them as generated and do not edit them by hand.
+- `pnpm-lock.yaml` is committed — Vercel picks the package manager from the lockfile, and an ignored one made deploys run `npm install` and die on the `devEngines.packageManager` pin. Every other lockfile stays gitignored, and no lockfile is ever hand-edited.
 - .env values are never committed; the app runs in guest-only mode when SUPABASE/UPSTASH keys are absent — that is expected behavior, not an error.
 - Only emit plain commit messages and summaries — no AI-generated trailers or co-author footers.
 
