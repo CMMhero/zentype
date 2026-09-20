@@ -15,6 +15,11 @@ const chartConfig = {
   errors: { label: "errors", color: "var(--chart-5)" },
 } satisfies ChartConfig;
 
+// Mobile keeps the plot short (the dialog/compact variant is the same height) so
+// the result view, keybind hints and footer fit a phone viewport; sm+ uses the
+// full card-height plot.
+const CHART_HEIGHT = { compact: "h-40 sm:h-56", full: "h-44 sm:h-56" } as const;
+
 export function WpmChart({
   timeline,
   className,
@@ -58,7 +63,7 @@ export function WpmChart({
     <div className={cn("w-full", className)}>
       <ChartContainer
         config={chartConfig}
-        className={cn(compact ? "h-40 sm:h-56" : "h-56", "w-full")}
+        className={cn(compact ? CHART_HEIGHT.compact : CHART_HEIGHT.full, "w-full")}
         role="img"
         aria-label="WPM performance chart"
       >

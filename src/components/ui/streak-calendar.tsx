@@ -188,6 +188,39 @@ function gitIntensityClass(count: number, maxCount: number, isActive: boolean): 
   return GIT_INTENSITY_STOPS[idx];
 }
 
+/**
+ * Pin a horizontally overflowing year view to its right edge — the newest
+ * cells, including today — the moment it attaches. The year view is keyed by
+ * its window, so switching view/year re-attaches the node and re-pins, while
+ * ordinary re-renders never disturb a reader who scrolled back through their
+ * history.
+ */
+function usePinYearViewToLatest() {
+  const frameRef = React.useRef<number | null>(null);
+
+  return React.useCallback((node: HTMLDivElement | null) => {
+    if (frameRef.current !== null) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
+    if (!node) return;
+
+    const pin = () => {
+      node.scrollLeft = node.scrollWidth - node.clientWidth;
+    };
+
+    // Refs attach in the commit phase before the browser paints, so the first
+    // pin is already applied for the first frame. The follow-up frame only
+    // catches a width change from late font/scrollbar metrics — after that we
+    // leave the scroll position alone.
+    pin();
+    frameRef.current = requestAnimationFrame(() => {
+      frameRef.current = null;
+      pin();
+    });
+  }, []);
+}
+
 const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
   (
     {
@@ -206,6 +239,11 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
     },
     ref,
   ) => {
+    // Year view is a single oldest → newest timeline that overflows on narrow
+    // screens, so start it pinned to the newest day instead of a year of
+    // history.
+    const pinYearViewToLatest = usePinYearViewToLatest();
+
     const year = month.getFullYear();
     const monthIndex = month.getMonth();
     const daysInMonth = getDaysInMonth(year, monthIndex);
@@ -436,7 +474,8 @@ const StreakCalendar = React.forwardRef<HTMLDivElement, StreakCalendarProps>(
 
         {view === "year" && (
           <>
-            <div className="overflow-x-auto">
+            {/* Keyed by window so a different year re-pins to its latest day. */}
+            <div key={`year-${displayYear}`} ref={pinYearViewToLatest} className="overflow-x-auto">
               <div className="inline-block min-w-full pr-4">
                 <div
                   aria-hidden="true"
@@ -550,6 +589,7 @@ StreakCalendar.displayName = "StreakCalendar";
  * the calendar uses so the skeleton settles into the loaded view.
  */
 function StreakCalendarSkeleton() {
+  const pinYearViewToLatest = usePinYearViewToLatest();
   const ROWS = 7;
   const CELL_SIZE = "0.75rem"; // compact year-view cell size
   // Last 365 days ending today, with leading gutter cells so the first column
@@ -581,7 +621,7 @@ function StreakCalendarSkeleton() {
   if (monthCols.length > 12) monthCols.shift();
 
   return (
-    <div className="w-full overflow-x-auto" aria-hidden>
+    <div ref={pinYearViewToLatest} className="w-full overflow-x-auto" aria-hidden>
       <div className="inline-block min-w-full pr-4">
         <div className="mb-2 grid gap-[3px]" style={{ gridTemplateColumns }}>
           {monthCols.map((column, i) => (
