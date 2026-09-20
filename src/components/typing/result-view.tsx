@@ -17,11 +17,11 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { copyResultImage, createResultImage, downloadResultImage } from "~/lib/share-image";
 import type { SessionUser, TestResult } from "~/lib/types";
 
-// Non-compact WpmChart renders at h-56 — the loader skeleton must match so
-// the layout doesn't jump when the lazy chunk finishes loading.
+// Mobile chart is h-44 (see CHART_HEIGHT in wpm-chart) — the loader skeleton
+// must match so the layout doesn't jump when the lazy chunk finishes loading.
 const WpmChart = dynamic(() => import("~/components/charts/wpm-chart").then((m) => m.WpmChart), {
   ssr: false,
-  loading: () => <Skeleton className="h-56 w-full" />,
+  loading: () => <Skeleton className="h-44 w-full sm:h-56" />,
 });
 
 export type SaveState = "cloud" | "guest" | "failed" | "skipped" | "invalid";
@@ -72,9 +72,12 @@ export function ResultView({ result, saveState, isPB, user, onNext }: ResultView
   }
 
   return (
+    // Tighter vertical rhythm on phones is what keeps the whole result column
+    // (plus hints and footer) inside a single mobile viewport; sm+ keeps the
+    // roomier card spacing.
     <div
       ref={cardRef}
-      className="zt-fade-in mx-auto flex w-full max-w-4xl flex-col gap-6 py-6"
+      className="zt-fade-in mx-auto flex w-full max-w-4xl flex-col gap-4 py-6 sm:gap-6"
       role="region"
       aria-label="Test results"
     >

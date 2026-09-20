@@ -520,11 +520,13 @@ export default function TestPage() {
       />
 
       {/* Config bar is only visible before a test starts; it fades out while
-          typing and on the results screen (space is kept to avoid jumps). */}
+          typing (space kept, so the prompt never jumps) and is dropped once the
+          test finishes — the result view, keybind hints and footer then own the
+          whole page instead of sitting below a blank config-bar slot. */}
       <div
         className={`pb-4 transition-opacity duration-300 ${
           engine.status === "idle" ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
+        } ${engine.status === "finished" ? "hidden" : ""}`}
         inert={engine.status !== "idle"}
       >
         <ConfigBar
